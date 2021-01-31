@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
-    TaskService taskService;
+    private TaskService taskService;
 
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "!!!";
