@@ -32,9 +32,7 @@ class TaskControllerTest {
         assertThatThrownBy(() -> taskController.detail(100L))
                 .isInstanceOf(TaskNotFoundException.class);
 
-        Task task = new Task();
-        task.setTitle("Test");
-        taskController.create(task);
+        addTask();
 
         assertThat(taskController.detail(1L).getId()).isEqualTo(1L);
         assertThat(taskController.detail(1L).getTitle()).isEqualTo("Test");
@@ -42,13 +40,9 @@ class TaskControllerTest {
 
     @Test
     void createNewTask() {
-        Task task = new Task();
-        task.setTitle("Test");
-
-        taskController.create(task);
+        Task task = addTask();
 
         assertThat(taskController.list()).isNotEmpty();
-
         assertThat(taskController.list()).hasSize(1);
         assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
         assertThat(taskController.list().get(0).getTitle()).isEqualTo("Test");
@@ -76,9 +70,7 @@ class TaskControllerTest {
 
     @Test
     void patchTask() {
-        Task task = new Task();
-        task.setTitle("Test");
-        taskController.create(task);
+        Task task = addTask();
 
         task.setTitle("Modified");
         taskController.patch(1L, task);
@@ -89,13 +81,19 @@ class TaskControllerTest {
 
     @Test
     void deleteTask() {
-        Task task = new Task();
-        task.setTitle("Test");
-        taskController.create(task);
+        addTask();
         assertThat(taskController.list()).hasSize(1);
 
         taskController.delete(1L);
 
         assertThat(taskController.list()).hasSize(0);
+    }
+
+    private Task addTask() {
+        Task task = new Task();
+        task.setTitle("Test");
+        taskController.create(task);
+
+        return task;
     }
 }
