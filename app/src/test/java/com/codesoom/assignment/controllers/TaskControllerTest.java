@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -147,6 +148,15 @@ class TaskControllerTest {
     @DisplayName("create 메소드는")
     class Describe_create {
 
+        @Test
+        @DisplayName("status created 를 리턴한다.")
+        void It_returns_status_created() throws Exception {
+            mockMvc.perform(
+                    post("/tasks")
+                            .contentType("application/json")
+                            .content(String.format("{\"title\":\"%s\"}", TASK_TITLE))
+            ).andExpect(status().isCreated());
+        }
     }
 
     @Nested
