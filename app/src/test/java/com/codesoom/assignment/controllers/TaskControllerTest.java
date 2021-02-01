@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,20 +8,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 @DisplayName("TaskController 클래스")
 class TaskControllerTest {
     @Autowired
@@ -89,15 +93,53 @@ class TaskControllerTest {
     class Describe_detail {
 
         @Nested
-        @DisplayName("찾는 id가 있을 때")
-        class Context_with_target_id {
-
-        }
-
-        @Nested
         @DisplayName("찾는 id가 없을 때")
         class Context_without_target_id {
 
+            @BeforeEach
+            void setEmpty() {
+                Task task = new Task();
+                task.setId(TASK_ID);
+                task.setTitle(TASK_TITLE);
+
+                given(taskService.getTask(TASK_ID))
+                        .willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
+            @Test
+            @DisplayName("TaskNotFoundException 을 던진다.")
+            void It_throws_TaskNotFoundException() throws Exception {
+                mockMvc.perform(get(String.format("/tasks/%d", TASK_ID)))
+                        .andExpect(status().isNotFound())
+                        .andExpect(
+                                result -> assertThat(result.getResolvedException())
+                                        .isInstanceOf(TaskNotFoundException.class)
+                        );
+            }
+        }
+
+        @Nested
+        @DisplayName("찾는 id가 있을 때")
+        class Context_with_target_id {
+            @BeforeEach
+            void setTask() {
+                Task task = new Task();
+                task.setId(TASK_ID);
+                task.setTitle(TASK_TITLE);
+
+                given(taskService.getTask(TASK_ID))
+                        .willReturn(task);
+            }
+
+            @Test
+            @DisplayName("task 를 리턴한다.")
+            void It_returns_task() throws Exception {
+                final String expectContent = String.format("{\"id\":%d,\"title\":\"%s\"}", TASK_ID, TASK_TITLE);
+
+                mockMvc.perform(get(String.format("/tasks/%d", TASK_ID)))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(expectContent));
+            }
         }
     }
 
