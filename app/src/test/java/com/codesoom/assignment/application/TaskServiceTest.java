@@ -12,7 +12,7 @@ class TaskServiceTest {
 
     private TaskService taskService;
     private static final String TASK_TITLE = "test";
-    private static final String UPDATE_POSTFIX = "test";
+    private static final String UPDATE_POSTFIX = "!!!";
 
     @BeforeEach
     void setUp() {
