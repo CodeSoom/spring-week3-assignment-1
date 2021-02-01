@@ -6,6 +6,9 @@ import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -56,5 +59,18 @@ class TaskControllerTest {
         assertThat(taskController.list()).hasSize(2);
         assertThat(taskController.list().get(1).getId()).isEqualTo(2L);
         assertThat(taskController.list().get(1).getTitle()).isEqualTo("Test2");
+    }
+
+    @Test
+    void updateTask() {
+        Task task = new Task();
+        task.setTitle("Test");
+        taskController.create(task);
+
+        task.setTitle("Modified");
+        taskController.update(1L, task);
+
+        assertThat(taskController.detail(1L).getTitle()).isNotEqualTo("Test");
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo("Modified");
     }
 }
