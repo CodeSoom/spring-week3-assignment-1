@@ -1,11 +1,13 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
     private TaskController taskController;
@@ -20,6 +22,19 @@ class TaskControllerTest {
     @Test
     void list() {
         assertThat(taskController.list()).isEmpty();
+    }
+
+    @Test
+    void detail() {
+        assertThatThrownBy(() -> taskController.detail(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+
+        Task task = new Task();
+        task.setTitle("Test");
+        taskController.create(task);
+
+        assertThat(taskController.detail(1L).getId()).isEqualTo(1L);
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo("Test");
     }
 
     @Test
