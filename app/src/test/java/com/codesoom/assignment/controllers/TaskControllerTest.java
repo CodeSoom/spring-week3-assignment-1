@@ -3,14 +3,23 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.application.TaskService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@SpringBootTest
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest
 @DisplayName("TaskController 클래스")
 class TaskControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
     @MockBean
     private TaskService taskService;
 
@@ -22,6 +31,13 @@ class TaskControllerTest {
         @DisplayName("Task 가 하나도 없을 때")
         class Context_without_any_tasks {
 
+            @Test
+            @DisplayName("빈 배열을 리턴한다.")
+            void It_returns_empty() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("[]"));
+            }
         }
 
         @Nested
