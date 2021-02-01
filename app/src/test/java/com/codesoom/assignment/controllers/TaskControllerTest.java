@@ -86,4 +86,16 @@ class TaskControllerTest {
         assertThat(taskController.detail(1L).getTitle()).isNotEqualTo("Test");
         assertThat(taskController.detail(1L).getTitle()).isEqualTo("Modified");
     }
+
+    @Test
+    void deleteTask() {
+        Task task = new Task();
+        task.setTitle("Test");
+        taskController.create(task);
+        assertThat(taskController.list()).hasSize(1);
+
+        taskController.delete(1L);
+
+        assertThat(taskController.list()).hasSize(0);
+    }
 }
