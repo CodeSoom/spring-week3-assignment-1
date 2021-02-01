@@ -1,4 +1,4 @@
-package com.codesoom.assignment.controllers.controllers;
+package com.codesoom.assignment.controllers.controllers.controller;
 
 import com.codesoom.assignment.controllers.HelloController;
 import org.junit.jupiter.api.Test;

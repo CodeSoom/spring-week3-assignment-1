@@ -1,4 +1,4 @@
-package com.codesoom.assignment.controllers.controllers;
+package com.codesoom.assignment.controllers.controllers.controller;
 
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.controllers.TaskController;
@@ -76,11 +76,28 @@ class TaskControllerTest {
 
     @Nested
     @DisplayName("제목을 수정하면")
-    class Context_edit_title {
+    class Context_edit_title_put {
         Task edit_task() {
             Task task = taskService.getTask(EXSITING_ID);
             task.setTitle(NEW_TASK_TITLE);
             controller.update(EXSITING_ID, task);
+            return task;
+        }
+
+        @Test
+        @DisplayName("기존 제목에서 수정된 제목으로 변경하여 리턴한다.")
+        void It_returns_newTitle() {
+            assertThat(edit_task().getTitle()).isEqualTo(NEW_TASK_TITLE);
+        }
+    }
+
+    @Nested
+    @DisplayName("제목을 수정하면")
+    class Context_edit_title_patch {
+        Task edit_task() {
+            Task task = taskService.getTask(EXSITING_ID);
+            task.setTitle(NEW_TASK_TITLE);
+            controller.patch(EXSITING_ID, task);
             return task;
         }
 
@@ -104,5 +121,5 @@ class TaskControllerTest {
             controller.delete(EXSITING_ID);
         }
     }
-    
+
 }
