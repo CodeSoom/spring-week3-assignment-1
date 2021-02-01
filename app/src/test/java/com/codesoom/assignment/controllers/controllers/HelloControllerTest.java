@@ -1,5 +1,6 @@
-package com.codesoom.assignment.controllers;
+package com.codesoom.assignment.controllers.controllers;
 
+import com.codesoom.assignment.controllers.HelloController;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

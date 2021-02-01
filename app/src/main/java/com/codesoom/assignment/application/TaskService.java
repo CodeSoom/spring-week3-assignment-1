@@ -12,6 +12,10 @@ public class TaskService {
     private List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
 
+    public void cleartasks() {
+        tasks.clear();
+    }
+
     public List<Task> getTasks() {
         return tasks;
     }
