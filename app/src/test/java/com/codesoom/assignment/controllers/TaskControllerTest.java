@@ -73,4 +73,17 @@ class TaskControllerTest {
         assertThat(taskController.detail(1L).getTitle()).isNotEqualTo("Test");
         assertThat(taskController.detail(1L).getTitle()).isEqualTo("Modified");
     }
+
+    @Test
+    void patchTask() {
+        Task task = new Task();
+        task.setTitle("Test");
+        taskController.create(task);
+
+        task.setTitle("Modified");
+        taskController.patch(1L, task);
+
+        assertThat(taskController.detail(1L).getTitle()).isNotEqualTo("Test");
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo("Modified");
+    }
 }
