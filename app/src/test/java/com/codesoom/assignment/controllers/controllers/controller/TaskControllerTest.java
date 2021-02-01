@@ -1,21 +1,30 @@
 package com.codesoom.assignment.controllers.controllers.controller;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.controllers.TaskController;
+import com.codesoom.assignment.controllers.TaskErrorAdvice;
+import com.codesoom.assignment.dto.ErrorResponse;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
 
     private TaskController controller;
     private TaskService taskService;
+    private TaskErrorAdvice taskErrorAdvice;
+    private ErrorResponse errorResponse;
 
     private final String TASK_TITLE = "task1";
     private final int EXISTING_ID_COUNT = 1;
     private final Long EXSITING_ID = 1L;
     private final String NEW_TASK_TITLE = "changeTaskTitle";
+    private final String NOT_FOUND_ID_ERROR_MESSAGE = "할 일 목록에서 해당하는 id를 찾을 수 없습니다.";
 
     private Task task1;
 
@@ -122,4 +131,35 @@ class TaskControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("찾는 id가 목록에 없으면")
+    class Context_not_found_id_in_tasks {
+        void not_found_id() {
+            assertThatThrownBy(() -> taskService.getTask(100L))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("예외처리 한다.")
+        void It_retruns_exception() {
+            taskErrorAdvice = new TaskErrorAdvice();
+            taskErrorAdvice.handleNotFound();
+        }
+    }
+
+    @Nested
+    @DisplayName("찾는 id가 목록에 없으면")
+    class Context_not_found_id {
+        void not_found_id() {
+            assertThatThrownBy(() -> taskService.getTask(100L))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("에러메세지를 보낸다.")
+        void It_retruns_error_message() {
+            errorResponse = new ErrorResponse(NOT_FOUND_ID_ERROR_MESSAGE);
+            assertThat(errorResponse.getMessage()).isEqualTo(NOT_FOUND_ID_ERROR_MESSAGE);
+        }
+    }
 }

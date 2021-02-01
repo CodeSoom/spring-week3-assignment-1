@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers.controllers;
 
 import com.codesoom.assignment.App;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,5 +14,12 @@ class AppTest {
         assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
 
         assertEquals(classUnderTest.getGreeting(), "Hello, world!");
+
     }
+
+    @Test
+    public void applicationStarts() {
+        App.main(new String[] {});
+    }
+
 }
