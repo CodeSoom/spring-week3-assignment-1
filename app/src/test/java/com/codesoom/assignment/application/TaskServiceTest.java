@@ -40,8 +40,7 @@ class TaskServiceTest {
 
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
