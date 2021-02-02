@@ -19,4 +19,9 @@ class HelloControllerTest {
     void sayHello() {
         assertThat(controller.sayHello()).isEqualTo("Hello, World!");
     }
+
+    @Test
+    void sayGoodBye() {
+        assertThat(controller.sayHello()).isNotEqualTo("Good, Bye!");
+    }
 }
