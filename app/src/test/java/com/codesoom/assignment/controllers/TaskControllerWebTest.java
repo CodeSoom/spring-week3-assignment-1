@@ -81,6 +81,27 @@ public class TaskControllerWebTest {
         }
 
         @Nested
+        @DisplayName("저장된 task가 없다면")
+        class Context_with_empty_tasks {
+            @BeforeEach
+            void setUp() {
+                tasks = new ArrayList<>();
+
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            @Test
+            @DisplayName("200코드와 빈 task list를 리턴한다")
+            void it_returns_200_and_tasks() throws Exception {
+                mockMvc.perform(get("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(content().string("[]"))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_an_existing_task_id {
             @BeforeEach
@@ -166,6 +187,8 @@ public class TaskControllerWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(task)))
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists())
                         .andExpect(status().isOk());
             }
         }
