@@ -49,4 +49,24 @@ class TaskServiceTest {
         
         assertFalse(tasks.contains(createdTask));
     }
+
+    @Test
+    void updateTitle() {
+        TaskService taskService = new TaskService();
+        Task task = new Task();
+        Task createdTask = taskService.createTask(task);
+        String newTitle = "Play Game.";
+
+        createdTask.setTitle(newTitle);
+        taskService.updateTask(createdTask.getId(), createdTask);
+
+        List<Task> tasks = taskService.getTasks();
+
+        assertTrue(tasks.contains(createdTask));
+
+        Task findTask = taskService.getTask(createdTask.getId());
+
+        assertEquals(createdTask, findTask);
+        assertEquals(createdTask.getTitle(), findTask.getTitle());
+    }
 }
