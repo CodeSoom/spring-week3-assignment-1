@@ -7,8 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -16,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskServiceTest {
 
     private TaskService taskService;
+    private Task task;
 
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "!!!";
@@ -27,42 +26,36 @@ class TaskServiceTest {
     void setUp() {
         taskService = new TaskService();
 
-        // fixtures
-        Task task = new Task();
+        task = new Task();
         task.setTitle(TASK_TITLE);
-
-        taskService.createTask(task);
     }
 
     @Nested
     @DisplayName("getTasks 메서드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("저장된 task가 있다면")
+        @DisplayName("저장된 task가 여러개 있다면")
         class Context_with_tasks {
+            @BeforeEach
+            void prepareTasks() {
+                taskService.createTask(task);
+                taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("task list를 리턴한다")
             void it_returns_task_list() {
-                List<Task> tasks = taskService.getTasks();
-
-                assertThat(tasks).hasSize(1);
+                assertThat(taskService.getTasks()).hasSize(2);
             }
         }
 
         @Nested
         @DisplayName("저장된 task가 없다면")
         class Context_with_empty_tasks {
-            @BeforeEach
-            void setUp() {
-                taskService = new TaskService();
-            }
-
             @Test
             @DisplayName("빈 task list를 리턴한다")
             void it_returns_empty_task_list() {
-                List<Task> tasks = taskService.getTasks();
-
-                assertThat(tasks).isEmpty();
+                assertThat(taskService.getTasks()).isEmpty();
             }
         }
     }
@@ -70,6 +63,11 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메서드는")
     class Describe_getTask {
+        @BeforeEach
+        void prepareTask() {
+            taskService.createTask(task);
+        }
+
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_an_existing_task_id {
@@ -106,6 +104,7 @@ class TaskServiceTest {
             @BeforeEach
             void prepareTask() {
                 oldSize = taskService.getTasks().size();
+
                 newTask = new Task();
                 newTask.setTitle(TASK_TITLE);
             }
@@ -130,6 +129,8 @@ class TaskServiceTest {
 
         @BeforeEach
         void prepareTask() {
+            taskService.createTask(task);
+
             source = new Task();
             source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
         }
@@ -161,16 +162,18 @@ class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메서드는")
     class Describe_deleteTask {
+        int oldSize;
+
+        @BeforeEach
+        void prepareTask() {
+            taskService.createTask(task);
+
+            oldSize = taskService.getTasks().size();
+        }
+
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_an_existing_task_id {
-            int oldSize;
-
-            @BeforeEach
-            void setUp() {
-                oldSize = taskService.getTasks().size();
-            }
-
             @Test
             @DisplayName("task를 삭제한다")
             void it_deletes_a_task() {
