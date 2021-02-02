@@ -37,9 +37,13 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTask(){
+    void getTaskWithValid(){
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+    }
+
+    @Test
+    void getTaskWithInvalid(){ 
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
