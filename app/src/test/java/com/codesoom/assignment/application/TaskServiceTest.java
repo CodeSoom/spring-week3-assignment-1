@@ -38,7 +38,7 @@ class TaskServiceTest {
             @DisplayName("task 리스트를 반환한다")
             void it_return_task_id() {
                 createTask();
-                assertThat(taskService.getTasks()).hasSizeGreaterThan(0);
+                assertThat(taskService.getTasks()).isNotEmpty();
             }
         }
 
@@ -48,7 +48,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("빈 리스트를 반환한다")
             void it_return_task_id() {
-                assertThat(taskService.getTasks()).hasSize(0);
+                assertThat(taskService.getTasks()).isEmpty();
             }
         }
     }
