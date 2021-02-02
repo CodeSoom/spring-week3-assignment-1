@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
-
-    TaskService taskService;
     final String TASK_TITLE = "Get Sleep";
     final String UPDATE_TITLE = "Do Study";
+
+    TaskService taskService;
 
     @BeforeEach
     void setUp() {
