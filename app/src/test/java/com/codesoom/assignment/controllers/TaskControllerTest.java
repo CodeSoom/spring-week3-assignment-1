@@ -9,11 +9,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
+    private TaskService taskService;
     private TaskController controller;
 
     @BeforeEach
     void setUp(){
-        controller = new TaskController();
+        taskService = new TaskService();
+        controller = new TaskController(taskService);
     }
 
     @Test
@@ -23,13 +25,10 @@ class TaskControllerTest {
 
     @Test
     void createNewTask() {
-        TaskController controller = new TaskController();
-
         Task task = new Task();
         task.setTitle("Test1");
         controller.create(task);
 
-        //assertThat(controller.list()).isNotEmpty();
         assertThat(controller.list()).hasSize(1);
         assertThat(controller.list().get(0).getId()).isEqualTo(1L);
         assertThat(controller.list().get(0).getTitle()).isEqualTo("Test1");

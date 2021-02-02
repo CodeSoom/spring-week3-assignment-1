@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
-
     private TaskService taskService;
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "!!!";
