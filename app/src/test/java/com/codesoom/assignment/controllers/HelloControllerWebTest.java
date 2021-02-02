@@ -4,10 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.core.StringContains.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // TODO:
@@ -15,8 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // 2. 정상적이지 않은 주소로 호출을 했을 때
 // 3. get, post, put, delete 메서드를 이용하여 호출 하였을 때
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(HelloController.class)
 public class HelloControllerWebTest {
 
     @Autowired
@@ -25,7 +27,9 @@ public class HelloControllerWebTest {
     @Test
     void sayHelloWithRightUrl() throws Exception {
         this.mockMvc.perform(get("/"))
-            .andExpect(status().isOk());
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Hello, World!")));
     }
 
     @Test
