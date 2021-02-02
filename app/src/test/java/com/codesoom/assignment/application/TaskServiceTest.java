@@ -36,4 +36,17 @@ class TaskServiceTest {
 
         assertEquals(createdTask, findTask);
     }
+
+    @Test
+    void deleteTask() {
+        TaskService taskService = new TaskService();
+        Task task = new Task();
+        Task createdTask = taskService.createTask(task);
+
+        taskService.deleteTask(createdTask.getId());
+
+        List<Task> tasks = taskService.getTasks();
+        
+        assertFalse(tasks.contains(createdTask));
+    }
 }
