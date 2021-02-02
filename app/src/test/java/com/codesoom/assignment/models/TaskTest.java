@@ -154,6 +154,46 @@ class TaskTest {
                 assertThat(task.equals(differentTask)).isFalse();
             }
         }
+
+        @Nested
+        @DisplayName("다른 클래스 객체가 주어진다면")
+        class Context_with_different_class_object {
+            Object differentObject = "test";
+
+            @Test
+            @DisplayName("false를 리턴한다")
+            void it_returns_false() {
+                assertThat(task.equals(differentObject)).isFalse();
+            }
+        }
+    }
+
+    @DisplayName("값이 같은 두 task의 hashcode 테스트")
+    @Test
+    void testHashCodeWithTwoSameTasks() {
+        Task task1 = new Task();
+        task1.setTitle(TASK_TITLE);
+        task1.setId(TASK_ID);
+
+        Task task2 = new Task();
+        task2.setTitle(TASK_TITLE);
+        task2.setId(TASK_ID);
+
+        assertThat(task1.hashCode()).isEqualTo(task2.hashCode());
+    }
+
+    @DisplayName("값이 다른 두 task의 hashcode 테스트")
+    @Test
+    void testHashCodeWithTwoDifferentTasks() {
+        Task task1 = new Task();
+        task1.setTitle(TASK_TITLE);
+        task1.setId(TASK_ID);
+
+        Task task2 = new Task();
+        task2.setTitle(NEW_TASK_TITLE);
+        task2.setId(NEW_TASK_ID);
+
+        assertThat(task1.hashCode()).isNotEqualTo(task2.hashCode());
     }
 
 }
