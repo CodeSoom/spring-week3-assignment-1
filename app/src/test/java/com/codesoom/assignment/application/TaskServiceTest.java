@@ -86,4 +86,31 @@ public class TaskServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("createTask")
+    class Describe_createTask {
+        private int size;
+        private Task added;
+
+        @BeforeEach
+        void addNewTask() {
+            size = taskService.getTasks().size();
+            added = taskService.createTask(task);
+        }
+
+        @Test
+        @DisplayName("return added task")
+        void it_return_empty() {
+            assertThat(added.getClass()).isEqualTo(Task.class);
+            assertThat(added.getId()).isEqualTo(TASK_ID);
+            assertThat(added.getTitle()).isEqualTo(TASK_TITLE);
+        }
+
+        @Test
+        @DisplayName("plus 1 at task list size")
+        void it_count_up_task_list_size() {
+            assertThat(taskService.getTasks().size()).isEqualTo(size + 1);
+        }
+    }
 }
