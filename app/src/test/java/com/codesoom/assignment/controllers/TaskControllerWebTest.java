@@ -4,10 +4,12 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -56,6 +59,11 @@ public class TaskControllerWebTest {
         task.setTitle(TASK_TITLE);
 
         tasks.add(task);
+    }
+
+    @AfterEach
+    void clear() {
+        Mockito.reset(taskService);
     }
 
     @Nested
@@ -206,6 +214,53 @@ public class TaskControllerWebTest {
             @DisplayName("404코드와 에러메시지를 리턴한다")
             void it_returns_404_and_error_message() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", NOT_EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andExpect(jsonPath("id").doesNotExist())
+                        .andExpect(jsonPath("title").doesNotExist())
+                        .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH 메서드 요청은")
+    class Describe_PATCH {
+        @Nested
+        @DisplayName("존재하는 task id가 주어진다면")
+        class Context_with_an_existing_task_id {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(EXISTING_ID, task)).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("200코드와 수정된 task를 리턴한다")
+            void it_returns_200_and_a_task() throws Exception {
+                mockMvc.perform(patch("/tasks/{id}", EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists())
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("존재하지 않는 task id가 주어진다면")
+        class Context_with_not_an_existing_task_id {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(NOT_EXISTING_ID, task))
+                        .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
+            }
+
+            @Test
+            @DisplayName("404코드와 에러메시지를 리턴한다")
+            void it_returns_404_and_error_message() throws Exception {
+                mockMvc.perform(patch("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(task)))
