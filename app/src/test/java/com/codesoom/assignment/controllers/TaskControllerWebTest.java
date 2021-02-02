@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,8 +59,6 @@ public class TaskControllerWebTest {
         task = new Task();
         task.setId(EXISTING_ID);
         task.setTitle(TASK_TITLE);
-
-        tasks.add(task);
     }
 
     @AfterEach
@@ -74,7 +74,9 @@ public class TaskControllerWebTest {
         class Context_with_tasks {
             @BeforeEach
             void setUp() {
-                given(taskService.getTasks()).willReturn(tasks);
+                tasks.add(task);
+                given(taskService.getTasks())
+                        .willReturn(tasks);
             }
 
             @Test
@@ -84,6 +86,7 @@ public class TaskControllerWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(content().string(containsString(TASK_TITLE)))
+                        .andExpect(content().string(objectMapper.writeValueAsString(tasks)))
                         .andExpect(status().isOk());
             }
         }
@@ -93,9 +96,8 @@ public class TaskControllerWebTest {
         class Context_with_empty_tasks {
             @BeforeEach
             void setUp() {
-                tasks = new ArrayList<>();
-
-                given(taskService.getTasks()).willReturn(tasks);
+                given(taskService.getTasks())
+                        .willReturn(tasks);
             }
 
             @Test
@@ -114,7 +116,8 @@ public class TaskControllerWebTest {
         class Context_with_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.getTask(EXISTING_ID)).willReturn(task);
+                given(taskService.getTask(EXISTING_ID))
+                        .willReturn(task);
             }
 
             @Test
@@ -160,7 +163,8 @@ public class TaskControllerWebTest {
         class Context_with_task {
             @BeforeEach
             void setUp() {
-                given(taskService.createTask(task)).willReturn(task);
+                given(taskService.createTask(any(Task.class)))
+                        .willReturn(task);
             }
 
             @Test
@@ -185,7 +189,8 @@ public class TaskControllerWebTest {
         class Context_with_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.updateTask(EXISTING_ID, task)).willReturn(task);
+                given(taskService.updateTask(eq(EXISTING_ID), any(Task.class)))
+                        .willReturn(task);
             }
 
             @Test
@@ -206,7 +211,7 @@ public class TaskControllerWebTest {
         class Context_with_not_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.updateTask(NOT_EXISTING_ID, task))
+                given(taskService.updateTask(eq(NOT_EXISTING_ID), any(Task.class)))
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
@@ -232,7 +237,8 @@ public class TaskControllerWebTest {
         class Context_with_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.updateTask(EXISTING_ID, task)).willReturn(task);
+                given(taskService.updateTask(eq(EXISTING_ID), any(Task.class)))
+                        .willReturn(task);
             }
 
             @Test
@@ -253,7 +259,7 @@ public class TaskControllerWebTest {
         class Context_with_not_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.updateTask(NOT_EXISTING_ID, task))
+                given(taskService.updateTask(eq(NOT_EXISTING_ID), any(Task.class)))
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
@@ -279,7 +285,8 @@ public class TaskControllerWebTest {
         class Context_with_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.deleteTask(EXISTING_ID)).willReturn(task);
+                given(taskService.deleteTask(eq(EXISTING_ID)))
+                        .willReturn(task);
             }
 
             @Test
@@ -299,7 +306,7 @@ public class TaskControllerWebTest {
         class Context_with_not_an_existing_task_id {
             @BeforeEach
             void setUp() {
-                given(taskService.deleteTask(NOT_EXISTING_ID))
+                given(taskService.deleteTask(eq(NOT_EXISTING_ID)))
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
