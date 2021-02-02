@@ -1,3 +1,5 @@
+package models;
+
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.Test;
 
