@@ -48,6 +48,23 @@ class TaskServiceTest {
                 assertThat(tasks).hasSize(1);
             }
         }
+
+        @Nested
+        @DisplayName("저장된 task가 없다면")
+        class Context_with_empty_tasks {
+            @BeforeEach
+            void setUp() {
+                taskService = new TaskService();
+            }
+
+            @Test
+            @DisplayName("빈 task list를 리턴한다")
+            void it_returns_empty_task_list() {
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).isEmpty();
+            }
+        }
     }
 
     @Nested
@@ -84,21 +101,23 @@ class TaskServiceTest {
         @DisplayName("task가 주어진다면")
         class Context_with_a_task {
             int oldSize;
+            Task newTask;
 
             @BeforeEach
             void prepareTask() {
                 oldSize = taskService.getTasks().size();
-
-                Task newTask = new Task();
-
-                taskService.createTask(newTask);
+                newTask = new Task();
+                newTask.setTitle(TASK_TITLE);
             }
 
             @Test
             @DisplayName("생성된 task를 리턴한다")
             void it_returns_a_created_task() {
+                Task createdTask = taskService.createTask(newTask);
+
                 int newSize = taskService.getTasks().size();
 
+                assertThat(createdTask.getTitle()).isEqualTo(TASK_TITLE);
                 assertThat(newSize - oldSize).isEqualTo(1);
             }
         }
@@ -121,11 +140,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("수정된 task를 리턴한다")
             void it_returns_a_updated_task() {
-                taskService.updateTask(EXISTING_ID, source);
+                Task updatedTask = taskService.updateTask(EXISTING_ID, source);
 
-                Task task = taskService.getTask(EXISTING_ID);
-
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
+                assertThat(updatedTask.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
             }
         }
 
@@ -147,13 +164,21 @@ class TaskServiceTest {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_an_existing_task_id {
+            int oldSize;
+
+            @BeforeEach
+            void setUp() {
+                oldSize = taskService.getTasks().size();
+            }
+
             @Test
             @DisplayName("task를 삭제한다")
             void it_deletes_a_task() {
                 taskService.deleteTask(EXISTING_ID);
 
-                assertThatThrownBy(() -> taskService.deleteTask(EXISTING_ID))
-                        .isInstanceOf(TaskNotFoundException.class);
+                int newSize = taskService.getTasks().size();
+
+                assertThat(oldSize - newSize).isEqualTo(1);
             }
         }
 
