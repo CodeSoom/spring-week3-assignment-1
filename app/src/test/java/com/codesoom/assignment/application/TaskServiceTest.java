@@ -19,4 +19,21 @@ class TaskServiceTest {
 
         assertEquals(0, emptyTaskList.size());
     }
+
+    @Test
+    void createTask() {
+        TaskService taskService = new TaskService();
+        Task task = new Task();
+
+        Task createdTask = taskService.createTask(task);
+
+        List<Task> tasks = taskService.getTasks();
+
+        assertEquals(1, tasks.size());
+        assertTrue(tasks.contains(createdTask));
+
+        Task findTask = taskService.getTask(createdTask.getId());
+
+        assertEquals(createdTask, findTask);
+    }
 }
