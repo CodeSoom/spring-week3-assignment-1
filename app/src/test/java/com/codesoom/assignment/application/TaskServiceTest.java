@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,15 +32,10 @@ public class TaskServiceTest {
         task2.setTitle(TASK_TITLE_2);
     }
 
-    abstract class ContextTaskExists {
-        TaskService existTasks() {
-            taskService.createTask(task1);
-            taskService.createTask(task2);
-            return taskService;
-        }
-        TaskService notExistTasks() {
-            return taskService;
-        }
+    TaskService existTasksSubject() {
+        taskService.createTask(task1);
+        taskService.createTask(task2);
+        return taskService;
     }
 
     Task newTaskSubject() {
@@ -52,30 +49,33 @@ public class TaskServiceTest {
     class Describe_getTasks {
         @Nested
         @DisplayName("할 일인 Task 값들이 있다면")
-        class Context_with_tasks extends ContextTaskExists {
+        class Context_with_tasks {
+
+            @BeforeEach
+            void setUp() {
+                taskService.createTask(task1);
+                taskService.createTask(task2);
+            }
+
             @DisplayName("할 일 Task 값들을 리턴한다")
             @Test
             void it_returns_tasks() {
-                TaskService taskService = existTasks();
-                assertAll(
-                        () -> assertThat(taskService.getTasks()).isNotEmpty(),
-                        () -> assertThat(taskService.getTasks()).hasSize(2),
-                        () -> assertThat(taskService.getTasks())
-                                .extracting("title").contains(TASK_TITLE_1)
-                );
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).hasSize(2);
+                assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE_1);
             }
         }
+
         @Nested
         @DisplayName("할 일인 Task 값들이 없다면")
-        class Context_without_tasks extends ContextTaskExists {
+        class Context_without_tasks {
             @DisplayName("비어있는 값을 리턴한다")
             @Test
             void it_returns_empty_tasks() {
-                TaskService taskService = notExistTasks();
-                assertAll(
-                        () -> assertThat(taskService.getTasks()).isEmpty(),
-                        () -> assertThat(taskService.getTasks()).hasSize(0)
-                );
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).isEmpty();
             }
         }
     }
@@ -83,29 +83,34 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메서드는")
     class Describe_getTask {
+        final Long targetId = 1L;
+
         @Nested
         @DisplayName("할 일인 Task 값 있으면서, 찾고자하는 Task id가 주어지진다면")
-        class Context_with_task extends ContextTaskExists {
-            final Long targetId = 1L;
+        class Context_with_task {
+            @BeforeEach
+            void setUp() {
+                taskService.createTask(task1);
+                taskService.createTask(task2);
+            }
 
             @DisplayName("할 일 Task 값을 리턴한다")
             @Test
             void it_returns_tasks() {
-                TaskService taskService = existTasks();
                 assertAll(
                         () -> assertThat(taskService.getTask(targetId)).isNotNull(),
                         () -> assertThat(taskService.getTask(targetId)).extracting("title").isEqualTo(TASK_TITLE_1)
                 );
             }
         }
+
         @Nested
         @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
-        class Context_without_tasks extends ContextTaskExists {
-            final Long targetId = 1L;
+        class Context_without_tasks {
+
             @DisplayName("예외를 발생시킨다")
             @Test
             void it_throws_exception() {
-                TaskService taskService = notExistTasks();
                 assertThatExceptionOfType(TaskNotFoundException.class)
                         .isThrownBy(() -> taskService.getTask(targetId));
             }
@@ -114,18 +119,85 @@ public class TaskServiceTest {
 
     @Nested
     @DisplayName("createTask 메서드는")
-    class Describe_createTask extends ContextTaskExists {
+    class Describe_createTask {
         @Nested
         @DisplayName("Tasks에 포함할 Task가 주어지면")
         class Context_with_task {
             Task newTask = newTaskSubject();
+
             @DisplayName("입력한 Task 값을 리턴하고, Task 의 숫자가 증가한다")
             @Test
             void it_returns_task_and_size() {
-                TaskService taskService = notExistTasks();
 
                 assertThat(taskService.createTask(newTask)).extracting("title").isEqualTo(NEW_TITLE);
                 assertThat(taskService.getTasks()).hasSize(1);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("updateTask 메서드는")
+    class Describe_updateTask {
+        final Long targetId = 1L;
+        final Task newTask = newTaskSubject();
+
+        @Nested
+        @DisplayName("할 일인 Task 값 있으면서, 변경하고자는 Task id가 주어지진다면")
+        class Context_with_task {
+
+            @DisplayName("변경된 일 Task 값을 리턴한다")
+            @Test
+            void it_returns_update_task() {
+                TaskService taskService = existTasksSubject();
+                assertAll(
+                        () -> assertThat(taskService.updateTask(targetId, newTask)).isNotNull(),
+                        () -> assertThat(taskService.getTask(targetId)).extracting("title").isEqualTo(NEW_TITLE)
+                );
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
+        class Context_without_tasks {
+
+            @DisplayName("예외를 발생시킨다")
+            @Test
+            void it_throws_exception() {
+                assertThatExceptionOfType(TaskNotFoundException.class)
+                        .isThrownBy(() -> taskService.updateTask(targetId, newTask));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteTask 메서드는")
+    class Describe_deleteTask {
+        final Long targetId = 1L;
+
+        @Nested
+        @DisplayName("할 일인 Task 값 있으면서, 삭제하고자 하는 Task id가 주어지진다면")
+        class Context_with_task {
+            TaskService taskService = existTasksSubject();
+
+            @DisplayName("삭제된 일 Task 값을 리턴한다")
+            @Test
+            void it_returns_delete_task() {
+                assertAll(
+                        () -> assertThat(taskService.deleteTask(targetId)).extracting("title").isEqualTo(TASK_TITLE_1),
+                        () -> assertThat(taskService.getTasks()).hasSize(1)
+                );
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
+        class Context_without_tasks {
+
+            @DisplayName("예외를 발생시킨다")
+            @Test
+            void it_throws_exception() {
+                assertThatExceptionOfType(TaskNotFoundException.class)
+                        .isThrownBy(() -> taskService.deleteTask(targetId));
             }
         }
     }

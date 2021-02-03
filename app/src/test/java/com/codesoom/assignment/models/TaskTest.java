@@ -18,7 +18,7 @@ public class TaskTest {
         task = new Task();
     }
 
-    @DisplayName("setId로 id를 설정하면, getId로 설정한 값을 리턴받을 수 있다")
+    @DisplayName("setId은 Task의 id를 변경한다")
     @Test
     void setId() {
         task.setId(GIVEN_ID);
@@ -26,7 +26,7 @@ public class TaskTest {
         assertThat(task.getId()).isEqualTo(GIVEN_ID);
     }
 
-    @DisplayName("setTitle로 title를 설정하면, getTitle로 설정한 값을 리턴받을 수 있다")
+    @DisplayName("setTitle은 Task의 title을 변경한다")
     @Test
     void setTitle() {
         task.setTitle(GIVEN_TITLE);
