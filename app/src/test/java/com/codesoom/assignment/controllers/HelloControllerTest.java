@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,12 +17,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 class HelloControllerTest {
-    @Autowired
-    MockMvc mockMvc;
+    private HelloController helloController;
+
+    @BeforeEach
+    void setUp() {
+        helloController = new HelloController();
+    }
 
     @Test
-    void sayHello() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
+    void sayHello() {
+        String result = helloController.sayHello();
+        
+        assertThat(result).isEqualTo("Hello, world!");
     }
 }
