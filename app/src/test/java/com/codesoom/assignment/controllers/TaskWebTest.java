@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +23,11 @@ public class TaskWebTest {
 
     @Autowired
     private TaskService taskService = new TaskService();
+
+    @BeforeEach
+    void initTaskService() {
+        taskService.clean();
+    }
 
     @Test
     void getAllTasks() throws Exception {
