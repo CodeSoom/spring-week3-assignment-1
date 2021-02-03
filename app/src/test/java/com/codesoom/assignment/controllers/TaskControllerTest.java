@@ -16,10 +16,15 @@ class TaskControllerTest {
 
     private static final Long ORIGINAL_ID = 1L;
     private static final String ORIGINAL_TITLE = "test";
+    private static final String POST_FIX = "!!!";
 
     @BeforeEach
     void setUp(){
        controller = new TaskController();
+
+       Task task = new Task();
+       task.setTitle(ORIGINAL_TITLE);
+       controller.create(task);
     }
 
     @Test
@@ -59,16 +64,22 @@ class TaskControllerTest {
 
 
     @Test
-    @DisplayName("check ID and its name")
-    void createNewTask(){
-        Task task = new Task();
-        task.setTitle("Test1");
-        controller.create(task);
+    void updateWithValid() {
+        Task source = new Task();
+        source.setTitle(ORIGINAL_TITLE+POST_FIX);
+        controller.update(ORIGINAL_ID, source);
 
-        assertThat(controller.list()).hasSize(1);
-        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
-        assertThat(controller.list().get(0).getTitle()).isEqualTo("Test1");
+        Task task = controller.detail(ORIGINAL_ID);
+        assertThat(task.getTitle()).isEqualTo(ORIGINAL_TITLE+POST_FIX);
+    }
 
+    @Test
+    void updateWithInvalid() {
+        Task source = new Task();
+        source.setTitle(ORIGINAL_TITLE+POST_FIX);
+
+        assertThatThrownBy(() -> controller.update(100L, source))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 
 }
