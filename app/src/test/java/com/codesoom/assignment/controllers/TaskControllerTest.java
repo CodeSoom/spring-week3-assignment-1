@@ -18,10 +18,12 @@ class TaskControllerTest {
         TaskController controller = new TaskController();
 
         Task task = new Task();
-        task.setTitle("test");
-        controller.create(new Task());
 
-        assertThat(controller.list()).isNotEmpty();
+        task.setTitle("test1");
+        controller.create(task);
+
+        assertThat(controller.list()).hasSize(1);
+        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
+        assertThat(controller.list().get(0).getTitle()).isEqualTo("test1");
     }
-
 }
