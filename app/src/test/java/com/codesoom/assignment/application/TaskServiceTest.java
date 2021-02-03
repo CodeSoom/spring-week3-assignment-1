@@ -3,6 +3,7 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -26,6 +27,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("모든 tasks를 조회한다")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(1);
