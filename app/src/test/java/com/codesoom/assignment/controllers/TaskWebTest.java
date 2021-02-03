@@ -37,4 +37,19 @@ public class TaskWebTest {
                 .content(taskJsonString)
         ).andExpect(status().isCreated());
     }
+
+    @Test
+    void deleteTask() throws Exception {
+        mockMvc.perform(
+                delete("http://localhost/tasks/1")
+        ).andExpect(status().isNotFound());
+
+        Task task = new Task();
+        task.setTitle("Play Game.");
+        taskService.createTask(task);
+
+        mockMvc.perform(
+                delete("http://localhost/tasks/1")
+        ).andExpect(status().isNoContent());
+    }
 }
