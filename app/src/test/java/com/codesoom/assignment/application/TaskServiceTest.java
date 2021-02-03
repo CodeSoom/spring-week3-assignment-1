@@ -101,7 +101,6 @@ class TaskServiceTest {
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE+POST_FIX);
 
 
-
     }
 
 

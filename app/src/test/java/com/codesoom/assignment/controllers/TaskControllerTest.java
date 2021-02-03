@@ -44,6 +44,19 @@ class TaskControllerTest {
     }
 
 
+    @Test
+    void create() {
+        int oldSize = controller.list().size();
+
+        Task task = new Task();
+        task.setTitle(ORIGINAL_TITLE);
+        controller.create(task);
+
+        int newSize = controller.list().size();
+
+        assertThat(newSize - oldSize).isEqualTo(1);
+    }
+
 
     @Test
     @DisplayName("check ID and its name")
