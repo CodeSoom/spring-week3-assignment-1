@@ -42,12 +42,12 @@ public class TaskControllerWebMvcTest {
     public void setUp() {
         List<Task> tasks = new ArrayList<>();
         
-        Task task = new Task();
-        task.setTitle("Test task");
-        tasks.add(task);
+        Task beforeTask = new Task();
+        beforeTask.setTitle("Test task");
+        tasks.add(beforeTask);
 
         given(taskService.getTasks()).willReturn(tasks);
-        given(taskService.getTask(1L)).willReturn(task);
+        given(taskService.getTask(1L)).willReturn(beforeTask);
         given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
     }
 
