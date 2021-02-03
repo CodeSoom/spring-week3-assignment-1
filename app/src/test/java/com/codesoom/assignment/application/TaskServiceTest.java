@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService")
+@DisplayName("TaskService 클래스 ")
 public class TaskServiceTest {
     private static final Long TASK_ID = 1L;
     private static final String TASK_TITLE = "Test";
@@ -28,20 +28,20 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks")
+    @DisplayName("getTasks 메소드는 ")
     class Describe_getTasks {
         @Nested
-        @DisplayName("without any task")
+        @DisplayName("task가 없다면 ")
         class Context_without_any_task {
             @Test
-            @DisplayName("return empty list")
+            @DisplayName("빈 리스트를 리턴한다.")
             void it_return_empty() {
                 assertThat(taskService.getTasks()).isEmpty();
             }
         }
 
         @Nested
-        @DisplayName("with a task")
+        @DisplayName("task가 1개 이상있다면 ")
         class Context_with_task {
             @BeforeEach
             void addNewTask() {
@@ -49,15 +49,15 @@ public class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("return list")
-            void it_return_list() {
-                assertThat(taskService.getTasks()).hasSize(1);
+            @DisplayName("크기가 1이상인 리스트를 리턴한다.")
+            void it_return_list_having_task_one_or_more() {
+                assertThat(taskService.getTasks().size()).isGreaterThanOrEqualTo(1);
             }
         }
     }
 
     @Nested
-    @DisplayName("getTask")
+    @DisplayName("getTask 메서드는 ")
     class Describe_getTask {
         @BeforeEach
         void addNewTask() {
@@ -65,10 +65,10 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("with valid id")
+        @DisplayName("유효한 id를 가지고 있다면 ")
         class Context_with_valid_id {
             @Test
-            @DisplayName("return task")
+            @DisplayName("task를 리턴한다.")
             void it_return_task() {
                 assertThat(taskService.getTask(1L).getClass()).isEqualTo(Task.class);
                 assertThat(taskService.getTask(1L).getId()).isEqualTo(TASK_ID);
@@ -77,10 +77,10 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("with invalid id")
+        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("throw exception")
+            @DisplayName("exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(() -> taskService.getTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -89,7 +89,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask")
+    @DisplayName("createTask 메소드는 ")
     class Describe_createTask {
         private int size;
         private Task added;
@@ -101,7 +101,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("return added task")
+        @DisplayName("추가된 task를 리턴한다.")
         void it_return_added_task() {
             assertThat(added.getClass()).isEqualTo(Task.class);
             assertThat(added.getId()).isEqualTo(TASK_ID);
@@ -109,14 +109,14 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("plus 1 at task list size")
+        @DisplayName("task 리스트의 크기를 1 증가시킨다.")
         void it_count_up_task_list_size() {
             assertThat(taskService.getTasks().size()).isEqualTo(size + 1);
         }
     }
 
     @Nested
-    @DisplayName("updateTask")
+    @DisplayName("updateTask 메소드는 ")
     class Describe_updateTask {
         private Task modifying;
 
@@ -129,10 +129,10 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("with valid id")
+        @DisplayName("유효한 id를 가지고 있다면 ")
         class Context_with_valid_id {
             @Test
-            @DisplayName("return modified task and task title is modified")
+            @DisplayName("수정된 task를 리턴한다.")
             void it_return_modified_task() {
                 Task modified = taskService.updateTask(1L, modifying);
                 assertThat(taskService.getTask(1L).getClass()).isEqualTo(Task.class);
@@ -143,10 +143,10 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("with invalid id")
+        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("throw exception")
+            @DisplayName("exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(() -> taskService.updateTask(100L, modifying))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -155,7 +155,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask")
+    @DisplayName("deleteTask 메소드는 ")
     class Describe_deleteTask {
         @BeforeEach
         void addTask() {
@@ -163,7 +163,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("with valid id")
+        @DisplayName("유효한 id를 가지고 있다면 ")
         class Context_with_valid_id {
             private int size;
             private Task deleted;
@@ -175,7 +175,7 @@ public class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("return deleted task")
+            @DisplayName("삭제된 task를 리턴한다.")
             void it_return_deleted_task() {
                 assertThat(deleted.getClass()).isEqualTo(Task.class);
                 assertThat(deleted.getId()).isEqualTo(TASK_ID);
@@ -183,17 +183,17 @@ public class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("count down 1 task list size")
+            @DisplayName("task 리스트의 크기를 1 감소시킨다.")
             void it_count_down_1_task_list_size() {
                 assertThat(taskService.getTasks().size()).isEqualTo(size - 1);
             }
         }
 
         @Nested
-        @DisplayName("with invalid id")
+        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("throw exception")
+            @DisplayName("exception를 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(() -> taskService.deleteTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
