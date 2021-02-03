@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -51,5 +53,21 @@ public class TaskWebTest {
         mockMvc.perform(
                 delete("http://localhost/tasks/1")
         ).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void getTask() throws Exception {
+        mockMvc.perform(
+                get("http://localhost/tasks/1")
+        ).andExpect(status().isNotFound());
+
+        Task task = new Task();
+        task.setTitle("Play Game.");
+        taskService.createTask(task);
+
+        mockMvc.perform(
+                get("http://localhost/tasks/1")
+        ).andExpect(status().isOk())
+                .andExpect(content().string(containsString("Play Game.")));
     }
 }
