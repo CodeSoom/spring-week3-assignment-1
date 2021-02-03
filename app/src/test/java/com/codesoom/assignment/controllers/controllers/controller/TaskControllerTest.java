@@ -44,13 +44,25 @@ class TaskControllerTest {
     @Nested
     @DisplayName("list 메소드는")
     class Describe_list {
+
         @Nested
         @DisplayName("할 일 목록에 저장된 데이터가 있으면")
         class Context_with_tasks {
             @Test
-            @DisplayName("할 일이 저장된 개수만큼 숫자를 리턴한다.")
+            @DisplayName("할 일의 개수를 리턴한다.")
             void It_return_number_of_tasks() {
                 assertThat(controller.list()).hasSize(EXISTING_TASK_COUNT);
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일 목록에 저장된 데이터가 없으면")
+        class Context_with_no_task {
+            @Test
+            @DisplayName("빈 배열을 리턴한다.")
+            void It_return_empty_array() {
+                taskService.cleartasks();
+                assertThat(taskService.getTasks()).hasSize(0);
             }
         }
     }
@@ -69,6 +81,22 @@ class TaskControllerTest {
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
+
+        @Nested
+        @DisplayName("찾는 id가 목록에 없으면")
+        class Context_not_contains_target_id {
+            void not_found_id() {
+                assertThatThrownBy(() -> taskService.getTask(100L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+
+            @Test
+            @DisplayName("예외를 던진다.")
+            void It_retruns_exception() {
+                taskErrorAdvice = new TaskErrorAdvice();
+                taskErrorAdvice.handleNotFound();
+            }
+        }
     }
 
     @Nested
@@ -79,9 +107,9 @@ class TaskControllerTest {
         class Context_create_new_task {
             @BeforeEach
             void create_Task() {
-                Task task2 = new Task();
-                task2.setTitle("Test2");
-                controller.create(task2);
+                Task task = new Task();
+                task.setTitle("Test2");
+                controller.create(task);
             }
 
             @Test
@@ -96,7 +124,7 @@ class TaskControllerTest {
     @DisplayName("update 메소드는")
     class Describe_update {
         @Nested
-        @DisplayName("제목을 수정하면")
+        @DisplayName("할 일 제목을 수정하면")
         class Context_edit_title_put {
             Task edit_task() {
                 Task task = taskService.getTask(EXISTING_ID);
@@ -106,7 +134,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("기존 제목에서 수정된 제목으로 변경하여 리턴한다.")
+            @DisplayName("기존 할 일 제목에서 수정된 할 일 제목으로 변경하여 리턴한다.")
             void It_returns_newTitle() {
 
                 assertThat(edit_task().getTitle()).isEqualTo(NEW_TASK_TITLE);
@@ -118,7 +146,7 @@ class TaskControllerTest {
     @DisplayName("patch 메소드는")
     class Describe_patch {
         @Nested
-        @DisplayName("제목을 수정하면")
+        @DisplayName("할 일 제목을 수정하면")
         class Context_edit_title_patch {
             Task edit_task() {
                 Task task = taskService.getTask(EXISTING_ID);
@@ -128,7 +156,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("기존 제목에서 수정된 제목으로 변경하여 리턴한다.")
+            @DisplayName("기존 할 일 제목에서 수정된 할 일 제목으로 변경하여 리턴한다.")
             void It_returns_newTitle() {
 
                 assertThat(edit_task().getTitle()).isEqualTo(NEW_TASK_TITLE);

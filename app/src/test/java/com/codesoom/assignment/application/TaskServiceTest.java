@@ -93,7 +93,7 @@ class TaskServiceTest {
 
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
-        taskService.updateTask(1L, source);
+        taskService.patchTask(1L, source);
 
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);

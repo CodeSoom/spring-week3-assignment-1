@@ -44,6 +44,13 @@ public class TaskService {
         return task;
     }
 
+    public Task patchTask(Long id, Task source) {
+        Task task = getTask(id);
+        task.setTitle(source.getTitle());
+
+        return task;
+    }
+
     public Task deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
