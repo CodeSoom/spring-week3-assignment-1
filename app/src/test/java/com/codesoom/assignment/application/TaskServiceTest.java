@@ -2,17 +2,15 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스 ")
 public class TaskServiceTest {
-    private static final Long TASK_ID = 1L;
+    private static final Long VALID_TASK_ID = 1L;
+    private static final Long INVALID_TASK_ID = 100L;
     private static final String TASK_TITLE = "Test";
     private static final String MODIFY_TASK_TITLE = "Modified";
 
@@ -70,9 +68,9 @@ public class TaskServiceTest {
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
-                assertThat(taskService.getTask(1L).getClass()).isEqualTo(Task.class);
-                assertThat(taskService.getTask(1L).getId()).isEqualTo(TASK_ID);
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TASK_TITLE);
+                assertThat(taskService.getTask(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskService.getTask(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
+                assertThat(taskService.getTask(VALID_TASK_ID).getTitle()).isEqualTo(TASK_TITLE);
             }
         }
 
@@ -82,8 +80,10 @@ public class TaskServiceTest {
             @Test
             @DisplayName("exception을 던진다.")
             void it_throw_exception() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
-                        .isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(
+                        () -> taskService.getTask(INVALID_TASK_ID),
+                        "task를 찾을 수 없습니다."
+                ).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
@@ -104,7 +104,7 @@ public class TaskServiceTest {
         @DisplayName("추가된 task를 리턴한다.")
         void it_return_added_task() {
             assertThat(added.getClass()).isEqualTo(Task.class);
-            assertThat(added.getId()).isEqualTo(TASK_ID);
+            assertThat(added.getId()).isEqualTo(VALID_TASK_ID);
             assertThat(added.getTitle()).isEqualTo(TASK_TITLE);
         }
 
@@ -134,11 +134,11 @@ public class TaskServiceTest {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                Task modified = taskService.updateTask(1L, modifying);
-                assertThat(taskService.getTask(1L).getClass()).isEqualTo(Task.class);
-                assertThat(taskService.getTask(1L).getId()).isEqualTo(TASK_ID);
-                assertThat(taskService.getTask(1L).getTitle()).isNotEqualTo(TASK_TITLE);
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo(MODIFY_TASK_TITLE);
+                Task modified = taskService.updateTask(VALID_TASK_ID, modifying);
+                assertThat(taskService.getTask(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskService.getTask(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
+                assertThat(taskService.getTask(VALID_TASK_ID).getTitle()).isNotEqualTo(TASK_TITLE);
+                assertThat(taskService.getTask(VALID_TASK_ID).getTitle()).isEqualTo(MODIFY_TASK_TITLE);
             }
         }
 
@@ -148,8 +148,10 @@ public class TaskServiceTest {
             @Test
             @DisplayName("exception을 던진다.")
             void it_throw_exception() {
-                assertThatThrownBy(() -> taskService.updateTask(100L, modifying))
-                        .isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(
+                        () -> taskService.updateTask(INVALID_TASK_ID, modifying),
+                        "task를 찾을 수 없습니다."
+                ).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
@@ -171,14 +173,14 @@ public class TaskServiceTest {
             @BeforeEach
             void addTask() {
                 size = taskService.getTasks().size();
-                deleted = taskService.deleteTask(1L);
+                deleted = taskService.deleteTask(VALID_TASK_ID);
             }
 
             @Test
             @DisplayName("삭제된 task를 리턴한다.")
             void it_return_deleted_task() {
                 assertThat(deleted.getClass()).isEqualTo(Task.class);
-                assertThat(deleted.getId()).isEqualTo(TASK_ID);
+                assertThat(deleted.getId()).isEqualTo(VALID_TASK_ID);
                 assertThat(deleted.getTitle()).isEqualTo(TASK_TITLE);
             }
 
@@ -195,8 +197,10 @@ public class TaskServiceTest {
             @Test
             @DisplayName("exception를 던진다.")
             void it_throw_exception() {
-                assertThatThrownBy(() -> taskService.deleteTask(100L))
-                        .isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(
+                        () -> taskService.deleteTask(INVALID_TASK_ID),
+                        "task를 찾을 수 없습니다."
+                ).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
