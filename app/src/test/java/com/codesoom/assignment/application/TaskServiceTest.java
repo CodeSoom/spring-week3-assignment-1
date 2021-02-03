@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService 클래스 ")
+@DisplayName("TaskService 클래스의 ")
 public class TaskServiceTest {
     private static final Long VALID_TASK_ID = 1L;
     private static final Long INVALID_TASK_ID = 100L;
@@ -134,7 +134,7 @@ public class TaskServiceTest {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                Task modified = taskService.updateTask(VALID_TASK_ID, modifying);
+                taskService.updateTask(VALID_TASK_ID, modifying);
                 assertThat(taskService.getTask(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
                 assertThat(taskService.getTask(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
                 assertThat(taskService.getTask(VALID_TASK_ID).getTitle()).isNotEqualTo(TASK_TITLE);
@@ -171,7 +171,7 @@ public class TaskServiceTest {
             private Task deleted;
 
             @BeforeEach
-            void addTask() {
+            void deleteTask() {
                 size = taskService.getTasks().size();
                 deleted = taskService.deleteTask(VALID_TASK_ID);
             }
