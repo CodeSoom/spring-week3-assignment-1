@@ -27,7 +27,7 @@ class HelloControllerTest {
     @Test
     void sayHello() {
         String result = helloController.sayHello();
-        
+
         assertThat(result).isEqualTo("Hello, world!");
     }
 }

@@ -27,7 +27,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("모든 tasks를 조회한다")
+    @DisplayName("모전체 tasks를 조회한다")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(1);
@@ -38,6 +38,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("모task를 생성한다")
     void createTest() {
         int oldSize = taskService.getTasks().size();
 
@@ -52,6 +53,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("task를 수정한다")
     void updateTask() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -62,6 +64,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("ttask를 삭제한다")
     void deleteTest() {
         int oldSize = taskService.getTasks().size();
 
