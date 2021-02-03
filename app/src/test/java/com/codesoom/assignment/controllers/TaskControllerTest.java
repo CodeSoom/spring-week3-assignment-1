@@ -1,16 +1,21 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
 
     private TaskController controller;
+
+    private static final Long ORIGINAL_ID = 1L;
+    private static final String ORIGINAL_TITLE = "test";
 
     @BeforeEach
     void setUp(){
@@ -19,8 +24,25 @@ class TaskControllerTest {
 
     @Test
     void list() {
-        assertThat(controller.list()).isEmpty();
+        assertThat(controller.list()).hasSize(1);
     }
+
+
+    @Test
+    void detailWithValid() {
+        Task found = controller.detail(ORIGINAL_ID);
+
+        assertThat(found.getId()).isEqualTo(ORIGINAL_ID);
+        assertThat(found.getTitle()).isEqualTo(ORIGINAL_TITLE);
+
+    }
+
+    @Test
+    void detailWithInvalid() {
+        assertThatThrownBy(() -> controller.detail(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
 
 
     @Test
@@ -36,9 +58,4 @@ class TaskControllerTest {
 
     }
 
-    @Test
-    void deleteTask() {
-
-
-    }
 }

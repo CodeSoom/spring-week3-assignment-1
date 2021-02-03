@@ -59,7 +59,7 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("Task 생성이 이루어졌는지 확인한다.ㄷ")
+    @DisplayName("Task 생성이 이루어졌는지 확인한다.")
     void createTask() {
         int oldSize = taskService.getTasks().size();
 
