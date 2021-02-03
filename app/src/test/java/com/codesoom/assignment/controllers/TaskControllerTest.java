@@ -21,7 +21,6 @@ class TaskControllerTest {
 
     @Test
     void list() {
-
         assertThat(controller.list()).isEmpty();
     }
 
