@@ -28,7 +28,7 @@ class TaskControllerTest {
 
         Task foundTask = taskController.detail(createdTask.getId());
 
-        assertEquals("Listen", foundTask.getTitle());
+        assertEquals("Play!", foundTask.getTitle());
     }
 
     @Test
