@@ -34,10 +34,6 @@ class TaskControllerTest {
     @Test
     void list() {
         assertThat(taskController.list()).hasSize(0);
-
-        createTask();
-
-        assertThat(taskController.list()).hasSize(1);
     }
 
     @Test
