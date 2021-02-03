@@ -70,4 +70,46 @@ public class TaskWebTest {
         ).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Play Game.")));
     }
+
+    @Test
+    void putTask() throws Exception {
+        String taskJsonString = "{\"title\": \"play game!\"}";
+        mockMvc.perform(
+                put("http://localhost/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskJsonString)
+        ).andExpect(status().isNotFound());
+
+        Task task = new Task();
+        task.setTitle("Listen Music.");
+        taskService.createTask(task);
+
+        mockMvc.perform(
+                put("http://localhost/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskJsonString))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("play game!")));
+    }
+
+    @Test
+    void patchTask() throws Exception {
+        String taskJsonString = "{\"title\": \"play game!\"}";
+        mockMvc.perform(
+                put("http://localhost/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskJsonString)
+        ).andExpect(status().isNotFound());
+
+        Task task = new Task();
+        task.setTitle("Listen Music.");
+        taskService.createTask(task);
+
+        mockMvc.perform(
+                put("http://localhost/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(taskJsonString))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("play game!")));
+    }
 }
