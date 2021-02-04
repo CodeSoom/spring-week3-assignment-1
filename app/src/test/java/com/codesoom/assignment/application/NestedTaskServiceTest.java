@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class NestedTaskServiceTest {
 
     @Nested
-    @DisplayName("기존에 생성된 task가 없는 경")
+    @DisplayName("기존에 생성된 task가 없는 경우")
     class Describe_getTask {
         private final TaskService taskService = new TaskService();
 
