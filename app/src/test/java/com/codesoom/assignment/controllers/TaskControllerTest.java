@@ -31,5 +31,4 @@ class TaskControllerTest {
         assertThat(controller.list().get(0).getId()).isEqualTo(1L);
         assertThat(controller.list().get(0).getTitle()).isEqualTo("Test");
     }
-
 }
