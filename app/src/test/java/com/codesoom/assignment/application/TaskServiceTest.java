@@ -30,7 +30,6 @@ class TaskServiceTest {
         taskService.createTask(task);
     }
 
-
     @Test
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
@@ -43,7 +42,7 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("할 일이 있으면 TASK_TITLE 과 이름이 같은지 검사한다")
+    @DisplayName("할 일이 있으면 리스트에 있는 title과 이름이 같은지 검사한다")
     void getTaskWithValid(){
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
@@ -59,7 +58,7 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("Task 생성이 이루어졌는지 확인한다.")
+    @DisplayName("Task 생성이 이루어졌는지 확인한다")
     void createTask() {
         int oldSize = taskService.getTasks().size();
 
@@ -75,11 +74,9 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("Task 삭제가 이루어졌는지 확인한다")
+    @DisplayName("존재하는 task id가 주어진다면 task를 삭제를 한다")
     void deleteTask() {
         int oldSize = taskService.getTasks().size();
-
-        Task task = new Task();
 
         taskService.deleteTask(1L);
 
@@ -89,8 +86,17 @@ class TaskServiceTest {
 
     }
 
+
     @Test
-    @DisplayName("Task name 업데이트가 이루어졌는지 확인한다")
+    @DisplayName("존재하지 않는 task id가 주어진다면 예외를 던진다")
+    void deleteTaskWithInvalid() {
+        assertThatThrownBy(() -> taskService.deleteTask(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+
+    @Test
+    @DisplayName("존재하는 task id가 주어진다면 task title을 update 한다")
     void updateTask() {
         Task source = new Task();
         source.setTitle(TASK_TITLE+POST_FIX);
@@ -100,7 +106,14 @@ class TaskServiceTest {
         Task task= taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE+POST_FIX);
 
+    }
 
+    @Test
+    @DisplayName("존재하지 않는 task id가 주어진다면 예외를 던진다")
+    void updateTaskWithInvalid() {
+        Task source = new Task();
+        assertThatThrownBy(() -> taskService.updateTask(100L, source))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 
 
