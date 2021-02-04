@@ -31,7 +31,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks 메서드는")
+    @DisplayName("getTasks")
     class Describe_getTasks {
         @Nested
         @DisplayName("저장된 task가 여러개 있다면")
@@ -61,7 +61,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메서드는")
+    @DisplayName("getTask")
     class Describe_getTask {
         @BeforeEach
         void prepareTask() {
@@ -93,37 +93,34 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask 메서드는")
+    @DisplayName("createTask")
     class Describe_createTask {
-        @Nested
-        @DisplayName("task가 주어진다면")
-        class Context_with_a_task {
-            int oldSize;
-            Task newTask;
+        int oldSize;
+        Task newTask;
 
-            @BeforeEach
-            void prepareTask() {
-                oldSize = taskService.getTasks().size();
+        @BeforeEach
+        void prepareTask() {
+            oldSize = taskService.getTasks().size();
 
-                newTask = new Task();
-                newTask.setTitle(TASK_TITLE);
-            }
-
-            @Test
-            @DisplayName("생성된 task를 리턴한다")
-            void it_returns_a_created_task() {
-                Task createdTask = taskService.createTask(newTask);
-
-                int newSize = taskService.getTasks().size();
-
-                assertThat(createdTask.getTitle()).isEqualTo(TASK_TITLE);
-                assertThat(newSize - oldSize).isEqualTo(1);
-            }
+            newTask = new Task();
+            newTask.setTitle(TASK_TITLE);
         }
+
+        @Test
+        @DisplayName("생성된 task를 리턴한다")
+        void it_returns_a_created_task() {
+            Task createdTask = taskService.createTask(newTask);
+
+            int newSize = taskService.getTasks().size();
+
+            assertThat(createdTask.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(newSize - oldSize).isEqualTo(1);
+        }
+
     }
 
     @Nested
-    @DisplayName("updateTask 메서드는")
+    @DisplayName("updateTask")
     class Describe_updateTask {
         Task source;
 
@@ -160,7 +157,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask 메서드는")
+    @DisplayName("deleteTask")
     class Describe_deleteTask {
         int oldSize;
 
