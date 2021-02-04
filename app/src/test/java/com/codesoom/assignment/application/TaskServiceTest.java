@@ -70,12 +70,19 @@ public class TaskServiceTest {
         @Nested
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
+            private Task gotten;
+
+            @BeforeEach
+            void setGottenTask() {
+                gotten = taskService.getTask(GIVEN_SAVED_TASK_ID);
+            }
+
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+                assertThat(gotten.getClass()).isEqualTo(Task.class);
+                assertThat(gotten.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(gotten.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
             }
         }
 
@@ -87,7 +94,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.getTask(GIVEN_UNSAVED_TASK_ID),
-                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
+                        "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -155,7 +162,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.updateTask(GIVEN_UNSAVED_TASK_ID, modifying),
-                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
+                        "task를 찾을 수 없다는 예외를 던져야 합니다"
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -204,7 +211,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.deleteTask(GIVEN_UNSAVED_TASK_ID),
-                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
+                        "task를 찾을 수 없다는 예외를 던져야 합니다"
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
