@@ -46,7 +46,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("전체 Tasks를 조회한다")
+    @DisplayName("TaskController 클래스의 list 메소드는 List<Task>를 반환한다")
     void listTasks() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
@@ -54,7 +54,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("Task를 조회할 때 id가 존재한다면  OK를 반환한다")
+    @DisplayName("TaskController 클래스의 detail 메소드는 id가 있다면 해당 Task를 반환한다")
     void detailTaskWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
@@ -62,7 +62,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("새로운 Task를 생성한다.")
+    @DisplayName("TaskController 클래스의 create 메소드는 title을 입력받아 Task를 생성한다")
     void createTask() throws Exception {
         Task task = new Task();
         task.setTitle("Second");
@@ -75,7 +75,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("Task를 수정할 때 id가 존재한다면  OK를 반환한다.")
+    @DisplayName("TaskController 클래스의 update 메소드는 id가 있다면 해당 Task를 수정한다")
     void updateTaskWIthValidId() throws Exception {
         mockMvc.perform(patch("/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +84,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("Task를 수정할 때 id가 존재하지 않는다면  NOT_FOUND를 반환한다")
+    @DisplayName("TaskController 클래스의 update 메소드는 id가 없다면 NOT_FOUND를 반환한다")
     void updateTaskWIthInvalidId() throws Exception {
         Task updateSource = new Task();
         updateSource.setTitle("new");
@@ -97,7 +97,7 @@ public class TaskControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("Task를 삭제할 때 id가 존재한다면  NO_CONTENT를 반환한다")
+    @DisplayName("TaskController 클래스의 delete 메소드는 id가 있다면 해당 Task를 삭제한다")
     void deleteTaskWithValidId() throws Exception {
         mockMvc.perform(delete("/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON))

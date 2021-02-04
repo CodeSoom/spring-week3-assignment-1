@@ -27,7 +27,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("TaskService 클래스의  getTasks 메소드는 List<task>를 리턴한다")
+    @DisplayName("TaskService 클래스의  getTasks 메소드는 List<task>를 반환한다")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(1);
@@ -38,7 +38,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("TaskService 클래스의 getTask 메소드는 id가 있다면 해당 Task를 리턴한다")
+    @DisplayName("TaskService 클래스의 getTask 메소드는 id가 있다면 해당 Task를 반환한다")
     void getTaskWithValidId() {
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
@@ -52,7 +52,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("TaskService 클래스의 createTask 메소드는 Task를 생성한다")
+    @DisplayName("TaskService 클래스의 createTask 메소드는 title을 입력받아 Task를 생성한다")
     void createTask() {
         int oldSize = taskService.getTasks().size();
 
