@@ -92,6 +92,23 @@ public class TestControllerTest {
     @Nested
     @DisplayName("GET /TASK는")
     class Describe_getTask {
+
+        @Nested
+        @DisplayName("서비스로 호출하는 Task가 없으면")
+        class Context_without_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.getTask(GIVEN_ID))
+                        .willThrow(new TaskNotFoundException(GIVEN_ID));
+            }
+            @DisplayName("Not Found 상태를 리턴한다.")
+            @Test
+            void It_returns_not_found() throws Exception {
+                mockMvc.perform(get("/tasks/" + GIVEN_ID))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
         @Nested
         @DisplayName("서비스로 호출하는 Task가 존재하면")
         class Context_with_task {
@@ -100,8 +117,6 @@ public class TestControllerTest {
                 Task task = new Task();
                 task.setId(GIVEN_ID);
                 task.setTitle(GIVEN_TITLE);
-                List<Task> tasks = new ArrayList<>();
-                tasks.add(task);
 
                 given(taskService.getTask(GIVEN_ID))
                         .willReturn(task);
@@ -117,40 +132,22 @@ public class TestControllerTest {
                         .andExpect(content().string(content));
             }
         }
-
-        @Nested
-        @DisplayName("서비스로 호출하는 Task가 없으면")
-        class Context_without_task {
-
-            @BeforeEach
-            void setUp() {
-                given(taskService.getTask(GIVEN_ID))
-                        .willThrow(new TaskNotFoundException(GIVEN_ID));
-            }
-
-            @DisplayName("Not Found 상태를 리턴한다.")
-            @Test
-            void It_returns_not_found() throws Exception {
-                mockMvc.perform(get("/tasks/" + GIVEN_ID))
-                        .andExpect(status().isNotFound());
-            }
-        }
     }
 
     @Nested
-    @DisplayName("POST /tasks")
+    @DisplayName("POST /tasks는")
     class Describe_create {
         @Nested
         @DisplayName("생성할 Task가 존재하면")
         class Context_with_task {
             Task task = taskSubject();
+
             @Test
             @DisplayName("Created 상태를 리턴한다.")
             void It_returns_created() throws Exception {
-                mockMvc.perform(
-                        post("/tasks")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task))
+                mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task))
                 ).andExpect(status().isCreated());
             }
         }
