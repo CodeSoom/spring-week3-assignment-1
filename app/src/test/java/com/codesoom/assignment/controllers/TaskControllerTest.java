@@ -4,40 +4,71 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class TaskControllerTest {
     private TaskService taskService;
-    private TaskController controller;
+    private TaskController taskController;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         taskService = new TaskService();
-        controller = new TaskController(taskService);
+        taskController = new TaskController(taskService);
+
+        Task createTask = new Task();
+        createTask.setTitle("Test1");
+        taskController.create(createTask);
     }
 
     @Test
-    void list() {
-        assertThat(controller.list()).isEmpty();
+    void listTasks() {
+        assertThat(taskController.list()).hasSize(1);
     }
 
     @Test
-    void createNewTask() {
-        Task task = new Task();
-        task.setTitle("Test1");
-        controller.create(task);
+    void detailTask() {
+        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
+        assertThat(taskController.list().get(0).getTitle()).isEqualTo("Test1");
+    }
 
-        assertThat(controller.list()).hasSize(1);
-        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
-        assertThat(controller.list().get(0).getTitle()).isEqualTo("Test1");
+    @Test
+    void createTask() {
+        Task createTask = new Task();
+        createTask.setTitle("Test2");
+        taskController.create(createTask);
 
-        task.setTitle("Test2");
-        controller.create(task);
+        assertThat(taskController.list()).hasSize(2);
+        assertThat(taskController.list().get(1).getId()).isEqualTo(2L);
+        assertThat(taskController.list().get(1).getTitle()).isEqualTo("Test2");
+    }
 
-        assertThat(controller.list()).hasSize(2);
-        assertThat(controller.list().get(1).getId()).isEqualTo(2L);
-        assertThat(controller.list().get(1).getTitle()).isEqualTo("Test2");
+    @Test
+    void updateTask() {
+        Task updateTask = new Task();
+        updateTask.setTitle("new Test");
+        taskController.update(1L, updateTask);
+
+        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
+        assertThat(taskController.list().get(0).getTitle()).isEqualTo("new Test");
+    }
+
+    @Test
+    void patchTask() {
+        Task updateTask = new Task();
+        updateTask.setTitle("new Test");
+        taskController.patch(1L, updateTask);
+
+        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
+        assertThat(taskController.list().get(0).getTitle()).isEqualTo("new Test");
+    }
+
+    @Test
+    void deleteTask() {
+        taskController.delete(1L);
+
+        assertThat(taskController.list()).isEmpty();
     }
 }

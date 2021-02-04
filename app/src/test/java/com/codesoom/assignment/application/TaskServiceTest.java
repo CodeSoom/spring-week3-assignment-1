@@ -38,6 +38,18 @@ class TaskServiceTest {
     }
 
     @Test
+    void getTaskWithValidId() {
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+    }
+
+    @Test
+    void getTaskWithInvalidId() {
+        assertThatThrownBy(() -> taskService.getTask(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("모task를 생성한다")
     void createTest() {
         int oldSize = taskService.getTasks().size();
@@ -54,7 +66,7 @@ class TaskServiceTest {
 
     @Test
     @DisplayName("task를 수정한다")
-    void updateTask() {
+    void updateTaskWithValidId() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
         taskService.updateTask(1L, source);
@@ -64,8 +76,18 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("ttask를 삭제한다")
-    void deleteTest() {
+    @DisplayName("task를 수정한다")
+    void updateTaskWithInvalidId() {
+        Task source = new Task();
+        source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+
+        assertThatThrownBy(() -> taskService.updateTask(100L, source))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("task를 삭제한다")
+    void deleteTaskWithValidId() {
         int oldSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
@@ -76,14 +98,9 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTaskWithValidId() {
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
-    }
-
-    @Test
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(100L))
+    @DisplayName("task를 삭제한다")
+    void deleteTaskWihInvalidId() {
+        assertThatThrownBy(() -> taskService.deleteTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 }
