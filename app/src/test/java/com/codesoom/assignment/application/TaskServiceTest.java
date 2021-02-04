@@ -14,6 +14,12 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+
+        //fixtures
+        Task task = new Task();
+        task.setTitle("original title");
+
+        taskService.createTask(task);
     }
 
     @Test
@@ -22,7 +28,6 @@ class TaskServiceTest {
 
         Task task = new Task();
         task.setTitle("test");
-
         taskService.createTask(task);
 
         int afterCreationSize = taskService.getTasks().size();
@@ -32,31 +37,22 @@ class TaskServiceTest {
 
     @Test
     void getTasks() {
-        assertThat(taskService.getTasks()).isEmpty();
+        assertThat(taskService.getTasks()).hasSize(1);
     }
 
     @Test
     void getTaskWithValidId() {
-        Task task = new Task();
-        task.setTitle("test");
-
-        taskService.createTask(task);
-
-        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("test");
+        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("original title");
     }
 
     @Test
     void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(1L))
+        assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
     void deleteTask() {
-        Task task = new Task();
-        task.setTitle("test");
-
-        taskService.createTask(task);
         int originalSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
@@ -67,13 +63,9 @@ class TaskServiceTest {
 
     @Test
     void updateTask() {
-        Task task = new Task();
-
-        task.setTitle("original title");
-        taskService.createTask(task);
-
         assertThat(taskService.getTask(1L).getTitle()).isEqualTo("original title");
 
+        Task task = new Task();
         task.setTitle("updated title");
         taskService.updateTask(1L, task);
 
