@@ -3,210 +3,226 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@AutoConfigureMockMvc
 @DisplayName("TaskController 클래스")
 class TaskControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+    final long givenID = 1L;
+    final String givenTitle = "sample";
+    final String givenModifyTitle = "modify sample";
 
-    @MockBean
-    private TaskService taskService;
+    final TaskController subject(String... titles) {
+        TaskService taskService = new TaskService();
 
-    private final long TASK_ID = 0;
-    private final String TASK_TITLE = "sample";
+        for (String title : titles) {
+            Task task = new Task();
+            task.setTitle(title);
+
+            taskService.createTask(task);
+        }
+
+        return new TaskController(taskService);
+    }
 
     @Nested
-    @DisplayName("list 메소드는")
+    @DisplayName("list 메서드는")
     class Describe_list {
 
         @Nested
-        @DisplayName("Task 가 하나도 없을 때")
-        class Context_without_any_tasks {
-            @BeforeEach
-            void setEmpty() {
-                given(taskService.getTasks())
-                        .willReturn(new ArrayList<>());
-            }
+        @DisplayName("등록된 Task 가 하나도 없을 때")
+        class Context_without_task {
 
             @Test
-            @DisplayName("빈 배열을 리턴한다.")
-            void It_returns_empty() throws Exception {
-                final String expectContent = "[]";
+            @DisplayName("빈 집합을 리턴한다.")
+            void It_returns_void_array() {
+                TaskController subject = subject();
 
-                mockMvc.perform(get("/tasks"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(expectContent));
+                assertThat(subject.list()).hasSize(0);
             }
         }
 
         @Nested
-        @DisplayName("Task 가 있을 때")
-        class Context_with_tasks {
-            @BeforeEach
-            void setTasks() {
-                Task task = new Task();
-                task.setId(TASK_ID);
-                task.setTitle(TASK_TITLE);
+        @DisplayName("등록된 Task 가 있을 때")
+        class Context_with_task {
+            void It_returns_exists_array() {
+                TaskController subject = subject(givenTitle);
 
-                List<Task> tasks = new ArrayList<>();
-                tasks.add(task);
-
-                given(taskService.getTasks())
-                        .willReturn(tasks);
-            }
-
-            @Test
-            @DisplayName("task 가 담겨있는 JSON Array 문자열을 리턴한다.")
-            void It_returns_JSON_array_string() throws Exception {
-                final String expectContent = String.format("[{\"id\":%d,\"title\":\"%s\"}]", TASK_ID, TASK_TITLE);
-
-                mockMvc.perform(get("/tasks"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(expectContent));
+                assertThat(subject.list())
+                        .hasSize(1)
+                        .first()
+                        .hasFieldOrPropertyWithValue("title", givenTitle)
+                        .hasFieldOrPropertyWithValue("id", givenID);
             }
         }
     }
 
     @Nested
-    @DisplayName("detail 메소드는")
+    @DisplayName("detail 메서드는")
     class Describe_detail {
 
         @Nested
         @DisplayName("찾는 id가 없을 때")
         class Context_without_target_id {
 
-            @BeforeEach
-            void setEmpty() {
-                Task task = new Task();
-                task.setId(TASK_ID);
-                task.setTitle(TASK_TITLE);
-
-                given(taskService.getTask(TASK_ID))
-                        .willThrow(new TaskNotFoundException(TASK_ID));
-            }
-
             @Test
-            @DisplayName("TaskNotFoundException 을 던진다.")
-            void It_throws_TaskNotFoundException() throws Exception {
-                mockMvc.perform(get(String.format("/tasks/%d", TASK_ID)))
-                        .andExpect(status().isNotFound())
-                        .andExpect(
-                                result -> assertThat(result.getResolvedException())
-                                        .isInstanceOf(TaskNotFoundException.class)
-                        );
+            @DisplayName("Task 가 존재하지 않는다는 예외를 던진다.")
+            void It_throws_task_not_found_exception() {
+                TaskController subject = subject();
+
+                assertThatThrownBy(() -> subject.detail(givenID))
+                        .isInstanceOf(TaskNotFoundException.class);
             }
         }
 
         @Nested
         @DisplayName("찾는 id가 있을 때")
         class Context_with_target_id {
-            @BeforeEach
-            void setTask() {
-                Task task = new Task();
-                task.setId(TASK_ID);
-                task.setTitle(TASK_TITLE);
-
-                given(taskService.getTask(TASK_ID))
-                        .willReturn(task);
-            }
 
             @Test
-            @DisplayName("task 를 리턴한다.")
-            void It_returns_task() throws Exception {
-                final String expectContent = String.format("{\"id\":%d,\"title\":\"%s\"}", TASK_ID, TASK_TITLE);
+            @DisplayName("Task 를 리턴한다.")
+            void It_returns_task() {
+                TaskController subject = subject(givenTitle);
 
-                mockMvc.perform(get(String.format("/tasks/%d", TASK_ID)))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(expectContent));
+                assertThat(subject.detail(givenID))
+                        .hasFieldOrPropertyWithValue("title", givenTitle)
+                        .hasFieldOrPropertyWithValue("id", givenID);
             }
         }
     }
 
     @Nested
-    @DisplayName("create 메소드는")
+    @DisplayName("create 메서드는")
     class Describe_create {
 
         @Test
-        @DisplayName("status created 를 리턴한다.")
-        void It_returns_status_created() throws Exception {
-            mockMvc.perform(
-                    post("/tasks")
-                            .contentType("application/json")
-                            .content(String.format("{\"title\":\"%s\"}", TASK_TITLE))
-            ).andExpect(status().isCreated());
+        @DisplayName("생성된 Task 를 리턴한다.")
+        void It_returns_created_task() {
+            TaskController subject = subject();
+
+            Task task = new Task();
+            task.setTitle(givenTitle);
+
+            assertThat(subject.create(task))
+                    .hasFieldOrPropertyWithValue("title", givenTitle)
+                    .hasFieldOrPropertyWithValue("id", givenID);
         }
     }
 
     @Nested
-    @DisplayName("update 메소드는")
+    @DisplayName("update 메서드는")
     class Describe_update {
 
         @Nested
-        @DisplayName("변경 하려는 id가 있을 때")
-        class Context_with_target_id {
+        @DisplayName("대상 id가 없을 때")
+        class Context_without_target_id {
 
+            @Test
+            @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
+            void It_throws_task_not_found_exception() {
+                TaskController subject = subject();
+
+                Task task = new Task();
+                task.setTitle(givenTitle);
+
+                assertThatThrownBy(() -> subject.update(givenID, task))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
         }
 
         @Nested
-        @DisplayName("변경 하려는 id가 없을 때")
-        class Context_without_target_id {
+        @DisplayName("대상 id가 있을 때")
+        class Context_with_target_id {
 
+            @Test
+            @DisplayName("변경된 Task 를 리턴한다.")
+            void It_returns_modified_task() {
+                TaskController subject = subject(givenTitle);
+
+                Task task = new Task();
+                task.setTitle(givenModifyTitle);
+
+                assertThat(subject.update(givenID, task))
+                        .hasFieldOrPropertyWithValue("title", givenModifyTitle)
+                        .hasFieldOrPropertyWithValue("id", givenID);
+            }
         }
     }
 
     @Nested
-    @DisplayName("patch 메소드는")
+    @DisplayName("patch 메서드는")
     class Describe_patch {
-
         @Nested
-        @DisplayName("변경 하려는 id가 있을 때")
-        class Context_with_target_id {
+        @DisplayName("대상 id가 없을 때")
+        class Context_without_target_id {
 
+            @Test
+            @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
+            void It_throws_task_not_found_exception() {
+                TaskController subject = subject();
+
+                Task task = new Task();
+                task.setTitle(givenTitle);
+
+                assertThatThrownBy(() -> subject.patch(givenID, task))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
         }
 
         @Nested
-        @DisplayName("변경 하려는 id가 없을 때")
-        class Context_without_target_id {
+        @DisplayName("대상 id가 있을 때")
+        class Context_with_target_id {
 
+            @Test
+            @DisplayName("변경된 Task 를 리턴한다.")
+            void It_returns_modified_task() {
+                TaskController subject = subject(givenTitle);
+
+                Task task = new Task();
+                task.setTitle(givenModifyTitle);
+
+                assertThat(subject.patch(givenID, task))
+                        .hasFieldOrPropertyWithValue("title", givenModifyTitle)
+                        .hasFieldOrPropertyWithValue("id", givenID);
+            }
         }
     }
 
     @Nested
-    @DisplayName("delete 메소드는")
+    @DisplayName("delete 메서드는")
     class Describe_delete {
-
         @Nested
-        @DisplayName("삭제 하려는 id가 있을 때")
-        class Context_with_target_id {
+        @DisplayName("대상 id가 없을 때")
+        class Context_without_target_id {
 
+            @Test
+            @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
+            void It_throws_task_not_found_exception() {
+                TaskController subject = subject();
+
+                assertThatThrownBy(() -> subject.delete(givenID))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
         }
 
         @Nested
-        @DisplayName("삭제 하려는 id가 없을 때")
-        class Context_without_target_id {
+        @DisplayName("대상 id가 있을 때")
+        class Context_with_target_id {
 
+            @Test
+            @DisplayName("삭제 후 대상 id를 조회하면 Task 를 찾을 수 없다는 예외를 던진다.")
+            void It_returns_modified_task() {
+                TaskController subject = subject(givenTitle);
+
+                subject.delete(givenID);
+
+                assertThatThrownBy(() -> subject.detail(givenID))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
         }
     }
 }
