@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskController 클래스의 ")
 class TaskControllerTest {
-    private final Long GIVEN_VALID_TASK_ID = 1L;
-    private final Long GIVEN_INVALID_TASK_ID = 100L;
+    private final Long GIVEN_SAVED_TASK_ID = 1L;
+    private final Long GIVEN_UNSAVED_TASK_ID = 100L;
     private final String GIVEN_TASK_TITLE = "Test";
     private final String GIVEN_MODIFY_TASK_TITLE = "Modified";
 
@@ -67,25 +67,25 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면")
-        class Context_with_valid_id {
+        @DisplayName("저장된 id를 가지고 있다면")
+        class Context_with_saved_id {
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_TASK_TITLE);
             }
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면")
-        class Context_with_invalid_id {
+        @DisplayName("저장되지 않은 id를 가지고 있다면")
+        class Context_with_unsaved_id {
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.detail(GIVEN_INVALID_TASK_ID),
+                        () -> taskController.detail(GIVEN_UNSAVED_TASK_ID),
                         "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -105,10 +105,10 @@ class TaskControllerTest {
         }
 
         @Test
-        @DisplayName("추가된 task를 리턴한다.")
+        @DisplayName("task를 추가하고, 추가된 task를 리턴한다.")
         void it_return_added_task() {
             assertThat(added.getClass()).isEqualTo(Task.class);
-            assertThat(added.getId()).isEqualTo(GIVEN_VALID_TASK_ID);
+            assertThat(added.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
             assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
         }
 
@@ -133,27 +133,27 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면")
-        class Context_with_valid_id {
+        @DisplayName("저장된 id를 가지고 있다면")
+        class Context_with_saved_id {
             @Test
-            @DisplayName("수정된 task를 리턴한다.")
+            @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                Task modified = taskController.update(GIVEN_VALID_TASK_ID, modifying);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                Task modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면")
-        class Context_with_invalid_id {
+        @DisplayName("저장되지 않은 id를 가지고 있다면")
+        class Context_with_unsaved_id {
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.update(GIVEN_INVALID_TASK_ID, modifying),
+                        () -> taskController.update(GIVEN_UNSAVED_TASK_ID, modifying),
                         "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -174,27 +174,27 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면")
-        class Context_with_valid_id {
+        @DisplayName("저장된 id를 가지고 있다면")
+        class Context_with_saved_id {
             @Test
-            @DisplayName("수정된 task를 리턴한다.")
+            @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                taskController.patch(GIVEN_VALID_TASK_ID, modifying);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                taskController.patch(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면")
-        class Context_with_invalid_id {
+        @DisplayName("저장되지 않은 id를 가지고 있다면")
+        class Context_with_unsaved_id {
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.patch(GIVEN_INVALID_TASK_ID, modifying),
+                        () -> taskController.patch(GIVEN_UNSAVED_TASK_ID, modifying),
                         "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -210,31 +210,31 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면")
-        class Context_with_valid_id {
+        @DisplayName("저장된 id를 가지고 있다면")
+        class Context_with_saved_id {
             private int size;
 
             @BeforeEach
             void setDeletedTask() {
                 size = taskController.list().size();
-                taskController.delete(GIVEN_VALID_TASK_ID);
+                taskController.delete(GIVEN_SAVED_TASK_ID);
             }
 
             @Test
-            @DisplayName("task 리스트의 크기를 1 감소시킨다.")
+            @DisplayName("task를 삭제하고, task 리스트의 크기를 1 감소시킨다.")
             void it_count_down_1_task_list_size() {
                 assertThat(taskController.list().size()).isEqualTo(size - 1);
             }
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면")
-        class Context_with_invalid_id {
+        @DisplayName("저장되지 않은 id를 가지고 있다면")
+        class Context_with_unsaved_id {
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.delete(GIVEN_INVALID_TASK_ID),
+                        () -> taskController.delete(GIVEN_UNSAVED_TASK_ID),
                         "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
