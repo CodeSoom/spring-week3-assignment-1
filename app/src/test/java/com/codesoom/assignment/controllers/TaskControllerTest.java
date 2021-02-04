@@ -3,7 +3,8 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskControllerTest {
     private TaskController controller;
@@ -15,7 +16,7 @@ class TaskControllerTest {
 
     @Test
     void list() {
-         assertThat(controller.list()).isEmpty();
+        assertThat(controller.list()).isEmpty();
 
     }
 
@@ -32,3 +33,4 @@ class TaskControllerTest {
     }
 
 }
+
