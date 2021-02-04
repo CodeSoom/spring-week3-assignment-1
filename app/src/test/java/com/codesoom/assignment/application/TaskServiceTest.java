@@ -14,16 +14,15 @@ class TaskServiceTest {
     final String givenTitle = "sample";
     final long givenID = 1L;
 
-    TaskService emptySubject() {
-        return new TaskService();
-    }
-
-    TaskService existsSubject() {
-        Task source = new Task();
-        source.setTitle(givenTitle);
-
+    TaskService subject(String... titles) {
         TaskService taskService = new TaskService();
-        taskService.createTask(source);
+
+        for (String title : titles) {
+            Task task = new Task();
+            task.setTitle(title);
+
+            taskService.createTask(task);
+        }
 
         return taskService;
     }
@@ -37,9 +36,9 @@ class TaskServiceTest {
         class Context_without_tasks {
 
             @Test
-            @DisplayName("비어 있는 집합 리턴한다.")
+            @DisplayName("비어 있는 집합을 리턴한다.")
             void It_returns_empty_ArrayList() {
-                TaskService subject = emptySubject();
+                TaskService subject = subject();
 
                 assertThat(subject.getTasks()).isEmpty();
             }
@@ -52,7 +51,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("tasks 가 들어있는 집합을 리턴한다.")
             void It_returns_empty_ArrayList() {
-                TaskService subject = existsSubject();
+                TaskService subject = subject(givenTitle);
 
                 assertThat(subject.getTasks()).isNotEmpty();
                 assertThat(subject.getTasks()).hasSize(1);
@@ -73,7 +72,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = emptySubject();
+                TaskService subject = subject();
 
                 assertThatExceptionOfType(TaskNotFoundException.class)
                         .isThrownBy(() -> subject.getTask(givenID));
@@ -87,7 +86,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("task 를 리턴한다.")
             void It_returns_task() {
-                TaskService subject = existsSubject();
+                TaskService subject = subject(givenTitle);
 
                 assertThat(subject.getTask(givenID))
                         .hasFieldOrPropertyWithValue("title", givenTitle);
@@ -102,7 +101,7 @@ class TaskServiceTest {
         @Test
         @DisplayName("생성된 task 를 리턴한다.")
         void It_returns_created_task() {
-            TaskService subject = emptySubject();
+            TaskService subject = subject();
 
             Task source = new Task();
             source.setTitle(givenTitle);
@@ -124,7 +123,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = emptySubject();
+                TaskService subject = subject();
                 Task task = new Task();
 
                 assertThatExceptionOfType(TaskNotFoundException.class)
@@ -139,7 +138,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("변경된 task 를 리턴한다.")
             void It_returns_modified_task() {
-                TaskService subject = existsSubject();
+                TaskService subject = subject(givenTitle);
                 Task task = new Task();
 
                 assertThat(subject.updateTask(givenID, task))
@@ -160,7 +159,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = emptySubject();
+                TaskService subject = subject();
 
                 assertThatExceptionOfType(TaskNotFoundException.class)
                         .isThrownBy(() -> subject.deleteTask(givenID));
@@ -174,7 +173,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("삭제된 task 를 리턴한다.")
             void It_returns_modified_task() {
-                TaskService subject = existsSubject();
+                TaskService subject = subject(givenTitle);
 
                 assertThat(subject.deleteTask(givenID))
                         .hasFieldOrPropertyWithValue("title", givenTitle)
