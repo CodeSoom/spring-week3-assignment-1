@@ -31,7 +31,7 @@ class TaskTest {
     class Describe_getId {
         @Nested
         @DisplayName("id가 존재한다면")
-        class Context_task_id_exist {
+        class Context_id_exist {
             @BeforeEach
             void setUp() {
                 task = new Task();
@@ -40,14 +40,14 @@ class TaskTest {
 
             @Test
             @DisplayName("id를 리턴한다")
-            void it_returns_task_id() {
+            void it_returns_id() {
                 assertThat(task.getId()).isEqualTo(TASK_ID);
             }
         }
 
         @Nested
         @DisplayName("id가 존재하지 않는다면")
-        class Context_task_id_does_not_exist {
+        class Context_id_does_not_exist {
             @BeforeEach
             void setUp() {
                 task = new Task();
@@ -66,7 +66,7 @@ class TaskTest {
     class Describe_setId {
         @Test
         @DisplayName("id를 설정한다")
-        void it_set_task_id() {
+        void it_set_id() {
             task.setId(NEW_TASK_ID);
 
             assertThat(task.getId()).isEqualTo(NEW_TASK_ID);
@@ -78,17 +78,17 @@ class TaskTest {
     class Describe_getTitle {
         @Nested
         @DisplayName("title이 존재한다면")
-        class Context_task_title_exist {
+        class Context_title_exist {
             @Test
             @DisplayName("title를 리턴한다")
-            void it_returns_task_title() {
+            void it_returns_title() {
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
 
         @Nested
         @DisplayName("title이 존재하지 않는다면")
-        class Context_task_title_does_not_exist {
+        class Context_title_does_not_exist {
             @BeforeEach
             void setUp() {
                 task = new Task();
@@ -107,7 +107,7 @@ class TaskTest {
     class Describe_setTitle {
         @Test
         @DisplayName("title를 설정한다")
-        void it_set_task_title() {
+        void it_set_title() {
             task.setTitle(NEW_TASK_TITLE);
 
             assertThat(task.getTitle()).isEqualTo(NEW_TASK_TITLE);
