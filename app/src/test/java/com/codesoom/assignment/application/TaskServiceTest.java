@@ -64,4 +64,19 @@ class TaskServiceTest {
 
         assertThat(originalSize - afterDeletionSize).isEqualTo(1);
     }
+
+    @Test
+    void updateTask() {
+        Task task = new Task();
+
+        task.setTitle("original title");
+        taskService.createTask(task);
+
+        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("original title");
+
+        task.setTitle("updated title");
+        taskService.updateTask(1L, task);
+
+        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("updated title");
+    }
 }
