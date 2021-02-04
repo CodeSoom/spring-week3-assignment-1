@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +72,54 @@ public class TestControllerTest {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("[]")));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /TASK는")
+    class Describe_getTask {
+        @Nested
+        @DisplayName("서비스로 호출하는 Task가 존재하면")
+        class Context_with_tasks {
+            @BeforeEach
+            void setUp() {
+                Task task = new Task();
+                task.setId(GIVEN_ID);
+                task.setTitle(GIVEN_TITLE);
+                List<Task> tasks = new ArrayList<>();
+                tasks.add(task);
+
+                given(taskService.getTask(GIVEN_ID))
+                        .willReturn(task);
+            }
+
+            @DisplayName("OK 상태와 task를 리턴한다.")
+            @Test
+            void it_return_task() throws Exception {
+                final String content = "{\"id\":1,\"title\":\"task1\"}";
+
+                mockMvc.perform(get("/tasks/" + GIVEN_ID))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(content));
+            }
+        }
+
+        @Nested
+        @DisplayName("서비스로 호출하는 Task가 없으면")
+        class Context_without_task {
+
+            @BeforeEach
+            void setEmpty() {
+                given(taskService.getTask(GIVEN_ID))
+                        .willThrow(new TaskNotFoundException(GIVEN_ID));
+            }
+
+            @DisplayName("Not Found 상태를 리턴한다.")
+            @Test
+            void it_return_empty_tasks() throws Exception {
+                mockMvc.perform(get("/tasks/" + GIVEN_ID))
+                        .andExpect(status().isNotFound());
             }
         }
     }
