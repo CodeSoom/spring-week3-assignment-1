@@ -6,7 +6,10 @@ import com.codesoom.assignment.controllers.TaskController;
 import com.codesoom.assignment.controllers.TaskErrorAdvice;
 import com.codesoom.assignment.dto.ErrorResponse;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,26 +22,15 @@ class TaskControllerTest {
     private ErrorResponse errorResponse;
 
     private final String TASK_TITLE = "task1";
-    private final int EXISTING_TASK_COUNT = 1;
-    private final Long EXISTING_ID = 1L;
-    private final String NEW_TASK_TITLE = "changeTaskTitle";
+    private final long TASK_ID = 1L;
+    private final long NOT_EXISTING_TASK_ID = 100L;
     private final String NOT_FOUND_ID_ERROR_MESSAGE = "할 일 목록에서 해당하는 id를 찾을 수 없습니다.";
-
-    private Task task1;
 
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
         controller = new TaskController(taskService);
 
-        task1 = new Task();
-        task1.setTitle(TASK_TITLE);
-        taskService.createTask(task1);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        taskService.cleartasks();
     }
 
     @Nested
@@ -46,39 +38,57 @@ class TaskControllerTest {
     class Describe_list {
 
         @Nested
-        @DisplayName("할 일 목록에 저장된 데이터가 있으면")
+        @DisplayName("할 일이 있으면")
         class Context_with_tasks {
+
+            @BeforeEach
+            void setUp() {
+                Task task = new Task();
+                task.setTitle(TASK_TITLE);
+                taskService.createTask(task);
+            }
+
             @Test
-            @DisplayName("할 일의 개수를 리턴한다.")
+            @DisplayName("할 일 목록을 리턴한다.")
             void It_return_number_of_tasks() {
-                assertThat(controller.list()).hasSize(EXISTING_TASK_COUNT);
+                assertThat(controller.list()).hasSize(1);
             }
         }
 
         @Nested
-        @DisplayName("할 일 목록에 저장된 데이터가 없으면")
+        @DisplayName("할 일이 없으면")
         class Context_with_no_task {
+
             @Test
-            @DisplayName("빈 배열을 리턴한다.")
+            @DisplayName("비어있는 배열을 리턴한다.")
             void It_return_empty_array() {
-                taskService.cleartasks();
-                assertThat(taskService.getTasks()).hasSize(0);
+                assertThat(controller.list()).isEmpty();
             }
         }
     }
 
     @Nested
-    @DisplayName("detail 메소드는")
+    @DisplayName("detail은")
     class Describe_detail {
+
         @Nested
         @DisplayName("찾는 id가 목록에 있으면")
         class Context_contains_target_id {
-            @Test
-            @DisplayName("그 id에 해당하는 할 일 제목을 리턴한다.")
-            void It_returns_task_title() {
-                Task task = controller.detail(EXISTING_ID);
 
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            @BeforeEach
+            void setUp() {
+                Task task = new Task();
+                task.setId(TASK_ID);
+                task.setTitle(TASK_TITLE);
+                taskService.createTask(task);
+            }
+
+            @Test
+            @DisplayName("그 id에 해당하는 할 일을 리턴한다.")
+            void It_returns_task() {
+                Task task = controller.detail(TASK_ID);
+
+                assertThat(task).isEqualTo(taskService.getTask(TASK_ID));
             }
         }
 
@@ -86,7 +96,7 @@ class TaskControllerTest {
         @DisplayName("찾는 id가 목록에 없으면")
         class Context_not_contains_target_id {
             void not_found_id() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+                assertThatThrownBy(() -> taskService.getTask(NOT_EXISTING_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
@@ -100,102 +110,119 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("create 메소드는")
+    @DisplayName("create는")
     class Describe_create {
-        @Nested
-        @DisplayName("새로운 할 일을 생성하면")
-        class Context_create_new_task {
-            @BeforeEach
-            void create_Task() {
-                Task task = new Task();
-                task.setTitle("Test2");
-                controller.create(task);
-            }
+        Task newTask = new Task();
 
-            @Test
-            @DisplayName("그 할 일을 리턴한다.")
-            void It_return_new_task() {
-                assertThat(taskService.getTask(EXISTING_ID + 1).getTitle()).isEqualTo("Test2");
-            }
+        @BeforeEach
+        void setUp() {
+            newTask.setTitle("newTaskTitle");
+        }
+
+        @Test
+        @DisplayName("새롭게 생성한 할 일을 리턴한다.")
+        void It_return_new_task() {
+            Task task = controller.create(newTask);
+            assertThat(task.getTitle()).isEqualTo("newTaskTitle");
+
         }
     }
 
     @Nested
-    @DisplayName("update 메소드는")
+    @DisplayName("update는")
     class Describe_update {
-        @Nested
-        @DisplayName("할 일 제목을 수정하면")
-        class Context_edit_title_put {
-            Task edit_task() {
-                Task task = taskService.getTask(EXISTING_ID);
-                task.setTitle(NEW_TASK_TITLE);
-                controller.update(EXISTING_ID, task);
-                return task;
-            }
+        Task originTask = new Task();
 
-            @Test
-            @DisplayName("기존 할 일 제목에서 수정된 할 일 제목으로 변경하여 리턴한다.")
-            void It_returns_newTitle() {
+        @BeforeEach
+        void setUp() {
+            originTask.setId(TASK_ID);
+            controller.create(originTask);
+        }
 
-                assertThat(edit_task().getTitle()).isEqualTo(NEW_TASK_TITLE);
-            }
+        @Test
+        @DisplayName("수정된 할 일을 리턴한다.")
+        void It_returns_updated_task() {
+            originTask.setTitle("Other title");
+            Task task = controller.update(TASK_ID, originTask);
+
+            assertThat(task.getTitle()).isEqualTo("Other title");
         }
     }
 
     @Nested
-    @DisplayName("patch 메소드는")
+    @DisplayName("patch는")
     class Describe_patch {
-        @Nested
-        @DisplayName("할 일 제목을 수정하면")
-        class Context_edit_title_patch {
-            Task edit_task() {
-                Task task = taskService.getTask(EXISTING_ID);
-                task.setTitle(NEW_TASK_TITLE);
-                controller.patch(EXISTING_ID, task);
-                return task;
-            }
+        Task originTask = new Task();
 
-            @Test
-            @DisplayName("기존 할 일 제목에서 수정된 할 일 제목으로 변경하여 리턴한다.")
-            void It_returns_newTitle() {
+        @BeforeEach
+        void setUp() {
+            originTask.setId(TASK_ID);
+            controller.create(originTask);
+        }
 
-                assertThat(edit_task().getTitle()).isEqualTo(NEW_TASK_TITLE);
-            }
+        @Test
+        @DisplayName("수정된 할 일을 리턴한다.")
+        void It_returns_updated_task() {
+            originTask.setTitle("Other title");
+            Task task = controller.patch(TASK_ID, originTask);
+
+            assertThat(task.getTitle()).isEqualTo("Other title");
         }
     }
 
     @Nested
-    @DisplayName("delete 메소드는")
+    @DisplayName("delete는")
     class Describe_delete {
+        Task originTask = new Task();
+
         @Nested
         @DisplayName("삭제하려는 id가 목록에 있으면")
-        class Context_delete_target_id {
-            void search_task_by_id() {
-                Task task = taskService.getTask(EXISTING_ID);
+        class Context_contains_target_id {
+            @BeforeEach
+            void setUp() {
+                originTask.setId(TASK_ID);
+                originTask.setTitle(TASK_TITLE);
+                taskService.createTask(originTask);
             }
 
             @Test
             @DisplayName("그 id에 해당하는 할 일을 목록에서 삭제한다.")
             void It_delete_task() {
-                controller.delete(EXISTING_ID);
+                controller.delete(TASK_ID);
+
+                assertThatThrownBy(() -> taskService.getTask(TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+
+            }
+        }
+
+        @Nested
+        @DisplayName("삭제하려는 id가 목록에 없으면")
+        class Context_not_contains_target_id {
+
+            @Test
+            @DisplayName("예외를 던진다.")
+            void It_retruns_exception() {
+                taskErrorAdvice = new TaskErrorAdvice();
+                taskErrorAdvice.handleNotFound();
             }
         }
     }
 
     @Nested
-    @DisplayName("handleNotFound 메소드는")
+    @DisplayName("handleNotFound")
     class Describe_handleNotFound {
+
         @Nested
-        @DisplayName("찾는 id가 목록에 없으면")
+        @DisplayName("존재하지 않는 id가 주어진다면")
         class Context_not_found_id_in_tasks {
-            void not_found_id() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
-                        .isInstanceOf(TaskNotFoundException.class);
-            }
 
             @Test
             @DisplayName("예외를 던진다.")
             void It_retruns_exception() {
+                assertThatThrownBy(() -> taskService.getTask(NOT_EXISTING_TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+
                 taskErrorAdvice = new TaskErrorAdvice();
                 taskErrorAdvice.handleNotFound();
             }
@@ -208,8 +235,9 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾는 id가 목록에 없으면")
         class Context_not_found_id {
-            void not_found_id() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+            @BeforeEach
+            void setUp() {
+                assertThatThrownBy(() -> taskService.getTask(NOT_EXISTING_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
 

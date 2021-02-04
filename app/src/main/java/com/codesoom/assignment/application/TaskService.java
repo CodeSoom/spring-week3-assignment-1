@@ -11,12 +11,7 @@ import java.util.List;
 public class TaskService {
     private List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
-
-    public List<Task> cleartasks() {
-        tasks.clear();
-        return tasks;
-    }
-
+    
     public List<Task> getTasks() {
         return tasks;
     }
