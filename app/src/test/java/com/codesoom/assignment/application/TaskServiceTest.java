@@ -72,7 +72,7 @@ class TaskServiceTest {
         @DisplayName("존재하지 않 task id가 주어진다면")
         class Context_task_not_exist {
             @Test
-            @DisplayName("TaskNotFoundException을 반환한다")
+            @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
                 assertThrows(TaskNotFoundException.class, () -> taskService.getTask(100L));
             }
@@ -101,7 +101,7 @@ class TaskServiceTest {
         @DisplayName("존재하지 않는 task id가 주어진다면")
         class Context_task_not_exist {
             @Test
-            @DisplayName("TaskNotFoundException을 반환한다")
+            @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
                 assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(100L, new Task()));
             }
@@ -127,7 +127,7 @@ class TaskServiceTest {
         @DisplayName("존재하지 않는 task id가 주어진다면")
         class Context_task_not_exist {
             @Test
-            @DisplayName("TaskNotFoundException을 반환한다")
+            @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
                 assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(100L, new Task()));
             }
