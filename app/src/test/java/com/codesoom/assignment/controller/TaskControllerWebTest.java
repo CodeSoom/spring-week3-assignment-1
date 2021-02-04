@@ -3,8 +3,10 @@ package com.codesoom.assignment.controller;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +20,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,22 +34,16 @@ public class TaskControllerWebTest {
     List<Task> tasks;
     Task task;
 
+    private final String TASK_TITLE = "Test Task";
+    private final long TASK_ID = 1L;
+    private final long NOT_EXISTING_TASK_ID = 100L;
+
     @BeforeEach
     void setUp() {
         tasks = new ArrayList<>();
         task = new Task();
-        task.setId(1L);
-        task.setTitle("Test Task");
-
-        given(taskService.getTask(1L)).willReturn(task);
-
-        given(taskService.getTask(100L))
-                .willThrow(new TaskNotFoundException(100L));
-    }
-
-    @AfterEach
-    void clear() {
-        Mockito.reset(taskService);
+        task.setId(TASK_ID);
+        task.setTitle(TASK_TITLE);
     }
 
     @Nested
@@ -62,6 +57,7 @@ public class TaskControllerWebTest {
                 tasks.add(task);
                 given(taskService.getTasks()).willReturn(tasks);
             }
+
             @Test
             @DisplayName("200 응답코드와 저장 되어있는 할 일을 리턴한다.")
             void It_returns_200_and_tasks() throws Exception {
@@ -78,6 +74,7 @@ public class TaskControllerWebTest {
             void setUp() {
                 given(taskService.getTasks()).willReturn(tasks);
             }
+
             @Test
             @DisplayName("200 응답코드와 비어있는 목록을 리턴한다")
             void it_returns_200_and_tasks() throws Exception {
@@ -90,19 +87,47 @@ public class TaskControllerWebTest {
 
             }
         }
-    }
 
-    @Test
-    void detailWithValidId() throws Exception {
-        mockMvc.perform(get("/tasks/1"))
-                .andExpect(status().isOk());
+        @Nested
+        @DisplayName("할 일 목록에 존재하는 id로 조회한다면")
+        class Context_contains_target_id {
+            @BeforeEach
+            void setUp() {
+                tasks.add(task);
+                given(taskService.getTask(TASK_ID)).willReturn(task);
+            }
 
-    }
+            @Test
+            @DisplayName("200 응답코드와 id에 일치하는 task를 리턴한다.")
+            void It_returns_200_and_target_task() throws Exception {
+                mockMvc.perform(get("/tasks/{id}", TASK_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").value(TASK_ID))
+                        .andExpect(jsonPath("title").value(TASK_TITLE));
+            }
+        }
 
-    @Test
-    void detailWithInvalidId() throws Exception {
-        mockMvc.perform(get("/tasks/100"))
-                .andExpect(status().isNotFound());
+        @Nested
+        @DisplayName("할 일 목록에 존재하지 않는 id로 조회한다면")
+        class Context_not_contains_target_id {
+            @BeforeEach
+            void setUp() {
+                given(taskService.getTask(NOT_EXISTING_TASK_ID))
+                        .willThrow(new TaskNotFoundException(NOT_EXISTING_TASK_ID));
+            }
+
+            @Test
+            @DisplayName("404 응답코드를 리턴한다.")
+            void It_returns_404_and_error_message() throws Exception {
+                mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_TASK_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("id").doesNotExist());
+            }
+        }
     }
 
 }

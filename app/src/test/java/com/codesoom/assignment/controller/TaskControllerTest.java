@@ -49,7 +49,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("할 일 목록을 리턴한다.")
-            void It_return_number_of_tasks() {
+            void It_return_tasks() {
                 assertThat(controller.list()).hasSize(1);
             }
         }
