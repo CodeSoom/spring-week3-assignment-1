@@ -27,7 +27,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("모전체 tasks를 조회한다")
+    @DisplayName("TaskService 클래스의  getTasks 메소드는 List<task>를 리턴한다")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(1);
@@ -38,20 +38,22 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("TaskService 클래스의 getTask 메소드는 id가 있다면 해당 Task를 리턴한다")
     void getTaskWithValidId() {
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
+    @DisplayName("TaskService 클래스의 getTask 메소드는 id가 없다면 NOT_FOUND를 반환한다")
     void getTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("모task를 생성한다")
-    void createTest() {
+    @DisplayName("TaskService 클래스의 createTask 메소드는 Task를 생성한다")
+    void createTask() {
         int oldSize = taskService.getTasks().size();
 
         Task task = new Task();
@@ -65,7 +67,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("task를 수정한다")
+    @DisplayName("TaskService 클래스의 updateTask 메소드는 id가 있다면 해당 Task를 수정한다")
     void updateTaskWithValidId() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -76,7 +78,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("task를 수정한다")
+    @DisplayName("TaskService 클래스의 updateTask 메소드는 id가 없다면 NOT_FOUND를 반환한다")
     void updateTaskWithInvalidId() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -86,7 +88,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("task를 삭제한다")
+    @DisplayName("TaskService 클래스의 deleteTask 메소드는 id가 있다면 해당 Task를 삭제한다")
     void deleteTaskWithValidId() {
         int oldSize = taskService.getTasks().size();
 
@@ -98,7 +100,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("task를 삭제한다")
+    @DisplayName("TaskService 클래스의 deleteTask 메소드는 id가 있다면 NOT_FOUND를 반환한다")
     void deleteTaskWihInvalidId() {
         assertThatThrownBy(() -> taskService.deleteTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);

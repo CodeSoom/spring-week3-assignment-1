@@ -92,7 +92,7 @@ public class TaskControllerWebMvcTest {
 
         mockMvc.perform(patch("/tasks/100")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\":\"new\"}"))
+                .content("{\"id\" : null , \"title\" : \"new\"}"))
                 .andExpect(status().isNotFound());
     }
 
