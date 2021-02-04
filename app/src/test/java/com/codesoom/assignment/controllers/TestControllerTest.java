@@ -194,48 +194,81 @@ public class TestControllerTest {
                         .andExpect(status().isBadRequest());
             }
         }
+    }
+
+    @Nested
+    @DisplayName("PATCH /tasks/:id 는")
+    class Describe_patchTask {
 
         @Nested
-        @DisplayName("PATCH /tasks/:id 는")
-        class Describe_patchTask {
-
-            @Nested
-            @DisplayName("서비스로 갱신되는 Task가 존재하면")
-            class Context_with_task {
-                @BeforeEach
-                void setUp() {
-                    given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(taskSubject());
-                }
-
-                @DisplayName("OK 상태와 task를 리턴한다.")
-                @Test
-                void it_return_task() throws Exception {
-                    mockMvc.perform(patch("/tasks/" + GIVEN_ID)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .content(objectMapper.writeValueAsString(taskSubject())))
-                            .andExpect(status().isOk());
-                }
+        @DisplayName("서비스로 갱신되는 Task가 존재하면")
+        class Context_with_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(taskSubject());
             }
-
-
-            @Nested
-            @DisplayName("서비스로 갱신되는 Task가 없으면")
-            class Context_without_task {
-                @BeforeEach
-                void setUp() {
-                    given(taskService.updateTask(anyLong(), any(Task.class)))
-                            .willThrow(new TaskNotFoundException(GIVEN_ID));
-                }
-
-                @DisplayName("Not Found 상태를 리턴한다.")
-                @Test
-                void It_returns_not_found() throws Exception {
-                    mockMvc.perform(patch("/tasks/" + GIVEN_ID))
-                            .andExpect(status().isBadRequest());
-                }
+            @DisplayName("OK 상태와 task를 리턴한다.")
+            @Test
+            void it_return_task() throws Exception {
+                mockMvc.perform(patch("/tasks/" + GIVEN_ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(taskSubject())))
+                        .andExpect(status().isOk());
             }
+        }
 
+        @Nested
+        @DisplayName("서비스로 갱신되는 Task가 없으면")
+        class Context_without_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(anyLong(), any(Task.class)))
+                        .willThrow(new TaskNotFoundException(GIVEN_ID));
+            }
+            @DisplayName("Not Found 상태를 리턴한다.")
+            @Test
+            void It_returns_not_found() throws Exception {
+                mockMvc.perform(patch("/tasks/" + GIVEN_ID))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+    }
 
+    @Nested
+    @DisplayName("DELETE /tasks/:id 는")
+    class Describe_deleteTask {
+
+        @Nested
+        @DisplayName("서비스로 삭제되는 Task가 없으면")
+        class Context_without_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.deleteTask(anyLong()))
+                        .willThrow(new TaskNotFoundException(anyLong()));
+            }
+            @DisplayName("Not Found 상태를 리턴한다.")
+            @Test
+            void It_returns_not_found() throws Exception {
+                mockMvc.perform(delete("/tasks/" + GIVEN_ID))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("서비스로 삭제되는 Task가 존재하면")
+        class Context_with_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.deleteTask(anyLong())).willReturn(taskSubject());
+            }
+            @DisplayName("NO CONTENT 상태와 task를 리턴한다.")
+            @Test
+            void it_return_no_content_with_task() throws Exception {
+                mockMvc.perform(delete("/tasks/" + GIVEN_ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(taskSubject())))
+                        .andExpect(status().isNoContent());
+            }
         }
     }
 }
