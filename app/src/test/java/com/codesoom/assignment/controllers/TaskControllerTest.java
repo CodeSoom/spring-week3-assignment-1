@@ -86,7 +86,7 @@ class TaskControllerTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskController.detail(GIVEN_INVALID_TASK_ID),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -154,7 +154,7 @@ class TaskControllerTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskController.update(GIVEN_INVALID_TASK_ID, modifying),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -195,7 +195,7 @@ class TaskControllerTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskController.patch(GIVEN_INVALID_TASK_ID, modifying),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -235,7 +235,7 @@ class TaskControllerTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskController.delete(GIVEN_INVALID_TASK_ID),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }

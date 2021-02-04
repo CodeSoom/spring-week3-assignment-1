@@ -4,6 +4,8 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 
+import java.util.NoSuchElementException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -82,7 +84,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.getTask(GIVEN_INVALID_TASK_ID),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -150,7 +152,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.updateTask(GIVEN_INVALID_TASK_ID, modifying),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -199,7 +201,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.deleteTask(GIVEN_INVALID_TASK_ID),
-                        "task를 찾을 수 없습니다."
+                        "task를 찾을 수 없음을 표현하는 예외가 던져져야 합니다"
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
