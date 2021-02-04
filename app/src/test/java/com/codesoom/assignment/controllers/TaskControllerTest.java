@@ -3,20 +3,21 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskController 클래스의 ")
+@DisplayName("TaskController 클래스의")
 class TaskControllerTest {
     private final Long GIVEN_SAVED_TASK_ID = 1L;
     private final Long GIVEN_UNSAVED_TASK_ID = 100L;
     private final String GIVEN_TASK_TITLE = "Test";
     private final String GIVEN_MODIFY_TASK_TITLE = "Modified";
+
+    private final int REPEAT_TIME = 3;
 
     private TaskController taskController;
     private Task task;
@@ -44,16 +45,17 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("task가 1개 이상있다면")
-        class Context_with_task {
+        class Context_with_more_than_task {
             @BeforeEach
-            void setAddedTask() {
-                taskController.create(task);
+            void setAddedTask(RepetitionInfo repetitionInfo) {
+                IntStream.rangeClosed(1, repetitionInfo.getCurrentRepetition())
+                        .forEach(i -> taskController.create(task));
             }
 
-            @Test
+            @RepeatedTest(REPEAT_TIME)
             @DisplayName("크기가 1이상인 리스트를 리턴한다.")
-            void it_return_not_empty_list() {
-                assertThat(taskController.list()).isNotEmpty();
+            void it_return_list_having_task_one_or_more() {
+                assertThat(taskController.list().size()).isGreaterThanOrEqualTo(1);
             }
         }
     }

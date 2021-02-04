@@ -4,7 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 
-import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,6 +15,8 @@ public class TaskServiceTest {
     private final Long GIVEN_UNSAVED_TASK_ID = 100L;
     private final String GIVEN_TASK_TITLE = "Test";
     private final String GIVEN_MODIFY_TASK_TITLE = "Modified";
+
+    private final int REPEAT_TIME = 3;
 
     private TaskService taskService;
     private Task task;
@@ -42,13 +44,14 @@ public class TaskServiceTest {
 
         @Nested
         @DisplayName("task가 1개 이상있다면")
-        class Context_with_task {
+        class Context_with_more_than_task {
             @BeforeEach
-            void addNewTask() {
-                taskService.createTask(task);
+            void setAddedTask(RepetitionInfo repetitionInfo) {
+                IntStream.rangeClosed(1, repetitionInfo.getCurrentRepetition())
+                        .forEach(i -> taskService.createTask(task));
             }
 
-            @Test
+            @RepeatedTest(REPEAT_TIME)
             @DisplayName("크기가 1이상인 리스트를 리턴한다.")
             void it_return_list_having_task_one_or_more() {
                 assertThat(taskService.getTasks().size()).isGreaterThanOrEqualTo(1);
@@ -60,7 +63,7 @@ public class TaskServiceTest {
     @DisplayName("getTask 메서드는")
     class Describe_getTask {
         @BeforeEach
-        void addNewTask() {
+        void setAddedTask() {
             taskService.createTask(task);
         }
 
@@ -97,7 +100,7 @@ public class TaskServiceTest {
         private Task added;
 
         @BeforeEach
-        void addNewTask() {
+        void setAddedTask() {
             size = taskService.getTasks().size();
             added = taskService.createTask(task);
         }
@@ -123,7 +126,7 @@ public class TaskServiceTest {
         private Task modifying;
 
         @BeforeEach
-        void addTask() {
+        void setAddedAndModifiedTask() {
             taskService.createTask(task);
 
             modifying = new Task();
@@ -162,7 +165,7 @@ public class TaskServiceTest {
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         @BeforeEach
-        void addTask() {
+        void setAddedTask() {
             taskService.createTask(task);
         }
 
@@ -173,7 +176,7 @@ public class TaskServiceTest {
             private Task deleted;
 
             @BeforeEach
-            void deleteTask() {
+            void setDeletedTask() {
                 size = taskService.getTasks().size();
                 deleted = taskService.deleteTask(GIVEN_SAVED_TASK_ID);
             }
