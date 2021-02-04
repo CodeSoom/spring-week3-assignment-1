@@ -4,10 +4,12 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 
+import java.util.Random;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService 클래스의 ")
+@DisplayName("TaskService 클래스의")
 public class TaskServiceTest {
     private static final Long VALID_TASK_ID = 1L;
     private static final Long INVALID_TASK_ID = 100L;
@@ -26,10 +28,10 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks 메소드는 ")
+    @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("task가 없다면 ")
+        @DisplayName("task가 없다면")
         class Context_without_any_task {
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -39,7 +41,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("task가 1개 이상있다면 ")
+        @DisplayName("task가 1개 이상있다면")
         class Context_with_task {
             @BeforeEach
             void addNewTask() {
@@ -55,7 +57,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메서드는 ")
+    @DisplayName("getTask 메서드는")
     class Describe_getTask {
         @BeforeEach
         void addNewTask() {
@@ -63,7 +65,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             @Test
             @DisplayName("task를 리턴한다.")
@@ -75,7 +77,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception을 던진다.")
@@ -89,7 +91,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask 메소드는 ")
+    @DisplayName("createTask 메소드는")
     class Describe_createTask {
         private int size;
         private Task added;
@@ -116,7 +118,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("updateTask 메소드는 ")
+    @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         private Task modifying;
 
@@ -129,7 +131,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
@@ -143,7 +145,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception을 던진다.")
@@ -157,7 +159,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask 메소드는 ")
+    @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         @BeforeEach
         void addTask() {
@@ -165,7 +167,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             private int size;
             private Task deleted;
@@ -192,7 +194,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception를 던진다.")

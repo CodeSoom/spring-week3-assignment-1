@@ -30,10 +30,10 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("list 메소드는 ")
+    @DisplayName("list 메소드는")
     class Describe_list {
         @Nested
-        @DisplayName("task가 없다면 ")
+        @DisplayName("task가 없다면")
         class Context_without_any_task {
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -43,7 +43,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("task가 1개 이상있다면 ")
+        @DisplayName("task가 1개 이상있다면")
         class Context_with_task {
             @BeforeEach
             void setAddedTask() {
@@ -59,7 +59,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("detail 메서드는 ")
+    @DisplayName("detail 메서드는")
     class Describe_detail {
         @BeforeEach
         void setAddedTask() {
@@ -67,7 +67,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             @Test
             @DisplayName("task를 리턴한다.")
@@ -79,7 +79,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception을 던진다.")
@@ -93,7 +93,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("create 메소드는 ")
+    @DisplayName("create 메소드는")
     class Describe_create {
         private int size;
         private Task added;
@@ -120,7 +120,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("update 메소드는 ")
+    @DisplayName("update 메소드는")
     class Describe_update {
         private Task modifying;
 
@@ -133,7 +133,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
@@ -147,7 +147,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception을 던진다.")
@@ -161,7 +161,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("patch 메소드는 ")
+    @DisplayName("patch 메소드는")
     class Describe_patch {
         private Task modifying;
 
@@ -174,7 +174,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
@@ -188,7 +188,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception을 던진다.")
@@ -202,7 +202,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("delete 메소드는 ")
+    @DisplayName("delete 메소드는")
     class Describe_delete {
         @BeforeEach
         void setAddedTask() {
@@ -210,7 +210,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효한 id를 가지고 있다면 ")
+        @DisplayName("유효한 id를 가지고 있다면")
         class Context_with_valid_id {
             private int size;
 
@@ -228,7 +228,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 id를 가지고 있다면 ")
+        @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("exception를 던진다.")
