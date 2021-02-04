@@ -24,7 +24,7 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("getId() 메서드는")
+    @DisplayName("getId()")
     class Describe_getId {
         @Test
         @DisplayName("task의 id를 반환한다")
@@ -34,7 +34,7 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("setId() 메서드는")
+    @DisplayName("setId()")
     class Describe_setId {
         @Test
         @DisplayName("task의 id를 변경한다")
@@ -45,7 +45,7 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("getTitle() 메서드는")
+    @DisplayName("getTitle()")
     class Describe_getTitle {
         @Test
         @DisplayName("task의 title를 반환한다")
@@ -55,7 +55,7 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("setTitle() 메서드는")
+    @DisplayName("setTitle()")
     class Describe_setTitle {
         @Test
         @DisplayName("task의 title을 변경한다")
