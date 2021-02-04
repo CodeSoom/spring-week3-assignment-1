@@ -29,7 +29,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks() 메서드는")
+    @DisplayName("getTasks()")
     class Describe_getTasks {
         @Nested
         @DisplayName("task가 존재한다면")
@@ -54,7 +54,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask() 메서드는")
+    @DisplayName("getTask()")
     class Describe_getTask {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
@@ -80,7 +80,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("updateTask() 메서드는")
+    @DisplayName("updateTask()")
     class Describe_updateTask {
         @Nested
         @DisplayName("존재하는 task id와 변경하려는 task가 주어진다면")
@@ -109,7 +109,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask() 메서드는")
+    @DisplayName("deleteTask()")
     class Describe_deleteTask {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
