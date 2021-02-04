@@ -8,6 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,6 +21,7 @@ class TaskControllerTest {
     private static final String TASK_TITLE_2 = "title2";
     private Task task1;
     private Task task2;
+    private List<Long> invalidIds;
 
     private TaskController taskController;
 
@@ -30,6 +35,9 @@ class TaskControllerTest {
 
         task2 = new Task();
         task2.setTitle(TASK_TITLE_2);
+
+        invalidIds = new ArrayList<>();
+        Collections.addAll(invalidIds, -100L, -1L, 0L, 5L, 100L);
     }
 
     @Test
@@ -63,40 +71,18 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("할 일을 찾을 수 없는 경우 detail()를 실행하면 TaskNotFoundException 이 발생한다.")
+    @DisplayName("할 일을 찾을 수 없는 경우 detail()를 실행하면 NotFound 예외가 발생한다.")
     void detailWithInvalidId() {
         taskController.create(task1);
         taskController.create(task2);
 
-        Assertions.assertThrows(
-                TaskNotFoundException.class,
-                () -> taskController.detail(-100L),
-                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
-        );
-
-        Assertions.assertThrows(
-                TaskNotFoundException.class,
-                () -> taskController.detail(-1L),
-                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
-        );
-
-        Assertions.assertThrows(
-                TaskNotFoundException.class,
-                () -> taskController.detail(0L),
-                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
-        );
-
-        Assertions.assertThrows(
-                TaskNotFoundException.class,
-                () -> taskController.detail(3L),
-                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
-        );
-
-        Assertions.assertThrows(
-                TaskNotFoundException.class,
-                () -> taskController.detail(100L),
-                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
-        );
+        for (long id : invalidIds) {
+            Assertions.assertThrows(
+                    TaskNotFoundException.class,
+                    () -> taskController.detail(id),
+                    "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
+            );
+        }
     }
 
     @Test
