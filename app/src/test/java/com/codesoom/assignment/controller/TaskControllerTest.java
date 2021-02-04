@@ -1,4 +1,4 @@
-package com.codesoom.assignment.controllers.controllers.controller;
+package com.codesoom.assignment.controller;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
