@@ -27,20 +27,26 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("getId 메서드는")
+    @DisplayName("getId")
     class Describe_getId {
         @Nested
-        @DisplayName("task의 id가 존재한다면")
+        @DisplayName("id가 존재한다면")
         class Context_task_id_exist {
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setId(TASK_ID);
+            }
+
             @Test
-            @DisplayName("task의 id를 리턴한다")
+            @DisplayName("id를 리턴한다")
             void it_returns_task_id() {
                 assertThat(task.getId()).isEqualTo(TASK_ID);
             }
         }
 
         @Nested
-        @DisplayName("task의 id가 존재하지 않는다면")
+        @DisplayName("id가 존재하지 않는다면")
         class Context_task_id_does_not_exist {
             @BeforeEach
             void setUp() {
@@ -56,35 +62,32 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("setId 메서드는")
+    @DisplayName("setId")
     class Describe_setId {
-        @Nested
-        @DisplayName("id가 주어지면")
-        class Context_with_id {
-            @Test
-            @DisplayName("task의 id를 설정한다")
-            void it_set_task_id() {
-                task.setId(NEW_TASK_ID);
-                assertThat(task.getId()).isEqualTo(NEW_TASK_ID);
-            }
+        @Test
+        @DisplayName("id를 설정한다")
+        void it_set_task_id() {
+            task.setId(NEW_TASK_ID);
+
+            assertThat(task.getId()).isEqualTo(NEW_TASK_ID);
         }
     }
 
     @Nested
-    @DisplayName("getTitle 메서드는")
+    @DisplayName("getTitle")
     class Describe_getTitle {
         @Nested
-        @DisplayName("task의 title가 존재한다면")
+        @DisplayName("title이 존재한다면")
         class Context_task_title_exist {
             @Test
-            @DisplayName("task의 title를 리턴한다")
+            @DisplayName("title를 리턴한다")
             void it_returns_task_title() {
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
 
         @Nested
-        @DisplayName("task의 title이 존재하지 않는다면")
+        @DisplayName("title이 존재하지 않는다면")
         class Context_task_title_does_not_exist {
             @BeforeEach
             void setUp() {
@@ -100,17 +103,14 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("setTitle 메서드는")
+    @DisplayName("setTitle")
     class Describe_setTitle {
-        @Nested
-        @DisplayName("title이 주어지면")
-        class Context_with_title {
-            @Test
-            @DisplayName("task의 title를 설정한다")
-            void it_set_task_title() {
-                task.setTitle(NEW_TASK_TITLE);
-                assertThat(task.getTitle()).isEqualTo(NEW_TASK_TITLE);
-            }
+        @Test
+        @DisplayName("title를 설정한다")
+        void it_set_task_title() {
+            task.setTitle(NEW_TASK_TITLE);
+
+            assertThat(task.getTitle()).isEqualTo(NEW_TASK_TITLE);
         }
     }
 
