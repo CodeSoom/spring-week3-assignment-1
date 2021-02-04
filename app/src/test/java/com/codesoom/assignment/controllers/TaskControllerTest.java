@@ -92,4 +92,41 @@ class TaskControllerTest {
 
         assertThat(taskController.list()).isNotEmpty();
     }
+
+    @Test
+    @DisplayName("기존 할 일을 찾을 수 있고 변경할 할 일이 주어지면, update()를 했을 때 기존 할 일이 새로운 할 일로 변경된다.")
+    void updateTaskWithValidId() {
+        taskController.create(task1);
+
+        task1.setTitle(TASK_TITLE_2);
+        taskController.update(1L, task1);
+
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo(TASK_TITLE_2);
+    }
+
+    @Test
+    @DisplayName("기존 할 일을 찾을 수 없으면, NotFound 예외가 발생한다.")
+    void updateTaskWithInvalidId() {
+        taskController.create(task1);
+
+        for (long id : invalidIds) {
+            Assertions.assertThrows(
+                    TaskNotFoundException.class,
+                    () -> taskController.update(id, task2),
+                    "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
+            );
+        }
+    }
+
+    @Test
+    @DisplayName("기존 할 일을 찾을 수 있지만 변경할 할 일이 존재하지 않으면, NotFound 예외가 발생한다.")
+    void updateTaskWithInvalidNewTask() {
+        taskController.create(task1);
+
+        Assertions.assertThrows(
+                TaskNotFoundException.class,
+                () -> taskController.update(task1.getId(), null),
+                "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
+        );
+    }
 }
