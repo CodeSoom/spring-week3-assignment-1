@@ -13,10 +13,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskController 클래스의 ")
 class TaskControllerTest {
-    private static final Long VALID_TASK_ID = 1L;
-    private static final Long INVALID_TASK_ID = 100L;
-    private static final String TASK_TITLE = "Test";
-    private static final String MODIFY_TASK_TITLE = "Modified";
+    private final Long GIVEN_VALID_TASK_ID = 1L;
+    private final Long GIVEN_INVALID_TASK_ID = 100L;
+    private final String GIVEN_TASK_TITLE = "Test";
+    private final String GIVEN_MODIFY_TASK_TITLE = "Modified";
 
     private TaskController taskController;
     private Task task;
@@ -24,7 +24,7 @@ class TaskControllerTest {
     @BeforeEach
     void setUp() {
         task = new Task();
-        task.setTitle(TASK_TITLE);
+        task.setTitle(GIVEN_TASK_TITLE);
 
         taskController = new TaskController(new TaskService());
     }
@@ -72,9 +72,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
-                assertThat(taskController.detail(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
-                assertThat(taskController.detail(VALID_TASK_ID).getTitle()).isEqualTo(TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_TASK_TITLE);
             }
         }
 
@@ -85,7 +85,7 @@ class TaskControllerTest {
             @DisplayName("exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.detail(INVALID_TASK_ID),
+                        () -> taskController.detail(GIVEN_INVALID_TASK_ID),
                         "task를 찾을 수 없습니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -108,8 +108,8 @@ class TaskControllerTest {
         @DisplayName("추가된 task를 리턴한다.")
         void it_return_added_task() {
             assertThat(added.getClass()).isEqualTo(Task.class);
-            assertThat(added.getId()).isEqualTo(VALID_TASK_ID);
-            assertThat(added.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(added.getId()).isEqualTo(GIVEN_VALID_TASK_ID);
+            assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
         }
 
         @Test
@@ -129,7 +129,7 @@ class TaskControllerTest {
             taskController.create(task);
 
             modifying = new Task();
-            modifying.setTitle(MODIFY_TASK_TITLE);
+            modifying.setTitle(GIVEN_MODIFY_TASK_TITLE);
         }
 
         @Nested
@@ -138,11 +138,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                Task modified = taskController.update(VALID_TASK_ID, modifying);
-                assertThat(taskController.detail(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
-                assertThat(taskController.detail(VALID_TASK_ID).getTitle()).isNotEqualTo(TASK_TITLE);
-                assertThat(taskController.detail(VALID_TASK_ID).getTitle()).isEqualTo(MODIFY_TASK_TITLE);
+                Task modified = taskController.update(GIVEN_VALID_TASK_ID, modifying);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
@@ -153,7 +153,7 @@ class TaskControllerTest {
             @DisplayName("exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.update(INVALID_TASK_ID, modifying),
+                        () -> taskController.update(GIVEN_INVALID_TASK_ID, modifying),
                         "task를 찾을 수 없습니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -170,7 +170,7 @@ class TaskControllerTest {
             taskController.create(task);
 
             modifying = new Task();
-            modifying.setTitle(MODIFY_TASK_TITLE);
+            modifying.setTitle(GIVEN_MODIFY_TASK_TITLE);
         }
 
         @Nested
@@ -179,11 +179,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                taskController.patch(VALID_TASK_ID, modifying);
-                assertThat(taskController.detail(VALID_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(VALID_TASK_ID).getId()).isEqualTo(VALID_TASK_ID);
-                assertThat(taskController.detail(VALID_TASK_ID).getTitle()).isNotEqualTo(TASK_TITLE);
-                assertThat(taskController.detail(VALID_TASK_ID).getTitle()).isEqualTo(MODIFY_TASK_TITLE);
+                taskController.patch(GIVEN_VALID_TASK_ID, modifying);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getClass()).isEqualTo(Task.class);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getId()).isEqualTo(GIVEN_VALID_TASK_ID);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(taskController.detail(GIVEN_VALID_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
@@ -194,7 +194,7 @@ class TaskControllerTest {
             @DisplayName("exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.patch(INVALID_TASK_ID, modifying),
+                        () -> taskController.patch(GIVEN_INVALID_TASK_ID, modifying),
                         "task를 찾을 수 없습니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -217,7 +217,7 @@ class TaskControllerTest {
             @BeforeEach
             void setDeletedTask() {
                 size = taskController.list().size();
-                taskController.delete(VALID_TASK_ID);
+                taskController.delete(GIVEN_VALID_TASK_ID);
             }
 
             @Test
@@ -234,7 +234,7 @@ class TaskControllerTest {
             @DisplayName("exception를 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.delete(INVALID_TASK_ID),
+                        () -> taskController.delete(GIVEN_INVALID_TASK_ID),
                         "task를 찾을 수 없습니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
