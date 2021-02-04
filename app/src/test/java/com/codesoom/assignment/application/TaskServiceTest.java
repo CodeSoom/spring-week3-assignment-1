@@ -86,7 +86,7 @@ class TaskServiceTest {
         @DisplayName("존재하는 task id와 변경하려는 task가 주어진다면")
         class Context_task_exist {
             @Test
-            @DisplayName("주어진 task의 title 값으로 업데이트 한후 task를 리턴한다")
+            @DisplayName("title이 변경된 task를 반환한다")
             void it_return_updated_task() {
                 Task task = createTask();
                 task.setTitle(UPDATE_TITLE);
@@ -115,7 +115,7 @@ class TaskServiceTest {
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_task_exist {
             @Test
-            @DisplayName("주어진 id와 일치하는 task가 삭제된다")
+            @DisplayName("주어진 id와 일치하는 task를 삭제한다")
             void it_task() {
                 Task task = createTask();
                 taskService.deleteTask(task.getId());
