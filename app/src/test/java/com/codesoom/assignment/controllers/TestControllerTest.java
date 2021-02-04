@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,6 +37,16 @@ public class TestControllerTest {
 
     @MockBean
     private TaskService taskService;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    Task taskSubject() {
+        Task task = new Task();
+        task.setId(GIVEN_ID);
+        task.setTitle(GIVEN_TITLE);
+        return task;
+    }
 
     @Nested
     @DisplayName("GET /TASKS는")
@@ -81,7 +94,7 @@ public class TestControllerTest {
     class Describe_getTask {
         @Nested
         @DisplayName("서비스로 호출하는 Task가 존재하면")
-        class Context_with_tasks {
+        class Context_with_task {
             @BeforeEach
             void setUp() {
                 Task task = new Task();
@@ -110,16 +123,35 @@ public class TestControllerTest {
         class Context_without_task {
 
             @BeforeEach
-            void setEmpty() {
+            void setUp() {
                 given(taskService.getTask(GIVEN_ID))
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
             @DisplayName("Not Found 상태를 리턴한다.")
             @Test
-            void it_return_empty_tasks() throws Exception {
+            void It_returns_not_found() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
                         .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /tasks")
+    class Describe_create {
+        @Nested
+        @DisplayName("생성할 Task가 존재하면")
+        class Context_with_task {
+            Task task = taskSubject();
+            @Test
+            @DisplayName("Created 상태를 리턴한다.")
+            void It_returns_created() throws Exception {
+                mockMvc.perform(
+                        post("/tasks")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(task))
+                ).andExpect(status().isCreated());
             }
         }
     }
