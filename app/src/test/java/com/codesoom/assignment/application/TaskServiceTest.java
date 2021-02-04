@@ -50,4 +50,18 @@ class TaskServiceTest {
         assertThatThrownBy(() -> taskService.getTask(1L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
+
+    @Test
+    void deleteTask() {
+        Task task = new Task();
+        task.setTitle("test");
+
+        taskService.createTask(task);
+        int originalSize = taskService.getTasks().size();
+
+        taskService.deleteTask(1L);
+        int afterDeletionSize = taskService.getTasks().size();
+
+        assertThat(originalSize - afterDeletionSize).isEqualTo(1);
+    }
 }
