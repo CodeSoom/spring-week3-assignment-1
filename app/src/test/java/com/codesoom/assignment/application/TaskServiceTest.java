@@ -17,6 +17,20 @@ class TaskServiceTest {
     }
 
     @Test
+    void createTask() {
+        int originalSize = taskService.getTasks().size();
+
+        Task task = new Task();
+        task.setTitle("test");
+
+        taskService.createTask(task);
+
+        int afterCreationSize = taskService.getTasks().size();
+
+        assertThat(afterCreationSize - originalSize).isEqualTo(1);
+    }
+
+    @Test
     void getTasks() {
         assertThat(taskService.getTasks()).isEmpty();
     }
