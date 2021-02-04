@@ -146,11 +146,12 @@ public class TaskServiceTest {
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                taskService.updateTask(GIVEN_SAVED_TASK_ID, modifying);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(taskService.getTask(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                final Task modified = taskService.updateTask(GIVEN_SAVED_TASK_ID, modifying);
+
+                assertThat(modified.getClass()).isEqualTo(Task.class);
+                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 

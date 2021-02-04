@@ -146,11 +146,12 @@ class TaskControllerTest {
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                Task modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                final Task modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
+
+                assertThat(modified.getClass()).isEqualTo(Task.class);
+                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
@@ -187,11 +188,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                taskController.patch(GIVEN_SAVED_TASK_ID, modifying);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getClass()).isEqualTo(Task.class);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(taskController.detail(GIVEN_SAVED_TASK_ID).getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                final Task modified = taskController.patch(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(modified.getClass()).isEqualTo(Task.class);
+                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
+                assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
         }
 
