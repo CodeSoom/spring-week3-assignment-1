@@ -129,7 +129,7 @@ public class TaskServiceTest {
             @Test
             void it_returns_task_and_size() {
 
-                assertThat(taskService.createTask(newTask)).extracting("title").isEqualTo(NEW_TITLE);
+                assertThat(taskService.createTask(newTask).getTitle()).isEqualTo(NEW_TITLE);
                 assertThat(taskService.getTasks()).hasSize(1);
             }
         }
@@ -151,7 +151,7 @@ public class TaskServiceTest {
                 TaskService taskService = existTasksSubject();
                 assertAll(
                         () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
-                        () -> assertThat(taskService.getTask(id)).extracting("title").isEqualTo(NEW_TITLE)
+                        () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(NEW_TITLE)
                 );
             }
         }
@@ -188,7 +188,7 @@ public class TaskServiceTest {
             @Test
             void it_returns_delete_task() {
                 assertAll(
-                        () -> assertThat(taskService.deleteTask(id)).extracting("title").isEqualTo(TASK_TITLE_1),
+                        () -> assertThat(taskService.deleteTask(id).getTitle()).isEqualTo(TASK_TITLE_1),
                         () -> assertThat(taskService.getTasks()).hasSize(1)
                 );
             }
