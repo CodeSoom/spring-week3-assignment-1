@@ -38,7 +38,7 @@ public class TestControllerTest {
     @DisplayName("GET /TASKS는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("서비스에 Tasks가 존재하면")
+        @DisplayName("서비스로 호출하는 Tasks가 존재하면")
         class Context_with_tasks {
             @BeforeEach
             void setUp() {
@@ -52,12 +52,25 @@ public class TestControllerTest {
                         .willReturn(tasks);
             }
 
-            @DisplayName("HTTP Status OK를 리턴한다.")
+            @DisplayName("OK 상태와 tasks 목록을 리턴한다.")
             @Test
-            void it_return_status_ok() throws Exception {
+            void it_return_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(GIVEN_TITLE)));
+            }
+        }
+
+        @Nested
+        @DisplayName("서비스로 호출하는 Tasks가 없으면")
+        class Context_without_tasks {
+
+            @DisplayName("OK와 비어있는 tasks 목록 리턴한다.")
+            @Test
+            void it_return_empty_tasks() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString("[]")));
             }
         }
     }
