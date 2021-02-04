@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -36,27 +37,44 @@ class TaskServiceTest {
         taskService.createTask(task);
     }
 
-    @Test
-    void getTasks() {
-        List<Task> tasks = taskService.getTasks();
+    @Nested
+    @DisplayName("getTasks 메소드는")
+    class Describe_list {
 
-        assertThat(tasks).hasSize(1);
+        @Test
+        @DisplayName("Task가 존재하면 하나 이상의 Task 목록을 반환한다 ")
+        void getTasks() {
+            List<Task> tasks = taskService.getTasks();
 
-        Task task = tasks.get(0);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(tasks).hasSize(1);
+
+            Task task = tasks.get(0);
+            assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        }
     }
 
-    @Test
-    @DisplayName("")
-    void getTaskWithValidId() {
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo("test");
-    }
+    @Nested
+    @DisplayName("ID가 존재할 경우")
+    class Describe_id {
 
-    @Test
-    void getTaskWithInValidId() {
-        assertThatThrownBy(() -> taskService.getTask(100L))
-                .isInstanceOf(TaskNotFoundException.class);
+        @Test
+        @DisplayName("해당 ID를 갖는 Task를 반환하고")
+        void getTaskWithValidId() {
+            Task task = taskService.getTask(1L);
+            assertThat(task.getTitle()).isEqualTo("test");
+        }
+
+        @Nested
+        @DisplayName("ID가 존재하지 않는 경우")
+        class Describe_noId {
+
+            @Test
+            @DisplayName("Task를 찾을 수 없다는 경고 메시지를 반환한다")
+            void getTaskWithInValidId() {
+                assertThatThrownBy(() -> taskService.getTask(100L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Test
@@ -75,3 +93,7 @@ class TaskServiceTest {
         assertThat(tasks.size() - oldSize).isEqualTo(1);
     }
 }
+
+
+
+
