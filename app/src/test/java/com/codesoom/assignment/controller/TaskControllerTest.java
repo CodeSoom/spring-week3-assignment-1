@@ -30,11 +30,10 @@ class TaskControllerTest {
     void setUp() {
         taskService = new TaskService();
         controller = new TaskController(taskService);
-
     }
 
     @Nested
-    @DisplayName("list 메소드는")
+    @DisplayName("list는")
     class Describe_list {
 
         @Nested
@@ -210,7 +209,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("handleNotFound")
+    @DisplayName("handleNotFound는")
     class Describe_handleNotFound {
 
         @Nested
@@ -230,7 +229,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("ErrorResponse 메소드는")
+    @DisplayName("ErrorResponse는")
     class Describe_ErrorResponse {
         @Nested
         @DisplayName("찾는 id가 목록에 없으면")
