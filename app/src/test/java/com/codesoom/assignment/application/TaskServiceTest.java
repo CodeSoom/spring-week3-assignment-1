@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -24,46 +25,69 @@ class TaskServiceTest {
     private Task createSampleTask() {
         Task task = new Task();
         task.setTitle("old title");
-        Task createdTask = taskService.createTask(task);
-        return createdTask;
+        return taskService.createTask(task);
     }
 
-    @Test
-    @DisplayName("getTasks() - task 존재할때")
-    void getTasks() {
-        createSampleTask();
+    @Nested
+    @DisplayName("getTasks 메소드는")
+    class Describe_getTasks {
+        @Nested
+        @DisplayName("Task가 존재할 때")
+        class Context_exist_task {
+            @Test
+            @DisplayName("Task의 List를 반한다")
+            void it_return_list() {
+                createSampleTask();
 
-        List<Task> tasks = taskService.getTasks();
+                List<Task> tasks = taskService.getTasks();
 
-        assertThat(tasks).isNotEmpty();
-        assertThat(tasks).hasSize(1);
+                assertThat(tasks).isNotEmpty();
+                assertThat(tasks).hasSize(1);
+            }
+        }
+
+        @Nested
+        @DisplayName("Task가 존재하지 않을 때")
+        class Context_does_not_exist_task {
+            @Test
+            @DisplayName("빈 리스트를 반환한다")
+            void it_return_empty_list() {
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).isEmpty();
+                assertThat(tasks).hasSize(0);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("getTasks() - task 없을때")
-    void getTasksNotIn() {
-        List<Task> tasks = taskService.getTasks();
+    @Nested
+    @DisplayName("getTask 메소드는")
+    class Describe_getTask {
+        @Nested
+        @DisplayName("id가 존재할 때")
+        class Context_exist_id {
+            @Test
+            @DisplayName("Task를 반한다")
+            void it_return_task() {
+                Task createTask = createSampleTask();
 
-        assertThat(tasks).isEmpty();
-        assertThat(tasks).hasSize(0);
-    }
+                Task getTask = taskService.getTask(1L);
 
-    @Test
-    @DisplayName("getTask() - id 에 해당하는 task 반환")
-    void getTask() {
-        Task createTask = createSampleTask();
+                assertThat(getTask.getId()).isEqualTo(createTask.getId());
+                assertThat(getTask.getTitle()).isEqualTo(createTask.getTitle());
+                assertThat(getTask.getClass()).isEqualTo(createTask.getClass());
+            }
+        }
 
-        Task getTask = taskService.getTask(1L);
-
-        assertThat(getTask.getId()).isEqualTo(createTask.getId());
-        assertThat(getTask.getTitle()).isEqualTo(createTask.getTitle());
-        assertThat(getTask.getClass()).isEqualTo(createTask.getClass());
-    }
-
-    @Test
-    @DisplayName("getTask() - id 에 해당하는 task 없음")
-    void getTaskNotIn() {
-        assertThrows(TaskNotFoundException.class, () -> taskService.getTask(3L));
+        @Nested
+        @DisplayName("id가 존재하지 않을 때")
+        class Context_does_not_exist_id {
+            @Test
+            @DisplayName("TaskNotFoundException을 던진다")
+            void it_return_exception() {
+                assertThrows(TaskNotFoundException.class, () -> taskService.getTask(3L));
+            }
+        }
     }
 
     @Test
@@ -80,41 +104,66 @@ class TaskServiceTest {
         assertEquals(taskService.getTasks().size(), 2);
     }
 
-    @Test
-    @DisplayName("updateTask() - 바꿀 task와 존재하는 id 제공")
-    void updateTask() {
-        createSampleTask();
-        Task updateTask = new Task();
-        updateTask.setTitle("new title");
+    @Nested
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTask {
+        @Nested
+        @DisplayName("변경할 task의 title과 id가 존재할 때")
+        class Context_exist_task_and_id {
+            @Test
+            @DisplayName("id에 해당하는 Task의 title을 변경하고 반환한다.")
+            void it_return_task() {
+                createSampleTask();
+                Task updateTask = new Task();
+                updateTask.setTitle("new title");
 
-        taskService.updateTask(1L, updateTask);
+                taskService.updateTask(1L, updateTask);
 
-        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("new title");
+                assertThat(taskService.getTask(1L).getTitle()).isEqualTo("new title");
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 존재하지 않을 때")
+        class Context_does_not_exist_id {
+            @Test
+            @DisplayName("TaskNotFoundException을 던진다")
+            void it_return_exception() {
+                Task updateTask = new Task();
+                updateTask.setTitle("new title");
+
+                assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(3L, updateTask));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("updateTask() - 존재하지 않는 id 변경요청 실패")
-    void updateTaskNotIn() {
-        Task updateTask = new Task();
-        updateTask.setTitle("new title");
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
+        @Nested
+        @DisplayName("변경할 id가 존재할 때")
+        class Context_exist_task_and_id {
+            @Test
+            @DisplayName("id에 해당하는 Task를 삭제하고 반환한다.")
+            void it_return_task() {
+                createSampleTask();
+                assertEquals(taskService.getTasks().size(), 1);
 
-        assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(3L, updateTask));
+                taskService.deleteTask(1L);
+
+                assertEquals(taskService.getTasks().size(), 0);
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 존재하지 않을 때")
+        class Context_does_not_exist_id {
+            @Test
+            @DisplayName("TaskNotFoundException을 던진다")
+            void it_return_exception() {
+                assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(3L));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("deleteTask() - 존재하는 id 삭제요청 성공")
-    void deleteTask() {
-        createSampleTask();
-        assertEquals(taskService.getTasks().size(), 1);
-
-        taskService.deleteTask(1L);
-
-        assertEquals(taskService.getTasks().size(), 0);
-    }
-
-    @Test
-    @DisplayName("deleteTask() - 존재하지 않는 id 삭제요청 실패")
-    void deleteTaskNotIn() {
-        assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(3L));
-    }
 }
