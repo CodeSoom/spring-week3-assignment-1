@@ -37,7 +37,7 @@ class TaskServiceTest {
         class Context_without_tasks {
 
             @Test
-            @DisplayName("빈 ArrayList 를 리턴한다.")
+            @DisplayName("비어 있는 집합 리턴한다.")
             void It_returns_empty_ArrayList() {
                 TaskService subject = emptySubject();
 
@@ -50,7 +50,7 @@ class TaskServiceTest {
         class Context_with_tasks {
 
             @Test
-            @DisplayName("tasks 가 들어있는 ArrayList 를 리턴한다.")
+            @DisplayName("tasks 가 들어있는 집합을 리턴한다.")
             void It_returns_empty_ArrayList() {
                 TaskService subject = existsSubject();
 
@@ -71,7 +71,7 @@ class TaskServiceTest {
         class Context_not_exists_target_id {
 
             @Test
-            @DisplayName("TaskNotFoundException 을 던진다.")
+            @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
                 TaskService subject = emptySubject();
 
@@ -122,7 +122,7 @@ class TaskServiceTest {
         class Context_not_exists_target_id {
 
             @Test
-            @DisplayName("TaskNotFoundException 를 던진다.")
+            @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
                 TaskService subject = emptySubject();
                 Task task = new Task();
@@ -158,7 +158,7 @@ class TaskServiceTest {
         class Context_not_exists_target_id {
 
             @Test
-            @DisplayName("TaskNotFoundException 를 던진다.")
+            @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
                 TaskService subject = emptySubject();
 
