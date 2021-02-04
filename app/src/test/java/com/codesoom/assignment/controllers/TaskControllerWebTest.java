@@ -67,7 +67,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("GET 메서드 요청은")
+    @DisplayName("GET 요청은")
     class Describe_GET {
         @Nested
         @DisplayName("저장된 task가 있다면")
@@ -156,7 +156,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("POST 메서드 요청은")
+    @DisplayName("POST 요청은")
     class Describe_POST {
         @Nested
         @DisplayName("task가 주어진다면")
@@ -182,7 +182,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PUT 메서드 요청은")
+    @DisplayName("PUT 요청은")
     class Describe_PUT {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
@@ -230,7 +230,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PATCH 메서드 요청은")
+    @DisplayName("PATCH 요청은")
     class Describe_PATCH {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
@@ -278,7 +278,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("DELETE 메서드 요청은")
+    @DisplayName("DELETE 요청은")
     class Describe_DELETE {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
