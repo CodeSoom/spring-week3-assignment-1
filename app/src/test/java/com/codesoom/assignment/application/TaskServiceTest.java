@@ -78,7 +78,7 @@ public class TaskServiceTest {
         @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("exception을 던진다.")
+            @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.getTask(GIVEN_INVALID_TASK_ID),
@@ -146,7 +146,7 @@ public class TaskServiceTest {
         @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("exception을 던진다.")
+            @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.updateTask(GIVEN_INVALID_TASK_ID, modifying),
@@ -195,7 +195,7 @@ public class TaskServiceTest {
         @DisplayName("유효하지 않은 id를 가지고 있다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("exception를 던진다.")
+            @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.deleteTask(GIVEN_INVALID_TASK_ID),
