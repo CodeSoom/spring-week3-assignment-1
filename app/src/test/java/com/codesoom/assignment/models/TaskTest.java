@@ -30,13 +30,24 @@ class TaskTest {
 
     @Test
     void setId() {
+        task.setId(2L);
+        assertThat(task.getId()).isEqualTo(2L);
     }
 
     @Test
-    void getTitle() {
+    void getTitleWithValidId() {
+        task.setTitle("test");
+        assertThat(task.getTitle()).isEqualTo("test");
+    }
+
+    @Test
+    void getTitleWithInvalid() {
+        assertThat(task.getTitle()).isNull();
     }
 
     @Test
     void setTitle() {
+        task.setTitle("test");
+        assertThat(task.getTitle()).isEqualTo("test");
     }
 }
