@@ -25,5 +25,12 @@ class TaskControllerTest {
         assertThat(controller.list()).hasSize(1);
         assertThat(controller.list().get(0).getId()).isEqualTo(1L);
         assertThat(controller.list().get(0).getTitle()).isEqualTo("test1");
+
+        task.setTitle("test2");
+        controller.create(task);
+
+        assertThat(controller.list()).hasSize(2);
+        assertThat(controller.list().get(1).getId()).isEqualTo(2L);
+        assertThat(controller.list().get(1).getTitle()).isEqualTo("test2");
     }
 }
