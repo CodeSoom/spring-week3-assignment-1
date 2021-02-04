@@ -177,7 +177,12 @@ public class TaskServiceTest {
         @Nested
         @DisplayName("할 일인 Task 값 있으면서, 삭제하고자 하는 Task id가 주어지진다면")
         class Context_with_task {
-            TaskService taskService = existTasksSubject();
+            @BeforeEach
+            void setUp() {
+                taskService.createTask(task1);
+                taskService.createTask(task2);
+            }
+
 
             @DisplayName("삭제된 일 Task 값을 리턴한다")
             @Test
