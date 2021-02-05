@@ -76,4 +76,14 @@ class TaskControllerTest {
         assertThat(taskController.detail(1L).getTitle()).isEqualTo(newTitle);
     }
 
+    @DisplayName("Task 삭제")
+    @Test
+    void testDelete(){
+        taskController.create(task);
+        taskController.delete(taskController.detail(task.getId()).getId());
+
+        assertThatThrownBy(() -> {taskController.detail(1L); } )
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
 }
