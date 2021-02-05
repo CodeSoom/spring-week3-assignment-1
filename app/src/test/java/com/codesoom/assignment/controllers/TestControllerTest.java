@@ -52,7 +52,7 @@ public class TestControllerTest {
     @DisplayName("GET /TASKS는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("서비스로 호출하는 Tasks가 존재하면")
+        @DisplayName("Tasks가 존재하면")
         class Context_with_tasks {
             List<Task> tasks = new ArrayList<>();
 
@@ -78,7 +78,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("서비스로 호출하는 Tasks가 없으면")
+        @DisplayName("Tasks가 없으면")
         class Context_without_tasks {
 
             @DisplayName("OK 상태와 비어있는 tasks 목록 응답한다.")
@@ -96,7 +96,7 @@ public class TestControllerTest {
     class Describe_getTask {
 
         @Nested
-        @DisplayName("서비스로 호출하는 Task가 없으면")
+        @DisplayName("Task가 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -113,7 +113,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("서비스로 호출하는 Task가 존재하면")
+        @DisplayName("Task가 존재하면")
         class Context_with_task {
             Task task = new Task();
 
@@ -160,7 +160,7 @@ public class TestControllerTest {
     class Describe_updateTask {
 
         @Nested
-        @DisplayName("서비스로 갱신되는 Task가 존재하면")
+        @DisplayName("Task가 존재하면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
@@ -179,7 +179,7 @@ public class TestControllerTest {
 
 
         @Nested
-        @DisplayName("서비스로 갱신되는 Task가 없으면")
+        @DisplayName("갱신되는 Task가 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -201,7 +201,7 @@ public class TestControllerTest {
     class Describe_patchTask {
 
         @Nested
-        @DisplayName("서비스로 갱신되는 Task가 존재하면")
+        @DisplayName("갱신되는 Task가 존재하면")
         class Context_with_task {
 
             @BeforeEach
@@ -222,7 +222,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("서비스로 갱신되는 Task가 없으면")
+        @DisplayName("갱신되는 Task가 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -244,7 +244,7 @@ public class TestControllerTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("서비스로 삭제되는 Task가 없으면")
+        @DisplayName("삭제되는 Task가 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -261,7 +261,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("서비스로 삭제되는 Task가 존재하면")
+        @DisplayName("삭제되는 Task가 존재하면")
         class Context_with_task {
 
             @BeforeEach
