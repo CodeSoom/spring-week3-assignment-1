@@ -128,9 +128,12 @@ public class TaskServiceTest {
             @DisplayName("입력한 Task 값을 리턴하고, Task 의 숫자가 증가한다")
             @Test
             void it_returns_task_and_size() {
+                int beforeTaskSize = taskService.getTasks().size();
 
                 assertThat(taskService.createTask(newTask).getTitle()).isEqualTo(NEW_TITLE);
-                assertThat(taskService.getTasks()).hasSize(1);
+
+                int afterTaskSize = taskService.getTasks().size();
+                assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
             }
         }
     }
@@ -183,14 +186,16 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-
-            @DisplayName("삭제된 일 Task 값을 리턴한다")
+            @DisplayName("Tasks 수가 줄어든다")
             @Test
             void it_returns_delete_task() {
-                assertAll(
-                        () -> assertThat(taskService.deleteTask(id).getTitle()).isEqualTo(TASK_TITLE_1),
-                        () -> assertThat(taskService.getTasks()).hasSize(1)
-                );
+                int beforeTaskSize = taskService.getTasks().size();
+
+                taskService.deleteTask(id);
+
+                int afterTaskSize = taskService.getTasks().size();
+                assertThat(beforeTaskSize - afterTaskSize).isEqualTo(1);
+
             }
         }
 
