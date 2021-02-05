@@ -76,6 +76,7 @@ class TaskControllerTest {
             @BeforeEach
             void checkIfHasSaveId() {
                 gotten = taskController.detail(GIVEN_SAVED_TASK_ID);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
             }
 
             @Test
@@ -106,24 +107,28 @@ class TaskControllerTest {
         private int size;
         private Task added;
 
-        @BeforeEach
-        void setAddedTask() {
-            size = taskController.list().size();
-            added = taskController.create(task);
-        }
+        @Nested
+        @DisplayName("task를 추가하고,")
+        class It_add_task {
+            @BeforeEach
+            void setAddedTask() {
+                size = taskController.list().size();
+                added = taskController.create(task);
+            }
 
-        @Test
-        @DisplayName("task를 추가하고, 추가된 task를 리턴한다.")
-        void it_return_added_task() {
-            assertThat(added.getClass()).isEqualTo(Task.class);
-            assertThat(added.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-            assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
-        }
+            @Test
+            @DisplayName("추가된 task를 리턴한다.")
+            void it_return_added_task() {
+                assertThat(added.getClass()).isEqualTo(Task.class);
+                assertThat(added.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+            }
 
-        @Test
-        @DisplayName("task 리스트의 크기를 1 증가시킨다.")
-        void it_count_up_task_list_size() {
-            assertThat(taskController.list().size()).isEqualTo(size + 1);
+            @Test
+            @DisplayName("task 리스트의 크기를 1 증가시킨다.")
+            void it_count_up_task_list_size() {
+                assertThat(taskController.list().size()).isEqualTo(size + 1);
+            }
         }
     }
 
@@ -143,13 +148,18 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
+            private Task modified;
+
+            @BeforeEach
+            void checkIfHasSaveId() {
+                modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(modified.getId());
+            }
+
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                final Task modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
-
                 assertThat(modified.getClass()).isEqualTo(Task.class);
-                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
                 assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
                 assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
@@ -185,12 +195,18 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
+            private Task modified;
+
+            @BeforeEach
+            void checkIfHasSaveId() {
+                modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(modified.getId());
+            }
+
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                final Task modified = taskController.patch(GIVEN_SAVED_TASK_ID, modifying);
                 assertThat(modified.getClass()).isEqualTo(Task.class);
-                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
                 assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
                 assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
@@ -223,8 +239,15 @@ class TaskControllerTest {
         class Context_with_saved_id {
             private int size;
 
+            void checkIfHasSaveId() {
+                final Task gotten = taskController.detail(GIVEN_SAVED_TASK_ID);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
+            }
+
             @BeforeEach
             void setDeletedTask() {
+                checkIfHasSaveId();
+
                 size = taskController.list().size();
                 taskController.delete(GIVEN_SAVED_TASK_ID);
             }

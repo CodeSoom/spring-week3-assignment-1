@@ -106,24 +106,28 @@ public class TaskServiceTest {
         private int size;
         private Task added;
 
-        @BeforeEach
-        void setAddedTask() {
-            size = taskService.getTasks().size();
-            added = taskService.createTask(task);
-        }
+        @Nested
+        @DisplayName("task를 추가하고,")
+        class It_add_task {
+            @BeforeEach
+            void setAddedTask() {
+                size = taskService.getTasks().size();
+                added = taskService.createTask(task);
+            }
 
-        @Test
-        @DisplayName("task를 추가하고, 추가된 task를 리턴한다.")
-        void it_return_added_task() {
-            assertThat(added.getClass()).isEqualTo(Task.class);
-            assertThat(added.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-            assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
-        }
+            @Test
+            @DisplayName("추가된 task를 리턴한다.")
+            void it_return_added_task() {
+                assertThat(added.getClass()).isEqualTo(Task.class);
+                assertThat(added.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
+                assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+            }
 
-        @Test
-        @DisplayName("task 리스트의 크기를 1 증가시킨다.")
-        void it_count_up_task_list_size() {
-            assertThat(taskService.getTasks().size()).isEqualTo(size + 1);
+            @Test
+            @DisplayName("task 리스트의 크기를 1 증가시킨다.")
+            void it_count_up_task_list_size() {
+                assertThat(taskService.getTasks().size()).isEqualTo(size + 1);
+            }
         }
     }
 
@@ -143,13 +147,18 @@ public class TaskServiceTest {
         @Nested
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
+            private Task modified;
+
+            @BeforeEach
+            void checkIfHasSaveId() {
+                modified = taskService.updateTask(GIVEN_SAVED_TASK_ID, modifying);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(modified.getId());
+            }
+
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_return_modified_task() {
-                final Task modified = taskService.updateTask(GIVEN_SAVED_TASK_ID, modifying);
-
                 assertThat(modified.getClass()).isEqualTo(Task.class);
-                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
                 assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
                 assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
             }
@@ -183,8 +192,15 @@ public class TaskServiceTest {
             private int size;
             private Task deleted;
 
+            void checkIfHasSaveId() {
+                final Task gotten = taskService.getTask(GIVEN_SAVED_TASK_ID);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
+            }
+
             @BeforeEach
             void setDeletedTask() {
+                checkIfHasSaveId();
+
                 size = taskService.getTasks().size();
                 deleted = taskService.deleteTask(GIVEN_SAVED_TASK_ID);
             }
@@ -212,7 +228,7 @@ public class TaskServiceTest {
             void it_throw_exception() {
                 assertThatThrownBy(
                         () -> taskService.deleteTask(GIVEN_UNSAVED_TASK_ID),
-                        "task를 찾을 수 없다는 예외를 던져야 합니다"
+                        "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
         }
