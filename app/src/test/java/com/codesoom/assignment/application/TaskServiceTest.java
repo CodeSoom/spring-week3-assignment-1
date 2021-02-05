@@ -2,7 +2,6 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -43,5 +42,18 @@ class TaskServiceTest {
 
         //then
         assertThat(tasks.get(0).getTitle()).isEqualTo(newTasks.get(0).getTitle());
+    }
+
+    @Test
+    void testGetTask(){
+        //given
+        Long id = 1L;
+        given(taskService.getTask(id)).willReturn(task);
+
+        //when
+        Task newTask = taskService.getTask(id);
+
+        //then
+        assertThat(task).isSameAs(task);
     }
 }
