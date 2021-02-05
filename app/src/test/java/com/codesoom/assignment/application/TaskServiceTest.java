@@ -52,7 +52,6 @@ class TaskServiceTest {
         }
     }
 
-
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
