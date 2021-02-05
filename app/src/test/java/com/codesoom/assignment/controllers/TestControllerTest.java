@@ -55,6 +55,7 @@ public class TestControllerTest {
         @DisplayName("서비스로 호출하는 Tasks가 존재하면")
         class Context_with_tasks {
             List<Task> tasks = new ArrayList<>();
+
             @BeforeEach
             void setUp() {
                 Task task = new Task();
@@ -66,9 +67,9 @@ public class TestControllerTest {
                         .willReturn(tasks);
             }
 
-            @DisplayName("OK 상태와 tasks 목록을 리턴한다.")
+            @DisplayName("OK 상태와 tasks 목록을 응답한다.")
             @Test
-            void it_return_tasks() throws Exception {
+            void it_response_ok_with_tasks() throws Exception {
 
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
@@ -80,9 +81,9 @@ public class TestControllerTest {
         @DisplayName("서비스로 호출하는 Tasks가 없으면")
         class Context_without_tasks {
 
-            @DisplayName("OK와 비어있는 tasks 목록 리턴한다.")
+            @DisplayName("OK 상태와 비어있는 tasks 목록 응답한다.")
             @Test
-            void it_return_empty_tasks() throws Exception {
+            void it_response_ok_with_empty_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("[]")));
@@ -103,9 +104,9 @@ public class TestControllerTest {
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
-            @DisplayName("Not Found 상태를 리턴한다.")
+            @DisplayName("Not Found 상태를 응답한다.")
             @Test
-            void It_returns_not_found() throws Exception {
+            void It_response_not_found() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
                         .andExpect(status().isNotFound());
             }
@@ -125,9 +126,9 @@ public class TestControllerTest {
                         .willReturn(task);
             }
 
-            @DisplayName("OK 상태와 task를 리턴한다.")
+            @DisplayName("OK 상태와 task를 응답한다.")
             @Test
-            void it_return_task() throws Exception {
+            void it_response_ok_with_task() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
                         .andExpect(status().isOk())
                         .andExpect(content().string(objectMapper.writeValueAsString(task)));
@@ -144,8 +145,8 @@ public class TestControllerTest {
             Task task = createTask();
 
             @Test
-            @DisplayName("Created 상태를 리턴한다.")
-            void It_returns_created() throws Exception {
+            @DisplayName("Created 상태를 응답한다.")
+            void It_response_created() throws Exception {
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(task))
@@ -166,10 +167,10 @@ public class TestControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 task를 리턴한다.")
+            @DisplayName("OK 상태와 task를 응답한다.")
             @Test
-            void it_return_task() throws Exception {
-                mockMvc.perform(put("/tasks/" + GIVEN_ID)
+            void it_response_task() throws Exception {
+                mockMvc.perform(put("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
                         .andExpect(status().isOk());
@@ -186,10 +187,10 @@ public class TestControllerTest {
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
-            @DisplayName("Not Found 상태를 리턴한다.")
+            @DisplayName("Not Found 상태를 응답한다.")
             @Test
-            void It_returns_not_found() throws Exception {
-                mockMvc.perform(put("/tasks/" + GIVEN_ID))
+            void It_response_not_found() throws Exception {
+                mockMvc.perform(put("/tasks/{id}", GIVEN_ID))
                         .andExpect(status().isBadRequest());
             }
         }
@@ -208,9 +209,9 @@ public class TestControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 task를 리턴한다.")
+            @DisplayName("OK 상태와 task를 응답한다.")
             @Test
-            void it_return_task() throws Exception {
+            void it_response_task() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
@@ -229,10 +230,10 @@ public class TestControllerTest {
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
-            @DisplayName("Not Found 상태를 리턴한다.")
+            @DisplayName("Not Found 상태를 응답한다.")
             @Test
-            void It_returns_not_found() throws Exception {
-                mockMvc.perform(patch("/tasks/" + GIVEN_ID))
+            void It_response_not_found() throws Exception {
+                mockMvc.perform(patch("/tasks/{id}", GIVEN_ID))
                         .andExpect(status().isBadRequest());
             }
         }
@@ -251,9 +252,9 @@ public class TestControllerTest {
                         .willThrow(new TaskNotFoundException(anyLong()));
             }
 
-            @DisplayName("Not Found 상태를 리턴한다.")
+            @DisplayName("Not Found 상태를 응답한다.")
             @Test
-            void It_returns_not_found() throws Exception {
+            void It_response_not_found() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID))
                         .andExpect(status().isNotFound());
             }
@@ -268,9 +269,9 @@ public class TestControllerTest {
                 given(taskService.deleteTask(anyLong())).willReturn(createTask());
             }
 
-            @DisplayName("NO CONTENT 상태와 task를 리턴한다.")
+            @DisplayName("NO CONTENT 상태와 task를 응답한다.")
             @Test
-            void it_return_no_content_with_task() throws Exception {
+            void it_response_no_content_with_task() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
