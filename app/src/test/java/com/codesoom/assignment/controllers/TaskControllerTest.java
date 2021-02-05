@@ -114,7 +114,7 @@ class TaskControllerTest {
             void itReturnsEmptyString() {
                 taskController.delete(1L);
 
-                Assertions.assertEquals(taskController.list().toString(), "");
+                Assertions.assertEquals(taskController.list().toString(), "[]");
             }
         }
     }
