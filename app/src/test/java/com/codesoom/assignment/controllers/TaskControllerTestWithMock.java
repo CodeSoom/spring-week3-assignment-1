@@ -11,8 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,6 +60,22 @@ class TaskControllerTestWithMock {
                 .content(objectMapper.writeValueAsString(task)))
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @DisplayName("Task 수정")
+    @Test
+    void testUpdate() throws Exception {
+
+        Task newTask = new Task();
+        newTask.setTitle("책구매");
+
+        Long id = 1L;
+
+        mockMvc.perform(put("/tasks" + "/" + id)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(newTask)))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
     
 }
