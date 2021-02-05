@@ -23,10 +23,17 @@ class TaskControllerTest {
         task.setTitle("책읽기");
     }
 
-    @DisplayName("Task 비어있는 목록")
+    @DisplayName("비어있는 Task 목록")
     @Test
     void testListWithoutContent(){
         assertThat(taskController.list()).isEmpty();
     }
-    
+
+    @DisplayName("존재하는 Task 목록")
+    @Test
+    void testListWithContent(){
+        taskController.create(task);
+        assertThat(taskController.list()).isNotEmpty();
+    }
+
 }
