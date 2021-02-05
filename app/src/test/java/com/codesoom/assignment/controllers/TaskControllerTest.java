@@ -118,7 +118,7 @@ class TaskControllerTest {
     class Describe_update {
 
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
 
             @Test
@@ -135,7 +135,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
 
             @Test
@@ -157,7 +157,7 @@ class TaskControllerTest {
     @DisplayName("patch 메서드는")
     class Describe_patch {
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
 
             @Test
@@ -174,7 +174,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
 
             @Test
@@ -196,7 +196,7 @@ class TaskControllerTest {
     @DisplayName("delete 메서드는")
     class Describe_delete {
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
 
             @Test
@@ -210,11 +210,11 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
 
             @Test
-            @DisplayName("삭제 후 대상 id를 조회하면 Task 를 찾을 수 없다는 예외를 던진다.")
+            @DisplayName("삭제 후 주어진 id를 조회하면 Task 를 찾을 수 없다는 예외를 던진다.")
             void It_returns_modified_task() {
                 TaskController subject = subject(givenTitle);
 

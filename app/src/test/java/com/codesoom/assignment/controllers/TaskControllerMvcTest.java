@@ -181,7 +181,7 @@ class TaskControllerMvcTest {
     class Describe_update {
 
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
             @BeforeEach
             void setup() {
@@ -203,7 +203,7 @@ class TaskControllerMvcTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
             @BeforeEach
             void setup() {
@@ -234,7 +234,7 @@ class TaskControllerMvcTest {
     class Describe_patch {
 
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
             @BeforeEach
             void setup() {
@@ -255,7 +255,7 @@ class TaskControllerMvcTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
             @BeforeEach
             void setup() {
@@ -285,7 +285,7 @@ class TaskControllerMvcTest {
     @DisplayName("[DELETE] /tasks/{id} 메서드는")
     class Describe_delete {
         @Nested
-        @DisplayName("대상 id가 없을 때")
+        @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
             @BeforeEach
             void setup() {
@@ -304,7 +304,7 @@ class TaskControllerMvcTest {
         }
 
         @Nested
-        @DisplayName("대상 id가 있을 때")
+        @DisplayName("주어진 id가 있을 때")
         class Context_with_target_id {
             @BeforeEach
             void setup() {
@@ -313,7 +313,7 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("삭제 후 대상 id를 조회하면 status not found 를 응답한다.")
+            @DisplayName("삭제 후 주어진 id를 조회하면 status not found 를 응답한다.")
             void It_respond_modified_task() throws Exception {
                 final RequestBuilder deleteRequest = delete("/tasks/{id}", givenID);
                 final RequestBuilder getRequest = get("/tasks/{id}", givenID);
