@@ -62,8 +62,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("빈 집합을 리턴한다.")
-            void It_returns_void_array() throws Exception {
+            @DisplayName("빈 집합을 응답한다.")
+            void It_respond_void_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(content().json("[]"));
             }
@@ -84,8 +84,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("Task 의 집합을 리턴한다.")
-            void It_returns_exists_array() throws Exception {
+            @DisplayName("Task 의 집합을 응답한다.")
+            void It_respond_exists_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(content().json(String.format("[{\"title\":\"%s\",\"id\":%d}]", givenTitle, givenID)));
             }
@@ -106,8 +106,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("status not found 를 던진다.")
-            void It_throws_task_not_found_exception() throws Exception {
+            @DisplayName("status not found 를 응답한다.")
+            void It_respond_task_not_found_exception() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", givenNotExistID))
                         .andExpect(status().isNotFound());
             }
@@ -125,8 +125,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("Task 를 리턴한다.")
-            void It_returns_task() throws Exception {
+            @DisplayName("Task 를 응답한다.")
+            void It_respond_task() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", givenID))
                         .andExpect(content().json(String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID)));
             }
@@ -145,8 +145,8 @@ class TaskControllerMvcTest {
         }
 
         @Test
-        @DisplayName("생성된 Task 를 리턴한다.")
-        void It_returns_created_task() throws Exception {
+        @DisplayName("생성된 Task 를 응답한다.")
+        void It_respond_created_task() throws Exception {
             String postContent = String.format("{\"title\":\"%s\"}", givenTitle);
             String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
 
@@ -169,8 +169,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("status not found 를 던진다.")
-            void It_throws_task_not_found_exception() throws Exception {
+            @DisplayName("status not found 를 응답한다.")
+            void It_respond_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
 
                 mockMvc.perform(
@@ -193,8 +193,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("변경된 Task 를 리턴한다.")
-            void It_returns_modified_task() throws Exception {
+            @DisplayName("변경된 Task 를 응답한다.")
+            void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
                 String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
@@ -218,8 +218,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("status not found 를 던진다.")
-            void It_throws_task_not_found_exception() throws Exception {
+            @DisplayName("status not found 를 응답한다.")
+            void It_respond_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
 
                 mockMvc.perform(
@@ -242,8 +242,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("변경된 Task 를 리턴한다.")
-            void It_returns_modified_task() throws Exception {
+            @DisplayName("변경된 Task 를 응답한다.")
+            void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
                 String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
@@ -266,8 +266,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
-            void It_throws_task_not_found_exception() throws Exception {
+            @DisplayName("Task 를 찾을 수 없다는 예외를 응답한다.")
+            void It_respond_task_not_found_exception() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", givenNotExistID))
                         .andExpect(status().isNotFound());
             }
@@ -283,8 +283,8 @@ class TaskControllerMvcTest {
             }
 
             @Test
-            @DisplayName("삭제 후 대상 id를 조회하면 status not found 를 던진다.")
-            void It_returns_modified_task() throws Exception {
+            @DisplayName("삭제 후 대상 id를 조회하면 status not found 를 응답한다.")
+            void It_respond_modified_task() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", givenID));
                 mockMvc.perform(get("/tasks/{id}", givenID))
                         .andExpect(status().isNotFound());
