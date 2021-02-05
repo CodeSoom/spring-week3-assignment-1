@@ -1,5 +1,7 @@
 package com.codesoom.assignment.controllers;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,14 +15,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(HelloController.class)
+@DisplayName("HelloController 클래스는")
 public class HelloControllerWebMvcTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    void sayHelloWithValidUrl() throws Exception {
-        this.mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello, world!")));
+    @Nested
+    @DisplayName("만약 /의 경로가 주어진다면")
+    class ContextWithRootUrl {
+        @Test
+        @DisplayName("OK를 반환한다")
+        void itReturnsWithOKHttpStatus() throws Exception {
+            mockMvc.perform(get("/"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("Hello, world!")));
+        }
     }
 }
