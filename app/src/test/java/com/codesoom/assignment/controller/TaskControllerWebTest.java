@@ -89,7 +89,6 @@ public class TaskControllerWebTest {
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(content().string("[]"));
-
             }
         }
 
@@ -163,18 +162,4 @@ public class TaskControllerWebTest {
             }
         }
     }
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
