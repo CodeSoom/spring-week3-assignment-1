@@ -104,10 +104,9 @@ public class NestedTaskServiceTest {
 
             @BeforeEach
             void init_application_service() {
-                TaskService taskService = new TaskService();
                 Task task = new Task();
 
-                Task createdTask = taskService.createTask(task);
+                createdTask = taskService.createTask(task);
             }
 
             @Test
