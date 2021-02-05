@@ -65,6 +65,7 @@ class TaskControllerMvcTest {
             @DisplayName("빈 집합을 응답한다.")
             void It_respond_void_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
                         .andExpect(content().json("[]"));
             }
         }
@@ -87,6 +88,7 @@ class TaskControllerMvcTest {
             @DisplayName("Task 의 집합을 응답한다.")
             void It_respond_exists_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
                         .andExpect(content().json(String.format("[{\"title\":\"%s\",\"id\":%d}]", givenTitle, givenID)));
             }
         }
@@ -128,6 +130,7 @@ class TaskControllerMvcTest {
             @DisplayName("Task 를 응답한다.")
             void It_respond_task() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", givenID))
+                        .andExpect(status().isOk())
                         .andExpect(content().json(String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID)));
             }
         }
@@ -151,6 +154,7 @@ class TaskControllerMvcTest {
             String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
 
             mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(postContent))
+                    .andExpect(status().isCreated())
                     .andExpect(content().json(receiveJSON));
         }
     }
@@ -199,6 +203,7 @@ class TaskControllerMvcTest {
                 String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
                 mockMvc.perform(put("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
+                        .andExpect(status().isOk())
                         .andExpect(content().json(receiveJSON));
             }
         }
@@ -248,6 +253,7 @@ class TaskControllerMvcTest {
                 String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
                 mockMvc.perform(patch("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
+                        .andExpect(status().isOk())
                         .andExpect(content().json(receiveJSON));
             }
         }
@@ -285,7 +291,9 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("삭제 후 대상 id를 조회하면 status not found 를 응답한다.")
             void It_respond_modified_task() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", givenID));
+                mockMvc.perform(delete("/tasks/{id}", givenID))
+                        .andExpect(status().isNoContent());
+
                 mockMvc.perform(get("/tasks/{id}", givenID))
                         .andExpect(status().isNotFound());
             }
