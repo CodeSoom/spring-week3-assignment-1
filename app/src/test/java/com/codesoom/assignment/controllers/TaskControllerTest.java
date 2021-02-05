@@ -25,7 +25,7 @@ class TaskControllerTest {
         task.setTitle("책읽기");
     }
 
-    @DisplayName("비어있는 Task 목록")
+    @DisplayName("존재하지 않는 Task 목록")
     @Test
     void testListWithoutContent(){
         assertThat(taskController.list()).isEmpty();

@@ -12,8 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TaskController.class)
@@ -35,13 +35,11 @@ class TaskControllerTestWithMock {
         task.setTitle("책일기");
 
         objectMapper = new ObjectMapper();
-
-
     }
 
-    @DisplayName("존재하는 Task 목록")
+    @DisplayName("Task 목록")
     @Test
-    void testListWithResource() throws Exception {
+    void testList() throws Exception {
 
         taskService.createTask(task);
 
@@ -51,6 +49,14 @@ class TaskControllerTestWithMock {
                 .andExpect(status().isOk());
     }
 
-
+    @DisplayName("Task 생성")
+    @Test
+    void testCreate() throws Exception {
+        mockMvc.perform(post("/tasks")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(task)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
 
 }
