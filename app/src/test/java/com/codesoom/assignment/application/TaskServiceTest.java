@@ -38,7 +38,7 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("getTasks 메소드는")
-    class Describe_list {
+    class Describe_getTasks {
 
         @Test
         @DisplayName("Task가 존재하면 하나 이상의 Task 목록을 반환한다 ")
@@ -52,20 +52,26 @@ class TaskServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("ID가 존재할 경우")
-    class Describe_id {
 
-        @Test
-        @DisplayName("해당 ID를 갖는 Task를 반환하고")
-        void getTaskWithValidId() {
-            Task task = taskService.getTask(1L);
-            assertThat(task.getTitle()).isEqualTo("test");
+    @Nested
+    @DisplayName("getTask 메소드는")
+    class Describe_getTask {
+
+        @Nested
+        @DisplayName("ID가 존재하는 경우")
+        class Context_with_id {
+
+            @Test
+            @DisplayName("해당 ID를 갖는 Task를 반환한다")
+            void getTaskWithValidId() {
+                Task task = taskService.getTask(1L);
+                assertThat(task.getTitle()).isEqualTo("test");
+            }
         }
 
         @Nested
         @DisplayName("ID가 존재하지 않는 경우")
-        class Describe_noId {
+        class Context_no_id {
 
             @Test
             @DisplayName("Task를 찾을 수 없다는 경고 메시지를 반환한다")
@@ -81,7 +87,7 @@ class TaskServiceTest {
     class Describe_newTask {
 
         @Test
-        @DisplayName("새로운 Task를 생성한다.")
+        @DisplayName("새로운 Task를 생성한다")
         void createTask() {
             int oldSize = taskService.getTasks().size();
 
