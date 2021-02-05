@@ -36,4 +36,12 @@ class TaskControllerTest {
         assertThat(taskController.list()).isNotEmpty();
     }
 
+    @DisplayName("존재하는 Task")
+    @Test
+    void testDetailValid(){
+        taskController.create(task);
+        assertThat(taskController.detail(1L)).isEqualTo(task);
+        assertThat(taskController.detail(1L)).isSameAs(task);
+    }
+
 }
