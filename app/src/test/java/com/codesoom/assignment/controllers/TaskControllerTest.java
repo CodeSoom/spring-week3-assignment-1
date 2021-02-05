@@ -56,5 +56,11 @@ class TaskControllerTest {
         // 성공할 것 같은데 실패함 : 이유 더 찾아보기
         // assertThat(taskController.detail(1L)).isSameAs(task);
     }
-    
+
+    @DisplayName("Task 생성")
+    @Test
+    void testCreate(){
+        assertThat(taskController.create(task).getId()).isEqualTo(task.getId());
+    }
+
 }
