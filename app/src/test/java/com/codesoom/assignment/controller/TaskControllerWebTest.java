@@ -3,6 +3,7 @@ package com.codesoom.assignment.controller;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -27,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerWebTest {
     @Autowired // 우리가 new를 하지 않고 spring이 자동으로 넣어주는 것
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private TaskService taskService; // 실제가 아닌 가짜인데, 진짜처럼 작동하게 해서 테스트함
@@ -48,7 +54,7 @@ public class TaskControllerWebTest {
 
     @Nested
     @DisplayName("GET 요청은")
-    class Descrivve_GET {
+    class Describe_get_request {
         @Nested
         @DisplayName("할 일 목록에 저장된 데이터가 있으면")
         class Context_with_tasks {
@@ -59,8 +65,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200 응답코드와 저장 되어있는 할 일을 리턴한다.")
-            void It_returns_200_and_tasks() throws Exception {
+            @DisplayName("200 코드를 응답하고, 저장 되어있는 할 일을 리턴한다.")
+            void It_respond_200_and_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("Test Task")));
@@ -76,9 +82,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200 응답코드와 비어있는 목록을 리턴한다")
-            void it_returns_200_and_tasks() throws Exception {
-
+            @DisplayName("200 코드를 응답하고, 비어있는 목록을 리턴한다.")
+            void it_respond_200_and_tasks() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -98,8 +103,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200 응답코드와 id에 일치하는 task를 리턴한다.")
-            void It_returns_200_and_target_task() throws Exception {
+            @DisplayName("200 코드를 응답하고, id에 일치하는 할 일을 리턴한다.")
+            void It_respond_200_and_target_task() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", TASK_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -119,8 +124,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404 응답코드를 리턴한다.")
-            void It_returns_404_and_error_message() throws Exception {
+            @DisplayName("404 코드를 응답한다.")
+            void It_respond_404() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_TASK_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -130,4 +135,46 @@ public class TaskControllerWebTest {
         }
     }
 
+    @Nested
+    @DisplayName("POST 요청은")
+    class Describe_post_request {
+        @Nested
+        @DisplayName("새로운 할 일을 추가하면")
+        class Context_add_new_task {
+            @BeforeEach
+            void setUp() {
+                Task newTask = new Task();
+                newTask.setId(1004L);
+                newTask.setTitle("Just love yourself");
+                given(taskService.createTask(any(Task.class))).willReturn(newTask);
+            }
+
+            @Test
+            @DisplayName("201 코드를 응답하고, 생성된 할 일을 리턴한다.")
+            void create() throws Exception {
+                mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("id").value(1004L))
+                        .andExpect(jsonPath("title").exists())
+                        .andExpect(jsonPath("title").value("Just love yourself"));
+            }
+        }
+    }
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
