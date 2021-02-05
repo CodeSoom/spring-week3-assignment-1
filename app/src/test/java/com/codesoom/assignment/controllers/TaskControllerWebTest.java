@@ -37,13 +37,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerWebTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @MockBean
-    TaskService taskService;
+    private TaskService taskService;
 
     private static final String TASK_TITLE = "test";
 
@@ -80,8 +80,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 저장된 task를 리턴한다")
-            void it_returns_200_and_tasks() throws Exception {
+            @DisplayName("200코드와 저장된 task를 응답한다")
+            void it_replies_with_200_and_the_tasks() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -101,8 +101,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 빈 task list를 리턴한다")
-            void it_returns_200_and_tasks() throws Exception {
+            @DisplayName("200코드와 빈 task list를 응답한다")
+            void it_replies_with_200_and_the_empty_tasks() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -121,8 +121,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 task를 리턴한다")
-            void it_returns_200_and_a_task() throws Exception {
+            @DisplayName("200코드와 task를 응답한다")
+            void it_replies_with_200_and_the_task() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -142,8 +142,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 리턴한다")
-            void it_returns_404_and_error_message() throws Exception {
+            @DisplayName("404코드와 에러메시지를 응답한다")
+            void it_replies_with_the_error_message_and_404() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -168,8 +168,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("201코드와 생성된 task를 리턴한다")
-            void it_returns_201_and_created_task() throws Exception {
+            @DisplayName("201코드와 생성된 task를 응답한다")
+            void it_replies_with_201_and_the_created_task() throws Exception {
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -194,8 +194,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 수정된 task를 리턴한다")
-            void it_returns_200_and_a_task() throws Exception {
+            @DisplayName("200코드와 수정된 task를 응답한다")
+            void it_replies_with_200_and_the_updated_task() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -216,8 +216,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 리턴한다")
-            void it_returns_404_and_error_message() throws Exception {
+            @DisplayName("404코드와 에러메시지를 응답한다")
+            void it_replies_with_the_error_message_and_404() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -242,8 +242,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 수정된 task를 리턴한다")
-            void it_returns_200_and_a_task() throws Exception {
+            @DisplayName("200코드와 수정된 task를 응답한다")
+            void it_replies_with_200_and_the_updated_task() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -264,8 +264,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 리턴한다")
-            void it_returns_404_and_error_message() throws Exception {
+            @DisplayName("404코드와 에러메시지를 응답한다")
+            void it_replies_with_the_error_message_and_404() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -290,8 +290,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("204코드를 리턴한다")
-            void it_returns_204() throws Exception {
+            @DisplayName("204코드를 응답한다")
+            void it_replies_with_204() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -311,8 +311,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 리턴한다")
-            void it_returns_404_and_error_message() throws Exception {
+            @DisplayName("404코드와 에러메시지를 응답한다")
+            void it_replies_with_the_error_message_and_404() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
