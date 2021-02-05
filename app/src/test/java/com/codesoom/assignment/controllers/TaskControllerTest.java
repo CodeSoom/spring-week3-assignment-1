@@ -114,7 +114,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("주어진 id를 가진 할 일을 찾을 수 없으면, NotFound 예외가 발생한다.")
+    @DisplayName("주어진 id를 가진 할 일을 찾을 수 없으면, 변경이 불가능하고 NotFound 예외가 발생한다.")
     void updateTaskWithInvalidId() {
         taskController.create(task1);
 
@@ -137,5 +137,27 @@ class TaskControllerTest {
                 () -> taskController.update(1L, null),
                 "NullPointerException 이 던져져야 한다."
         );
+    }
+
+    @Test
+    @DisplayName("주어진 id를 가진 할 일을 찾을 수 있고 삭제할 수 있다면, 할 일이 삭제된다.")
+    void deleteTaskWithValidId() {
+        taskController.create(task1);
+        assertThat(taskController.list()).hasSize(1);
+
+        taskController.delete(1L);
+        assertThat(taskController.list()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("주어진 id를 가진 할 일을 찾을 수 없으면, 삭제가 불가능하고 NotFound 예외가 발생한다.")
+    void deleteTaskWithInvalidId() {
+        for (long id : givenInvalidIds) {
+            Assertions.assertThrows(
+                    TaskNotFoundException.class,
+                    () -> taskController.delete(id),
+                    "할 일을 찾을 수 없을 경우를 표현하는 예외가 던져져야 한다."
+            );
+        }
     }
 }
