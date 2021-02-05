@@ -103,7 +103,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("비어있는 배열과 상태코드 200을 응답한다")
-            void list() throws Exception {
+            void listWithEmptyTasks() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -123,7 +123,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("찾은 task와 상태코드 200을 응답한다")
-            void getTask() throws Exception {
+            void detail() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -144,7 +144,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
-            void getTask() throws Exception {
+            void detailWithNotExistingId() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -170,7 +170,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("생성된 task와 상태코드 201을 응답한다")
-            void createTask() throws Exception {
+            void create() throws Exception {
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("수정된 task와 상태코드 200을 응답한다")
-            void updateTask() throws Exception {
+            void update() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -218,7 +218,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
-            void updateTask() throws Exception {
+            void updateWithNotExistingId() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -244,7 +244,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("수정된 task와 상태코드 200을 응답한다")
-            void updateTask() throws Exception {
+            void update() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -266,7 +266,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
-            void updateTask() throws Exception {
+            void updateWithNotExistingId() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -313,7 +313,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
-            void deleteTask() throws Exception {
+            void deleteWithNotExistingId() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
