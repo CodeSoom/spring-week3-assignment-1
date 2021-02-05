@@ -21,6 +21,17 @@ public class TaskTest {
         task.setTitle(GIVEN_TITLE);
     }
 
+    @DisplayName("Task를 생성한다")
+    @Test
+    void create() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("STUDY");
+
+        assertThat(task.getId()).isEqualTo(1L);
+        assertThat(task.getTitle()).isEqualTo("STUDY");
+    }
+
     @DisplayName("setId은 Task의 id를 변경한다")
     @Test
     void setId() {

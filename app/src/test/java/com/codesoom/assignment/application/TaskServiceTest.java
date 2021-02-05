@@ -83,7 +83,7 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메서드는")
     class Describe_getTask {
-        final Long targetId = 1L;
+        final Long id = 1L;
 
         @Nested
         @DisplayName("할 일인 Task 값 있으면서, 찾고자하는 Task id가 주어지진다면")
@@ -98,8 +98,8 @@ public class TaskServiceTest {
             @Test
             void it_returns_tasks() {
                 assertAll(
-                        () -> assertThat(taskService.getTask(targetId)).isNotNull(),
-                        () -> assertThat(taskService.getTask(targetId)).extracting("title").isEqualTo(TASK_TITLE_1)
+                        () -> assertThat(taskService.getTask(id)).isNotNull(),
+                        () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(TASK_TITLE_1)
                 );
             }
         }
@@ -112,7 +112,7 @@ public class TaskServiceTest {
             @Test
             void it_throws_exception() {
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> taskService.getTask(targetId));
+                        .isThrownBy(() -> taskService.getTask(id));
             }
         }
     }
@@ -129,7 +129,7 @@ public class TaskServiceTest {
             @Test
             void it_returns_task_and_size() {
 
-                assertThat(taskService.createTask(newTask)).extracting("title").isEqualTo(NEW_TITLE);
+                assertThat(taskService.createTask(newTask).getTitle()).isEqualTo(NEW_TITLE);
                 assertThat(taskService.getTasks()).hasSize(1);
             }
         }
@@ -138,7 +138,7 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("updateTask 메서드는")
     class Describe_updateTask {
-        final Long targetId = 1L;
+        final Long id = 1L;
         final Task newTask = newTaskSubject();
 
         @Nested
@@ -150,8 +150,8 @@ public class TaskServiceTest {
             void it_returns_update_task() {
                 TaskService taskService = existTasksSubject();
                 assertAll(
-                        () -> assertThat(taskService.updateTask(targetId, newTask)).isNotNull(),
-                        () -> assertThat(taskService.getTask(targetId)).extracting("title").isEqualTo(NEW_TITLE)
+                        () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
+                        () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(NEW_TITLE)
                 );
             }
         }
@@ -164,7 +164,7 @@ public class TaskServiceTest {
             @Test
             void it_throws_exception() {
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> taskService.updateTask(targetId, newTask));
+                        .isThrownBy(() -> taskService.updateTask(id, newTask));
             }
         }
     }
@@ -172,7 +172,7 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메서드는")
     class Describe_deleteTask {
-        final Long targetId = 1L;
+        final Long id = 1L;
 
         @Nested
         @DisplayName("할 일인 Task 값 있으면서, 삭제하고자 하는 Task id가 주어지진다면")
@@ -188,7 +188,7 @@ public class TaskServiceTest {
             @Test
             void it_returns_delete_task() {
                 assertAll(
-                        () -> assertThat(taskService.deleteTask(targetId)).extracting("title").isEqualTo(TASK_TITLE_1),
+                        () -> assertThat(taskService.deleteTask(id).getTitle()).isEqualTo(TASK_TITLE_1),
                         () -> assertThat(taskService.getTasks()).hasSize(1)
                 );
             }
@@ -202,7 +202,7 @@ public class TaskServiceTest {
             @Test
             void it_throws_exception() {
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> taskService.deleteTask(targetId));
+                        .isThrownBy(() -> taskService.deleteTask(id));
             }
         }
     }
