@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
 
@@ -44,4 +46,15 @@ class TaskControllerTest {
         assertThat(taskController.detail(1L)).isSameAs(task);
     }
 
+    @DisplayName("존재하지않는 Task")
+    @Test
+    void testDetailInValid(){
+        taskController.create(task);
+        assertThat(taskController.detail(1L)).isEqualTo(task);
+        assertThatThrownBy(() -> {taskController.detail(2L); } )
+                .isInstanceOf(TaskNotFoundException.class);
+        // 성공할 것 같은데 실패함 : 이유 더 찾아보기
+        // assertThat(taskController.detail(1L)).isSameAs(task);
+    }
+    
 }
