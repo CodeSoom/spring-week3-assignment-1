@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(HelloController.class)
-@DisplayName("HelloController 클래스는")
+@DisplayName("HelloController 클래스")
 public class HelloControllerWebMvcTest {
     @Autowired
     MockMvc mockMvc;
