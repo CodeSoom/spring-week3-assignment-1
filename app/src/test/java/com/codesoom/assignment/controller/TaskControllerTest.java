@@ -122,8 +122,7 @@ class TaskControllerTest {
         @DisplayName("새롭게 생성한 할 일을 리턴한다.")
         void It_return_new_task() {
             Task task = controller.create(newTask);
-            assertThat(task.getTitle()).isEqualTo("newTaskTitle");
-
+            assertThat(task.getTitle()).isEqualTo(newTask.getTitle());
         }
     }
 
