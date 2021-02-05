@@ -2,37 +2,58 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Task Service는")
+@DisplayName("Task Service에서")
 public class NestedTaskServiceTest {
 
     @Nested
-    @DisplayName("기존에 생성된 task가 없는 경우")
+    @DisplayName("모든 테스크를 얻으려고 한다면")
     class Describe_getTask {
-        private final TaskService taskService = new TaskService();
 
-        @Test
-        @DisplayName("모든 테스크를 얻으려고 한다면 empty list를 반환한다.")
-        void get_tasks_return_empty_list() {
-            List<Task> tasks = taskService.getTasks();
-            assertTrue(tasks.isEmpty());
+        @Nested
+        @DisplayName("기존에 생성된 task가 없는 경우")
+        class Context_noCreatedTask {
+            private TaskService taskService;
+
+            @BeforeEach
+            void init_application_service() {
+                taskService = new TaskService();
+            }
+
+            @Test
+            @DisplayName("empty list를 반환한다.")
+            void get_tasks_return_empty_list() {
+                List<Task> tasks = taskService.getTasks();
+                assertTrue(tasks.isEmpty());
+            }
         }
 
-        @Test
-        @DisplayName("특정 task를 얻으려고 한다면 TaskNotFoundException에러가 발생한다.")
-        void get_task_raise_error() {
-            assertThrows(
-                    TaskNotFoundException.class,
-                    () -> taskService.getTask(1L)
-            );
+        @Nested
+        @DisplayName("이미 task 하나를 생성했다면")
+        class Context_alreadyCreatedTask {
+            private TaskService taskService;
+
+            @BeforeEach
+            void init_application_service() {
+                taskService = new TaskService();
+                Task task = new Task();
+                taskService.createTask(task);
+            }
+
+            @Test
+            @DisplayName("태스크 하나가 포함된 list를 반환한다.")
+            void get_tasks_return_empty_list() {
+                List<Task> tasks = taskService.getTasks();
+                assertEquals(1, tasks.size());
+            }
         }
     }
 }
