@@ -28,7 +28,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Get all task list")
+    @DisplayName("할 일 목록의 갯수를 리턴한다")
     void getTasks() {
 
         List<Task> tasks = taskService.getTasks();
@@ -36,7 +36,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Create a task with title")
+    @DisplayName("새로운 할 일을 만들고 할일 목록의 갯수를 전과 비교한")
     void createTask() {
 
         int oldSize = taskService.getTasks().size();
@@ -51,7 +51,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Get task by valid id")
+    @DisplayName("유효한 Id의 할 일을 리턴받아 타이틀을 비교한다")
     void getTask() {
 
         Task task = taskService.getTask(1L);
@@ -59,7 +59,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Get task by invalid id")
+    @DisplayName("유효하지 않은 Id로 할 일 목록을 검색 시 에러를 리턴한다")
     void getTaskByInvalidId() {
 
         assertThatThrownBy(() -> taskService.getTask(0L))
@@ -67,7 +67,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Update task title with given id")
+    @DisplayName("기존의 Id로 할 일의 타이틀을 수정한다")
     void updateTask() {
 
         Task task = new Task();
@@ -78,7 +78,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Delete task by id")
+    @DisplayName("유효한 Id로 할 일을 삭제하면 기존 할 일 목록의 갯수가 줄어든다")
     void deleteTask() {
 
         int oldSize = taskService.getTasks().size();
