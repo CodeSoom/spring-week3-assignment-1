@@ -64,9 +64,11 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("빈 집합을 응답한다.")
             void It_respond_void_array() throws Exception {
+                final String expectContent = "[]";
+
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
-                        .andExpect(content().json("[]"));
+                        .andExpect(content().json(expectContent));
             }
         }
 
@@ -87,9 +89,12 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("Task 의 집합을 응답한다.")
             void It_respond_exists_array() throws Exception {
+                final String expectContent = String
+                        .format("[{\"title\":\"%s\",\"id\":%d}]", givenTitle, givenID);
+
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
-                        .andExpect(content().json(String.format("[{\"title\":\"%s\",\"id\":%d}]", givenTitle, givenID)));
+                        .andExpect(content().json(expectContent));
             }
         }
     }
@@ -129,9 +134,12 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("Task 를 응답한다.")
             void It_respond_task() throws Exception {
+                final String expectContent = String
+                        .format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
+
                 mockMvc.perform(get("/tasks/{id}", givenID))
                         .andExpect(status().isOk())
-                        .andExpect(content().json(String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID)));
+                        .andExpect(content().json(expectContent));
             }
         }
     }
@@ -151,11 +159,11 @@ class TaskControllerMvcTest {
         @DisplayName("생성된 Task 를 응답한다.")
         void It_respond_created_task() throws Exception {
             String postContent = String.format("{\"title\":\"%s\"}", givenTitle);
-            String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
+            String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
 
             mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(postContent))
                     .andExpect(status().isCreated())
-                    .andExpect(content().json(receiveJSON));
+                    .andExpect(content().json(expectContent));
         }
     }
 
@@ -200,11 +208,11 @@ class TaskControllerMvcTest {
             @DisplayName("변경된 Task 를 응답한다.")
             void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
-                String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
+                String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
                 mockMvc.perform(put("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
                         .andExpect(status().isOk())
-                        .andExpect(content().json(receiveJSON));
+                        .andExpect(content().json(expectContent));
             }
         }
     }
@@ -250,11 +258,11 @@ class TaskControllerMvcTest {
             @DisplayName("변경된 Task 를 응답한다.")
             void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
-                String receiveJSON = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
+                String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
 
                 mockMvc.perform(patch("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
                         .andExpect(status().isOk())
-                        .andExpect(content().json(receiveJSON));
+                        .andExpect(content().json(expectContent));
             }
         }
     }
