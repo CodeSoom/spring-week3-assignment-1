@@ -9,4 +9,15 @@ class HelloControllerTest {
         String name = "weno";
         assertThat(name).isEqualTo("weno");
     }
+
+    @Test
+    void testGetHello(){
+        HelloController helloController = new HelloController();
+        String hello = helloController.getHello();
+
+        assertThat(hello).isEqualTo("hello");
+        assertThat(hello).isNotEqualTo("hello!");
+        assertThat(hello).isEqualToIgnoringCase("Hello");
+    }
+
 }
