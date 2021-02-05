@@ -37,7 +37,7 @@ class TaskControllerTest {
     @DisplayName("할 일 목록에 데이터가 있으면")
     class Context_have_tasks {
         @Test
-        @DisplayName("할 일 목록의 데이터를 갯수를 리턴한다")
+        @DisplayName("할 일 목록의 데이터 갯수를 리턴한다")
        void it_returns_number_of_tasks() {
 
             assertThat(taskController.list().size()).isEqualTo(DEFAULT_TASK_COUNT);
