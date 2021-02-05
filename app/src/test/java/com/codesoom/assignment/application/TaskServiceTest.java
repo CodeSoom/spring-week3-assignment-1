@@ -35,12 +35,15 @@ class TaskServiceTest {
         @DisplayName("Task가 존재할 때")
         class Context_exist_task {
             @Test
-            @DisplayName("Task의 List를 반한다")
+            @DisplayName("Task의 List를 반환한다")
             void it_return_list() {
+                //given
                 createSampleTask();
 
+                //when
                 List<Task> tasks = taskService.getTasks();
 
+                //then
                 assertThat(tasks).isNotEmpty();
                 assertThat(tasks).hasSize(1);
             }
@@ -67,7 +70,7 @@ class TaskServiceTest {
         @DisplayName("id가 존재할 때")
         class Context_exist_id {
             @Test
-            @DisplayName("Task를 반한다")
+            @DisplayName("Task를 반환한다")
             void it_return_task() {
                 Task createTask = createSampleTask();
 
@@ -93,15 +96,16 @@ class TaskServiceTest {
     @Test
     @DisplayName("createTask()")
     void createTask() {
+        //given
+        int originSize = taskService.getTasks().size();
+
+        //when
         Task task = new Task();
         task.setTitle("타이틀1");
         taskService.createTask(task);
-        assertEquals(taskService.getTasks().size(), 1);
 
-        Task task2 = new Task();
-        task.setTitle("타이틀2");
-        taskService.createTask(task2);
-        assertEquals(taskService.getTasks().size(), 2);
+        //then
+        assertThat(taskService.getTasks().size() - originSize).isEqualTo(1);
     }
 
     @Nested
@@ -110,7 +114,7 @@ class TaskServiceTest {
         Task updateTask;
 
         @BeforeEach
-        void setup(){
+        void setup() {
             updateTask = new Task();
             updateTask.setTitle("new title");
         }
