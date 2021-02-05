@@ -63,7 +63,7 @@ public class TaskControllerWebTest {
         class Context_empty_tasks {
             @Test
             @DisplayName("비어있는 리스트 응답한다")
-            void it_returns_empty_array() throws Exception {
+            void it_responds_empty_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string("[]"));
@@ -84,7 +84,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("task 리스트를 응답한다")
-            void it_returns_empty_array() throws Exception {
+            void it_responds_empty_array() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(TASK_TITLE)))
@@ -105,7 +105,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("task 객체를 리턴한다")
-            void it_returns_task_object() throws Exception {
+            void it_responds_task_object() throws Exception {
                 mockMvc.perform(get("/tasks/" + TASK_ID))
                         .andExpect(status().isOk())
                         .andExpect(content().json(objectMapper.writeValueAsString(givenTask)));
@@ -124,7 +124,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("404코드를 응답한다")
-            void it_returns_not_found() throws Exception {
+            void it_responds_not_found() throws Exception {
                 mockMvc.perform(get("/tasks/" + NOT_FOUND_TASK_ID))
                         .andExpect(status().isNotFound());
             }
@@ -146,7 +146,7 @@ public class TaskControllerWebTest {
 
             @DisplayName("201코드와 task를 응답한다")
             @Test
-            void it_returns_task() throws Exception {
+            void it_responds_task() throws Exception {
                 //given
                 Task source = new Task();
                 source.setTitle(TASK_TITLE);
@@ -184,7 +184,7 @@ public class TaskControllerWebTest {
 
             @DisplayName("200코드와 title이 수정된 task를 응답한다")
             @Test
-            void it_returns_updated_task() throws Exception {
+            void it_responds_updated_task() throws Exception {
                 //given
                 givenTask.setTitle(UPDATE_TITLE);
 
@@ -217,7 +217,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("404코드를 응답한다")
-            void it_returns_not_found() throws Exception {
+            void it_responds_not_found() throws Exception {
                 //given
                 Task givenTask = new Task();
                 givenTask.setId(NOT_FOUND_TASK_ID);
@@ -254,7 +254,7 @@ public class TaskControllerWebTest {
 
             @DisplayName("200코드와 title이 수정된 task를 응답한다")
             @Test
-            void it_returns_updated_task() throws Exception {
+            void it_responds_updated_task() throws Exception {
                 //given
                 givenTask.setTitle(UPDATE_TITLE);
 
@@ -287,7 +287,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("404코드를 응답한다")
-            void it_returns_not_found() throws Exception {
+            void it_responds_not_found() throws Exception {
                 //given
                 Task givenTask = new Task();
                 givenTask.setId(NOT_FOUND_TASK_ID);
@@ -319,7 +319,7 @@ public class TaskControllerWebTest {
 
             @DisplayName("204코드를 응답한다")
             @Test
-            void it_returns_204() throws Exception {
+            void it_responds_204() throws Exception {
                 //when
                 //then
                 mockMvc.perform(delete("/tasks/{id}", givenTask.getId())
@@ -341,7 +341,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("404코드를 응답한다")
-            void it_returns_not_found() throws Exception {
+            void it_responds_not_found() throws Exception {
                 //given
                 long id = NOT_FOUND_TASK_ID;
                 //when
