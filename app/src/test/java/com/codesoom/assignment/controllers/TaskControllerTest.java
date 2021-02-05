@@ -63,4 +63,17 @@ class TaskControllerTest {
         assertThat(taskController.create(task).getId()).isEqualTo(task.getId());
     }
 
+    @DisplayName("Task 변경")
+    @Test
+    void testUpdate(){
+        String newTitle = "책사기";
+        Task newTask = new Task();
+        newTask.setTitle(newTitle);
+
+        taskController.create(task);
+        taskController.update(1L, newTask);
+
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo(newTitle);
+    }
+
 }
