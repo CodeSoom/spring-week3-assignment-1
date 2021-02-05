@@ -24,5 +24,5 @@ class HelloControllerTestWithMock {
                 .andExpect(content().string(containsString("hello")))
                 .andExpect(status().isOk());
     }
-    
+
 }
