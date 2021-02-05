@@ -37,7 +37,7 @@ public class NestedTaskServiceTest {
         }
 
         @Nested
-        @DisplayName("이미 task 하나를 생성했다면")
+        @DisplayName("이미 task 하나를 생성한경우")
         class Context_alreadyCreatedTask {
             private TaskService taskService;
 
