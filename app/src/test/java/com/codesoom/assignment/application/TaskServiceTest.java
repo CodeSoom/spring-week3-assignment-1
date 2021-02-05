@@ -86,7 +86,7 @@ public class TaskServiceTest {
         final Long id = 1L;
 
         @Nested
-        @DisplayName("할 일인 Task 값 있으면서, 찾고자하는 Task id가 주어지진다면")
+        @DisplayName("찾고자하는 Task가 있으면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
@@ -105,7 +105,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
+        @DisplayName("찾고자하는 Task가 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
@@ -142,7 +142,7 @@ public class TaskServiceTest {
         final Task newTask = newTaskSubject();
 
         @Nested
-        @DisplayName("할 일인 Task 값 있으면서, 변경하고자는 Task id가 주어지진다면")
+        @DisplayName("갱신하려는 Task가 있으면")
         class Context_with_task {
 
             @DisplayName("변경된 일 Task 값을 리턴한다")
@@ -157,7 +157,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
+        @DisplayName("갱신하려는 Task가 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
@@ -175,7 +175,7 @@ public class TaskServiceTest {
         final Long id = 1L;
 
         @Nested
-        @DisplayName("할 일인 Task 값 있으면서, 삭제하고자 하는 Task id가 주어지진다면")
+        @DisplayName("삭제하려는 Task가 있으면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
@@ -195,7 +195,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("할 일인 Task 값들이 없으면서, 찾고자하는 Task id가 주어진다면")
+        @DisplayName("삭제하려는 Task가 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
