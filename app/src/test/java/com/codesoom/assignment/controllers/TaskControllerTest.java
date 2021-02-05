@@ -41,13 +41,13 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("할 일이 없는 경우 할 일 목록을 가져오면 비어있는 리스트가 리턴된다.")
+    @DisplayName("할 일이 없는 경우 할 일 목록을 가져오면, 비어있는 리스트가 리턴된다.")
     void listWithEmptyTasks() {
         assertThat(taskController.list()).isEmpty();
     }
 
     @Test
-    @DisplayName("할 일이 추가되는 경우 할 일 목록을 가져오면 리턴되는 리스트의 크기가 증가한다.")
+    @DisplayName("할 일이 추가되는 경우 할 일 목록을 가져오면, 리턴되는 리스트의 크기가 증가한다.")
     void listWithAddedTasks() {
         taskController.create(task1);
         assertThat(taskController.list()).hasSize(1);
@@ -58,7 +58,6 @@ class TaskControllerTest {
         taskController.create(task1);
         assertThat(taskController.list()).hasSize(3);
     }
-
 
     @Test
     @DisplayName("주어진 id를 가진 할 일이 저장되어 있는 경우 해당 할 일을 가져올 수 있다.")
@@ -71,7 +70,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("할 일을 찾을 수 없는 경우 detail()를 실행하면 NotFound 예외가 발생한다.")
+    @DisplayName("주어진 id를 가진 할 일이 없는 경우 해당 할 일을 가져오려고 하면, NotFound 예외가 발생한다.")
     void detailWithInvalidId() {
         taskController.create(task1);
         taskController.create(task2);
@@ -91,6 +90,16 @@ class TaskControllerTest {
         taskController.create(task1);
 
         assertThat(taskController.list()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 할 일을 추가하면, NPE 가 발생한다.")
+    void createInvalidNewTask() {
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> taskController.create(null),
+                "NullPointerException 이 던져져야 한다."
+        );
     }
 
     @Test
