@@ -72,11 +72,13 @@ class TaskControllerTest {
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
             private Task gotten;
+            private final Long givenSavedId = GIVEN_SAVED_TASK_ID;
 
             @BeforeEach
             void checkIfHasSaveId() {
-                gotten = taskController.detail(GIVEN_SAVED_TASK_ID);
-                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
+                gotten = taskController.detail(givenSavedId);
+
+                assertThat(givenSavedId).isEqualTo(gotten.getId());
             }
 
             @Test
@@ -90,11 +92,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장되지 않은 id를 가지고 있다면")
         class Context_with_unsaved_id {
+            private final Long givenUnsavedId = GIVEN_UNSAVED_TASK_ID;
+
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.detail(GIVEN_UNSAVED_TASK_ID),
+                        () -> taskController.detail(givenUnsavedId),
                         "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -149,11 +153,13 @@ class TaskControllerTest {
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
             private Task modified;
+            private final Long givenSavedId = GIVEN_SAVED_TASK_ID;
 
             @BeforeEach
             void checkIfHasSaveId() {
-                modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
-                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(modified.getId());
+                modified = taskController.update(givenSavedId, modifying);
+
+                assertThat(givenSavedId).isEqualTo(modified.getId());
             }
 
             @Test
@@ -168,11 +174,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장되지 않은 id를 가지고 있다면")
         class Context_with_unsaved_id {
+            private final Long givenUnsavedId = GIVEN_UNSAVED_TASK_ID;
+
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.update(GIVEN_UNSAVED_TASK_ID, modifying),
+                        () -> taskController.update(givenUnsavedId, modifying),
                         "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -196,11 +204,13 @@ class TaskControllerTest {
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
             private Task modified;
+            private final Long givenSavedId = GIVEN_SAVED_TASK_ID;
 
             @BeforeEach
             void checkIfHasSaveId() {
-                modified = taskController.update(GIVEN_SAVED_TASK_ID, modifying);
-                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(modified.getId());
+                modified = taskController.update(givenSavedId, modifying);
+
+                assertThat(givenSavedId).isEqualTo(modified.getId());
             }
 
             @Test
@@ -215,11 +225,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장되지 않은 id를 가지고 있다면")
         class Context_with_unsaved_id {
+            private final Long givenUnsavedId = GIVEN_UNSAVED_TASK_ID;
+
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.patch(GIVEN_UNSAVED_TASK_ID, modifying),
+                        () -> taskController.patch(givenUnsavedId, modifying),
                         "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
@@ -238,10 +250,12 @@ class TaskControllerTest {
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
             private int size;
+            private final Long givenSavedId = GIVEN_SAVED_TASK_ID;
 
             void checkIfHasSaveId() {
-                final Task gotten = taskController.detail(GIVEN_SAVED_TASK_ID);
-                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
+                final Task gotten = taskController.detail(givenSavedId);
+                
+                assertThat(givenSavedId).isEqualTo(gotten.getId());
             }
 
             @BeforeEach
@@ -249,7 +263,7 @@ class TaskControllerTest {
                 checkIfHasSaveId();
 
                 size = taskController.list().size();
-                taskController.delete(GIVEN_SAVED_TASK_ID);
+                taskController.delete(givenSavedId);
             }
 
             @Test
@@ -262,11 +276,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장되지 않은 id를 가지고 있다면")
         class Context_with_unsaved_id {
+            private final Long givenUnsavedId = GIVEN_UNSAVED_TASK_ID;
+
             @Test
             @DisplayName("task를 찾을 수 없다는 exception을 던진다.")
             void it_throw_exception() {
                 assertThatThrownBy(
-                        () -> taskController.delete(GIVEN_UNSAVED_TASK_ID),
+                        () -> taskController.delete(givenUnsavedId),
                         "task를 찾을 수 없다는 예외를 던져야 합니다."
                 ).isInstanceOf(TaskNotFoundException.class);
             }
