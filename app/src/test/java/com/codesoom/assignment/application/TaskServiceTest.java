@@ -98,13 +98,17 @@ class TaskServiceTest {
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
 
+        private Task source() {
+            Task source = new Task();
+            source.setTitle(givenTitle);
+            return source;
+        }
+
         @Test
         @DisplayName("생성된 task 를 리턴한다.")
         void It_returns_created_task() {
             TaskService subject = subject();
-
-            Task source = new Task();
-            source.setTitle(givenTitle);
+            Task source = source();
 
             assertThat(subject.createTask(source))
                     .hasFieldOrPropertyWithValue("title", givenTitle)
