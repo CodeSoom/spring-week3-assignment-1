@@ -130,10 +130,22 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_exist_task_id {
+            Task givenTask;
+            @BeforeEach
+            void setUp() {
+                givenTask = createTask();
+            }
+
             @DisplayName("title이 변경된 task를 반환한다")
             @Test
             void it_return_task_list() {
-                testUpdateTaskExist((id, task) -> taskController.update(id, task));
+                //when
+                givenTask.setTitle(UPDATE_TITLE);
+                Task updatedTask = taskController.update(givenTask.getId(), givenTask);
+                //then
+                assertThat(updatedTask).isNotNull();
+                assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
+                assertThat(updatedTask.getId()).isEqualTo(givenTask.getId());
             }
         }
 
@@ -143,7 +155,13 @@ class TaskControllerTest {
             @DisplayName("TaskNotFoundException를 던진다")
             @Test
             void it_return_exception() {
-                testUpdateTaskNotExist((id, task) -> taskController.update(id, task));
+                //given
+                Task task = new Task();
+                task.setTitle(UPDATE_TITLE);
+                //when
+                //then
+                assertThrows(TaskNotFoundException.class, () -> taskController.update(100L, task),
+                        "주어진 ID에 해당하는 Task 없습니다");
             }
         }
     }
@@ -154,10 +172,22 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 task id가 주어진다면")
         class Context_with_exist_task_id {
+            Task givenTask;
+            @BeforeEach
+            void setUp() {
+                givenTask = createTask();
+            }
+
             @DisplayName("title이 변경된 task를 반환한다")
             @Test
             void it_return_task_list() {
-                testUpdateTaskExist((id, task) -> taskController.patch(id, task));
+                //when
+                givenTask.setTitle(UPDATE_TITLE);
+                Task updatedTask = taskController.patch(givenTask.getId(), givenTask);
+                //then
+                assertThat(updatedTask).isNotNull();
+                assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
+                assertThat(updatedTask.getId()).isEqualTo(givenTask.getId());
             }
         }
 
@@ -167,37 +197,16 @@ class TaskControllerTest {
             @DisplayName("TaskNotFoundException를 던진다")
             @Test
             void it_return_exception() {
-                testUpdateTaskNotExist((id, task) -> taskController.patch(id, task));
+                //given
+                Task task = new Task();
+                task.setTitle(UPDATE_TITLE);
+                //when
+                //then
+                assertThrows(TaskNotFoundException.class, () -> taskController.patch(100L, task),
+                        "주어진 ID에 해당하는 Task 없습니다");
             }
         }
     }
-
-
-
-    void testUpdateTaskExist(TaskUpdater taskUpdater) {
-        //given
-        Task givenTask = createTask();
-        Task task = new Task();
-        task.setTitle(UPDATE_TITLE);
-        //when
-        Task updatedTask = taskUpdater.updateTask(givenTask.getId(), task);
-        //then
-        assertThat(updatedTask).isNotNull();
-        assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
-        assertThat(updatedTask.getId()).isEqualTo(givenTask.getId());
-    }
-
-    void testUpdateTaskNotExist(TaskUpdater taskUpdater) {
-        //given
-        Task task = new Task();
-        task.setTitle(UPDATE_TITLE);
-        //when
-        //then
-        assertThrows(TaskNotFoundException.class, () -> taskUpdater.updateTask(100L, task),
-                "주어진 ID에 해당하는 Task 없습니다");
-    }
-
-
 
     @Nested
     @DisplayName("delete()")
