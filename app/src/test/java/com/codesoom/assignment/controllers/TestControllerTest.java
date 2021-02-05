@@ -23,8 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,13 +54,13 @@ public class TestControllerTest {
         @Nested
         @DisplayName("서비스로 호출하는 Tasks가 존재하면")
         class Context_with_tasks {
+            List<Task> tasks = new ArrayList<>();
+
             @BeforeEach
             void setUp() {
                 Task task = new Task();
                 task.setId(GIVEN_ID);
                 task.setTitle(GIVEN_TITLE);
-                List<Task> tasks = new ArrayList<>();
-                tasks.add(task);
 
                 given(taskService.getTasks())
                         .willReturn(tasks);
@@ -70,9 +69,10 @@ public class TestControllerTest {
             @DisplayName("OK 상태와 tasks 목록을 리턴한다.")
             @Test
             void it_return_tasks() throws Exception {
+
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
-                        .andExpect(content().string(containsString(GIVEN_TITLE)));
+                        .andExpect(content().string(objectMapper.writeValueAsString(tasks)));
             }
         }
 
@@ -114,9 +114,10 @@ public class TestControllerTest {
         @Nested
         @DisplayName("서비스로 호출하는 Task가 존재하면")
         class Context_with_task {
+            Task task = new Task();
+
             @BeforeEach
             void setUp() {
-                Task task = new Task();
                 task.setId(GIVEN_ID);
                 task.setTitle(GIVEN_TITLE);
 
@@ -127,11 +128,9 @@ public class TestControllerTest {
             @DisplayName("OK 상태와 task를 리턴한다.")
             @Test
             void it_return_task() throws Exception {
-                final String content = "{\"id\":1,\"title\":\"task1\"}";
-
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
                         .andExpect(status().isOk())
-                        .andExpect(content().string(content));
+                        .andExpect(content().string(objectMapper.writeValueAsString(task)));
             }
         }
     }
@@ -203,17 +202,21 @@ public class TestControllerTest {
         @Nested
         @DisplayName("서비스로 갱신되는 Task가 존재하면")
         class Context_with_task {
+
             @BeforeEach
             void setUp() {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(taskSubject());
             }
+
             @DisplayName("OK 상태와 task를 리턴한다.")
             @Test
             void it_return_task() throws Exception {
-                mockMvc.perform(patch("/tasks/" + GIVEN_ID)
+                mockMvc.perform(patch("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(taskSubject())))
-                        .andExpect(status().isOk());
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
             }
         }
 
@@ -225,6 +228,7 @@ public class TestControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class)))
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
+
             @DisplayName("Not Found 상태를 리턴한다.")
             @Test
             void It_returns_not_found() throws Exception {
@@ -246,10 +250,11 @@ public class TestControllerTest {
                 given(taskService.deleteTask(anyLong()))
                         .willThrow(new TaskNotFoundException(anyLong()));
             }
+
             @DisplayName("Not Found 상태를 리턴한다.")
             @Test
             void It_returns_not_found() throws Exception {
-                mockMvc.perform(delete("/tasks/" + GIVEN_ID))
+                mockMvc.perform(delete("/tasks/{id}", GIVEN_ID))
                         .andExpect(status().isNotFound());
             }
         }
@@ -261,10 +266,11 @@ public class TestControllerTest {
             void setUp() {
                 given(taskService.deleteTask(anyLong())).willReturn(taskSubject());
             }
+
             @DisplayName("NO CONTENT 상태와 task를 리턴한다.")
             @Test
             void it_return_no_content_with_task() throws Exception {
-                mockMvc.perform(delete("/tasks/" + GIVEN_ID)
+                mockMvc.perform(delete("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(taskSubject())))
                         .andExpect(status().isNoContent());
