@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TaskController.class)
@@ -32,7 +35,7 @@ class TaskControllerTestWithMock {
     void init(){
         task = new Task();
         task.setId(1L);
-        task.setTitle("책일기");
+        task.setTitle("책읽기");
 
         objectMapper = new ObjectMapper();
     }
@@ -40,11 +43,7 @@ class TaskControllerTestWithMock {
     @DisplayName("Task 목록")
     @Test
     void testList() throws Exception {
-
-        taskService.createTask(task);
-
-        mockMvc.perform(get("/tasks")
-                .content(objectMapper.writeValueAsString(task)))
+        mockMvc.perform(get("/tasks"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
