@@ -69,7 +69,7 @@ public class TestControllerTest {
 
             @DisplayName("OK 상태와 tasks 목록을 응답한다.")
             @Test
-            void it_response_ok_with_tasks() throws Exception {
+            void It_response_ok_with_tasks() throws Exception {
 
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
@@ -83,7 +83,7 @@ public class TestControllerTest {
 
             @DisplayName("OK 상태와 비어있는 tasks 목록 응답한다.")
             @Test
-            void it_response_ok_with_empty_tasks() throws Exception {
+            void It_response_ok_with_empty_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("[]")));
@@ -139,20 +139,16 @@ public class TestControllerTest {
     @Nested
     @DisplayName("POST /tasks는")
     class Describe_create {
-        @Nested
-        @DisplayName("생성할 Task가 존재하면")
-        class Context_with_task {
-            Task task = createTask();
 
-            @Test
-            @DisplayName("Created 상태를 응답한다.")
-            void It_response_created() throws Exception {
-                mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(task))
-                ).andExpect(status().isCreated());
-            }
+        @Test
+        @DisplayName("Created 상태를 응답한다.")
+        void It_response_created() throws Exception {
+            mockMvc.perform(post("/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(createTask()))
+            ).andExpect(status().isCreated());
         }
+
     }
 
     @Nested
@@ -169,7 +165,7 @@ public class TestControllerTest {
 
             @DisplayName("OK 상태와 task를 응답한다.")
             @Test
-            void it_response_task() throws Exception {
+            void It_response_task() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
@@ -271,7 +267,7 @@ public class TestControllerTest {
 
             @DisplayName("NO CONTENT 상태와 task를 응답한다.")
             @Test
-            void it_response_no_content_with_task() throws Exception {
+            void It_response_no_content_with_task() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
