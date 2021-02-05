@@ -66,7 +66,7 @@ class TaskServiceTest {
     @DisplayName("getTask 메서드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("대상 id 가 없을 때")
+        @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
 
             @Test
@@ -80,7 +80,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("대상 id 가 있을 때")
+        @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
 
             @Test
@@ -117,7 +117,7 @@ class TaskServiceTest {
     class Describe_updateTask {
 
         @Nested
-        @DisplayName("대상 id 가 없을 때")
+        @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
 
             @Test
@@ -132,7 +132,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("대상 id 가 있을 때")
+        @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
 
             @Test
@@ -153,7 +153,7 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("대상 id 가 없을 때")
+        @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
 
             @Test
@@ -167,7 +167,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("대상 id 가 있을 때")
+        @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
 
             @Test
