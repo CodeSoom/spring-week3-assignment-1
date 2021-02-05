@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,6 +55,20 @@ public class NestedTaskServiceTest {
                 List<Task> tasks = taskService.getTasks();
                 assertEquals(1, tasks.size());
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("테스크를 생성하려고 한다면")
+    class Describe_createTask {
+
+        @Test
+        @DisplayName("task가 생성된다.")
+        void get_tasks_return_empty_list() {
+            TaskService taskService = new TaskService();
+            Task task = new Task();
+
+            taskService.createTask(task);
         }
     }
 }
