@@ -126,7 +126,7 @@ class TaskServiceTest {
         class ContextWithValidId {
             @Test
             @DisplayName("유효한 id에 해당하는 Task를 삭제하고 빈 문자열을 리턴한다")
-            void itDeletesTaskAndReturnsEmptyStrings() {
+            void itDeletesTaskAndReturnsEmptyString() {
                 int oldSize = taskService.getTasks().size();
 
                 taskService.deleteTask(1L);
@@ -149,4 +149,3 @@ class TaskServiceTest {
         }
     }
 }
-

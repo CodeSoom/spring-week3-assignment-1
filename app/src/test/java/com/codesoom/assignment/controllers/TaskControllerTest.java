@@ -2,14 +2,13 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("TaskController 테스트")
 class TaskControllerTest {
     private TaskService taskService;
     private TaskController taskController;
@@ -24,58 +23,99 @@ class TaskControllerTest {
         taskController.create(createTask);
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 list 메소드는 List<Task>를 반환한다")
-    void listTasks() {
-        assertThat(taskController.list()).hasSize(1);
+    @Nested
+    @DisplayName("list 메서드는")
+    class Describe_list {
+        @Test
+        @DisplayName("Task 리스트를 반환한다")
+        void itReturnsListOfTask() {
+            Assertions.assertEquals(taskController.list().size(), 1, "리턴된 Task 리스트는 사이즈 값으로 1을 갖는다");
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 detail 메소드는 id가 있다면 해당 Task를 반환한다")
-    void detailTask() {
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo("Test1");
+    @Nested
+    @DisplayName("detail 메서드는")
+    class Describe_detail {
+        @Nested
+        @DisplayName("만약 Url에 유효한 id가 주어진다면")
+        class ContextWithValidUrlId {
+            @Test
+            @DisplayName("유효한 id에 해당하는 Task를 리턴한다")
+            void itReturnsValidTask() {
+                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "리턴된 Task는 id 값으로 1L을 갖는다");
+                Assertions.assertEquals(taskController.list().get(0).getTitle(), "Test1", "리턴된 Task는 title 값으로 Test1을 갖는다");
+            }
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 create 메소드는 title을 입력받아 Task를 생성한다")
-    void createTask() {
-        Task createTask = new Task();
-        createTask.setTitle("Test2");
-        taskController.create(createTask);
+    @Nested
+    @DisplayName("create 메서드는")
+    class Describe_create {
+        @Test
+        @DisplayName("title을 입력받아 새로운 Task를 생성한다")
+        void itReturnsNewTask () {
+            Task createTask = new Task();
+            createTask.setTitle("Test2");
+            taskController.create(createTask);
 
-        assertThat(taskController.list()).hasSize(2);
-        assertThat(taskController.list().get(1).getId()).isEqualTo(2L);
-        assertThat(taskController.list().get(1).getTitle()).isEqualTo("Test2");
+            Assertions.assertEquals(taskController.list().size(), 2,"새롭게 Task를 생성한 후 Task 리스트는 사이즈 값으로 2를 갖는다");
+            Assertions.assertEquals(taskController.list().get(1).getId(), 2L,"새로 생성되어 리턴한 Task는 id 값으로 2L을 갖는다");
+            Assertions.assertEquals(taskController.list().get(1).getTitle(), "Test2","새로 생성되어 리턴한 Task는 title 값으로 Test2를 갖는다");
+        }
+
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 update 메소드는 id가 있다면 해당 Task를 수정한다")
-    void updateTask() {
-        Task updateTask = new Task();
-        updateTask.setTitle("new Test");
-        taskController.update(1L, updateTask);
+    @Nested
+    @DisplayName("update 메서드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("만약 Url에 유효한 id가 주어진다면")
+        class ContextWithValidUrlId {
+            @Test
+            @DisplayName("유효한 id에 해당하는 Task의 title을 수정하고 Task를 리턴한다")
+            void itReturnsValidUpdatedTask() {
+                Task updateTask = new Task();
+                updateTask.setTitle("new Task");
+                taskController.update(1L, updateTask);
 
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo("new Test");
+                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "업데이트 되어 리턴된 Task는 id값으로 1L을 갖는다");
+                Assertions.assertEquals(taskController.list().get(0).getTitle(), "new Task", "업데이트 되어 리턴된 Task는 title값으로 new Task를 갖는다");
+            }
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 patch 메소드는 id가 있다면 해당 Task를 수정한다")
-    void patchTask() {
-        Task updateTask = new Task();
-        updateTask.setTitle("new Test");
-        taskController.patch(1L, updateTask);
+    @Nested
+    @DisplayName("patch 메서드는")
+    class Describe_patch {
+        @Nested
+        @DisplayName("만약 Url에 유효한 id가 주어진다면")
+        class ContextWithValidUrlId {
+            @Test
+            @DisplayName("유유효한 id에 해당하는 Task의 title을 수정하고 Task를 리턴한다")
+            void itReturnsValidUpdatedTask() {
+                Task updateTask = new Task();
+                updateTask.setTitle("new Task");
+                taskController.patch(1L, updateTask);
 
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo("new Test");
+                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "업데이트 되어 리턴된 Task는 id값으로 1L을 갖는다");
+                Assertions.assertEquals(taskController.list().get(0).getTitle(), "new Task", "업데이트 되어 리턴된 Task는 title값으로 new Task를 갖는다");
+            }
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 delete 메소드는 id가 있다면 해당 Task를 삭제한다")
-    void deleteTask() {
-        taskController.delete(1L);
+    @Nested
+    @DisplayName("delete 메서드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("만약 Url에 유효한 id가 주어진다면")
+        class ContextWithValidUrlId {
+            @Test
+            @DisplayName("유효한 id에 해당하는 Task를 삭제하고 빈 문자열을 리턴한다")
+            void itReturnsEmptyString() {
+                taskController.delete(1L);
 
-        assertThat(taskController.list()).isEmpty();
+                Assertions.assertEquals(taskController.list().toString(), "");
+            }
+        }
     }
 }
