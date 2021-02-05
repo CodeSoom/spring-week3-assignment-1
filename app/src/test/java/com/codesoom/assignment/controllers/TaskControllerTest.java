@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -49,14 +51,17 @@ class TaskControllerTest {
         @Nested
         @DisplayName("등록된 Task 가 있을 때")
         class Context_with_task {
+
+            @Test
+            @DisplayName("등록된 Task 를 리턴한다.")
             void It_returns_exists_array() {
                 TaskController subject = subject(givenTitle);
 
-                assertThat(subject.list())
-                        .hasSize(1)
-                        .first()
-                        .hasFieldOrPropertyWithValue("title", givenTitle)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                List<Task> actual = subject.list();
+
+                assertThat(actual).hasSize(1);
+                assertThat(actual.get(0).getId()).isEqualTo(givenID);
+                assertThat(actual.get(0).getTitle()).isEqualTo(givenTitle);
             }
         }
     }
@@ -88,9 +93,10 @@ class TaskControllerTest {
             void It_returns_task() {
                 TaskController subject = subject(givenTitle);
 
-                assertThat(subject.detail(givenID))
-                        .hasFieldOrPropertyWithValue("title", givenTitle)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                Task actual = subject.detail(givenID);
+
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(givenTitle);
             }
         }
     }
@@ -99,17 +105,22 @@ class TaskControllerTest {
     @DisplayName("create 메서드는")
     class Describe_create {
 
+        private Task source() {
+            Task source = new Task();
+            source.setTitle(givenTitle);
+            return source;
+        }
+
         @Test
         @DisplayName("생성된 Task 를 리턴한다.")
         void It_returns_created_task() {
             TaskController subject = subject();
+            Task source = source();
 
-            Task task = new Task();
-            task.setTitle(givenTitle);
+            Task actual = subject.create(source);
 
-            assertThat(subject.create(task))
-                    .hasFieldOrPropertyWithValue("title", givenTitle)
-                    .hasFieldOrPropertyWithValue("id", givenID);
+            assertThat(actual.getId()).isEqualTo(givenID);
+            assertThat(actual.getTitle()).isEqualTo(givenTitle);
         }
     }
 
@@ -117,6 +128,12 @@ class TaskControllerTest {
     @DisplayName("update 메서드는")
     class Describe_update {
 
+        private Task source() {
+            Task source = new Task();
+            source.setTitle(givenModifyTitle);
+            return source;
+        }
+
         @Nested
         @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
@@ -125,11 +142,9 @@ class TaskControllerTest {
             @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
             void It_throws_task_not_found_exception() {
                 TaskController subject = subject();
+                Task source = source();
 
-                Task task = new Task();
-                task.setTitle(givenTitle);
-
-                assertThatThrownBy(() -> subject.update(givenID, task))
+                assertThatThrownBy(() -> subject.update(givenID, source))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -142,13 +157,12 @@ class TaskControllerTest {
             @DisplayName("변경된 Task 를 리턴한다.")
             void It_returns_modified_task() {
                 TaskController subject = subject(givenTitle);
+                Task source = source();
 
-                Task task = new Task();
-                task.setTitle(givenModifyTitle);
+                Task actual = subject.update(givenID, source);
 
-                assertThat(subject.update(givenID, task))
-                        .hasFieldOrPropertyWithValue("title", givenModifyTitle)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(givenModifyTitle);
             }
         }
     }
@@ -156,6 +170,13 @@ class TaskControllerTest {
     @Nested
     @DisplayName("patch 메서드는")
     class Describe_patch {
+
+        private Task source() {
+            Task source = new Task();
+            source.setTitle(givenModifyTitle);
+            return source;
+        }
+
         @Nested
         @DisplayName("주어진 id가 없을 때")
         class Context_without_target_id {
@@ -164,11 +185,9 @@ class TaskControllerTest {
             @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
             void It_throws_task_not_found_exception() {
                 TaskController subject = subject();
+                Task source = source();
 
-                Task task = new Task();
-                task.setTitle(givenTitle);
-
-                assertThatThrownBy(() -> subject.patch(givenID, task))
+                assertThatThrownBy(() -> subject.patch(givenID, source))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -181,13 +200,12 @@ class TaskControllerTest {
             @DisplayName("변경된 Task 를 리턴한다.")
             void It_returns_modified_task() {
                 TaskController subject = subject(givenTitle);
+                Task source = source();
 
-                Task task = new Task();
-                task.setTitle(givenModifyTitle);
+                Task actual = subject.patch(givenID, source);
 
-                assertThat(subject.patch(givenID, task))
-                        .hasFieldOrPropertyWithValue("title", givenModifyTitle)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(givenModifyTitle);
             }
         }
     }
