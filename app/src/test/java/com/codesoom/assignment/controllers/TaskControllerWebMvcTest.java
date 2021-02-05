@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @WebMvcTest(TaskController.class)
+@DisplayName("TaskController 클래스")
 public class TaskControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
@@ -45,72 +47,123 @@ public class TaskControllerWebMvcTest {
         given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 list 메소드는 List<Task>를 반환한다")
-    void listTasks() throws Exception {
-        mockMvc.perform(get("/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test task")));
+    @Nested
+    @DisplayName("list 메서드는")
+    class Describe_list {
+        @Test
+        @DisplayName("OK를 리턴한다")
+        void itReturnsOKHttpStatus() throws Exception {
+            mockMvc.perform(get("/tasks"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("Test task")));
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 detail 메소드는 id가 있다면 해당 Task를 반환한다")
-    void detailTaskWithValidId() throws Exception {
-        mockMvc.perform(get("/tasks/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test task")));
+    @Nested
+    @DisplayName("detail 메서드는")
+    class Describe_detail {
+        @Nested
+        @DisplayName("만약 유효한 id가 주어진다면")
+        class ContextWithValidId {
+            @Test
+            @DisplayName("OK를 리턴한다")
+            void itReturnsOKHttpStatus() throws Exception {
+                mockMvc.perform(get("/tasks/1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString("Test task")));
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        class ContextWithInvalidId {
+            @Test
+            @DisplayName("NOT_FOUND를 리턴한다")
+            void itReturnsNOT_FOUNDHttpStatus() throws Exception {
+                mockMvc.perform(get("/tasks/100"))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 create 메소드는 title을 입력받아 Task를 생성한다")
-    void createTask() throws Exception {
-        Task task = new Task();
-        task.setTitle("Second");
-        given(taskService.createTask(any())).willReturn(task);
+    @Nested
+    @DisplayName("create 메서드는")
+    class Describe_create {
+        @Test
+        @DisplayName("CREATED를 리턴한다")
+        void itReturnsCREATEDHttpStatus() throws Exception {
+            Task createTask = new Task();
+            createTask.setTitle("Second");
+            given(taskService.createTask(any())).willReturn(createTask);
 
-        mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\":\"Second\"}"))
-                .andExpect(status().isCreated());
+            mockMvc.perform(post("/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"title\":\"Second\"}"))
+                    .andExpect(status().isCreated());
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 update 메소드는 id가 있다면 해당 Task를 수정한다")
-    void updateTaskWIthValidId() throws Exception {
-        mockMvc.perform(patch("/tasks/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\":\"new\"}"))
-                .andExpect(status().isOk());
+    @Nested
+    @DisplayName("update 메서드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("만약 유효한 id가 주어진다면")
+        class ContextWithValidId {
+            @Test
+            @DisplayName("OK를 리턴한다")
+            void itReturnsOKHttpStatus() throws Exception {
+                mockMvc.perform(patch("/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"new\"}"))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        class ContextWithInvalidId {
+            @Test
+            @DisplayName("NOT_FOUND를 리턴한다")
+            void itReturnsNOT_FOUNDHttpStatus() throws Exception {
+                Task updateSource = new Task();
+                updateSource.setTitle("new");
+                given(taskService.updateTask(100L, updateSource)).willThrow(new TaskNotFoundException(100L));
+
+                mockMvc.perform(patch("/tasks/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\" : null , \"title\" : \"new\"}"))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("TaskController 클래스의 update 메소드는 id가 없다면 NOT_FOUND를 반환한다")
-    void updateTaskWIthInvalidId() throws Exception {
-        Task updateSource = new Task();
-        updateSource.setTitle("new");
-        given(taskService.updateTask(100L, updateSource)).willThrow(new TaskNotFoundException(100L));
+    @Nested
+    @DisplayName("delete 메서드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("만약 유효한 id가 주어진다면")
+        class ContextWithValidId {
+            @Test
+            @DisplayName("NO_CONTENT를 리턴한다")
+            void itReturnsNO_CONTENTHttpStatus() throws Exception {
+                mockMvc.perform(delete("/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent());
+            }
+        }
 
-        mockMvc.perform(patch("/tasks/100")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\" : null , \"title\" : \"new\"}"))
-                .andExpect(status().isNotFound());
-    }
+        @Nested
+        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        class ContextWithInvalidId {
+            @Test
+            @DisplayName("NOT_FOUND를 리턴한다")
+            void itReturnsNOT_FOUNDHttpStatus() throws Exception {
+                given(taskService.deleteTask(100L)).willThrow(new TaskNotFoundException(100L));
 
-    @Test
-    @DisplayName("TaskController 클래스의 delete 메소드는 id가 있다면 해당 Task를 삭제한다")
-    void deleteTaskWithValidId() throws Exception {
-        mockMvc.perform(delete("/tasks/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("Task를 삭제할 때 id가 존재하지 않는다면  NOT_FOUND를 반환한다")
-    void deleteTaskWithInvalidId() throws Exception {
-        given(taskService.deleteTask(100L)).willThrow(new TaskNotFoundException(100L));
-
-        mockMvc.perform(delete("/tasks/100")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                mockMvc.perform(delete("/tasks/100")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 }
