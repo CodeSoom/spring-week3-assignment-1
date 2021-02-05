@@ -10,13 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TaskController.class)
@@ -48,6 +45,14 @@ class TaskControllerTestWithMock {
                 .andExpect(status().isOk());
     }
 
+    @DisplayName("Task 상세")
+    @Test
+    void testDetailWithValidId() throws Exception {
+        Long id = 1L;
+        mockMvc.perform(get("/tasks"+ "/" + id))
+                .andExpect(status().isOk());
+    }
+
     @DisplayName("Task 생성")
     @Test
     void testCreate() throws Exception {
@@ -57,5 +62,5 @@ class TaskControllerTestWithMock {
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
-
+    
 }
