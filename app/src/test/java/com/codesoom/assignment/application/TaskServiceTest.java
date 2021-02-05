@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,19 +76,23 @@ class TaskServiceTest {
         }
     }
 
-    @Test
-    void createTask() {
-        int oldSize = taskService.getTasks().size();
+    @Nested
+    @DisplayName("createTask 메소드는")
+    class Describe_newTask {
 
-        Task task1 = new Task();
-        Task task2 = new Task();
+        @Test
+        @DisplayName("새로운 Task를 생성한다.")
+        void createTask() {
+            int oldSize = taskService.getTasks().size();
 
-        ArrayList<Task> tasks = new ArrayList<>();
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
 
-        tasks.add(task1);
-        tasks.add(task2);
+            taskService.createTask(task);
 
-        assertThat(tasks.size()).isEqualTo(2);
-        assertThat(tasks.size() - oldSize).isEqualTo(1);
+            int newSize = taskService.getTasks().size();
+
+            assertThat(newSize - oldSize).isEqualTo(1);
+        }
     }
 }
