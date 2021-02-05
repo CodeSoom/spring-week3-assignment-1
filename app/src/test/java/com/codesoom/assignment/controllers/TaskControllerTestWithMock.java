@@ -15,6 +15,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+/*
+BDD 적용해서 실패 코드 작성 필요
+ */
 @WebMvcTest(TaskController.class)
 class TaskControllerTestWithMock {
 
@@ -77,5 +81,14 @@ class TaskControllerTestWithMock {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
-    
+
+    @DisplayName("Task 삭제")
+    @Test
+    void testDelete() throws Exception {
+        Long id = 1L;
+        mockMvc.perform(delete("/tasks" + "/" + id))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
 }
