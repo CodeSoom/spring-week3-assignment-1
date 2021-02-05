@@ -60,7 +60,7 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메서드는")
+    @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @BeforeEach
         void setAddedTask() {
@@ -73,15 +73,15 @@ public class TaskServiceTest {
             private Task gotten;
 
             @BeforeEach
-            void setGottenTask() {
+            void checkIfHasSaveId() {
                 gotten = taskService.getTask(GIVEN_SAVED_TASK_ID);
+                assertThat(GIVEN_SAVED_TASK_ID).isEqualTo(gotten.getId());
             }
 
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
                 assertThat(gotten.getClass()).isEqualTo(Task.class);
-                assertThat(gotten.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
                 assertThat(gotten.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
             }
         }

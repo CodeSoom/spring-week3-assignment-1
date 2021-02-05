@@ -61,7 +61,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("detail 메서드는")
+    @DisplayName("detail 메소드는")
     class Describe_detail {
         @BeforeEach
         void setAddedTask() {
@@ -72,8 +72,9 @@ class TaskControllerTest {
         @DisplayName("저장된 id를 가지고 있다면")
         class Context_with_saved_id {
             private Task gotten;
+
             @BeforeEach
-            void setGottenTask() {
+            void checkIfHasSaveId() {
                 gotten = taskController.detail(GIVEN_SAVED_TASK_ID);
             }
 
@@ -81,7 +82,6 @@ class TaskControllerTest {
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
                 assertThat(gotten.getClass()).isEqualTo(Task.class);
-                assertThat(gotten.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
                 assertThat(gotten.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
             }
         }
