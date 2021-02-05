@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,9 @@ class TaskControllerMvcTest {
             @DisplayName("빈 집합을 응답한다.")
             void It_respond_void_array() throws Exception {
                 final String expectContent = "[]";
+                final RequestBuilder request = get("/tasks");
 
-                mockMvc.perform(get("/tasks"))
+                mockMvc.perform(request)
                         .andExpect(status().isOk())
                         .andExpect(content().json(expectContent));
             }
@@ -91,8 +93,9 @@ class TaskControllerMvcTest {
             void It_respond_exists_array() throws Exception {
                 final String expectContent = String
                         .format("[{\"title\":\"%s\",\"id\":%d}]", givenTitle, givenID);
+                final RequestBuilder request = get("/tasks");
 
-                mockMvc.perform(get("/tasks"))
+                mockMvc.perform(request)
                         .andExpect(status().isOk())
                         .andExpect(content().json(expectContent));
             }
@@ -115,7 +118,9 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("status not found 를 응답한다.")
             void It_respond_task_not_found_exception() throws Exception {
-                mockMvc.perform(get("/tasks/{id}", givenNotExistID))
+                final RequestBuilder request = get("/tasks/{id}", givenNotExistID);
+
+                mockMvc.perform(request)
                         .andExpect(status().isNotFound());
             }
         }
@@ -136,8 +141,9 @@ class TaskControllerMvcTest {
             void It_respond_task() throws Exception {
                 final String expectContent = String
                         .format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
+                final RequestBuilder request = get("/tasks/{id}", givenID);
 
-                mockMvc.perform(get("/tasks/{id}", givenID))
+                mockMvc.perform(request)
                         .andExpect(status().isOk())
                         .andExpect(content().json(expectContent));
             }
@@ -160,8 +166,11 @@ class TaskControllerMvcTest {
         void It_respond_created_task() throws Exception {
             String postContent = String.format("{\"title\":\"%s\"}", givenTitle);
             String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenTitle, givenID);
+            final RequestBuilder request = post("/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(postContent);
 
-            mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(postContent))
+            mockMvc.perform(request)
                     .andExpect(status().isCreated())
                     .andExpect(content().json(expectContent));
         }
@@ -184,12 +193,12 @@ class TaskControllerMvcTest {
             @DisplayName("status not found 를 응답한다.")
             void It_respond_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
+                final RequestBuilder request = put("/tasks/{id}", givenNotExistID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postContent);
 
-                mockMvc.perform(
-                        put("/tasks/{id}", givenNotExistID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(postContent)
-                ).andExpect(status().isNotFound());
+                mockMvc.perform(request)
+                        .andExpect(status().isNotFound());
             }
         }
 
@@ -209,8 +218,11 @@ class TaskControllerMvcTest {
             void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
                 String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
+                final RequestBuilder request = put("/tasks/{id}", givenID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postContent);
 
-                mockMvc.perform(put("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
+                mockMvc.perform(request)
                         .andExpect(status().isOk())
                         .andExpect(content().json(expectContent));
             }
@@ -234,12 +246,11 @@ class TaskControllerMvcTest {
             @DisplayName("status not found 를 응답한다.")
             void It_respond_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
+                final RequestBuilder request = patch("/tasks/{id}", givenNotExistID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postContent);
 
-                mockMvc.perform(
-                        patch("/tasks/{id}", givenNotExistID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(postContent)
-                ).andExpect(status().isNotFound());
+                mockMvc.perform(request).andExpect(status().isNotFound());
             }
         }
 
@@ -259,8 +270,11 @@ class TaskControllerMvcTest {
             void It_respond_modified_task() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
                 String expectContent = String.format("{\"title\":\"%s\",\"id\":%d}", givenModifyTitle, givenID);
+                final RequestBuilder request = patch("/tasks/{id}", givenID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postContent);
 
-                mockMvc.perform(patch("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
+                mockMvc.perform(request)
                         .andExpect(status().isOk())
                         .andExpect(content().json(expectContent));
             }
@@ -282,7 +296,9 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("Task 를 찾을 수 없다는 예외를 응답한다.")
             void It_respond_task_not_found_exception() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", givenNotExistID))
+                final RequestBuilder request = delete("/tasks/{id}", givenNotExistID);
+
+                mockMvc.perform(request)
                         .andExpect(status().isNotFound());
             }
         }
@@ -299,10 +315,12 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("삭제 후 대상 id를 조회하면 status not found 를 응답한다.")
             void It_respond_modified_task() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", givenID))
-                        .andExpect(status().isNoContent());
+                final RequestBuilder deleteRequest = delete("/tasks/{id}", givenID);
+                final RequestBuilder getRequest = get("/tasks/{id}", givenID);
 
-                mockMvc.perform(get("/tasks/{id}", givenID))
+                mockMvc.perform(deleteRequest)
+                        .andExpect(status().isNoContent());
+                mockMvc.perform(getRequest)
                         .andExpect(status().isNotFound());
             }
         }
