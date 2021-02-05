@@ -32,13 +32,14 @@ class TaskControllerMvcTest {
     private MockMvc mockMvc;
 
     @MockBean
-    TaskService taskService;
+    private TaskService taskService;
 
-    final long givenID = 1L;
-    final String givenTitle = "sample";
-    final String givenModifyTitle = "modify sample";
+    private final long givenID = 1L;
+    private final long givenNotExistID = 100L;
+    private final String givenTitle = "sample";
+    private final String givenModifyTitle = "modify sample";
 
-    Task givenTask(long id, String title) {
+    private Task givenTask(long id, String title) {
         Task task = new Task();
         task.setId(id);
         task.setTitle(title);
@@ -100,14 +101,14 @@ class TaskControllerMvcTest {
         class Context_without_target_id {
             @BeforeEach
             void setup() {
-                given(taskService.getTask(givenID))
-                        .willThrow(new TaskNotFoundException(givenID));
+                given(taskService.getTask(givenNotExistID))
+                        .willThrow(new TaskNotFoundException(givenNotExistID));
             }
 
             @Test
             @DisplayName("status not found 를 던진다.")
             void It_throws_task_not_found_exception() throws Exception {
-                mockMvc.perform(get("/tasks/{id}", givenID))
+                mockMvc.perform(get("/tasks/{id}", givenNotExistID))
                         .andExpect(status().isNotFound());
             }
         }
@@ -119,7 +120,7 @@ class TaskControllerMvcTest {
             void setup() {
                 Task task = givenTask(givenID, givenTitle);
 
-                given(taskService.getTask(givenID))
+                given(taskService.getTask(any(long.class)))
                         .willReturn(task);
             }
 
@@ -164,7 +165,7 @@ class TaskControllerMvcTest {
             @BeforeEach
             void setup() {
                 given(taskService.updateTask(any(long.class), any(Task.class)))
-                        .willThrow(new TaskNotFoundException(givenID));
+                        .willThrow(new TaskNotFoundException(givenNotExistID));
             }
 
             @Test
@@ -172,8 +173,11 @@ class TaskControllerMvcTest {
             void It_throws_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
 
-                mockMvc.perform(put("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
-                        .andExpect(status().isNotFound());
+                mockMvc.perform(
+                        put("/tasks/{id}", givenNotExistID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(postContent)
+                ).andExpect(status().isNotFound());
             }
         }
 
@@ -210,7 +214,7 @@ class TaskControllerMvcTest {
             @BeforeEach
             void setup() {
                 given(taskService.updateTask(any(long.class), any(Task.class)))
-                        .willThrow(new TaskNotFoundException(givenID));
+                        .willThrow(new TaskNotFoundException(givenNotExistID));
             }
 
             @Test
@@ -218,8 +222,11 @@ class TaskControllerMvcTest {
             void It_throws_task_not_found_exception() throws Exception {
                 String postContent = String.format("{\"title\":\"%s\"}", givenModifyTitle);
 
-                mockMvc.perform(patch("/tasks/{id}", givenID).contentType(MediaType.APPLICATION_JSON).content(postContent))
-                        .andExpect(status().isNotFound());
+                mockMvc.perform(
+                        patch("/tasks/{id}", givenNotExistID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(postContent)
+                ).andExpect(status().isNotFound());
             }
         }
 
@@ -254,14 +261,14 @@ class TaskControllerMvcTest {
         class Context_without_target_id {
             @BeforeEach
             void setup() {
-                given(taskService.deleteTask(givenID))
-                        .willThrow(new TaskNotFoundException(givenID));
+                given(taskService.deleteTask(givenNotExistID))
+                        .willThrow(new TaskNotFoundException(givenNotExistID));
             }
 
             @Test
             @DisplayName("Task 를 찾을 수 없다는 예외를 던진다.")
             void It_throws_task_not_found_exception() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", givenID))
+                mockMvc.perform(delete("/tasks/{id}", givenNotExistID))
                         .andExpect(status().isNotFound());
             }
         }
