@@ -107,6 +107,14 @@ class TaskServiceTest {
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
+        Task updateTask;
+
+        @BeforeEach
+        void setup(){
+            updateTask = new Task();
+            updateTask.setTitle("new title");
+        }
+
         @Nested
         @DisplayName("변경할 task의 title과 id가 존재할 때")
         class Context_exist_task_and_id {
@@ -114,8 +122,6 @@ class TaskServiceTest {
             @DisplayName("id에 해당하는 Task의 title을 변경하고 반환한다.")
             void it_return_task() {
                 createSampleTask();
-                Task updateTask = new Task();
-                updateTask.setTitle("new title");
 
                 taskService.updateTask(1L, updateTask);
 
@@ -129,9 +135,6 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
-                Task updateTask = new Task();
-                updateTask.setTitle("new title");
-
                 assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(3L, updateTask));
             }
         }
