@@ -70,18 +70,19 @@ public class TaskControllerWebTest {
     @DisplayName("GET 요청은")
     class Describe_GET {
         @Nested
-        @DisplayName("저장된 task가 있다면")
+        @DisplayName("저장된 task가 여러개 있다면")
         class Context_with_tasks {
             @BeforeEach
             void setUp() {
+                tasks.add(task);
                 tasks.add(task);
                 given(taskService.getTasks())
                         .willReturn(tasks);
             }
 
             @Test
-            @DisplayName("200코드와 저장된 task를 응답한다")
-            void it_replies_with_200_and_the_tasks() throws Exception {
+            @DisplayName("모든 task들과 상태코드 200을 응답한다")
+            void it_responds_with_all_tasks_and_status_code_200() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -93,7 +94,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayName("저장된 task가 없다면")
-        class Context_with_empty_tasks {
+        class Context_without_tasks {
             @BeforeEach
             void setUp() {
                 given(taskService.getTasks())
@@ -101,8 +102,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 빈 task list를 응답한다")
-            void it_replies_with_200_and_the_empty_tasks() throws Exception {
+            @DisplayName("비어있는 배열과 상태코드 200을 응답한다")
+            void it_responds_with_empty_tasks_and_status_code_200() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -121,8 +122,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 task를 응답한다")
-            void it_replies_with_200_and_the_task() throws Exception {
+            @DisplayName("찾은 task와 상태코드 200을 응답한다")
+            void it_responds_with_the_task_and_status_code_200() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -142,8 +143,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 응답한다")
-            void it_replies_with_the_error_message_and_404() throws Exception {
+            @DisplayName("에러메시지와 상태코드 404를 응답한다")
+            void it_responds_with_the_error_message_and_status_code_404() throws Exception {
                 mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -168,8 +169,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("201코드와 생성된 task를 응답한다")
-            void it_replies_with_201_and_the_created_task() throws Exception {
+            @DisplayName("생성된 task와 상태코드 201을 응답한다")
+            void it_responds_with_the_created_task_and_status_code_201() throws Exception {
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -194,8 +195,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 수정된 task를 응답한다")
-            void it_replies_with_200_and_the_updated_task() throws Exception {
+            @DisplayName("수정된 task와 상태코드 200을 응답한다")
+            void it_responds_with_the_updated_task_status_code_200() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -216,8 +217,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 응답한다")
-            void it_replies_with_the_error_message_and_404() throws Exception {
+            @DisplayName("에러메시지와 상태코드 404를 응답한다")
+            void it_responds_with_the_error_message_and_status_code_404() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -242,8 +243,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("200코드와 수정된 task를 응답한다")
-            void it_replies_with_200_and_the_updated_task() throws Exception {
+            @DisplayName("수정된 task와 상태코드 200을 응답한다")
+            void it_responds_with_the_updated_task_status_code_200() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -264,8 +265,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 응답한다")
-            void it_replies_with_the_error_message_and_404() throws Exception {
+            @DisplayName("에러메시지와 상태코드 404를 응답한다")
+            void it_responds_with_the_error_message_and_status_code_404() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -290,8 +291,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("204코드를 응답한다")
-            void it_replies_with_204() throws Exception {
+            @DisplayName("상태코드 204를 응답한다")
+            void it_responds_with_status_code_204() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -311,8 +312,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("404코드와 에러메시지를 응답한다")
-            void it_replies_with_the_error_message_and_404() throws Exception {
+            @DisplayName("에러메시지와 상태코드 404를 응답한다")
+            void it_responds_with_the_error_message_and_status_code_404() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
