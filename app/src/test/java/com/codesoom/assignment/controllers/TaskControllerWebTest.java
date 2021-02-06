@@ -6,6 +6,7 @@ import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,126 +61,214 @@ class TaskControllerWebTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(tasks)));
     }
 
-    @Test
-    @DisplayName("GET /tasks/{id} 존재하는 id 요청")
-    void detail() throws Exception {
-        given(taskService.getTask(ID)).willReturn(task);
+    @Nested
+    @DisplayName("GET /tasks/{id} 요청이 오면")
+    class Describe_getTasks {
+        @Nested
+        @DisplayName("id가 존재하는 id이면")
+        class Context_exist_id {
+            @BeforeEach
+            void setup() {
+                given(taskService.getTask(ID)).willReturn(task);
+            }
 
-        mockmvc.perform(get("/tasks/{id}", ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").value("old title"));
+            @Test
+            @DisplayName("응답코드는 200이며 해당 task를 반환한다")
+            void it_return_json() throws Exception {
+                mockmvc.perform(get("/tasks/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").value("old title"));
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 없으면")
+        class Context_does_not_exist_id {
+            @BeforeEach
+            void setup() {
+                given(taskService.getTask(DOES_NOT_EXIST_ID)).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+            }
+
+            @Test
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            void it_return_not_found_message() throws Exception {
+                mockmvc.perform(get("/tasks/{id}", DOES_NOT_EXIST_ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .andDo(print())
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("message").value("Task not found"));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("GET /tasks/{id} 없는 id 요청")
-    void detaiDoesNotExistId() throws Exception {
-        given(taskService.getTask(DOES_NOT_EXIST_ID)).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+    @Nested
+    @DisplayName("POST /tasks/{id} 요청이 오면")
+    class Describe_postTasks {
+        @Nested
+        @DisplayName("task가 있으면")
+        class Context_exist_task {
+            @BeforeEach
+            void setup() {
+                given(taskService.createTask(any(Task.class))).willReturn(task);
+            }
 
-        mockmvc.perform(get("/tasks/{id}", DOES_NOT_EXIST_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("id").doesNotExist())
-                .andExpect(jsonPath("title").doesNotExist());
+            @Test
+            @DisplayName("응답코드는 201이며 해당 task를 반환한다")
+            void it_return_task_json() throws Exception {
+                mockmvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andDo(print())
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
+            }
+        }
+
+        @Nested
+        @DisplayName("task가 없으면")
+        class Context_does_not_exist_task {
+            @Test
+            @DisplayName("bad request를 반환한다")
+            void it_return_bad_request() throws Exception {
+                mockmvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .andDo(print())
+                        .andExpect(status().isBadRequest());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("POST /tasks task 있으면")
-    void create() throws Exception {
-        given(taskService.createTask(any(Task.class))).willReturn(task);
+    @Nested
+    @DisplayName("PUT /tasks/{id} 요청이 오면")
+    class Describe_putTasks {
+        @Nested
+        @DisplayName("id와 task가 있으면")
+        class Context_exist_id_and_task {
+            @BeforeEach
+            void setup() {
+                given(taskService.updateTask(eq(ID), any(Task.class))).willReturn(task);
+            }
 
-        mockmvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(task)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").exists());
+            @Test
+            @DisplayName("응답코드는 200이며 수정된 task를 반환한다")
+            void it_return_task_json() throws Exception {
+                mockmvc.perform(put("/tasks/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
+            }
+        }
+
+        @Nested
+        @DisplayName("id와 task가 없으면")
+        class Context_does_not_exist_id_and_task {
+            @BeforeEach
+            void setup() {
+                given(taskService.updateTask(eq(DOES_NOT_EXIST_ID), any(Task.class))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+            }
+
+            @Test
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            void it_return_not_found_message() throws Exception {
+                mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andDo(print())
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("message").value("Task not found"));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("POST /tasks task 없으면 bad request")
-    void createDoesNotExistTask() throws Exception {
-        mockmvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+    @Nested
+    @DisplayName("PATCH /tasks/{id} 요청이 오면")
+    class Describe_patchTasks {
+        @Nested
+        @DisplayName("id와 task가 있으면")
+        class Context_exist_id_and_task {
+            @BeforeEach
+            void setup() {
+                given(taskService.updateTask(eq(ID), any(Task.class))).willReturn(task);
+
+            }
+
+            @Test
+            @DisplayName("응답코드는 200이며 수정된 task를 반환한다")
+            void it_return_task_json() throws Exception {
+                mockmvc.perform(put("/tasks/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
+            }
+        }
+
+        @Nested
+        @DisplayName("id와 task가 없으면")
+        class Context_does_not_exist_id_and_task {
+            @BeforeEach
+            void setup() {
+                given(taskService.updateTask(eq(DOES_NOT_EXIST_ID), any(Task.class))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+            }
+
+            @Test
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            void it_return_not_found_message() throws Exception {
+                mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(task)))
+                        .andDo(print())
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("message").value("Task not found"));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("PUT /tasks id, task가 주어지면")
-    void update() throws Exception {
-        given(taskService.updateTask(eq(ID), any(Task.class))).willReturn(task);
+    @Nested
+    @DisplayName("DELETE /tasks/{id} 요청이 오면")
+    class Describe_deleteTasks {
+        @Nested
+        @DisplayName("id가 존재하는 id이면")
+        class Context_exist_id {
+            @BeforeEach
+            void setup() {
+                given(taskService.deleteTask(eq(ID))).willReturn(task);
+            }
 
-        mockmvc.perform(put("/tasks/{id}", ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(task)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").exists());
-    }
+            @Test
+            @DisplayName("응답코드는 200이며 해당 task를 반환한다")
+            void it_return_task_json() throws Exception {
+                mockmvc.perform(delete("/tasks/{id}", ID))
+                        .andDo(print())
+                        .andExpect(status().isNoContent());
+            }
+        }
 
-    @Test
-    @DisplayName("PUT /tasks 존재하지 않는 id")
-    void updateDoesNotExistId() throws Exception {
-        given(taskService.updateTask(eq(DOES_NOT_EXIST_ID), any(Task.class))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+        @Nested
+        @DisplayName("id가 없으면")
+        class Context_does_not_exist_id {
+            @BeforeEach
+            void setup() {
+                given(taskService.deleteTask(eq(DOES_NOT_EXIST_ID))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
+            }
 
-        mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(task)))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("PATCH /tasks id, task가 주어지면")
-    void patch() throws Exception {
-        given(taskService.updateTask(eq(ID), any(Task.class))).willReturn(task);
-
-        mockmvc.perform(put("/tasks/{id}", ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(task)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").exists());
-    }
-
-    @Test
-    @DisplayName("PATCH /tasks 존재하지 않는 id")
-    void patchDoesNotExistId() throws Exception {
-        given(taskService.updateTask(eq(DOES_NOT_EXIST_ID), any(Task.class))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
-
-        mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(task)))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("DELETE /tasks/{id}  id가 존재하면")
-    void deleteOk() throws Exception {
-        given(taskService.deleteTask(eq(ID))).willReturn(task);
-
-        mockmvc.perform(delete("/tasks/{id}", ID))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-
-        when(taskService.getTask(ID)).thenThrow(TaskNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("DELETE /tasks/{id} 존재하지 않는 id")
-    void deleteDoesNotExistId() throws Exception {
-        given(taskService.deleteTask(eq(DOES_NOT_EXIST_ID))).willThrow(new TaskNotFoundException(DOES_NOT_EXIST_ID));
-
-        mockmvc.perform(delete("/tasks/{id}", DOES_NOT_EXIST_ID))
-                .andDo(print())
-                .andExpect(status().isNotFound());
+            @Test
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            void it_return_not_found_message() throws Exception {
+                mockmvc.perform(delete("/tasks/{id}", DOES_NOT_EXIST_ID))
+                        .andDo(print())
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 }
+
