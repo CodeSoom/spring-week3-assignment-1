@@ -130,7 +130,8 @@ public class TaskControllerWebMvcTest {
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
                 Task updateSource = new Task();
                 updateSource.setTitle("new");
-                given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(100L));
+                //given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(100L));
+                given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
 
                 mockMvc.perform(patch("/tasks/100")
                         .contentType(MediaType.APPLICATION_JSON)

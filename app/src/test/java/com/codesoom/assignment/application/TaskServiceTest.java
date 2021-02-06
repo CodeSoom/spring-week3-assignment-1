@@ -2,7 +2,11 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
@@ -10,12 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
     private TaskService taskService;
     private static final String BEFORE_TASK_TITLE = "before";
     private static final String UPDATE_TASK_TITLE = "updated";
     private static final String CREATE_TASK_TITLE ="created";
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -29,15 +37,13 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
+
         @Test
         @DisplayName("할 일의 목록을 리턴한다")
-        void itReturnsListOfTask() {
+        void itReturnsListOfTask() throws JsonProcessingException {
             List<Task> tasks = taskService.getTasks();
-            assertThat(tasks).hasSize(1);
 
-            Task task = taskService.getTasks().get(0);
-            assertThat(task.getId()).isEqualTo(1L);
-            assertThat(task.getTitle()).isEqualTo(BEFORE_TASK_TITLE);
+            assertThat(objectMapper.writeValueAsString(tasks)).isEqualTo("[{\"id\":1,\"title\":\"before\"}]");
         }
     }
 
