@@ -60,5 +60,18 @@ public class TaskTest {
         assertThat(task.getTitle()).isEqualTo(GIVEN_TITLE);
     }
 
+    @DisplayName("equal and hashcode를 통해 동등성을 비교한다")
+    @Test
+    void equal_hash() {
+        Task task1 = new Task();
+        task1.setId(1L);
+        task1.setTitle("test1");
 
+        Task task2 = new Task();
+        task2.setId(1L);
+        task2.setTitle("test1");
+
+        assertThat(task1.equals(task2)).isTrue();
+        assertThat(task1.hashCode()).isEqualTo(task2.hashCode());
+    }
 }
