@@ -72,7 +72,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 200이며 해당 task를 반환한다")
+            @DisplayName("응답코드는 200이며 해당 task를 응답한다")
             void it_return_json() throws Exception {
                 mockmvc.perform(get("/tasks/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -92,7 +92,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 응답한다")
             void it_return_not_found_message() throws Exception {
                 mockmvc.perform(get("/tasks/{id}", DOES_NOT_EXIST_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -115,7 +115,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 201이며 해당 task를 반환한다")
+            @DisplayName("응답코드는 201이며 해당 task를 응답한다")
             void it_return_task_json() throws Exception {
                 mockmvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -131,7 +131,7 @@ class TaskControllerWebTest {
         @DisplayName("task가 없으면")
         class Context_does_not_exist_task {
             @Test
-            @DisplayName("bad request를 반환한다")
+            @DisplayName("bad request를 응답한다")
             void it_return_bad_request() throws Exception {
                 mockmvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -153,7 +153,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 200이며 수정된 task를 반환한다")
+            @DisplayName("응답코드는 200이며 수정된 task를 응답한다")
             void it_return_task_json() throws Exception {
                 mockmvc.perform(put("/tasks/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -174,7 +174,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 응답한다")
             void it_return_not_found_message() throws Exception {
                 mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -199,7 +199,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 200이며 수정된 task를 반환한다")
+            @DisplayName("응답코드는 200이며 수정된 task를 응답한다")
             void it_return_task_json() throws Exception {
                 mockmvc.perform(put("/tasks/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -220,7 +220,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 응답한다")
             void it_return_not_found_message() throws Exception {
                 mockmvc.perform(put("/tasks/{id}", DOES_NOT_EXIST_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -244,7 +244,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 200이며 해당 task를 반환한다")
+            @DisplayName("응답코드는 200이며 해당 task를 응답한다")
             void it_return_task_json() throws Exception {
                 mockmvc.perform(delete("/tasks/{id}", ID))
                         .andDo(print())
@@ -261,7 +261,7 @@ class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("응답코드는 404이며 Task not found 메세지를 반환한다")
+            @DisplayName("응답코드는 404이며 Task not found 메세지를 응답한다")
             void it_return_not_found_message() throws Exception {
                 mockmvc.perform(delete("/tasks/{id}", DOES_NOT_EXIST_ID))
                         .andDo(print())
