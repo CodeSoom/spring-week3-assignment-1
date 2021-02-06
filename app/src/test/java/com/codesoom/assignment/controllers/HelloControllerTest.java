@@ -7,7 +7,7 @@ package com.codesoom.assignment.controllers;
         import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("HelloController 클래스")
-public class HelloControllerTest {
+class HelloControllerTest {
 
     private HelloController helloController;
 

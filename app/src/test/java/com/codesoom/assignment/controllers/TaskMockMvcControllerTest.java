@@ -67,7 +67,7 @@ public class TaskMockMvcControllerTest {
                         .willReturn(tasks);
             }
 
-            @DisplayName("OK 상태와 할 일 목록을 응답한다.")
+            @DisplayName("200 상태 코드, OK 상태와 할 일 목록을 응답한다.")
             @Test
             void It_responds_ok_with_tasks() throws Exception {
 
@@ -81,7 +81,7 @@ public class TaskMockMvcControllerTest {
         @DisplayName("할 일 목록이 없으면")
         class Context_without_tasks {
 
-            @DisplayName("OK 상태와 비어있는 할 일 목록 응답한다.")
+            @DisplayName("200 상태코드, OK 상태와 비어있는 할 일 목록 응답한다.")
             @Test
             void It_responds_ok_with_empty_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
@@ -104,7 +104,7 @@ public class TaskMockMvcControllerTest {
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
-            @DisplayName("Not Found 상태를 응답한다.")
+            @DisplayName("404 상태코드, Not Found 상태를 응답한다.")
             @Test
             void It_responds_not_found() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
@@ -126,7 +126,7 @@ public class TaskMockMvcControllerTest {
                         .willReturn(task);
             }
 
-            @DisplayName("OK 상태와 찾고자 하는 할 일을 응답한다.")
+            @DisplayName("200 상태코드, OK 상태와 찾고자 하는 할 일을 응답한다.")
             @Test
             void it_responds_ok_with_task() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
@@ -141,7 +141,7 @@ public class TaskMockMvcControllerTest {
     class Describe_create {
 
         @Test
-        @DisplayName("Created 상태를 응답한다.")
+        @DisplayName("201 상태코드, Created 상태를 응답한다.")
         void It_responds_created() throws Exception {
             mockMvc.perform(post("/tasks")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ public class TaskMockMvcControllerTest {
                         .willThrow(new TaskNotFoundException(anyLong()));
             }
 
-            @DisplayName("Not Found 상태를 응답한다.")
+            @DisplayName("404 상태코드, Not Found 상태를 응답한다.")
             @Test
             void It_responds_not_found() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", GIVEN_ID))
@@ -180,7 +180,7 @@ public class TaskMockMvcControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 갱신된 할 일을 응답한다.")
+            @DisplayName("200 상태코드, OK 상태와 갱신된 할 일을 응답한다.")
             @Test
             void It_responds_task() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", GIVEN_ID)
@@ -206,7 +206,7 @@ public class TaskMockMvcControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 할 일을 응답한다.")
+            @DisplayName("200 상태코드, OK 상태와 할 일을 응답한다.")
             @Test
             void it_responds_task() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", GIVEN_ID)
@@ -227,7 +227,7 @@ public class TaskMockMvcControllerTest {
                         .willThrow(new TaskNotFoundException(GIVEN_ID));
             }
 
-            @DisplayName("Not Found 상태를 응답한다.")
+            @DisplayName("404 상태코드와 Not Found 상태를 응답한다.")
             @Test
             void It_responds_not_found() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", GIVEN_ID))
@@ -249,7 +249,7 @@ public class TaskMockMvcControllerTest {
                         .willThrow(new TaskNotFoundException(anyLong()));
             }
 
-            @DisplayName("Not Found 상태를 응답한다.")
+            @DisplayName("404 상태코드와 Not Found 상태를 응답한다.")
             @Test
             void It_responds_not_found() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID))
@@ -266,7 +266,7 @@ public class TaskMockMvcControllerTest {
                 given(taskService.deleteTask(anyLong())).willReturn(createTask());
             }
 
-            @DisplayName("NO CONTENT 상태와 삭제된 할 일을 응답한다.")
+            @DisplayName("204 상태코드와 NO CONTENT 상태를 삭제된 할 일을 응답한다.")
             @Test
             void It_responds_no_content_with_task() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID)

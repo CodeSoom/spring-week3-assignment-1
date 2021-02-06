@@ -13,12 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayName("HelloController 클래스")
-public class HelloMockMvcControllerTest {
+class HelloMockMvcControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @DisplayName("서버가 정상적으로 작동하면 OK를 응답한다")
+    @DisplayName("서버가 정상적으로 작동하면 200 상태코드, OK 상태를 응답한다")
     @Test
     void health_check() throws Exception {
 
