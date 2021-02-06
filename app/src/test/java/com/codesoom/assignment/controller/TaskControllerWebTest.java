@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,7 +67,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("200 코드를 응답하고, 저장 되어있는 할 일을 리턴한다.")
-            void It_respond_200_and_tasks() throws Exception {
+            void It_respond_200_and_all_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("Test Task")));
@@ -83,7 +84,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("200 코드를 응답하고, 비어있는 목록을 리턴한다.")
-            void it_respond_200_and_tasks() throws Exception {
+            void it_respond_200_and_empty_array() throws Exception {
                 mockMvc.perform(get("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -150,7 +151,7 @@ public class TaskControllerWebTest {
 
             @Test
             @DisplayName("201 코드를 응답하고, 생성된 할 일을 리턴한다.")
-            void create() throws Exception {
+            void It_respond_201_and_new_task() throws Exception {
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(task)))
@@ -162,4 +163,5 @@ public class TaskControllerWebTest {
             }
         }
     }
+
 }
