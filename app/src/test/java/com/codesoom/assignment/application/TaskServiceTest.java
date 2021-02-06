@@ -13,16 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
     private TaskService taskService;
-    private static final String TASK_TITLE = "test";
-    private static final String UPDATE_POSTFIX = "!!!";
+    private static final String BEFORE_TASK_TITLE = "before";
+    private static final String UPDATE_TASK_TITLE = "updated";
+    private static final String CREATE_TASK_TITLE ="created";
 
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-        taskService.createTask(task);
+        Task beforeTask = new Task();
+        beforeTask.setTitle(BEFORE_TASK_TITLE);
+        taskService.createTask(beforeTask);
     }
 
     @Nested
@@ -36,7 +37,7 @@ class TaskServiceTest {
 
             Task task = taskService.getTasks().get(0);
             assertThat(task.getId()).isEqualTo(1L);
-            assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(task.getTitle()).isEqualTo(BEFORE_TASK_TITLE);
         }
     }
 
@@ -50,7 +51,7 @@ class TaskServiceTest {
             @DisplayName("주어진 id에 해당하는 할 일을 리턴한다")
             void itReturnsValidTask() {
                 Task task = taskService.getTask(1L);
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+                assertThat(task.getTitle()).isEqualTo(BEFORE_TASK_TITLE);
             }
         }
 
@@ -72,13 +73,16 @@ class TaskServiceTest {
         @Test
         @DisplayName("title을 입력받아 새로운 할 일을 생성하고 할 일을 리턴한다")
         void itReturnsNewTask() {
+            int oldIndex = taskService.getTasks().size()-1;
+            Long oldId = taskService.getTasks().get(oldIndex).getId();
+
             Task newTask = new Task();
-            newTask.setTitle(TASK_TITLE);
+            newTask.setTitle(CREATE_TASK_TITLE);
 
             taskService.createTask(newTask);
 
-            assertThat(taskService.getTasks().get(1).getId()).isEqualTo(2L);
-            assertThat(taskService.getTasks().get(1).getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(taskService.getTasks().get(oldIndex+1).getId()).isEqualTo(oldId + 1L);
+            assertThat(taskService.getTasks().get(oldIndex+1).getTitle()).isEqualTo(CREATE_TASK_TITLE);
         }
     }
 
@@ -92,11 +96,11 @@ class TaskServiceTest {
             @DisplayName("주어진 id에 해당하는 할 일의 title을 수정하고 할 일을 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task source = new Task();
-                source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                source.setTitle(UPDATE_TASK_TITLE);
                 taskService.updateTask(1L, source);
 
                 Task task = taskService.getTask(1L);
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
+                assertThat(task.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
             }
         }
 
@@ -107,7 +111,7 @@ class TaskServiceTest {
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
                 Task source = new Task();
-                source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                source.setTitle(UPDATE_TASK_TITLE);
 
                 assertThatThrownBy(() -> taskService.updateTask(100L, source))
                         .isInstanceOf(TaskNotFoundException.class);
