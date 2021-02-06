@@ -52,7 +52,7 @@ public class TestControllerTest {
     @DisplayName("GET /TASKS는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("Tasks가 존재하면")
+        @DisplayName("할 일 목록이 존재하면")
         class Context_with_tasks {
             List<Task> tasks = new ArrayList<>();
 
@@ -67,7 +67,7 @@ public class TestControllerTest {
                         .willReturn(tasks);
             }
 
-            @DisplayName("OK 상태와 tasks 목록을 응답한다.")
+            @DisplayName("OK 상태와 할 일 목록을 응답한다.")
             @Test
             void It_responds_ok_with_tasks() throws Exception {
 
@@ -78,10 +78,10 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("Tasks가 없으면")
+        @DisplayName("할 일 목록이 없으면")
         class Context_without_tasks {
 
-            @DisplayName("OK 상태와 비어있는 tasks 목록 응답한다.")
+            @DisplayName("OK 상태와 비어있는 할 일 목록 응답한다.")
             @Test
             void It_responds_ok_with_empty_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
@@ -96,7 +96,7 @@ public class TestControllerTest {
     class Describe_getTask {
 
         @Nested
-        @DisplayName("Task가 없으면")
+        @DisplayName("할 일이 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -113,7 +113,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("Task가 존재하면")
+        @DisplayName("할 일이 존재하면")
         class Context_with_task {
             Task task = new Task();
 
@@ -126,7 +126,7 @@ public class TestControllerTest {
                         .willReturn(task);
             }
 
-            @DisplayName("OK 상태와 task를 응답한다.")
+            @DisplayName("OK 상태와 찾고자 하는 할 일을 응답한다.")
             @Test
             void it_responds_ok_with_task() throws Exception {
                 mockMvc.perform(get("/tasks/" + GIVEN_ID))
@@ -156,7 +156,7 @@ public class TestControllerTest {
     class Describe_updateTask {
 
         @Nested
-        @DisplayName("갱신되는 Task가 없으면")
+        @DisplayName("갱신되는 할 일이 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -173,14 +173,14 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("Task가 존재하면")
+        @DisplayName("할 일이 존재하면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 task를 응답한다.")
+            @DisplayName("OK 상태와 갱신된 할 일을 응답한다.")
             @Test
             void It_responds_task() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", GIVEN_ID)
@@ -198,7 +198,7 @@ public class TestControllerTest {
     class Describe_patchTask {
 
         @Nested
-        @DisplayName("갱신되는 Task가 존재하면")
+        @DisplayName("갱신되는 할 일이 존재하면")
         class Context_with_task {
 
             @BeforeEach
@@ -206,7 +206,7 @@ public class TestControllerTest {
                 given(taskService.updateTask(anyLong(), any(Task.class))).willReturn(createTask());
             }
 
-            @DisplayName("OK 상태와 task를 응답한다.")
+            @DisplayName("OK 상태와 할 일을 응답한다.")
             @Test
             void it_responds_task() throws Exception {
                 mockMvc.perform(patch("/tasks/{id}", GIVEN_ID)
@@ -219,7 +219,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("갱신되는 Task가 없으면")
+        @DisplayName("갱신되는 할 일이 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -241,7 +241,7 @@ public class TestControllerTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("삭제되는 Task가 없으면")
+        @DisplayName("삭제되는 할 일이 없으면")
         class Context_without_task {
             @BeforeEach
             void setUp() {
@@ -258,7 +258,7 @@ public class TestControllerTest {
         }
 
         @Nested
-        @DisplayName("삭제되는 Task가 존재하면")
+        @DisplayName("삭제되는 할 일이 존재하면")
         class Context_with_task {
 
             @BeforeEach
@@ -266,7 +266,7 @@ public class TestControllerTest {
                 given(taskService.deleteTask(anyLong())).willReturn(createTask());
             }
 
-            @DisplayName("NO CONTENT 상태와 task를 응답한다.")
+            @DisplayName("NO CONTENT 상태와 삭제된 할 일을 응답한다.")
             @Test
             void It_responds_no_content_with_task() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", GIVEN_ID)

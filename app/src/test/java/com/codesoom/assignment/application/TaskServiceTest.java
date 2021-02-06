@@ -32,13 +32,13 @@ public class TaskServiceTest {
         task2.setTitle(TASK_TITLE_2);
     }
 
-    TaskService TaskExistService() {
+    TaskService taskExistService() {
         taskService.createTask(task1);
         taskService.createTask(task2);
         return taskService;
     }
 
-    Task NewTask() {
+    Task newTask() {
         Task task = new Task();
         task.setTitle(NEW_TITLE);
         return task;
@@ -126,7 +126,7 @@ public class TaskServiceTest {
         void it_returns_task_and_size() {
             int beforeTaskSize = taskService.getTasks().size();
 
-            taskService.createTask(NewTask());
+            taskService.createTask(newTask());
 
             int afterTaskSize = taskService.getTasks().size();
             assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
@@ -138,7 +138,7 @@ public class TaskServiceTest {
     @DisplayName("updateTask 메서드는")
     class Describe_updateTask {
         final Long id = 1L;
-        final Task newTask = NewTask();
+        final Task newTask = newTask();
 
         @Nested
         @DisplayName("갱신하려는 할 일 있으면")
@@ -147,7 +147,7 @@ public class TaskServiceTest {
             @DisplayName("변경된 일 할 일을 리턴한다")
             @Test
             void it_returns_update_task() {
-                TaskService taskService = TaskExistService();
+                TaskService taskService = taskExistService();
                 assertAll(
                         () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
                         () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(NEW_TITLE)
