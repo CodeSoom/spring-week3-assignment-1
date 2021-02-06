@@ -14,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("TaskService 클래스")
-public class TaskServiceTest {
+class TaskServiceTest {
     private static final Long TASK_ID_1 = 1L;
     private static final Long TASK_ID_2 = 2L;
     private static final String TASK_TITLE_1 = "task1";
@@ -34,19 +34,6 @@ public class TaskServiceTest {
         task2 = new Task();
         task2.setId(TASK_ID_2);
         task2.setTitle(TASK_TITLE_2);
-    }
-
-    TaskService taskExistService() {
-        taskService.createTask(task1);
-        taskService.createTask(task2);
-        return taskService;
-    }
-
-    Task newTask() {
-        Task task = new Task();
-        task.setId(TASK_ID_1);
-        task.setTitle(NEW_TITLE);
-        return task;
     }
 
     @Nested
@@ -69,7 +56,7 @@ public class TaskServiceTest {
 
                 assertAll(
                         () -> assertThat(tasks).hasSize(2),
-                        () -> assertThat(tasks).containsExactly(task1, task2)
+                        () -> assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE_1)
                 );
             }
         }
@@ -98,16 +85,12 @@ public class TaskServiceTest {
             @BeforeEach
             void setUp() {
                 taskService.createTask(task1);
-                taskService.createTask(task2);
             }
 
             @DisplayName("할 일을 리턴한다")
             @Test
             void it_returns_tasks() {
-                assertAll(
-                        () -> assertThat(taskService.getTask(id)).isNotNull(),
-                        () -> assertThat(taskService.getTask(id)).isEqualTo(task1)
-                );
+                assertThat(taskService.getTask(id).getTitle()).isEqualTo(TASK_TITLE_1);
             }
         }
 
@@ -127,14 +110,25 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
+        Task task = new Task();
 
-        @DisplayName("할 일 추가되어 할 일 목록이 증가한다.")
+        @BeforeEach
+        void setUp() {
+            task.setId(TASK_ID_1);
+            task.setTitle(TASK_TITLE_1);
+        }
+
+        @DisplayName("createTask는 새로운 할 일을 추가한다")
         @Test
         void it_returns_task_and_size() {
-            assertAll(
-                    () -> assertThat(taskService.createTask(newTask())).isEqualTo(newTask()),
-                    () -> assertThat(taskService.getTasks()).containsExactly(newTask())
-            );
+            int beforeTaskSize = taskService.getTasks().size();
+
+            Task newTask = taskService.createTask(this.task);
+
+            int afterTaskSize = taskService.getTasks().size();
+
+            assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
+            assertThat(newTask.getTitle()).isEqualTo(task.getTitle());
         }
     }
 
@@ -142,20 +136,25 @@ public class TaskServiceTest {
     @DisplayName("updateTask 메서드는")
     class Describe_updateTask {
         final Long id = 1L;
-        final Task newTask = newTask();
+        Task task;
 
         @Nested
         @DisplayName("갱신하려는 할 일 있으면")
         class Context_with_task {
 
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle(NEW_TITLE);
+                taskService.createTask(task1);
+            }
+
             @DisplayName("변경된 일 할 일을 리턴한다")
             @Test
-            void it_returns_update_task() {
-                TaskService taskService = taskExistService();
-                assertAll(
-                        () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
-                        () -> assertThat(taskService.getTask(id)).isEqualTo(newTask)
-                );
+            void It_returns_update_task() {
+                Task updatedTask = taskService.updateTask(id, task);
+
+                assertThat(updatedTask.getTitle()).isEqualTo(NEW_TITLE);
             }
         }
 
@@ -167,7 +166,7 @@ public class TaskServiceTest {
             @Test
             void it_throws_exception() {
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> taskService.updateTask(id, newTask));
+                        .isThrownBy(() -> taskService.updateTask(id, task));
             }
         }
     }
@@ -189,11 +188,13 @@ public class TaskServiceTest {
             @DisplayName("할 일이 삭제되어 할 일 목록 수가 줄어든다")
             @Test
             void it_returns_delete_task() {
-                assertAll(
-                        () -> assertThat(taskService.deleteTask(id)).isEqualTo(task1),
-                        () -> assertThat(taskService.getTasks()).containsExactly(task2)
-                );
+                int beforeTaskSize = taskService.getTasks().size();
 
+                taskService.deleteTask(id);
+
+                int afterTaskSize = taskService.getTasks().size();
+
+                assertThat(beforeTaskSize - afterTaskSize).isEqualTo(1);
             }
         }
 

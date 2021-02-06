@@ -1,6 +1,5 @@
 package com.codesoom.assignment.models;
 
-import com.codesoom.assignment.dto.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,32 +60,4 @@ public class TaskTest {
         assertThat(task.getTitle()).isEqualTo(GIVEN_TITLE);
     }
 
-    @DisplayName("equal and hashcode를 통해 동등성을 비교한다")
-    @Test
-    void equal_hash() {
-        Task task1 = new Task();
-        Long id = 1L;
-        String title = "test1";
-        task1.setId(1L);
-        task1.setTitle("test1");
-
-        Task task2 = new Task();
-        task2.setId(1L);
-        task2.setTitle("test1");
-
-        assertThat(task1.equals(task2)).isTrue();
-        assertThat(task1.hashCode()).isEqualTo(task2.hashCode());
-    }
-
-    @DisplayName("equal가 다른것을 통해 동등성을 비교한다")
-    @Test
-    void not_equal() {
-        Task task1 = new Task();
-
-        Task task2 = null;
-        ErrorResponse errorResponse = new ErrorResponse("test");
-
-        assertThat(task1.equals(task2)).isFalse();
-        assertThat(task1.equals(errorResponse)).isFalse();
-    }
 }
