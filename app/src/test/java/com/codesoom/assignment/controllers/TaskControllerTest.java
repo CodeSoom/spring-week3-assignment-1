@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-public class TaskControllerTest {
+class TaskControllerTest {
 
     private static final Long GIVEN_ID = 1L;
     private static final Long NOT_FOUND_ID = 0L;
@@ -116,7 +116,7 @@ public class TaskControllerTest {
     void delete() {
         taskController.delete(GIVEN_ID);
 
-        assertThat(taskController.list()).hasSize(0);
+        assertThat(taskController.list()).isEmpty();
     }
 
     @DisplayName("존재하지 않는 할 일 삭제하기")
