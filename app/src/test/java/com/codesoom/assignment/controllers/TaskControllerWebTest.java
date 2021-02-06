@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -81,13 +80,13 @@ public class TaskControllerWebTest {
             @DisplayName("task가 없다면")
             class Context_without_any_task {
                 @Test
-                @DisplayName("비어 있는 리스트를 리턴한다.")
+                @DisplayName("200 OK와 비어 있는 리스트를 응답한다.")
                 void it_respond_200_ok_and_empty_list() throws Exception {
                     given(taskService.getTasks()).willReturn(new ArrayList<>());
 
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isOk())
-                            .andExpect(content().string(containsString("[]")));
+                            .andExpect(content().json("[]"));
                 }
             }
 
@@ -99,16 +98,19 @@ public class TaskControllerWebTest {
                     for (int i = 0; i < repetitionInfo.getCurrentRepetition(); i++) {
                         taskList.add(task);
                     }
-
-                    given(taskService.getTasks()).willReturn(taskList);
                 }
 
-                @RepeatedTest(repeatTime)
-                @DisplayName("크기가 1이상인 리스트를 리턴한다.")
+                @RepeatedTest(value = repeatTime, name = "200 OK와 크기가 1이상인 리스트를 응답한다.")
                 void it_respond_200_ok_and_saved_task_list() throws Exception {
+                    given(taskService.getTasks()).willReturn(taskList);
+
+                    outputStream = new ByteArrayOutputStream();
+                    objectMapper.writeValue(outputStream, taskList);
+                    taskJsonString = outputStream.toString();
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isOk())
-                            .andExpect(content().string(containsString(givenTaskTitle)));
+                            .andExpect(content().json(taskJsonString));
                 }
             }
         }
@@ -117,20 +119,23 @@ public class TaskControllerWebTest {
         @DisplayName("요청이 GET /tasks/:id 이고")
         class Context_when_request_is_get_tasks_id {
             private String stringFormat = "/tasks/%d";
+            private Long givenId;
 
             @Nested
             @DisplayName("id값이 저장된 task의 id값과 동일하다면")
             class Context_when_id_is_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() {
-                    uriTemplate = String.format(stringFormat, givenSavedTaskId);
+                    givenId = givenSavedTaskId;
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = get(uriTemplate);
-                    given(taskService.getTask(givenSavedTaskId)).willReturn(task);
                 }
 
                 @Test
-                @DisplayName("저장된 task를 응답한다.")
+                @DisplayName("200 OK와 저장된 task를 응답한다.")
                 void it_respond_200_ok_and_saved_task() throws Exception {
+                    given(taskService.getTask(givenId)).willReturn(task);
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isOk())
                             .andExpect(content().json(taskJsonString));
@@ -142,15 +147,17 @@ public class TaskControllerWebTest {
             class Context_when_id_is_not_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() {
-                    uriTemplate = String.format(stringFormat, givenUnsavedTaskId);
+                    givenId = givenUnsavedTaskId;
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = get(uriTemplate);
-                    given(taskService.getTask(givenUnsavedTaskId))
-                            .willThrow(new TaskNotFoundException(givenUnsavedTaskId));
                 }
 
                 @Test
                 @DisplayName("404 Not Found를 응답한다.")
                 void it_respond_404_not_found() throws Exception {
+                    given(taskService.getTask(givenUnsavedTaskId))
+                            .willThrow(new TaskNotFoundException(givenId));
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isNotFound());
                 }
@@ -165,21 +172,16 @@ public class TaskControllerWebTest {
                 requestBuilder = post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJsonString);
-
-                given(taskService.createTask(any(Task.class))).willReturn(task);
             }
 
-            @Nested
-            @DisplayName("task를 추가하고,")
-            class It_add_task {
-                @Test
-                @DisplayName("201 Created와 추가된 task를 응답한다.")
-                void it_respond_201_created_and_added_task() throws Exception {
-                    mockMvc.perform(requestBuilder)
-                            .andDo(print())
-                            .andExpect(status().isCreated())
-                            .andExpect(content().json(taskJsonString));
-                }
+            @Test
+            @DisplayName("task를 추가하고, 201 Created와 추가된 task를 응답한다.")
+            void it_add_task_and_respond_201_created_and_added_task() throws Exception {
+                given(taskService.createTask(any(Task.class))).willReturn(task);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().isCreated())
+                        .andExpect(content().json(taskJsonString));
             }
         }
 
@@ -187,29 +189,31 @@ public class TaskControllerWebTest {
         @DisplayName("요청이 PUT /tasks/:id 이면")
         class Context_when_request_is_put_tasks_id {
             private String stringFormat = "/tasks/%d";
+            private Long givenId;
 
             @Nested
             @DisplayName("id값이 저장된 task의 id값과 동일하다면")
             class Context_when_id_is_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() throws IOException {
+                    givenId = givenSavedTaskId;
                     task.setTitle(givenTaskTitle);
 
                     outputStream = new ByteArrayOutputStream();
                     objectMapper.writeValue(outputStream, task);
                     taskJsonString = outputStream.toString();
 
-                    uriTemplate = String.format(stringFormat, givenSavedTaskId);
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = put(uriTemplate)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskJsonString);
-
-                    given(taskService.updateTask(any(long.class), any(Task.class))).willReturn(task);
                 }
 
                 @Test
-                @DisplayName("수정된 task를 응답한다.")
-                void it_respond_200_ok_and_modified_task() throws Exception {
+                @DisplayName("task를 수정하고, 수정된 task를 응답한다.")
+                void it_modify_task_and_respond_200_ok_and_modified_task() throws Exception {
+                    given(taskService.updateTask(any(long.class), any(Task.class))).willReturn(task);
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isOk())
                             .andExpect(content().json(taskJsonString));
@@ -221,24 +225,25 @@ public class TaskControllerWebTest {
             class Context_when_id_is_not_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() throws IOException {
+                    givenId = givenUnsavedTaskId;
                     task.setTitle(givenTaskTitle);
 
                     outputStream = new ByteArrayOutputStream();
                     objectMapper.writeValue(outputStream, task);
                     taskJsonString = outputStream.toString();
 
-                    uriTemplate = String.format(stringFormat, givenUnsavedTaskId);
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = put(uriTemplate)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskJsonString);
-
-                    given(taskService.updateTask(any(long.class), any(Task.class)))
-                            .willThrow(new TaskNotFoundException(givenUnsavedTaskId));
                 }
 
                 @Test
                 @DisplayName("404 Not Found를 응답한다.")
                 void it_respond_404_not_found() throws Exception {
+                    given(taskService.updateTask(any(long.class), any(Task.class)))
+                            .willThrow(new TaskNotFoundException(givenId));
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isNotFound());
                 }
@@ -249,29 +254,31 @@ public class TaskControllerWebTest {
         @DisplayName("요청이 PATCH /tasks/:id 이면")
         class Context_when_request_is_patch_tasks_id {
             private String stringFormat = "/tasks/%d";
+            private Long givenId;
 
             @Nested
             @DisplayName("id값이 저장된 task의 id값과 동일하다면")
             class Context_when_id_is_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() throws IOException {
+                    givenId = givenSavedTaskId;
                     task.setTitle(givenTaskTitle);
 
                     outputStream = new ByteArrayOutputStream();
                     objectMapper.writeValue(outputStream, task);
                     taskJsonString = outputStream.toString();
 
-                    uriTemplate = String.format(stringFormat, givenSavedTaskId);
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = patch(uriTemplate)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskJsonString);
-
-                    given(taskService.updateTask(any(long.class), any(Task.class))).willReturn(task);
                 }
 
                 @Test
-                @DisplayName("수정된 task를 응답한다.")
-                void it_respond_200_ok_and_modified_task() throws Exception {
+                @DisplayName("task를 수정하고, 수정된 task를 응답한다.")
+                void it_modify_task_and_respond_200_ok_and_modified_task() throws Exception {
+                    given(taskService.updateTask(any(long.class), any(Task.class))).willReturn(task);
+
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().isOk())
                             .andExpect(content().json(taskJsonString));
@@ -283,19 +290,20 @@ public class TaskControllerWebTest {
             class Context_when_id_is_not_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() throws IOException {
+                    givenId = givenUnsavedTaskId;
                     task.setTitle(givenTaskTitle);
 
                     outputStream = new ByteArrayOutputStream();
                     objectMapper.writeValue(outputStream, task);
                     taskJsonString = outputStream.toString();
 
-                    uriTemplate = String.format(stringFormat, givenUnsavedTaskId);
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = patch(uriTemplate)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskJsonString);
 
                     given(taskService.updateTask(any(long.class), any(Task.class)))
-                            .willThrow(new TaskNotFoundException(givenUnsavedTaskId));
+                            .willThrow(new TaskNotFoundException(givenId));
                 }
 
                 @Test
@@ -311,16 +319,19 @@ public class TaskControllerWebTest {
         @DisplayName("요청이 DELETE /tasks/:id 이면")
         class Context_when_request_is_delete_tasks_id {
             private String stringFormat = "/tasks/%d";
+            private Long givenId;
 
             @Nested
             @DisplayName("id값이 저장된 task의 id값과 동일하다면")
             class Context_when_id_is_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() {
-                    uriTemplate = String.format(stringFormat, givenSavedTaskId);
+                    givenId = givenSavedTaskId;
+
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = delete(uriTemplate);
 
-                    given(taskService.deleteTask(any(long.class))).willReturn(task);
+                    given(taskService.deleteTask(givenId)).willReturn(task);
                 }
 
                 @Test
@@ -336,11 +347,13 @@ public class TaskControllerWebTest {
             class Context_when_id_is_not_equal_to_saved_task_id {
                 @BeforeEach
                 void setRequest() {
-                    uriTemplate = String.format(stringFormat, givenSavedTaskId);
+                    givenId = givenUnsavedTaskId;
+
+                    uriTemplate = String.format(stringFormat, givenId);
                     requestBuilder = delete(uriTemplate);
 
-                    given(taskService.deleteTask(givenSavedTaskId))
-                            .willThrow(new TaskNotFoundException(givenUnsavedTaskId));
+                    given(taskService.deleteTask(givenId))
+                            .willThrow(new TaskNotFoundException(givenId));
                 }
 
                 @Test
