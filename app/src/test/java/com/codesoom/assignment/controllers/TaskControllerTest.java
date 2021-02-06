@@ -12,12 +12,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskController 클래스의")
 class TaskControllerTest {
-    private final Long GIVEN_SAVED_TASK_ID = 1L;
-    private final Long GIVEN_UNSAVED_TASK_ID = 100L;
-    private final String GIVEN_TASK_TITLE = "Test";
-    private final String GIVEN_MODIFY_TASK_TITLE = "Modified";
+    private final Long givenSavedTaskId = 1L;
+    private final Long givenUnsavedTaskId = 100L;
+    private final String givenTaskTitle = "Test";
+    private final String givenModifyTaskTitle = "Modified";
 
-    private final int REPEAT_TIME = 3;
+    private final int repeatTime = 2;
 
     private TaskController taskController;
     private Task task;
@@ -25,7 +25,7 @@ class TaskControllerTest {
     @BeforeEach
     void setUp() {
         task = new Task();
-        task.setTitle(GIVEN_TASK_TITLE);
+        task.setTitle(givenTaskTitle);
 
         taskController = new TaskController(new TaskService());
     }
@@ -37,7 +37,7 @@ class TaskControllerTest {
         @DisplayName("task가 없다면")
         class Context_without_any_task {
             @Test
-            @DisplayName("빈 리스트를 리턴한다.")
+            @DisplayName("비어있는 리스트를 리턴한다.")
             void it_return_empty_list() {
                 assertThat(taskController.list()).isEmpty();
             }
@@ -52,8 +52,7 @@ class TaskControllerTest {
                         .forEach(i -> taskController.create(task));
             }
 
-            @RepeatedTest(REPEAT_TIME)
-            @DisplayName("크기가 1이상인 리스트를 리턴한다.")
+            @RepeatedTest(value = repeatTime, name = "크기가 1이상인 리스트를 리턴한다.")
             void it_return_list_having_task_one_or_more() {
                 assertThat(taskController.list().size()).isGreaterThanOrEqualTo(1);
             }
@@ -77,16 +76,17 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = GIVEN_SAVED_TASK_ID;
-                selected = taskController.detail(givenId);
+                givenId = givenSavedTaskId;
             }
 
             @Test
             @DisplayName("task를 리턴한다.")
             void it_return_task() {
+                selected = taskController.detail(givenId);
+
                 assertThat(selected.getClass()).isEqualTo(Task.class);
-                assertThat(selected.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(selected.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+                assertThat(selected.getId()).isEqualTo(givenSavedTaskId);
+                assertThat(selected.getTitle()).isEqualTo(givenTaskTitle);
             }
         }
 
@@ -95,7 +95,7 @@ class TaskControllerTest {
         class Context_with_unsaved_id {
             @BeforeEach
             void setUnsavedId() {
-                givenId = GIVEN_UNSAVED_TASK_ID;
+                givenId = givenUnsavedTaskId;
             }
 
             @Test
@@ -128,7 +128,7 @@ class TaskControllerTest {
             @DisplayName("추가된 task를 리턴한다.")
             void it_return_added_task() {
                 assertThat(added.getClass()).isEqualTo(Task.class);
-                assertThat(added.getTitle()).isEqualTo(GIVEN_TASK_TITLE);
+                assertThat(added.getTitle()).isEqualTo(givenTaskTitle);
             }
 
             @Test
@@ -150,7 +150,7 @@ class TaskControllerTest {
             taskController.create(task);
 
             modifying = new Task();
-            modifying.setTitle(GIVEN_MODIFY_TASK_TITLE);
+            modifying.setTitle(givenModifyTaskTitle);
         }
 
         @Nested
@@ -160,7 +160,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = GIVEN_SAVED_TASK_ID;
+                givenId = givenSavedTaskId;
                 modified = taskController.update(givenId, modifying);
             }
 
@@ -168,9 +168,9 @@ class TaskControllerTest {
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_modify_task_and_return_modified_task() {
                 assertThat(modified.getClass()).isEqualTo(Task.class);
-                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                assertThat(modified.getId()).isEqualTo(givenSavedTaskId);
+                assertThat(modified.getTitle()).isNotEqualTo(givenTaskTitle);
+                assertThat(modified.getTitle()).isEqualTo(givenModifyTaskTitle);
             }
         }
 
@@ -179,7 +179,7 @@ class TaskControllerTest {
         class Context_with_unsaved_id {
             @BeforeEach
             void setUnsavedId() {
-                givenId = GIVEN_UNSAVED_TASK_ID;
+                givenId = givenUnsavedTaskId;
             }
 
             @Test
@@ -204,7 +204,7 @@ class TaskControllerTest {
             taskController.create(task);
 
             modifying = new Task();
-            modifying.setTitle(GIVEN_MODIFY_TASK_TITLE);
+            modifying.setTitle(givenModifyTaskTitle);
         }
 
         @Nested
@@ -214,17 +214,18 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = GIVEN_SAVED_TASK_ID;
-                modified = taskController.patch(givenId, modifying);
+                givenId = givenSavedTaskId;
             }
 
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_modify_task_and_return_modified_task() {
+                modified = taskController.patch(givenId, modifying);
+
                 assertThat(modified.getClass()).isEqualTo(Task.class);
-                assertThat(modified.getId()).isEqualTo(GIVEN_SAVED_TASK_ID);
-                assertThat(modified.getTitle()).isNotEqualTo(GIVEN_TASK_TITLE);
-                assertThat(modified.getTitle()).isEqualTo(GIVEN_MODIFY_TASK_TITLE);
+                assertThat(modified.getId()).isEqualTo(givenSavedTaskId);
+                assertThat(modified.getTitle()).isNotEqualTo(givenTaskTitle);
+                assertThat(modified.getTitle()).isEqualTo(givenModifyTaskTitle);
             }
         }
 
@@ -233,7 +234,7 @@ class TaskControllerTest {
         class Context_with_unsaved_id {
             @BeforeEach
             void setUnsavedId() {
-                givenId = GIVEN_UNSAVED_TASK_ID;
+                givenId = givenUnsavedTaskId;
             }
 
             @Test
@@ -264,7 +265,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = GIVEN_SAVED_TASK_ID;
+                givenId = givenSavedTaskId;
                 size = taskController.list().size();
             }
 
@@ -272,6 +273,7 @@ class TaskControllerTest {
             @DisplayName("task를 삭제하고, task 리스트의 크기를 1 감소시킨다.")
             void it_delete_task_and_count_down_1_task_list_size() {
                 taskController.delete(givenId);
+
                 assertThat(taskController.list().size()).isEqualTo(size - 1);
             }
         }
@@ -280,8 +282,8 @@ class TaskControllerTest {
         @DisplayName("저장되지 않은 task의 id를 가지고 있다면")
         class Context_with_unsaved_id {
             @BeforeEach
-            void setSavedId() {
-                givenId = GIVEN_UNSAVED_TASK_ID;
+            void setUnsavedId() {
+                givenId = givenUnsavedTaskId;
             }
 
             @Test
