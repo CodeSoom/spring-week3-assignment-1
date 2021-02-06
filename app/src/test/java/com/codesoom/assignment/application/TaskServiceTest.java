@@ -30,9 +30,7 @@ class TaskServiceTest {
         task.setTitle("test");
         taskService.createTask(task);
 
-        int afterCreationSize = taskService.getTasks().size();
-
-        assertThat(afterCreationSize - originalSize).isEqualTo(1);
+        assertThat(taskService.getTasks().size() - originalSize).isEqualTo(1);
     }
 
     @Test
@@ -56,9 +54,8 @@ class TaskServiceTest {
         int originalSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
-        int afterDeletionSize = taskService.getTasks().size();
 
-        assertThat(originalSize - afterDeletionSize).isEqualTo(1);
+        assertThat(originalSize - taskService.getTasks().size()).isEqualTo(1);
     }
 
     @Test
