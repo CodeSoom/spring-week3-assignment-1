@@ -156,6 +156,23 @@ public class TestControllerTest {
     class Describe_updateTask {
 
         @Nested
+        @DisplayName("갱신되는 Task가 없으면")
+        class Context_without_task {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(anyLong(), any(Task.class)))
+                        .willThrow(new TaskNotFoundException(anyLong()));
+            }
+
+            @DisplayName("Not Found 상태를 응답한다.")
+            @Test
+            void It_responds_not_found() throws Exception {
+                mockMvc.perform(put("/tasks/{id}", GIVEN_ID))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
         @DisplayName("Task가 존재하면")
         class Context_with_task {
             @BeforeEach
@@ -170,24 +187,6 @@ public class TestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
                         .andExpect(status().isOk());
-            }
-        }
-
-
-        @Nested
-        @DisplayName("갱신되는 Task가 없으면")
-        class Context_without_task {
-            @BeforeEach
-            void setUp() {
-                given(taskService.updateTask(anyLong(), any(Task.class)))
-                        .willThrow(new TaskNotFoundException(anyLong()));
-            }
-
-            @DisplayName("Not Found 상태를 응답한다.")
-            @Test
-            void It_responds_not_found() throws Exception {
-                mockMvc.perform(put("/tasks/{id}", GIVEN_ID))
-                        .andExpect(status().isBadRequest());
             }
         }
     }
