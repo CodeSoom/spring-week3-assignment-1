@@ -92,7 +92,7 @@ public class TestControllerTest {
     }
 
     @Nested
-    @DisplayName("GET /TASK는")
+    @DisplayName("GET /TASK/:id 는")
     class Describe_getTask {
 
         @Nested
