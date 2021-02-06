@@ -2,10 +2,7 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Test
-        @DisplayName("Task List를 리턴한다")
+        @DisplayName("할 일의 목록을 리턴한다")
         void itReturnsListOfTask() {
             List<Task> tasks = taskService.getTasks();
             assertThat(tasks).hasSize(1);
@@ -47,10 +44,10 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
-            @DisplayName("주어진 id에 해당하는 Task를 리턴한다")
+            @DisplayName("주어진 id에 해당하는 할 일을 리턴한다")
             void itReturnsValidTask() {
                 Task task = taskService.getTask(1L);
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
@@ -58,10 +55,10 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
-            @DisplayName("예외를 발생하여 ErrorResponse를 리턴한다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
                 assertThatThrownBy(() -> taskService.getTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -73,7 +70,7 @@ class TaskServiceTest {
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
         @Test
-        @DisplayName("title을 입력받아 새로운 Task를 생성한다")
+        @DisplayName("title을 입력받아 새로운 할 일을 생성하고 할 일을 리턴한다")
         void itReturnsNewTask() {
             Task newTask = new Task();
             newTask.setTitle(TASK_TITLE);
@@ -89,10 +86,10 @@ class TaskServiceTest {
     @DisplayName("updateTask 메서드는")
     class Describe_updateTask {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
-            @DisplayName("유효한 id에 해당하는 Task의 title을 수정하고 Task를 리턴한다")
+            @DisplayName("유효한 id에 해당하는 할 일의 title을 수정하고 할 일 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task source = new Task();
                 source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -104,10 +101,10 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
-            @DisplayName("예외를 발생하여 ErrorResponse를 리턴한다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
                 Task source = new Task();
                 source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -119,29 +116,24 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask 메서드는 ")
+    @DisplayName("deleteTask 메서드는")
     class Describe_deleteTask {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
-            @DisplayName("유효한 id에 해당하는 Task를 삭제하고 빈 문자열을 리턴한다")
+            @DisplayName("유효한 id에 해당하는 할 일을 삭제하고 빈 문자열을 리턴한다")
             void itDeletesTaskAndReturnsEmptyString() {
-                int oldSize = taskService.getTasks().size();
-
                 taskService.deleteTask(1L);
-
-                int newSize = taskService.getTasks().size();
-
-                assertThat(oldSize - newSize).isEqualTo(1);
+                assertThat(taskService.getTasks().toString()).isEqualTo("[]");
             }
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
-            @DisplayName("예외를 발생하여 ErrorResponse를 리턴한다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
                 assertThatThrownBy(() -> taskService.deleteTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
