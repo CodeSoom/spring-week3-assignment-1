@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
+@DisplayName("TaskController 클래스")
 class TaskControllerTest {
 
     private static final Long GIVEN_ID = 1L;
