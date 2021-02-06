@@ -186,7 +186,9 @@ public class TestControllerTest {
                 mockMvc.perform(put("/tasks/{id}", GIVEN_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(createTask())))
-                        .andExpect(status().isOk());
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
             }
         }
     }

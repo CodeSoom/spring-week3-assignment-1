@@ -48,7 +48,7 @@ public class TaskServiceTest {
     @DisplayName("getTasks 메서드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("할 일인 Task 값들이 있다면")
+        @DisplayName("할 일 목록이 있다면")
         class Context_with_tasks {
 
             @BeforeEach
@@ -57,7 +57,7 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-            @DisplayName("할 일 Task 값들을 리턴한다")
+            @DisplayName("할 일 목록을 리턴한다")
             @Test
             void it_returns_tasks() {
                 List<Task> tasks = taskService.getTasks();
@@ -68,7 +68,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("할 일인 Task 값들이 없다면")
+        @DisplayName("할 일인 목록이 없다면")
         class Context_without_tasks {
             @DisplayName("비어있는 값을 리턴한다")
             @Test
@@ -86,7 +86,7 @@ public class TaskServiceTest {
         final Long id = 1L;
 
         @Nested
-        @DisplayName("찾고자하는 Task가 있으면")
+        @DisplayName("찾고자하는 할 일이 있으면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
@@ -94,7 +94,7 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-            @DisplayName("할 일 Task 값을 리턴한다")
+            @DisplayName("할 일 목록을 리턴한다")
             @Test
             void it_returns_tasks() {
                 assertAll(
@@ -105,7 +105,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("찾고자하는 Task가 없으면")
+        @DisplayName("찾고자하는 할 일이 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
@@ -121,7 +121,7 @@ public class TaskServiceTest {
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
 
-        @DisplayName("Task가 추가되어 할 일 목록이 증가한다.")
+        @DisplayName("할 일 추가되어 할 일 목록이 증가한다.")
         @Test
         void it_returns_task_and_size() {
             int beforeTaskSize = taskService.getTasks().size();
@@ -141,10 +141,10 @@ public class TaskServiceTest {
         final Task newTask = NewTask();
 
         @Nested
-        @DisplayName("갱신하려는 Task가 있으면")
+        @DisplayName("갱신하려는 할 일 있으면")
         class Context_with_task {
 
-            @DisplayName("변경된 일 Task 값을 리턴한다")
+            @DisplayName("변경된 일 할 일을 리턴한다")
             @Test
             void it_returns_update_task() {
                 TaskService taskService = TaskExistService();
@@ -156,7 +156,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("갱신하려는 Task가 없으면")
+        @DisplayName("갱신하려는 할 일이 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
@@ -174,7 +174,7 @@ public class TaskServiceTest {
         final Long id = 1L;
 
         @Nested
-        @DisplayName("삭제하려는 Task가 있으면")
+        @DisplayName("삭제하려는 할 일이 있으면")
         class Context_with_task {
             @BeforeEach
             void setUp() {
@@ -182,7 +182,7 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-            @DisplayName("Task가 삭제되어 Tasks 수가 줄어든다")
+            @DisplayName("할 일이 삭제되어 할 일 목록 수가 줄어든다")
             @Test
             void it_returns_delete_task() {
                 int beforeTaskSize = taskService.getTasks().size();
@@ -196,7 +196,7 @@ public class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("삭제하려는 Task가 없으면")
+        @DisplayName("삭제하려는 할 일이 없으면")
         class Context_without_tasks {
 
             @DisplayName("예외를 발생시킨다")
