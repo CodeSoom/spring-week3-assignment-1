@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import java.util.List;
+
 public class Task {
     private Long id;
 
@@ -20,4 +22,20 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == null)
+//            return false;
+//
+//        if (getClass() != obj.getClass())
+//            return false;
+//
+//        List<Task> tasks = (List<Task>)obj;
+//        for(Task task : tasks) {
+//            if(!(task.getId().equals(this.id) && task.getTitle().equals(this.title)))
+//                return false;
+//        }
+//        return true;
+//    }
 }

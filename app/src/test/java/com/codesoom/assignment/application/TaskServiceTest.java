@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,6 +31,7 @@ class TaskServiceTest {
         taskService = new TaskService();
 
         Task beforeTask = new Task();
+        beforeTask.setId(1L);
         beforeTask.setTitle(BEFORE_TASK_TITLE);
         taskService.createTask(beforeTask);
     }
@@ -37,13 +39,23 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
+        @BeforeEach
+        void prepare() {
+            Task prepareTask = new Task();
+            prepareTask.setId(1L);
+            prepareTask.setTitle(BEFORE_TASK_TITLE);
+            taskService.createTask(prepareTask);
+        }
 
         @Test
         @DisplayName("할 일의 목록을 리턴한다")
-        void itReturnsListOfTask() throws JsonProcessingException {
+        void itReturnsListOfTask() {
             List<Task> tasks = taskService.getTasks();
+            List<Task> taskList = new ArrayList<>();
+            taskList.add(taskService.getTask(1L));
+            taskList.add(taskService.getTask(2L));
 
-            assertThat(objectMapper.writeValueAsString(tasks)).isEqualTo("[{\"id\":1,\"title\":\"before\"}]");
+            assertThat(tasks).isEqualTo(taskList);
         }
     }
 
@@ -53,10 +65,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("주어진 id에 해당하는 할 일을 리턴한다")
             void itReturnsValidTask() {
-                Task task = taskService.getTask(1L);
+                Task task = taskService.getTask(givenValidId);
                 assertThat(task.getTitle()).isEqualTo(BEFORE_TASK_TITLE);
             }
         }
@@ -64,10 +78,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private final Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+                assertThatThrownBy(() -> taskService.getTask(givenInvalidId))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -95,14 +111,16 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("주어진 id에 해당하는 할 일의 title을 수정하고 할 일을 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task source = new Task();
                 source.setTitle(UPDATE_TASK_TITLE);
-                taskService.updateTask(1L, source);
+                taskService.updateTask(givenValidId, source);
 
-                Task task = taskService.getTask(1L);
+                Task task = taskService.getTask(givenValidId);
                 assertThat(task.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
             }
         }
@@ -110,13 +128,15 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private final Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
                 Task source = new Task();
                 source.setTitle(UPDATE_TASK_TITLE);
 
-                assertThatThrownBy(() -> taskService.updateTask(100L, source))
+                assertThatThrownBy(() -> taskService.updateTask(givenInvalidId, source))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -128,10 +148,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("유효한 id에 해당하는 할 일을 삭제하고 빈 문자열을 리턴한다")
             void itDeletesTaskAndReturnsEmptyString() {
-                taskService.deleteTask(1L);
+                taskService.deleteTask(givenValidId);
                 assertThat(taskService.getTasks().toString()).isEqualTo("[]");
             }
         }
@@ -139,10 +161,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private final Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void itReturnsErrorMessageException() {
-                assertThatThrownBy(() -> taskService.deleteTask(100L))
+                assertThatThrownBy(() -> taskService.deleteTask(givenInvalidId))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
