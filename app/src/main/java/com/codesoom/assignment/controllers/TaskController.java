@@ -17,10 +17,6 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    public TaskController() {
-        taskService = new TaskService();
-    }
-
     @GetMapping
     public List<Task> list() {
         return taskService.getTasks();
