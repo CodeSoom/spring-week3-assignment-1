@@ -1,14 +1,9 @@
 package com.codesoom.assignment.models;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import sun.jvm.hotspot.oops.TypeArrayKlass;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Task 클래스")
 class TaskTest {
