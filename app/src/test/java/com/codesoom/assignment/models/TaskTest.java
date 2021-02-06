@@ -21,6 +21,17 @@ class TaskTest {
     }
 
     @Test
+    @DisplayName("Task 모델 사용 확인")
+    void create(){
+        Task task = new Task();
+        task.setId(3L);
+        task.setTitle("사용법");
+
+        assertThat(task.getId()).isEqualTo(3L);
+        assertThat(task.getTitle()).isEqualTo("사용법");
+    }
+
+    @Test
     @DisplayName("getId() 테스트")
     void getIdTest() {
         assertThat(task.getId()).isEqualTo(ID);
