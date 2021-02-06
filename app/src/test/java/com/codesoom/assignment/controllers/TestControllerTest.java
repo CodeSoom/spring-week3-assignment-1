@@ -180,7 +180,7 @@ public class TestControllerTest {
             @BeforeEach
             void setUp() {
                 given(taskService.updateTask(anyLong(), any(Task.class)))
-                        .willThrow(new TaskNotFoundException(GIVEN_ID));
+                        .willThrow(new TaskNotFoundException(anyLong()));
             }
 
             @DisplayName("Not Found 상태를 응답한다.")
