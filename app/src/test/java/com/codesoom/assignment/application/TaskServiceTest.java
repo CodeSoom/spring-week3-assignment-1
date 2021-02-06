@@ -89,7 +89,7 @@ class TaskServiceTest {
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
-            @DisplayName("유효한 id에 해당하는 할 일의 title을 수정하고 할 일 리턴한다")
+            @DisplayName("주어진 id에 해당하는 할 일의 title을 수정하고 할 일을 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task source = new Task();
                 source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
