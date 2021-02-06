@@ -24,6 +24,8 @@ class TaskControllerTest {
 
     private Task task;
 
+    private Task updateTask;
+
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
@@ -31,6 +33,10 @@ class TaskControllerTest {
 
         task = new Task();
         task.setTitle(GIVEN_TITLE);
+
+        updateTask = new Task();
+        updateTask.setTitle(UPDATE_TITLE);
+
         taskController.create(task);
     }
 
@@ -70,8 +76,7 @@ class TaskControllerTest {
     @DisplayName("할 일 갱신하기")
     @Test
     void update() {
-        Task expect = new Task();
-        expect.setTitle(UPDATE_TITLE);
+        Task expect = updateTask;
 
         taskController.update(GIVEN_ID, expect);
 
@@ -82,8 +87,7 @@ class TaskControllerTest {
     @DisplayName("할 일 갱신하기")
     @Test
     void patch() {
-        Task expect = new Task();
-        expect.setTitle(UPDATE_TITLE);
+        Task expect = updateTask;
 
         taskController.patch(GIVEN_ID, expect);
 
@@ -94,8 +98,7 @@ class TaskControllerTest {
     @DisplayName("존재하지 않는 할 일 갱신하기")
     @Test
     void update_with_not_exist_id() {
-        Task expect = new Task();
-        expect.setTitle(UPDATE_TITLE);
+        Task expect = updateTask;
 
         assertThatExceptionOfType(TaskNotFoundException.class)
                 .isThrownBy(() -> taskController.update(NOT_FOUND_ID, expect));
@@ -104,8 +107,7 @@ class TaskControllerTest {
     @DisplayName("존재하지 않는 할 일 갱신하기")
     @Test
     void patch_with_not_exist_id() {
-        Task expect = new Task();
-        expect.setTitle(UPDATE_TITLE);
+        Task expect = updateTask;
 
         assertThatExceptionOfType(TaskNotFoundException.class)
                 .isThrownBy(() -> taskController.patch(NOT_FOUND_ID, expect));
