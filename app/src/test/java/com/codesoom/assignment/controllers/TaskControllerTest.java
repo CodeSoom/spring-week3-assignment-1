@@ -248,8 +248,3 @@ class TaskControllerTest {
         }
     }
 }
-
-@FunctionalInterface
-interface TaskUpdater {
-    Task updateTask(long id, Task task);
-}
