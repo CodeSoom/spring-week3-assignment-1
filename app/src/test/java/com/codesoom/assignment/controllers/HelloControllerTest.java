@@ -12,15 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 class HelloControllerTest {
 
     @Autowired
-    private HelloController controller;
+    private HelloController helloController;
 
     @Test
     void sayHello() {
-        assertThat(controller.sayHello()).isEqualTo("Hello, World!");
-    }
-
-    @Test
-    void sayGoodBye() {
-        assertThat(controller.sayHello()).isNotEqualTo("Good, Bye!");
+        assertThat(helloController.sayHello()).isEqualTo("Hello, World!");
     }
 }
