@@ -14,7 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaskServiceTest {
-
+    final Long ID = 1L;
+    final Long DOES_NOT_EXIST_ID = 3L;
     TaskService taskService;
 
     @BeforeEach
@@ -45,7 +46,6 @@ class TaskServiceTest {
             void it_return_list() {
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks).isNotEmpty();
                 assertThat(tasks).hasSize(1);
             }
         }
@@ -58,7 +58,6 @@ class TaskServiceTest {
             void it_return_empty_list() {
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks).isEmpty();
                 assertThat(tasks).hasSize(0);
             }
         }
@@ -73,13 +72,13 @@ class TaskServiceTest {
             @Test
             @DisplayName("Task를 반환한다")
             void it_return_task() {
-                Task createTask = createSampleTask();
+                Task sampleTask = createSampleTask();
 
-                Task getTask = taskService.getTask(1L);
+                Task task = taskService.getTask(ID);
 
-                assertThat(getTask.getId()).isEqualTo(createTask.getId());
-                assertThat(getTask.getTitle()).isEqualTo(createTask.getTitle());
-                assertThat(getTask.getClass()).isEqualTo(createTask.getClass());
+                assertThat(task.getId()).isEqualTo(sampleTask.getId());
+                assertThat(task.getTitle()).isEqualTo(sampleTask.getTitle());
+                assertThat(task.getClass()).isEqualTo(sampleTask.getClass());
             }
         }
 
@@ -89,7 +88,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
-                assertThrows(TaskNotFoundException.class, () -> taskService.getTask(3L));
+                assertThrows(TaskNotFoundException.class, () -> taskService.getTask(DOES_NOT_EXIST_ID));
             }
         }
     }
@@ -112,12 +111,12 @@ class TaskServiceTest {
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
-        Task updateTask;
+        Task task;
 
         @BeforeEach
         void setup() {
-            updateTask = new Task();
-            updateTask.setTitle("new title");
+            task = new Task();
+            task.setTitle("new title");
         }
 
         @Nested
@@ -131,9 +130,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("id에 해당하는 Task의 title을 변경하고 반환한다.")
             void it_return_task() {
-                taskService.updateTask(1L, updateTask);
+                taskService.updateTask(ID, task);
 
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo("new title");
+                assertThat(taskService.getTask(ID).getTitle()).isEqualTo("new title");
             }
         }
 
@@ -143,7 +142,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
-                assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(3L, updateTask));
+                assertThrows(TaskNotFoundException.class, () -> taskService.updateTask(DOES_NOT_EXIST_ID, task));
             }
         }
     }
@@ -164,7 +163,7 @@ class TaskServiceTest {
             void it_return_task() {
                 int originSize = taskService.getTasks().size();
 
-                taskService.deleteTask(1L);
+                taskService.deleteTask(ID);
 
                 assertEquals(originSize - taskService.getTasks().size(), 1);
             }
@@ -176,7 +175,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다")
             void it_return_exception() {
-                assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(3L));
+                assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(DOES_NOT_EXIST_ID));
             }
         }
     }
