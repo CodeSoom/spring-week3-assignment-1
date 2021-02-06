@@ -34,16 +34,17 @@ class TaskServiceTest {
         @Nested
         @DisplayName("Task가 존재할 때")
         class Context_exist_task {
+
+            @BeforeEach
+            void setUp() {
+                createSampleTask();
+            }
+
             @Test
             @DisplayName("Task의 List를 반환한다")
             void it_return_list() {
-                //given
-                createSampleTask();
-
-                //when
                 List<Task> tasks = taskService.getTasks();
 
-                //then
                 assertThat(tasks).isNotEmpty();
                 assertThat(tasks).hasSize(1);
             }
@@ -122,11 +123,14 @@ class TaskServiceTest {
         @Nested
         @DisplayName("변경할 task의 title과 id가 존재할 때")
         class Context_exist_task_and_id {
+            @BeforeEach
+            void setUp() {
+                createSampleTask();
+            }
+
             @Test
             @DisplayName("id에 해당하는 Task의 title을 변경하고 반환한다.")
             void it_return_task() {
-                createSampleTask();
-
                 taskService.updateTask(1L, updateTask);
 
                 assertThat(taskService.getTask(1L).getTitle()).isEqualTo("new title");
@@ -150,15 +154,19 @@ class TaskServiceTest {
         @Nested
         @DisplayName("변경할 id가 존재할 때")
         class Context_exist_task_and_id {
+            @BeforeEach
+            void setUp() {
+                createSampleTask();
+            }
+
             @Test
             @DisplayName("id에 해당하는 Task를 삭제하고 반환한다.")
             void it_return_task() {
-                createSampleTask();
-                assertEquals(taskService.getTasks().size(), 1);
+                int originSize = taskService.getTasks().size();
 
                 taskService.deleteTask(1L);
 
-                assertEquals(taskService.getTasks().size(), 0);
+                assertEquals(originSize - taskService.getTasks().size(), 1);
             }
         }
 
