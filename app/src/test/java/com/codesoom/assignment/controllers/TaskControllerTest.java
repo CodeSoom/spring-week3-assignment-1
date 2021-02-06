@@ -85,7 +85,7 @@ class TaskControllerTest {
         Task expect = new Task();
         expect.setTitle(UPDATE_TITLE);
 
-        taskController.update(GIVEN_ID, expect);
+        taskController.patch(GIVEN_ID, expect);
 
         Task actual = taskController.detail(GIVEN_ID);
         assertThat(actual.getTitle()).isEqualTo(UPDATE_TITLE);
