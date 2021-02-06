@@ -21,10 +21,12 @@ public class HelloControllerWebMvcTest {
     @Nested
     @DisplayName("만약 /의 경로가 주어진다면")
     class ContextWithRootUrl {
+        private final String rootUrl = "/";
+
         @Test
         @DisplayName("OK를 반환한다")
         void itReturnsWithOKHttpStatus() throws Exception {
-            mockMvc.perform(get("/"))
+            mockMvc.perform(get(rootUrl))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString("Hello, world!")));
         }

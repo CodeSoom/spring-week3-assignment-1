@@ -5,6 +5,8 @@ import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @DisplayName("TaskController 테스트")
 class TaskControllerTest {
@@ -37,10 +39,12 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 Url에 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidUrlId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("주어진 id에 해당하는 할 일을 리턴한다")
             void itReturnsValidTask() {
-                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "리턴된 할 일은 id 값이 1L이어야 한다");
+                Assertions.assertEquals(taskController.list().get(0).getId(), givenValidId, "리턴된 할 일은 id 값이 1L이어야 한다");
                 Assertions.assertEquals(taskController.list().get(0).getTitle(), "Test1", "리턴된 할 일은 title 값이 Test1이어야 한다");
             }
         }
@@ -56,9 +60,8 @@ class TaskControllerTest {
             createTask.setTitle("Test2");
             taskController.create(createTask);
 
-            Assertions.assertEquals(taskController.list().size(), 2,"새롭게 할 일을 생성한 후 할 일 목록은 사이즈 값이 2이어야 한다");
-            Assertions.assertEquals(taskController.list().get(1).getId(), 2L,"새로 생성되어 리턴된 할 일은 id 값이 2L이어야 한다");
-            Assertions.assertEquals(taskController.list().get(1).getTitle(), "Test2","새로 생성되어 리턴된 할 일은 title 값이 Test2이어야 한다");
+            Assertions.assertEquals(taskController.detail(2L).getId(), 2L,"새로 생성되어 리턴된 할 일은 id 값이 2L이어야 한다");
+            Assertions.assertEquals(taskController.detail(2L).getTitle(), "Test2","새로 생성되어 리턴된 할 일은 title 값이 Test2이어야 한다");
         }
     }
 
@@ -68,15 +71,17 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 Url에 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidUrlId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("주어진 id에 해당하는 할 일의 title을 수정하고 할 일을 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task updateTask = new Task();
                 updateTask.setTitle("new Task");
-                taskController.update(1L, updateTask);
+                taskController.update(givenValidId, updateTask);
 
-                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "수정되어 되어 리턴된 할 일은 id 값이 1L이어야 한다");
-                Assertions.assertEquals(taskController.list().get(0).getTitle(), "new Task", "수정되어 리턴된 할 일은 title 값이 new Task이어야 한다");
+                Assertions.assertEquals(taskController.detail(givenValidId).getId(), 1L, "수정되어 되어 리턴된 할 일은 id 값이 1L이어야 한다");
+                Assertions.assertEquals(taskController.detail(givenValidId).getTitle(), "new Task", "수정되어 리턴된 할 일은 title 값이 new Task이어야 한다");
             }
         }
     }
@@ -87,15 +92,17 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 Url에 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidUrlId {
+            private final Long givenValidId = 1L;
+
             @Test
             @DisplayName("주어진 id에 해당하는 할 일의 title을 수정하고 할 일을 리턴한다")
             void itReturnsValidUpdatedTask() {
                 Task updateTask = new Task();
                 updateTask.setTitle("new Task");
-                taskController.patch(1L, updateTask);
+                taskController.patch(givenValidId, updateTask);
 
-                Assertions.assertEquals(taskController.list().get(0).getId(), 1L, "수정되어 리턴된 할 일은 id 값이 1L이어야 한다");
-                Assertions.assertEquals(taskController.list().get(0).getTitle(), "new Task", "수정되어 리턴된 할 일은 title 값이 new Task이어야 한다");
+                Assertions.assertEquals(taskController.detail(givenValidId).getId(), 1L, "수정되어 리턴된 할 일은 id 값이 1L이어야 한다");
+                Assertions.assertEquals(taskController.detail(givenValidId).getTitle(), "new Task", "수정되어 리턴된 할 일은 title 값이 new Task이어야 한다");
             }
         }
     }
@@ -106,12 +113,12 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 Url에 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidUrlId {
-            @Test
-            @DisplayName("주어진 id에 해당하는 할 일을 삭제하고 빈 문자열을 리턴한다")
-            void itReturnsEmptyString() {
-                taskController.delete(1L);
+            private final Long givenValidId = 1L;
 
-                Assertions.assertEquals(taskController.list().toString(), "[]");
+            @Test
+            @DisplayName("주어진 id에 해당하는 할 일을 삭제한다")
+            void itReturnsEmptyString() {
+                taskController.delete(givenValidId);
             }
         }
     }
