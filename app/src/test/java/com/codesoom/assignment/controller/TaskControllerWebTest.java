@@ -4,10 +4,8 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,10 +18,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -51,6 +47,11 @@ public class TaskControllerWebTest {
         task = new Task();
         task.setId(TASK_ID);
         task.setTitle(TASK_TITLE);
+    }
+
+    @AfterEach
+    void clear() {
+        Mockito.reset(taskService);
     }
 
     @Nested
@@ -138,6 +139,7 @@ public class TaskControllerWebTest {
     @Nested
     @DisplayName("POST 요청은")
     class Describe_post_request {
+
         @Nested
         @DisplayName("새로운 할 일을 추가하면")
         class Context_add_new_task {
@@ -160,6 +162,46 @@ public class TaskControllerWebTest {
                         .andExpect(jsonPath("id").value(1004L))
                         .andExpect(jsonPath("title").exists())
                         .andExpect(jsonPath("title").value("Just love yourself"));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE 요청은")
+    class Describe_request_delete {
+
+        @Nested
+        @DisplayName("해당하는 id가 있으면")
+        class Context_contains_target_id {
+
+            @BeforeEach
+            void setUp() {
+                given(taskService.getTask(TASK_ID)).willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
+            @Test
+            @DisplayName("id에 해당하는 할 일을 삭제하고, 그 후 대상 id를 조회하면 예외를 던진다.")
+            void It_returns_delete_task() throws Exception {
+                mockMvc.perform(delete("/tasks/{id}", TASK_ID));
+                mockMvc.perform(get("/tasks/{id}", TASK_ID))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("해당하는 id가 없으면")
+        class Context_not_contains_target_id {
+            @BeforeEach
+            void setUp() {
+                given(taskService.deleteTask(NOT_EXISTING_TASK_ID))
+                        .willThrow(new TaskNotFoundException(NOT_EXISTING_TASK_ID));
+            }
+
+            @Test
+            @DisplayName("예외를 던진다.")
+            void It_throws_task_not_found_exception() throws Exception {
+                mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_TASK_ID))
+                        .andExpect(status().isNotFound());
             }
         }
     }
