@@ -12,12 +12,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,6 +43,8 @@ public class TaskControllerWebTest {
     private final String TASK_TITLE = "Test Task";
     private final long TASK_ID = 1L;
     private final long NOT_EXISTING_TASK_ID = 100L;
+    private final long NEW_TASK_ID = 1004L;
+    private final String NEW_TASK_TITLE = "Just love yourself";
 
     @BeforeEach
     void setUp() {
@@ -146,8 +151,8 @@ public class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 Task newTask = new Task();
-                newTask.setId(1004L);
-                newTask.setTitle("Just love yourself");
+                newTask.setId(NEW_TASK_ID);
+                newTask.setTitle(NEW_TASK_TITLE);
                 given(taskService.createTask(any(Task.class))).willReturn(newTask);
             }
 
@@ -159,9 +164,9 @@ public class TaskControllerWebTest {
                         .content(objectMapper.writeValueAsString(task)))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("id").exists())
-                        .andExpect(jsonPath("id").value(1004L))
+                        .andExpect(jsonPath("id").value(NEW_TASK_ID))
                         .andExpect(jsonPath("title").exists())
-                        .andExpect(jsonPath("title").value("Just love yourself"));
+                        .andExpect(jsonPath("title").value(NEW_TASK_TITLE));
             }
         }
     }
@@ -202,6 +207,41 @@ public class TaskControllerWebTest {
             void It_throws_task_not_found_exception() throws Exception {
                 mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_TASK_ID))
                         .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT 요청은")
+    class Describe_request_put {
+        Task givenTask = new Task();
+        Task newTask = new Task();
+
+        @Nested
+        @DisplayName("해당하는 id가 있으면")
+        class Context_contains_target_id {
+            @BeforeEach
+            void setUp() {
+                newTask.setId(NEW_TASK_ID);
+                newTask.setTitle(NEW_TASK_TITLE);
+
+                given(taskService.updateTask(eq(1004L), any(Task.class))).willReturn(newTask);
+            }
+
+            @Test
+            @DisplayName("200 코드를 응답하고, 수정된 할 일을 리턴한다.")
+            void it_responds_updated_task() throws Exception {
+
+                MvcResult mvcResult = mockMvc.perform(put("/tasks/{id}", TASK_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newTask)))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+                Task updatedTask = objectMapper.readValue(mvcResult.getRequest().getContentAsString(), Task.class);
+                assertThat(updatedTask.getId()).isEqualTo(NEW_TASK_ID);
+                assertThat(updatedTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
             }
         }
     }
