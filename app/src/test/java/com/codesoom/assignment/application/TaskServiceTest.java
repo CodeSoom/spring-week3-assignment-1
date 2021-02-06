@@ -36,7 +36,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("새로운 할 일을 만들고 할일 목록의 갯수를 전과 비교한")
+    @DisplayName("새로운 할 일을 만들고 할일 목록의 갯수를 전과 비교한다")
     void createTask() {
 
         int oldSize = taskService.getTasks().size();
