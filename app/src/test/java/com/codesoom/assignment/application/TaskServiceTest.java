@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("TaskService 클래스")
 public class TaskServiceTest {
+    private static final Long TASK_ID_1 = 1L;
+    private static final Long TASK_ID_2 = 2L;
     private static final String TASK_TITLE_1 = "task1";
     private static final String TASK_TITLE_2 = "task2";
     private static final String NEW_TITLE = "new title";
@@ -27,8 +29,10 @@ public class TaskServiceTest {
     void setUp() {
         taskService = new TaskService();
         task1 = new Task();
+        task1.setId(TASK_ID_1);
         task1.setTitle(TASK_TITLE_1);
         task2 = new Task();
+        task2.setId(TASK_ID_2);
         task2.setTitle(TASK_TITLE_2);
     }
 
@@ -40,6 +44,7 @@ public class TaskServiceTest {
 
     Task newTask() {
         Task task = new Task();
+        task.setId(TASK_ID_1);
         task.setTitle(NEW_TITLE);
         return task;
     }
@@ -62,8 +67,10 @@ public class TaskServiceTest {
             void it_returns_tasks() {
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks).hasSize(2);
-                assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE_1);
+                assertAll(
+                        () -> assertThat(tasks).hasSize(2),
+                        () -> assertThat(tasks).containsExactly(task1, task2)
+                );
             }
         }
 
@@ -94,12 +101,12 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-            @DisplayName("할 일 목록을 리턴한다")
+            @DisplayName("할 일을 리턴한다")
             @Test
             void it_returns_tasks() {
                 assertAll(
                         () -> assertThat(taskService.getTask(id)).isNotNull(),
-                        () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(TASK_TITLE_1)
+                        () -> assertThat(taskService.getTask(id)).isEqualTo(task1)
                 );
             }
         }
@@ -124,13 +131,10 @@ public class TaskServiceTest {
         @DisplayName("할 일 추가되어 할 일 목록이 증가한다.")
         @Test
         void it_returns_task_and_size() {
-            int beforeTaskSize = taskService.getTasks().size();
-
-            taskService.createTask(newTask());
-
-            int afterTaskSize = taskService.getTasks().size();
-            assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
-
+            assertAll(
+                    () -> assertThat(taskService.createTask(newTask())).isEqualTo(newTask()),
+                    () -> assertThat(taskService.getTasks()).containsExactly(newTask())
+            );
         }
     }
 
@@ -150,7 +154,7 @@ public class TaskServiceTest {
                 TaskService taskService = taskExistService();
                 assertAll(
                         () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
-                        () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(NEW_TITLE)
+                        () -> assertThat(taskService.getTask(id)).isEqualTo(newTask)
                 );
             }
         }
@@ -185,12 +189,10 @@ public class TaskServiceTest {
             @DisplayName("할 일이 삭제되어 할 일 목록 수가 줄어든다")
             @Test
             void it_returns_delete_task() {
-                int beforeTaskSize = taskService.getTasks().size();
-
-                taskService.deleteTask(id);
-
-                int afterTaskSize = taskService.getTasks().size();
-                assertThat(beforeTaskSize - afterTaskSize).isEqualTo(1);
+                assertAll(
+                        () -> assertThat(taskService.deleteTask(id)).isEqualTo(task1),
+                        () -> assertThat(taskService.getTasks()).containsExactly(task2)
+                );
 
             }
         }
