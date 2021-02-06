@@ -64,7 +64,6 @@ public class TaskControllerWebTest {
             task.setId(givenSavedTaskId);
             task.setTitle(givenTaskTitle);
 
-
             outputStream = new ByteArrayOutputStream();
             objectMapper.writeValue(outputStream, task);
             taskJsonString = outputStream.toString();
