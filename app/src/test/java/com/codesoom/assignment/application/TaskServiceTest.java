@@ -79,16 +79,13 @@ class TaskServiceTest {
         @Test
         @DisplayName("title을 입력받아 새로운 할 일을 생성하고 할 일을 리턴한다")
         void itReturnsNewTask() {
-            int oldIndex = taskService.getTasks().size()-1;
-            Long oldId = taskService.getTasks().get(oldIndex).getId();
+            Task createTask = new Task();
+            createTask.setId(2L);
+            createTask.setTitle(CREATE_TASK_TITLE);
+            Task createdTask = taskService.getTask(createTask.getId());
 
-            Task newTask = new Task();
-            newTask.setTitle(CREATE_TASK_TITLE);
-
-            taskService.createTask(newTask);
-
-            assertThat(taskService.getTasks().get(oldIndex+1).getId()).isEqualTo(oldId + 1L);
-            assertThat(taskService.getTasks().get(oldIndex+1).getTitle()).isEqualTo(CREATE_TASK_TITLE);
+            assertThat(createdTask.getId()).isEqualTo(2L);
+            assertThat(createdTask.getTitle()).isEqualTo(CREATE_TASK_TITLE);
         }
     }
 
