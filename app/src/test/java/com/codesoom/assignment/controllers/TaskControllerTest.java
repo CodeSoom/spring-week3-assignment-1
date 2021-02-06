@@ -254,7 +254,7 @@ class TaskControllerTest {
 
             void checkIfHasSaveId() {
                 final Task gotten = taskController.detail(givenSavedId);
-                
+
                 assertThat(givenSavedId).isEqualTo(gotten.getId());
             }
 
