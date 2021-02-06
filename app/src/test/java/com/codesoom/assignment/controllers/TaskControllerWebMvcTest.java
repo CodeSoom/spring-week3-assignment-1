@@ -64,7 +64,7 @@ public class TaskControllerWebMvcTest {
     @DisplayName("detail 메서드는")
     class Describe_detail {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
             @DisplayName("OK를 리턴한다")
@@ -76,7 +76,7 @@ public class TaskControllerWebMvcTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
@@ -110,7 +110,7 @@ public class TaskControllerWebMvcTest {
     @DisplayName("update 메서드는")
     class Describe_update {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
             @DisplayName("OK를 리턴한다")
@@ -123,7 +123,7 @@ public class TaskControllerWebMvcTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
@@ -144,7 +144,7 @@ public class TaskControllerWebMvcTest {
     @DisplayName("delete 메서드는")
     class Describe_delete {
         @Nested
-        @DisplayName("만약 유효한 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
             @DisplayName("NO_CONTENT를 리턴한다")
@@ -156,7 +156,7 @@ public class TaskControllerWebMvcTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않은 id가 주어진다면")
+        @DisplayName("만약 저장되어 있지 않은 항 일의 id가 주어진다면")
         class ContextWithInvalidId {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
