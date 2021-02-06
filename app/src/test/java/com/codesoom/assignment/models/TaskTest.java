@@ -19,12 +19,12 @@ class TaskTest {
     @Test
     void handleId() {
         task.setId(TASK_ID);
-        assertThat(task.getId());
+        assertThat(task.getId()).isEqualTo(TASK_ID);
     }
 
     @Test
     void handleTitle() {
         task.setTitle(TASK_TITLE);
-        assertThat(task.getTitle());
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 }
