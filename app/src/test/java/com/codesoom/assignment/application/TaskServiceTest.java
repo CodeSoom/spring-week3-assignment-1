@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -53,11 +55,12 @@ class TaskServiceTest {
             void It_returns_empty_ArrayList() {
                 TaskService subject = subject(givenTitle);
 
-                assertThat(subject.getTasks()).isNotEmpty();
-                assertThat(subject.getTasks()).hasSize(1);
-                assertThat(subject.getTasks())
-                        .first()
-                        .hasFieldOrPropertyWithValue("title", givenTitle);
+                List<Task> actual = subject.getTasks();
+
+                assertThat(actual).isNotEmpty();
+                assertThat(actual).hasSize(1);
+                assertThat(actual.get(0).getId()).isEqualTo(givenID);
+                assertThat(actual.get(0).getTitle()).isEqualTo(givenTitle);
             }
         }
     }
@@ -88,8 +91,10 @@ class TaskServiceTest {
             void It_returns_task() {
                 TaskService subject = subject(givenTitle);
 
-                assertThat(subject.getTask(givenID))
-                        .hasFieldOrPropertyWithValue("title", givenTitle);
+                Task actual = subject.getTask(givenID);
+
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(givenTitle);
             }
         }
     }
@@ -110,9 +115,10 @@ class TaskServiceTest {
             TaskService subject = subject();
             Task source = source();
 
-            assertThat(subject.createTask(source))
-                    .hasFieldOrPropertyWithValue("title", givenTitle)
-                    .hasFieldOrPropertyWithValue("id", givenID);
+            Task actual = subject.createTask(source);
+
+            assertThat(actual.getId()).isEqualTo(givenID);
+            assertThat(actual.getTitle()).isEqualTo(givenTitle);
         }
     }
 
@@ -143,11 +149,12 @@ class TaskServiceTest {
             @DisplayName("변경된 task 를 리턴한다.")
             void It_returns_modified_task() {
                 TaskService subject = subject(givenTitle);
-                Task task = new Task();
+                Task source = new Task();
 
-                assertThat(subject.updateTask(givenID, task))
-                        .hasFieldOrPropertyWithValue("title", null)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                Task actual = subject.updateTask(givenID, source);
+
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(null);
             }
         }
     }
@@ -179,9 +186,10 @@ class TaskServiceTest {
             void It_returns_modified_task() {
                 TaskService subject = subject(givenTitle);
 
-                assertThat(subject.deleteTask(givenID))
-                        .hasFieldOrPropertyWithValue("title", givenTitle)
-                        .hasFieldOrPropertyWithValue("id", givenID);
+                Task actual = subject.deleteTask(givenID);
+
+                assertThat(actual.getId()).isEqualTo(givenID);
+                assertThat(actual.getTitle()).isEqualTo(givenTitle);
             }
         }
     }
