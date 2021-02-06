@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayName("TaskController 클래스")
-public class TestControllerTest {
+public class TaskMockMvcControllerTest {
     private static final Long GIVEN_ID = 1L;
     private static final String GIVEN_TITLE = "task1";
 
