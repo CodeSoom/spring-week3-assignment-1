@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,11 +19,10 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @WebMvcTest(TaskController.class)
@@ -64,7 +62,7 @@ public class TaskControllerWebMvcTest {
     @DisplayName("detail 메서드는")
     class Describe_detail {
         @Nested
-        @DisplayName("만약 저장되어 있는 할일의 id가 주어진다면")
+        @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
             @Test
             @DisplayName("OK를 리턴한다")
@@ -81,8 +79,6 @@ public class TaskControllerWebMvcTest {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
-                given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
-
                 mockMvc.perform(get("/tasks/100"))
                         .andExpect(status().isNotFound());
             }
@@ -115,6 +111,10 @@ public class TaskControllerWebMvcTest {
             @Test
             @DisplayName("OK를 리턴한다")
             void itReturnsOKHttpStatus() throws Exception {
+                Task updateSource = new Task();
+                updateSource.setTitle("new");
+                given(taskService.updateTask(1L, updateSource)).willReturn(updateSource);
+
                 mockMvc.perform(patch("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"new\"}"))
@@ -130,8 +130,7 @@ public class TaskControllerWebMvcTest {
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
                 Task updateSource = new Task();
                 updateSource.setTitle("new");
-                //given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(100L));
-                given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
+                given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(100L));
 
                 mockMvc.perform(patch("/tasks/100")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskTest {
 
     @Nested
-    @DisplayName("만약 유효한 title이 주어진다면")
+    @DisplayName("만약 String 타입의 유효한 title이 주어진다면")
     class ContextWithValidTitle {
         @Test
-        @DisplayName("해당 Task에 title을 설정할 수 있다")
+        @DisplayName("해당 할 일에 title을 설정할 수 있다")
         void itSetsTitleToTask () {
             Task task = new Task();
             task.setTitle("task");
@@ -26,10 +26,10 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("만약 유효한 id가 주어진다면")
+    @DisplayName("만약 Long 타입의 유효한 id가 주어진다면")
     class ContextWithValidId {
         @Test
-        @DisplayName("해당 Task에 id를 설정할 수 있다")
+        @DisplayName("해당 할 일에 id를 설정할 수 있다")
         void itSetsIdToTask() {
             Task task = new Task();
             task.setId(1L);
