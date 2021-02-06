@@ -118,7 +118,7 @@ class TaskServiceTest {
             task.setTitle(TASK_TITLE_1);
         }
 
-        @DisplayName("createTask는 새로운 할 일을 추가한다")
+        @DisplayName("새로운 할 일을 추가한다")
         @Test
         void it_returns_task_and_size() {
             int beforeTaskSize = taskService.getTasks().size();
