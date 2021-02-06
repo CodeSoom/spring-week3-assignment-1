@@ -32,13 +32,13 @@ public class TaskServiceTest {
         task2.setTitle(TASK_TITLE_2);
     }
 
-    TaskService existTasksSubject() {
+    TaskService TaskExistService() {
         taskService.createTask(task1);
         taskService.createTask(task2);
         return taskService;
     }
 
-    Task newTaskSubject() {
+    Task NewTask() {
         Task task = new Task();
         task.setTitle(NEW_TITLE);
         return task;
@@ -120,21 +120,17 @@ public class TaskServiceTest {
     @Nested
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
-        @Nested
-        @DisplayName("Tasks에 포함할 Task가 주어지면")
-        class Context_with_task {
-            Task newTask = newTaskSubject();
 
-            @DisplayName("입력한 Task 값을 리턴하고, Task 의 숫자가 증가한다")
-            @Test
-            void it_returns_task_and_size() {
-                int beforeTaskSize = taskService.getTasks().size();
+        @DisplayName("Task가 추가되어 할 일 목록이 증가한다.")
+        @Test
+        void it_returns_task_and_size() {
+            int beforeTaskSize = taskService.getTasks().size();
 
-                assertThat(taskService.createTask(newTask).getTitle()).isEqualTo(NEW_TITLE);
+            taskService.createTask(NewTask());
 
-                int afterTaskSize = taskService.getTasks().size();
-                assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
-            }
+            int afterTaskSize = taskService.getTasks().size();
+            assertThat(afterTaskSize - beforeTaskSize).isEqualTo(1);
+
         }
     }
 
@@ -142,7 +138,7 @@ public class TaskServiceTest {
     @DisplayName("updateTask 메서드는")
     class Describe_updateTask {
         final Long id = 1L;
-        final Task newTask = newTaskSubject();
+        final Task newTask = NewTask();
 
         @Nested
         @DisplayName("갱신하려는 Task가 있으면")
@@ -151,7 +147,7 @@ public class TaskServiceTest {
             @DisplayName("변경된 일 Task 값을 리턴한다")
             @Test
             void it_returns_update_task() {
-                TaskService taskService = existTasksSubject();
+                TaskService taskService = TaskExistService();
                 assertAll(
                         () -> assertThat(taskService.updateTask(id, newTask)).isNotNull(),
                         () -> assertThat(taskService.getTask(id).getTitle()).isEqualTo(NEW_TITLE)
@@ -186,7 +182,7 @@ public class TaskServiceTest {
                 taskService.createTask(task2);
             }
 
-            @DisplayName("Tasks 수가 줄어든다")
+            @DisplayName("Task가 삭제되어 Tasks 수가 줄어든다")
             @Test
             void it_returns_delete_task() {
                 int beforeTaskSize = taskService.getTasks().size();
