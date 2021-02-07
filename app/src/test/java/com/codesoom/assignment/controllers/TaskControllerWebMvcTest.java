@@ -115,13 +115,20 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
-            private Long givenValidId = 1L;
+            private Long givenValidId;
+            private Task updateSource;
+            private Task afterUpdatedTask;
+
+            @BeforeEach
+            void setUpdateTask() {
+                givenValidId = 1L;
+                updateSource = new Task(1L, "new");
+                afterUpdatedTask = new Task(givenValidId, "new");
+            }
 
             @Test
             @DisplayName("OK를 리턴한다")
             void itReturnsOKHttpStatus() throws Exception {
-                Task updateSource = new Task(1L, "new");
-                Task afterUpdatedTask = new Task(givenValidId, "new");
                 given(taskService.updateTask(givenValidId, updateSource)).willReturn(afterUpdatedTask);
 
                 mockMvc.perform(patch("/tasks/"+ givenValidId)
@@ -135,11 +142,12 @@ public class TaskControllerWebMvcTest {
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             private Long givenInvalidId;
+            private Task updatedSource;
 
             @BeforeEach
             void setUpdate() {
                 givenInvalidId = 100L;
-                Task updateSource = new Task(1L, "new");
+                updatedSource = new Task(1L, "new");
             }
 
             @Test
