@@ -12,6 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
 class TaskServiceTest {
     // 1. list -> getTasks
     // 2. detail -> getTask (with ID)
@@ -92,7 +93,7 @@ class TaskServiceTest {
 
         @Test
         @DisplayName("새로운 할 일을 생성한다")
-        void it_returns_created_task() {
+        void it_returns_task() {
             int oldSize = taskService.getTasks().size();
 
             Task task = new Task();
@@ -110,12 +111,12 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("삭제할 할 일이 있는 경우")
+        @DisplayName("삭제해야 하는 할 일이 있는 경우")
         class Context_with_task {
 
             @Test
-            @DisplayName("해당 ID를 갖는 할 일을 삭제하고 반환한다")
-            void it_returns_deleted_task() {
+            @DisplayName("")
+            void it_deletes_task() {
                 int oldSize = taskService.getTasks().size();
 
                 taskService.deleteTask(1L);
@@ -123,19 +124,7 @@ class TaskServiceTest {
                 int newSize = taskService.getTasks().size();
 
                 assertThat(oldSize - newSize).isEqualTo(1);
-                assertThat(taskService.getTasks()).isNotIn(1L);
             }
-        }
-
-        @Nested
-        @DisplayName("삭제할 할 일이 없는 경우")
-        class Context_without_task {
-
-            @Test
-            @DisplayName("삭제할 할 일을 찾을 수 없다는 경고 메시지를 반환한다")
-            void it_returns_warning_message() {
-                assertThatThrownBy(() -> taskService.deleteTask(100L))
-                        .isInstanceOf(TaskNotFoundException.class);            }
         }
     }
 
