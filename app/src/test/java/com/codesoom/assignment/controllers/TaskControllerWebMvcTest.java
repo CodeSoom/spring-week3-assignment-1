@@ -156,7 +156,7 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
-            private Long givenValidId = 100L;
+            private Long givenValidId = 1L;
 
             @Test
             @DisplayName("NO_CONTENT를 리턴한다")
