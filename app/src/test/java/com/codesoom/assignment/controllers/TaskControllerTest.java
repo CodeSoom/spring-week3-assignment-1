@@ -38,7 +38,7 @@ class TaskControllerTest {
 
        given(taskService.getTasks()).willReturn(tasks);
        given(taskService.getTask(ORIGINAL_ID)).willReturn(task);
-
+       given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
        controller = new TaskController(taskService);
 
 
@@ -71,9 +71,8 @@ class TaskControllerTest {
 
     @Test
     void detailWithInvalid() {
-       Task task = controller.detail(100L);
-
-       assertThat(task).isNull();
+        assertThatThrownBy(() -> controller.detail(100L))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 
 
