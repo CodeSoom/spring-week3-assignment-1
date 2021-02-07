@@ -56,4 +56,36 @@ class TaskTest {
 
         assertThat(task.getTitle()).isEqualTo(modifiedTitle);
     }
+
+    @Test
+    @DisplayName("서로 같은 두 Task 를 비교하여 true 를 리턴한다.")
+    void equalsTrueTest() {
+        Task task1 = new Task();
+        task1.setId(givenID);
+        task1.setTitle(givenTitle);
+
+        Task task2 = new Task(givenID, givenTitle);
+
+        assertThat(task1).isEqualTo(task2);
+    }
+
+    @Test
+    @DisplayName("서로 다른 두 Task 를 비교하여 false 를 리턴한다.")
+    void equalsFalseTest() {
+        Task task1 = new Task();
+        task1.setId(modifiedID);
+        task1.setTitle(modifiedTitle);
+
+        Task task2 = new Task(givenID, givenTitle);
+
+        assertThat(task1).isEqualTo(task2);
+    }
+
+    @Test
+    @DisplayName("Task 가 아닌 것을 비교하려 하면 false 를 리턴한다.")
+    void equalsNotTaskTest() {
+        Task task = new Task(givenID, givenTitle);
+
+        assertThat(task).isNotEqualTo(givenTitle);
+    }
 }
