@@ -21,10 +21,9 @@ class TaskServiceTest {
     // 5. delete -> deleteTask (with ID)
 
     private static final String TASK_TITLE = "test";
-    private static final String UPDATE_POSTFIX = "!!!";
+    private static final String UPDATE_POSTFIX = "new Task";
 
     private TaskService taskService;
-    private Task source;
 
     @BeforeEach
     void setUp() {
@@ -110,6 +109,13 @@ class TaskServiceTest {
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
+        Task task;
+
+        @BeforeEach
+        void setUp(){
+            task = new Task();
+            task.setTitle(UPDATE_POSTFIX + "!!!");
+        }
 
         @Nested
         @DisplayName("유효한 ID가 주어진다면")
@@ -118,9 +124,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("해당 ID를 갖는 할 일의 Title을 변경하고 반환한다")
             void it_returns_updated_task() {
-                Task source = new Task();
-                source.setTitle(UPDATE_POSTFIX + "!!!");
-                taskService.updateTask(1L, source);
+                taskService.updateTask(1L, task);
 
                 Task task = taskService.getTask(1L);
                 assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + "!!!");
@@ -134,7 +138,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("수정할 할 일을 찾을 수 없다는 경고 메시지를 반환한다")
             void it_returns_warning_message() {
-                assertThatThrownBy(() -> taskService.updateTask(100L, source))
+                assertThatThrownBy(() -> taskService.updateTask(100L, task))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
