@@ -142,12 +142,10 @@ public class TaskControllerWebMvcTest {
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
             private Long givenInvalidId;
-            private Task updatedSource;
 
             @BeforeEach
             void setUpdate() {
                 givenInvalidId = 100L;
-                updatedSource = new Task(1L, "new");
             }
 
             @Test
