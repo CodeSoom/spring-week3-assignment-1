@@ -176,7 +176,7 @@ public class TaskControllerWebMvcTest {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
-                given(taskService.deleteTask(givenInvalidId)).willThrow(new TaskNotFoundException(100L));
+                given(taskService.deleteTask(givenInvalidId)).willThrow(new TaskNotFoundException(givenInvalidId));
 
                 mockMvc.perform(delete("/tasks/" + givenInvalidId)
                         .contentType(MediaType.APPLICATION_JSON))
