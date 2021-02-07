@@ -1,11 +1,14 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DisplayName("TaskController 테스트")
@@ -118,7 +121,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("주어진 id에 해당하는 할 일을 삭제한다")
             void itReturnsEmptyString() {
+
                 taskController.delete(givenValidId);
+
+                Assertions.assertEquals(taskController.list().size(), 0, "삭제 이후 전체 할 일의 리스트는 사이즈가 0이어야 한다");
+                Assertions.assertThrows(TaskNotFoundException.class, () -> taskController.detail(1L),"삭제 이후 주어진 id에 대한 할 일의 조회는 예외를 발생시킨다");
             }
         }
     }

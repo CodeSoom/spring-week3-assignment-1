@@ -7,6 +7,13 @@ public class Task {
 
     private String title;
 
+    public Task(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public Task() {}
+
     public Long getId() {
         return id;
     }
@@ -31,11 +38,7 @@ public class Task {
 //        if (getClass() != obj.getClass())
 //            return false;
 //
-//        List<Task> tasks = (List<Task>)obj;
-//        for(Task task : tasks) {
-//            if(!(task.getId().equals(this.id) && task.getTitle().equals(this.title)))
-//                return false;
-//        }
-//        return true;
+//        Task task = (Task)obj;
+//        return this.id.equals(task.getId()) && this.title.equals(task.getTitle());
 //    }
 }

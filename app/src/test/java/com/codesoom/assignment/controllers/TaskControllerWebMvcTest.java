@@ -64,10 +64,12 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private Long givenValidId = 1L;
+
             @Test
             @DisplayName("OK를 리턴한다")
             void itReturnsOKHttpStatus() throws Exception {
-                mockMvc.perform(get("/tasks/1"))
+                mockMvc.perform(get("/tasks/" + givenValidId))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("Test task")));
             }
@@ -76,10 +78,12 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
-                mockMvc.perform(get("/tasks/100"))
+                mockMvc.perform(get("/tasks/" + givenInvalidId))
                         .andExpect(status().isNotFound());
             }
         }
@@ -108,14 +112,16 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private Long givenValidId = 1L;
+
             @Test
             @DisplayName("OK를 리턴한다")
             void itReturnsOKHttpStatus() throws Exception {
                 Task updateSource = new Task();
                 updateSource.setTitle("new");
-                given(taskService.updateTask(1L, updateSource)).willReturn(updateSource);
+                given(taskService.updateTask(any(), any())).willReturn(updateSource);
 
-                mockMvc.perform(patch("/tasks/1")
+                mockMvc.perform(patch("/tasks/"+ givenValidId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"new\"}"))
                         .andExpect(status().isOk());
@@ -125,14 +131,16 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
                 Task updateSource = new Task();
                 updateSource.setTitle("new");
-                given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(100L));
+                given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(givenInvalidId));
 
-                mockMvc.perform(patch("/tasks/100")
+                mockMvc.perform(patch("/tasks/" + givenInvalidId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\" : null , \"title\" : \"new\"}"))
                         .andExpect(status().isNotFound());
@@ -146,10 +154,12 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있는 할 일의 id가 주어진다면")
         class ContextWithValidId {
+            private Long givenValidId = 100L;
+
             @Test
             @DisplayName("NO_CONTENT를 리턴한다")
             void itReturnsNO_CONTENTHttpStatus() throws Exception {
-                mockMvc.perform(delete("/tasks/1")
+                mockMvc.perform(delete("/tasks/" + givenValidId)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNoContent());
             }
@@ -158,12 +168,14 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 항 일의 id가 주어진다면")
         class ContextWithInvalidId {
+            private Long givenInvalidId = 100L;
+
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
-                given(taskService.deleteTask(100L)).willThrow(new TaskNotFoundException(100L));
+                given(taskService.deleteTask(givenInvalidId)).willThrow(new TaskNotFoundException(100L));
 
-                mockMvc.perform(delete("/tasks/100")
+                mockMvc.perform(delete("/tasks/" + givenInvalidId)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound());
             }

@@ -21,18 +21,13 @@ class TaskServiceTest {
     private TaskService taskService;
     private static final String BEFORE_TASK_TITLE = "before";
     private static final String UPDATE_TASK_TITLE = "updated";
-    private static final String CREATE_TASK_TITLE ="created";
-
-    @Autowired
-    ObjectMapper objectMapper;
+    private static final String CREATE_TASK_TITLE = "created";
 
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
 
-        Task beforeTask = new Task();
-        beforeTask.setId(1L);
-        beforeTask.setTitle(BEFORE_TASK_TITLE);
+        Task beforeTask = new Task(1L, BEFORE_TASK_TITLE);
         taskService.createTask(beforeTask);
     }
 
@@ -40,10 +35,8 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @BeforeEach
-        void prepare() {
-            Task prepareTask = new Task();
-            prepareTask.setId(1L);
-            prepareTask.setTitle(BEFORE_TASK_TITLE);
+        void prepareOneMoreTask() {
+            Task prepareTask = new Task(2L, BEFORE_TASK_TITLE);
             taskService.createTask(prepareTask);
         }
 
@@ -55,7 +48,14 @@ class TaskServiceTest {
             taskList.add(taskService.getTask(1L));
             taskList.add(taskService.getTask(2L));
 
-            assertThat(tasks).isEqualTo(taskList);
+            assertEquals(tasks, taskList);
+        }
+
+        @Test
+        @DisplayName("현재 가지고 있는 할 일의 갯수만큼 사이즈를 갖는다")
+        void itHasSizeForTheNumberOfTask() {
+            int newSize = taskService.getTasks().size();
+            assertThat(newSize).isEqualTo(2);
         }
     }
 
@@ -95,10 +95,12 @@ class TaskServiceTest {
         @Test
         @DisplayName("title을 입력받아 새로운 할 일을 생성하고 할 일을 리턴한다")
         void itReturnsNewTask() {
-            Task createTask = new Task();
-            createTask.setId(2L);
-            createTask.setTitle(CREATE_TASK_TITLE);
-            Task createdTask = taskService.getTask(createTask.getId());
+            Task newTask = new Task();
+            newTask.setId(2L);
+            newTask.setTitle(CREATE_TASK_TITLE);
+            taskService.createTask(newTask);
+
+            Task createdTask = taskService.getTask(newTask.getId());
 
             assertThat(createdTask.getId()).isEqualTo(2L);
             assertThat(createdTask.getTitle()).isEqualTo(CREATE_TASK_TITLE);
@@ -151,7 +153,7 @@ class TaskServiceTest {
             private final Long givenValidId = 1L;
 
             @Test
-            @DisplayName("유효한 id에 해당하는 할 일을 삭제하고 빈 문자열을 리턴한다")
+            @DisplayName("유효한 id에 해당하는 할 일을 삭제하고 할 일의 리스트는 빈 문자열을 리턴한다")
             void itDeletesTaskAndReturnsEmptyString() {
                 taskService.deleteTask(givenValidId);
                 assertThat(taskService.getTasks().toString()).isEqualTo("[]");
