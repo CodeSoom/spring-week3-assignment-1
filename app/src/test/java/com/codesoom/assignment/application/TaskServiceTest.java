@@ -35,20 +35,27 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
+        Task task;
 
         @Nested
         @DisplayName("할 일이 존재한다면")
         class Context_with_task {
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle("두 번쨰 할 일");
+
+                taskService.createTask(task);
+            }
 
             @Test
             @DisplayName("할 일 목록을 반환한다 ")
             void it_returns_list() {
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks).hasSize(1);
-
-                Task task = tasks.get(0);
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+                assertThat(tasks).isNotEmpty();
+                assertThat(tasks).hasSize(2);
             }
         }
     }
