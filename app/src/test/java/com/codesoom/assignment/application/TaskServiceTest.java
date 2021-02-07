@@ -50,12 +50,18 @@ class TaskServiceTest {
     }
 
     @Test
-    void deleteTask() {
+    void deleteTaskWithExistingID() {
         int originalSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
 
         assertThat(originalSize - taskService.getTasks().size()).isEqualTo(1);
+    }
+
+    @Test
+        void deleteTaskWithNotExistingId() {
+        assertThatThrownBy(() -> taskService.deleteTask(100L))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
