@@ -51,4 +51,9 @@ public class TaskService {
         newId += 1;
         return newId;
     }
+
+    public void clean() {
+        tasks = new ArrayList<>();
+        newId = 0L;
+    }
 }
