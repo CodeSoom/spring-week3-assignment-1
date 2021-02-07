@@ -38,7 +38,12 @@ class TaskControllerTest {
 
        given(taskService.getTasks()).willReturn(tasks);
        given(taskService.getTask(ORIGINAL_ID)).willReturn(task);
-       given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
+       given(taskService.getTask(100L))
+               .willThrow(new TaskNotFoundException(100L));
+       given(taskService.updateTask(eq(100L), any(Task.class)))
+               .willThrow(new TaskNotFoundException(100L));
+       given(taskService.deleteTask(100L))
+               .willThrow(new TaskNotFoundException(100L));
        controller = new TaskController(taskService);
 
 
@@ -87,26 +92,39 @@ class TaskControllerTest {
     }
 
 
-//    @Test
-//    void updateWithValid() {
-//        Task source = new Task();
-//        source.setTitle(ORIGINAL_TITLE+POST_FIX);
-//        controller.update(ORIGINAL_ID, source);
-//
-//        Task task = controller.detail(ORIGINAL_ID);
-//        assertThat(task.getTitle()).isEqualTo(ORIGINAL_TITLE+POST_FIX);
-//    }
-//
-//    @Test
-//    void updateWithInvalid() {
-//        Task source = new Task();
-//        source.setTitle(ORIGINAL_TITLE+POST_FIX);
-//
-//        assertThatThrownBy(() -> controller.update(100L, source))
-//                .isInstanceOf(TaskNotFoundException.class);
-//
-//        assertThatThrownBy(() -> controller.update(200L, source))
-//                .isInstanceOf(TaskNotFoundException.class);
-//    }
+    @Test
+    void updateWithValid() {
+        Task task = new Task();
+        task.setTitle(ORIGINAL_TITLE + POST_FIX);
+
+        controller.update(ORIGINAL_ID, task);
+
+        verify(taskService).updateTask(1L, task);
+
+    }
+
+    @Test
+    void updateWithInvalid() {
+        Task task = new Task();
+        task.setTitle(ORIGINAL_TITLE + POST_FIX);
+
+        assertThatThrownBy(() -> controller.update(100L, task))
+                .isInstanceOf(TaskNotFoundException.class);
+
+    }
+
+    @Test
+    void deleteWithValid() {
+        controller.delete(ORIGINAL_ID);
+
+        verify(taskService).deleteTask(ORIGINAL_ID);
+    }
+
+
+    @Test
+    void deleteWithInvalid() {
+        assertThatThrownBy(() -> controller.delete(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
 
 }
