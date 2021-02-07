@@ -37,7 +37,6 @@ class TaskServiceTest {
             @BeforeEach
             void setUp() {
                 task = new Task();
-                task.setTitle(TASK_TITLE);
 
                 taskService.createTask(task);
             }
@@ -136,6 +135,7 @@ class TaskServiceTest {
             void setUp() {
                 task = new Task();
                 task.setTitle(UPDATE_POSTFIX + "!!!");
+
                 taskService.createTask(task);
             }
 
@@ -145,6 +145,7 @@ class TaskServiceTest {
                 taskService.updateTask(1L, task);
 
                 Task task = taskService.getTask(1L);
+
                 assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + "!!!");
             }
         }
@@ -174,6 +175,7 @@ class TaskServiceTest {
             @BeforeEach
             void setUp() {
                 task = new Task();
+
                 taskService.createTask(task);
             }
 
