@@ -49,6 +49,8 @@ public class TaskControllerWebTest {
                 .willThrow(new TaskNotFoundException(100L));
         given(taskService.updateTask(eq(100L), any(Task.class)))
                 .willThrow(new TaskNotFoundException(100L));
+        given(taskService.deleteTask(eq(100L)))
+                .willThrow(new TaskNotFoundException(100L));
     }
 
     @Test
@@ -112,5 +114,22 @@ public class TaskControllerWebTest {
         verify(taskService).updateTask(eq(100L), any(Task.class));
     }
 
- 
+    @Test
+    void deleteTaskWithValidId() throws Exception {
+        mockMvc.perform(
+                delete("/tasks/1"))
+                .andExpect(status().isNoContent());
+
+        verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void deleteTaskWithInvalidId() throws Exception {
+        mockMvc.perform(
+                delete("/tasks/100"))
+                .andExpect(status().isNotFound());
+
+        verify(taskService).deleteTask(100L);
+    }
+
 }
