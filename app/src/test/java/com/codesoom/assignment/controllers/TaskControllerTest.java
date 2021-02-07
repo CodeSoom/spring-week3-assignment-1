@@ -77,4 +77,14 @@ class TaskControllerTest {
 
         verify(taskService).createTask(task);
     }
+
+    @Test
+    void updateExistingTask() {
+        Task task = new Task();
+        task.setTitle("Updated Task1");
+
+        controller.update(1L, task);
+
+        verify(taskService).updateTask(1L, task);
+    }
 }
