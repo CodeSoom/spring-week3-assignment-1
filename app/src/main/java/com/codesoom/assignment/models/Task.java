@@ -20,4 +20,13 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Task) {
+            Task task = (Task) obj;
+            return id.equals(task.getId()) && title.equals(task.getTitle());
+        }
+        return false;
+    }
 }
