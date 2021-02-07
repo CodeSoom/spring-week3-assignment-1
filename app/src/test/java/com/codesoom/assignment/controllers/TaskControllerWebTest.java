@@ -9,14 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +47,8 @@ public class TaskControllerWebTest {
 
         given(taskService.getTask(100L))
                 .willThrow(new TaskNotFoundException(100L));
+        given(taskService.updateTask(eq(100L), any(Task.class)))
+                .willThrow(new TaskNotFoundException(100L));
     }
 
     @Test
@@ -51,18 +57,60 @@ public class TaskControllerWebTest {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Test Task")));
+
+        verify(taskService).getTasks();
     }
 
     @Test
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk());
+
+        verify(taskService).getTask(1L);
     }
 
     @Test
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
+
+        verify(taskService).getTask(100L);
     }
 
+    @Test
+    void createTask() throws Exception {
+        mockMvc.perform(
+                post("/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"title\":\"Renamed Task\"}")
+        )
+                .andExpect(status().isCreated());
+        verify(taskService).createTask(any(Task.class));
+    }
+
+    @Test
+    void updateTaskWithValidId() throws Exception {
+        mockMvc.perform(
+                patch("/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"Renamed Task\"}")
+        )
+                .andExpect(status().isOk());
+
+        verify(taskService).updateTask(eq(1L), any(Task.class));
+    }
+
+    @Test
+    void updateTaskWithInvalidId() throws Exception {
+        mockMvc.perform(
+                patch("/tasks/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"Renamed Task\"}")
+        )
+                .andExpect(status().isNotFound());
+
+        verify(taskService).updateTask(eq(100L), any(Task.class));
+    }
+
+ 
 }
