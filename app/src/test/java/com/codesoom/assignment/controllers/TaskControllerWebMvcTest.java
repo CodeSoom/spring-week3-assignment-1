@@ -121,7 +121,8 @@ public class TaskControllerWebMvcTest {
             void itReturnsOKHttpStatus() throws Exception {
                 Task updateSource = new Task();
                 updateSource.setTitle("new");
-                given(taskService.updateTask(givenValidId, updateSource)).willReturn(updateSource);
+                Task updatedSource = new Task(givenValidId, "new");
+                given(taskService.updateTask(givenValidId, updateSource)).willReturn(updatedSource);
 
                 mockMvc.perform(patch("/tasks/"+ givenValidId)
                         .contentType(MediaType.APPLICATION_JSON)
