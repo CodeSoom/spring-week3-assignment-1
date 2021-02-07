@@ -17,7 +17,7 @@ class TaskControllerTest {
 
     @Test
     void list() {
-        assertEquals(0, taskController.list().size());
+        assertTrue(taskController.list().isEmpty());
     }
 
     @Test
@@ -73,6 +73,6 @@ class TaskControllerTest {
 
         taskController.delete(createdTask.getId());
 
-        assertEquals(0, taskController.list().size());
+        assertTrue( taskController.list().isEmpty());
     }
 }
