@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class TaskControllerTest {
     private TaskController controller;
@@ -13,7 +15,7 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
+        taskService = mock(TaskService.class);
         controller = new TaskController(taskService);
     }
 
@@ -25,19 +27,10 @@ class TaskControllerTest {
     @Test
     void createNewTask() {
         Task task = new Task();
-
         task.setTitle("test1");
+
         controller.create(task);
 
-        assertThat(controller.list()).hasSize(1);
-        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
-        assertThat(controller.list().get(0).getTitle()).isEqualTo("test1");
-
-        task.setTitle("test2");
-        controller.create(task);
-
-        assertThat(controller.list()).hasSize(2);
-        assertThat(controller.list().get(1).getId()).isEqualTo(2L);
-        assertThat(controller.list().get(1).getTitle()).isEqualTo("test2");
+        verify(taskService).createTask(task);
     }
 }
