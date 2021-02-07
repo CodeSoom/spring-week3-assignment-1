@@ -31,7 +31,7 @@ public class TaskWebTest {
 
     @Test
     void getAllTasks() throws Exception {
-        mockMvc.perform(get("http://localhost/tasks"))
+        mockMvc.perform(get("/tasks"))
             .andExpect(status().isOk());
     }
 
@@ -40,7 +40,7 @@ public class TaskWebTest {
         String taskJsonString = "{\"title\": \"play game!\"}";
 
         mockMvc.perform(
-            post("http://localhost/tasks")
+            post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJsonString)
         ).andExpect(status().isCreated());
@@ -49,7 +49,7 @@ public class TaskWebTest {
     @Test
     void deleteTask() throws Exception {
         mockMvc.perform(
-                delete("http://localhost/tasks/1")
+                delete("/tasks/1")
         ).andExpect(status().isNotFound());
 
         Task task = new Task();
@@ -57,14 +57,14 @@ public class TaskWebTest {
         taskService.createTask(task);
 
         mockMvc.perform(
-                delete("http://localhost/tasks/1")
+                delete("/tasks/1")
         ).andExpect(status().isNoContent());
     }
 
     @Test
     void getTask() throws Exception {
         mockMvc.perform(
-                get("http://localhost/tasks/1")
+                get("/tasks/1")
         ).andExpect(status().isNotFound());
 
         Task task = new Task();
@@ -72,7 +72,7 @@ public class TaskWebTest {
         taskService.createTask(task);
 
         mockMvc.perform(
-                get("http://localhost/tasks/1")
+                get("/tasks/1")
         ).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Play Game.")));
     }
@@ -81,7 +81,7 @@ public class TaskWebTest {
     void putTask() throws Exception {
         String taskJsonString = "{\"title\": \"play game!\"}";
         mockMvc.perform(
-                put("http://localhost/tasks/1")
+                put("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJsonString)
         ).andExpect(status().isNotFound());
@@ -91,7 +91,7 @@ public class TaskWebTest {
         taskService.createTask(task);
 
         mockMvc.perform(
-                put("http://localhost/tasks/1")
+                put("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJsonString))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ public class TaskWebTest {
     void patchTask() throws Exception {
         String taskJsonString = "{\"title\": \"play game!\"}";
         mockMvc.perform(
-                put("http://localhost/tasks/1")
+                put("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJsonString)
         ).andExpect(status().isNotFound());
@@ -112,7 +112,7 @@ public class TaskWebTest {
         taskService.createTask(task);
 
         mockMvc.perform(
-                put("http://localhost/tasks/1")
+                put("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJsonString))
                 .andExpect(status().isOk())
