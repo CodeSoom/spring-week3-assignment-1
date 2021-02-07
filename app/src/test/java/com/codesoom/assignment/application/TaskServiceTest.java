@@ -14,11 +14,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class TaskServiceTest {
-    // 1. list -> getTasks
-    // 2. detail -> getTask (with ID)
-    // 3. create -> createTask (with source)
-    // 4. update -> updateTask (with ID, source)
-    // 5. delete -> deleteTask (with ID)
 
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "new Task";
@@ -63,7 +58,7 @@ class TaskServiceTest {
     class Describe_getTask {
 
         @Nested
-        @DisplayName("유효한 ID가 주어진다면")
+        @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id {
 
             @Test
@@ -75,7 +70,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 ID가 주어진다면")
+        @DisplayName("저장되지 않은 할 일의 ID가 주어진다면")
         class Context_with_invalid_id {
 
             @Test
@@ -112,13 +107,13 @@ class TaskServiceTest {
         Task task;
 
         @BeforeEach
-        void setUp(){
+        void setUp() {
             task = new Task();
             task.setTitle(UPDATE_POSTFIX + "!!!");
         }
 
         @Nested
-        @DisplayName("유효한 ID가 주어진다면")
+        @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id_and_task {
 
             @Test
@@ -132,7 +127,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 ID가 주어진다면")
+        @DisplayName("저장되지 않은 할 일의 ID가 주어진다면")
         class Context_with_invalid_id {
 
             @Test
@@ -149,7 +144,7 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("유효한 ID가 주어진다면")
+        @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id {
 
             @Test
@@ -167,7 +162,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("유효하지 않은 ID가 주어진다면")
+        @DisplayName("저장되지 않은 할 일의 ID가 주어진다면")
         class Context_without_invalid_id {
 
             @Test
@@ -178,4 +173,5 @@ class TaskServiceTest {
             }
         }
     }
+
 }
