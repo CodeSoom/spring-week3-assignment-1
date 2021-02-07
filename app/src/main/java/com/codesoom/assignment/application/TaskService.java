@@ -11,7 +11,7 @@ import java.util.List;
 public class TaskService {
     private List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
-
+    
     public List<Task> getTasks() {
         return tasks;
     }
@@ -34,6 +34,13 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task source) {
+        Task task = getTask(id);
+        task.setTitle(source.getTitle());
+
+        return task;
+    }
+
+    public Task patchTask(Long id, Task source) {
         Task task = getTask(id);
         task.setTitle(source.getTitle());
 
