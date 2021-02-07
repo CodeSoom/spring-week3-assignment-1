@@ -259,19 +259,14 @@ public class TaskControllerWebTest {
                 givenTask.setTitle(UPDATE_TITLE);
 
                 //when
-                MvcResult mvcResult = mockMvc.perform(patch("/tasks/{id}", TASK_ID)
+                //then
+                mockMvc.perform(patch("/tasks/{id}", TASK_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenTask)))
                         .andExpect(status().isOk())
-                        .andReturn();
-
-                //then
-                Task updatedTask =
-                        objectMapper.readValue(mvcResult.getRequest().getContentAsString(), Task.class);
-                assertThat(updatedTask).isNotNull();
-                assertThat(updatedTask.getId()).isEqualTo(TASK_ID);
-                assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
+                        .andExpect(jsonPath("$.id").value(TASK_ID))
+                        .andExpect(jsonPath("$.title").value(UPDATE_TITLE));
             }
         }
 
