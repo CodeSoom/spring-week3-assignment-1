@@ -134,13 +134,17 @@ public class TaskControllerWebMvcTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않은 할 일의 id가 주어진다면")
         class ContextWithInvalidId {
-            private Long givenInvalidId = 100L;
+            private Long givenInvalidId;
+
+            @BeforeEach
+            void setUpdate() {
+                givenInvalidId = 100L;
+                Task updateSource = new Task(1L, "new");
+            }
 
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
-                Task updateSource = new Task();
-                updateSource.setTitle("new");
                 given(taskService.updateTask(any(), any())).willThrow(new TaskNotFoundException(givenInvalidId));
 
                 mockMvc.perform(patch("/tasks/" + givenInvalidId)
