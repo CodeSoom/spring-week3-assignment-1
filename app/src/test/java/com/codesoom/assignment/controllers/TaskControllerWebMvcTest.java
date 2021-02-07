@@ -119,8 +119,7 @@ public class TaskControllerWebMvcTest {
             @Test
             @DisplayName("OK를 리턴한다")
             void itReturnsOKHttpStatus() throws Exception {
-                Task updateSource = new Task();
-                updateSource.setTitle("new");
+                Task updateSource = new Task(1L, "new");
                 Task updatedSource = new Task(givenValidId, "new");
                 given(taskService.updateTask(givenValidId, updateSource)).willReturn(updatedSource);
 
