@@ -83,6 +83,8 @@ public class TaskControllerWebMvcTest {
             @Test
             @DisplayName("NOT_FOUND를 리턴한다")
             void itReturnsNOT_FOUNDHttpStatus() throws Exception {
+                given(taskService.getTask(givenInvalidId)).willThrow(new TaskNotFoundException(givenInvalidId));
+
                 mockMvc.perform(get("/tasks/" + givenInvalidId))
                         .andExpect(status().isNotFound());
             }
