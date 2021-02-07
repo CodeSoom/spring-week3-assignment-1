@@ -49,7 +49,7 @@ class TaskControllerTest {
     @Test
     void createNewTask() {
         Task task = new Task();
-        task.setTitle("test1");
+        task.setTitle("Task2");
 
         controller.create(task);
 
