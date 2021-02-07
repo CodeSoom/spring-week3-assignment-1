@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
     final String givenTitle = "sample";
+    final String givenTitle2 = "sample2";
     final long givenID = 1L;
 
     TaskService subject(String... titles) {
@@ -34,33 +35,26 @@ class TaskServiceTest {
     class Describe_getTasks {
 
         @Nested
-        @DisplayName("tasks 가 없을 때")
+        @DisplayName("등록된 task 가 없을 때")
         class Context_without_tasks {
+            TaskService subject = subject();
 
             @Test
             @DisplayName("비어 있는 집합을 리턴한다.")
             void It_returns_empty_ArrayList() {
-                TaskService subject = subject();
-
                 assertThat(subject.getTasks()).isEmpty();
             }
         }
 
         @Nested
-        @DisplayName("tasks 가 있을 때")
+        @DisplayName("등록된 task 가 있을 때")
         class Context_with_tasks {
+            TaskService subject = subject(givenTitle, givenTitle2);
 
             @Test
             @DisplayName("tasks 가 들어있는 집합을 리턴한다.")
             void It_returns_empty_ArrayList() {
-                TaskService subject = subject(givenTitle);
-
-                List<Task> actual = subject.getTasks();
-
-                assertThat(actual).isNotEmpty();
-                assertThat(actual).hasSize(1);
-                assertThat(actual.get(0).getId()).isEqualTo(givenID);
-                assertThat(actual.get(0).getTitle()).isEqualTo(givenTitle);
+                assertThat(subject.getTasks()).hasSize(2);
             }
         }
     }
@@ -71,12 +65,11 @@ class TaskServiceTest {
         @Nested
         @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
+            TaskService subject = subject();
 
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = subject();
-
                 assertThatExceptionOfType(TaskNotFoundException.class)
                         .isThrownBy(() -> subject.getTask(givenID));
             }
@@ -85,16 +78,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
+            TaskService subject = subject(givenTitle);
+            Task expect = new Task(givenID, givenTitle);
 
             @Test
             @DisplayName("task 를 리턴한다.")
             void It_returns_task() {
-                TaskService subject = subject(givenTitle);
-
-                Task actual = subject.getTask(givenID);
-
-                assertThat(actual.getId()).isEqualTo(givenID);
-                assertThat(actual.getTitle()).isEqualTo(givenTitle);
+                assertThat(subject.getTask(givenID)).isEqualTo(expect);
             }
         }
     }
@@ -102,23 +92,15 @@ class TaskServiceTest {
     @Nested
     @DisplayName("createTask 메서드는")
     class Describe_createTask {
-
-        private Task source() {
-            Task source = new Task();
-            source.setTitle(givenTitle);
-            return source;
-        }
+        TaskService subject = subject();
+        Task source = new Task(givenID, givenTitle);
 
         @Test
         @DisplayName("생성된 task 를 리턴한다.")
         void It_returns_created_task() {
-            TaskService subject = subject();
-            Task source = source();
-
             Task actual = subject.createTask(source);
 
-            assertThat(actual.getId()).isEqualTo(givenID);
-            assertThat(actual.getTitle()).isEqualTo(givenTitle);
+            assertThat(actual.getTitle()).isEqualTo(source.getTitle());
         }
     }
 
@@ -129,32 +111,26 @@ class TaskServiceTest {
         @Nested
         @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
+            TaskService subject = subject();
 
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = subject();
-                Task task = new Task();
-
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> subject.updateTask(givenID, task));
+                        .isThrownBy(() -> subject.updateTask(givenID, new Task()));
             }
         }
 
         @Nested
         @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
+            Task source = new Task(givenID, givenTitle);
+            TaskService subject = subject(givenTitle);
 
             @Test
             @DisplayName("변경된 task 를 리턴한다.")
             void It_returns_modified_task() {
-                TaskService subject = subject(givenTitle);
-                Task source = new Task();
-
-                Task actual = subject.updateTask(givenID, source);
-
-                assertThat(actual.getId()).isEqualTo(givenID);
-                assertThat(actual.getTitle()).isEqualTo(null);
+                assertThat(subject.updateTask(givenID, source)).isEqualTo(source);
             }
         }
     }
@@ -166,12 +142,11 @@ class TaskServiceTest {
         @Nested
         @DisplayName("주어진 id 가 없을 때")
         class Context_not_exists_target_id {
+            TaskService subject = subject();
 
             @Test
             @DisplayName("id를 찾을 수 없다는 예외를 던진다.")
             void It_throws_TaskNotFoundException() {
-                TaskService subject = subject();
-
                 assertThatExceptionOfType(TaskNotFoundException.class)
                         .isThrownBy(() -> subject.deleteTask(givenID));
             }
@@ -180,16 +155,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("주어진 id 가 있을 때")
         class Context_exists_target_id {
+            TaskService subject = subject(givenTitle);
+            Task expect = new Task(givenID, givenTitle);
 
             @Test
             @DisplayName("삭제된 task 를 리턴한다.")
             void It_returns_modified_task() {
-                TaskService subject = subject(givenTitle);
-
-                Task actual = subject.deleteTask(givenID);
-
-                assertThat(actual.getId()).isEqualTo(givenID);
-                assertThat(actual.getTitle()).isEqualTo(givenTitle);
+                assertThat(subject.deleteTask(givenID)).isEqualTo(expect);
             }
         }
     }
