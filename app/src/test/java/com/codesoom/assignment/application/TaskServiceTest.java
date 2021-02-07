@@ -41,7 +41,7 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("getTask :  실할 일이 있으면 리스트에 있는 title과 이름이 같은지 검사한다")
+    @DisplayName("getTask : 할 일이 있으면 리스트에 있는 title과 이름이 같은지 검사한다")
     void getTaskWithValid(){
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
