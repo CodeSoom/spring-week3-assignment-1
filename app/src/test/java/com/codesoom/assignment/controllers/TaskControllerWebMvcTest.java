@@ -94,11 +94,17 @@ public class TaskControllerWebMvcTest {
     @Nested
     @DisplayName("create 메서드는")
     class Describe_create {
+        Task createTask;
+
+        @BeforeEach
+        void setCreateTask () {
+            createTask = new Task();
+            createTask.setTitle("Second");
+        }
+
         @Test
         @DisplayName("CREATED를 리턴한다")
         void itReturnsCREATEDHttpStatus() throws Exception {
-            Task createTask = new Task();
-            createTask.setTitle("Second");
             given(taskService.createTask(any())).willReturn(createTask);
 
             mockMvc.perform(post("/tasks")
