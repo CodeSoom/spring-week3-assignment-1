@@ -28,6 +28,8 @@ class TaskControllerTest {
         tasks.add(task);
 
         given(taskService.getTasks()).willReturn(tasks);
+
+        given(taskService.getTask(1L)).willReturn(task);
     }
 
     @Test
@@ -44,6 +46,13 @@ class TaskControllerTest {
         assertThat(controller.list()).isNotEmpty();
 
         verify(taskService).getTasks();
+    }
+
+    @Test
+    void detailWithExistingId() {
+        assertThat(controller.detail(1L)).isNotNull();
+
+        verify(taskService).getTask(1L);
     }
 
     @Test
