@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Task 클래스")
 class TaskTest {
@@ -70,7 +69,7 @@ class TaskTest {
     }
 
     @Test
-    @DisplayName("서로 다른 두 Task 를 비교하여 false 를 리턴한다.")
+    @DisplayName("모든 값이 다른 두 Task 를 비교하여 false 를 리턴한다.")
     void equalsFalseTest() {
         Task task1 = new Task();
         task1.setId(modifiedID);
@@ -78,7 +77,31 @@ class TaskTest {
 
         Task task2 = new Task(givenID, givenTitle);
 
-        assertThat(task1).isEqualTo(task2);
+        assertThat(task1).isNotEqualTo(task2);
+    }
+
+    @Test
+    @DisplayName("title 이 다른 두 Task 를 비교하여 false 를 리턴한다.")
+    void equalsFalseWhenDifferentTitleTest() {
+        Task task1 = new Task();
+        task1.setId(givenID);
+        task1.setTitle(modifiedTitle);
+
+        Task task2 = new Task(givenID, givenTitle);
+
+        assertThat(task1).isNotEqualTo(task2);
+    }
+
+    @Test
+    @DisplayName("id가 다른 두 Task 를 비교하여 false 를 리턴한다.")
+    void equalsFalseWhenDifferentIDTest() {
+        Task task1 = new Task();
+        task1.setId(modifiedID);
+        task1.setTitle(givenTitle);
+
+        Task task2 = new Task(givenID, givenTitle);
+
+        assertThat(task1).isNotEqualTo(task2);
     }
 
     @Test
