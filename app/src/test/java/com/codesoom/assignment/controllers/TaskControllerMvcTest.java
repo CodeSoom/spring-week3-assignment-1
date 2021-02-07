@@ -48,7 +48,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[GET] /tasks 메서드는")
+    @DisplayName("[GET] /tasks 요청은")
     class Describe_list {
 
         @Nested
@@ -103,7 +103,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[GET] /tasks/{id} 메서드는")
+    @DisplayName("[GET] /tasks/{id} 요청은")
     class Describe_detail {
 
         @Nested
@@ -151,7 +151,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[POST] /tasks 메서드는")
+    @DisplayName("[POST] /tasks 요청은")
     class Describe_create {
         @BeforeEach
         void setup() {
@@ -177,7 +177,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[PUT] /tasks/{id} 메서드는")
+    @DisplayName("[PUT] /tasks/{id} 요청은")
     class Describe_update {
 
         @Nested
@@ -230,7 +230,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[PATCH] /tasks/{id} 메서드는")
+    @DisplayName("[PATCH] /tasks/{id} 요청은")
     class Describe_patch {
 
         @Nested
@@ -282,7 +282,7 @@ class TaskControllerMvcTest {
     }
 
     @Nested
-    @DisplayName("[DELETE] /tasks/{id} 메서드는")
+    @DisplayName("[DELETE] /tasks/{id} 요청은")
     class Describe_delete {
         @Nested
         @DisplayName("주어진 id가 없을 때")
