@@ -34,7 +34,7 @@ class TaskControllerTest {
     @DisplayName("list 메소드는")
     class Describe_list {
         @Nested
-        @DisplayName("task가 없다면")
+        @DisplayName("저장된 task가 없다면")
         class Context_without_any_task {
             @Test
             @DisplayName("비어있는 리스트를 리턴한다.")
@@ -64,11 +64,6 @@ class TaskControllerTest {
     class Describe_detail {
         private Long givenId;
 
-        @BeforeEach
-        void setAddedTask() {
-            taskController.create(task);
-        }
-
         @Nested
         @DisplayName("저장된 task의 id를 가지고 있다면")
         class Context_with_saved_id {
@@ -76,7 +71,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
+                givenId = taskController.create(task).getId();
             }
 
             @Test
@@ -119,7 +114,7 @@ class TaskControllerTest {
         @DisplayName("task를 추가하고,")
         class It_add_task {
             @BeforeEach
-            void setAddedTask() {
+            void addTask() {
                 size = taskController.list().size();
                 added = taskController.create(task);
             }
@@ -146,9 +141,7 @@ class TaskControllerTest {
         private Task modifying;
 
         @BeforeEach
-        void setAddedAndModifiedTask() {
-            taskController.create(task);
-
+        void setModifiedTask() {
             modifying = new Task();
             modifying.setTitle(givenModifyTaskTitle);
         }
@@ -160,13 +153,14 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
-                modified = taskController.update(givenId, modifying);
+                givenId = taskController.create(task).getId();
             }
 
             @Test
             @DisplayName("task를 수정하고, 수정된 task를 리턴한다.")
             void it_modify_task_and_return_modified_task() {
+                modified = taskController.update(givenId, modifying);
+
                 assertThat(modified.getClass()).isEqualTo(Task.class);
                 assertThat(modified.getId()).isEqualTo(givenSavedTaskId);
                 assertThat(modified.getTitle()).isNotEqualTo(givenTaskTitle);
@@ -200,9 +194,7 @@ class TaskControllerTest {
         private Task modifying;
 
         @BeforeEach
-        void setAddedAndModifiedTask() {
-            taskController.create(task);
-
+        void setModifiedTask() {
             modifying = new Task();
             modifying.setTitle(givenModifyTaskTitle);
         }
@@ -214,7 +206,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
+                givenId = taskController.create(task).getId();
             }
 
             @Test

@@ -33,7 +33,7 @@ public class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("task가 없다면")
+        @DisplayName("저장된 task가 없다면")
         class Context_without_any_task {
             @Test
             @DisplayName("비어있는 리스트를 리턴한다.")
@@ -63,11 +63,6 @@ public class TaskServiceTest {
     class Describe_getTask {
         private Long givenId;
 
-        @BeforeEach
-        void setAddedTask() {
-            taskService.createTask(task);
-        }
-
         @Nested
         @DisplayName("저장된 task의 id를 가지고 있다면")
         class Context_with_saved_id {
@@ -75,7 +70,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
+                givenId = taskService.createTask(task).getId();
             }
 
             @Test
@@ -118,7 +113,7 @@ public class TaskServiceTest {
         @DisplayName("task를 추가하고,")
         class It_add_task {
             @BeforeEach
-            void setAddedTask() {
+            void addTask() {
                 size = taskService.getTasks().size();
                 added = taskService.createTask(task);
             }
@@ -145,9 +140,7 @@ public class TaskServiceTest {
         private Task modifying;
 
         @BeforeEach
-        void setAddedAndModifiedTask() {
-            taskService.createTask(task);
-
+        void setModifiedTask() {
             modifying = new Task();
             modifying.setTitle(givenModifyTaskTitle);
         }
@@ -159,7 +152,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
+                givenId = taskService.createTask(task).getId();
             }
 
             @Test
@@ -198,11 +191,6 @@ public class TaskServiceTest {
     class Describe_deleteTask {
         private Long givenId;
 
-        @BeforeEach
-        void setAddedTask() {
-            taskService.createTask(task);
-        }
-
         @Nested
         @DisplayName("저장된 task의 id를 가지고 있다면")
         class Context_with_saved_id {
@@ -211,7 +199,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setSavedId() {
-                givenId = givenSavedTaskId;
+                givenId = taskService.createTask(task).getId();
                 size = taskService.getTasks().size();
             }
 
