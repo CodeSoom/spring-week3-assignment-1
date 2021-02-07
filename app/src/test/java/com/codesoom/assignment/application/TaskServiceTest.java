@@ -42,11 +42,11 @@ class TaskServiceTest {
     class Describe_getTasks {
 
         @Nested
-        @DisplayName("Task가 존재한다면")
-        class Context_exist_task {
+        @DisplayName("할 일이 존재한다면")
+        class Context_with_task {
 
             @Test
-            @DisplayName("Task 목록을 반환한다 ")
+            @DisplayName("할 일 목록을 반환한다 ")
             void it_returns_list() {
                 List<Task> tasks = taskService.getTasks();
 
@@ -67,7 +67,7 @@ class TaskServiceTest {
         class Context_with_valid_id {
 
             @Test
-            @DisplayName("해당 ID를 갖는 Task를 반환한다")
+            @DisplayName("해당 ID를 갖는 할 일을 반환한다")
             void it_returns_task() {
                 Task task = taskService.getTask(1L);
                 assertThat(task.getTitle()).isEqualTo("test");
@@ -79,7 +79,7 @@ class TaskServiceTest {
         class Context_with_invalid_id {
 
             @Test
-            @DisplayName("Task를 찾을 수 없다는 경고 메시지를 반환한다")
+            @DisplayName("해당 할 일을 찾을 수 없다는 경고 메시지를 반환한다")
             void it_returns_warning_message() {
                 assertThatThrownBy(() -> taskService.getTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -92,8 +92,8 @@ class TaskServiceTest {
     class Describe_createTask {
 
         @Test
-        @DisplayName("Task를 생성한다")
-        void it_creates_task() {
+        @DisplayName("새로운 할 일을 생성한다")
+        void it_returns_task() {
             int oldSize = taskService.getTasks().size();
 
             Task task = new Task();
@@ -111,8 +111,8 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("Task를 삭제해야 하는 경우")
-        class Context_delete_id {
+        @DisplayName("삭제해야 하는 할 일이 있는 경우")
+        class Context_with_task {
 
             @Test
             @DisplayName("")
