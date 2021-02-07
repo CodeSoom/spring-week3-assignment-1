@@ -40,6 +40,9 @@ class TaskControllerTest {
 
         given(taskService.updateTask(eq(100L), any(Task.class)))
                 .willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.deleteTask(100L))
+                .willThrow(new TaskNotFoundException(100L));
     }
 
     @Test
@@ -99,6 +102,19 @@ class TaskControllerTest {
         task.setTitle("Updated Task1");
 
         assertThatThrownBy(() -> controller.update(100L, task))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    void deleteExistingTask() {
+        controller.delete(1L);
+
+        verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void deleteNotExistingTask() {
+        assertThatThrownBy(() -> controller.delete(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 }
