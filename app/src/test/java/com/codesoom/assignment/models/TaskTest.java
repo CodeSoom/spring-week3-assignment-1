@@ -1,7 +1,6 @@
 package com.codesoom.assignment.models;
 
 import com.codesoom.assignment.App;
-import com.codesoom.assignment.dto.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +64,7 @@ public class TaskTest {
 
     @DisplayName("Equals와 해쉬코드 값을 테스트")
     @Test
-    void equal_hashcode() {
+    void equals_hashcode() {
         Task task1 = new Task();
         task1.setId(GIVEN_ID);
         task1.setTitle(GIVEN_TITLE);
@@ -79,7 +78,7 @@ public class TaskTest {
     }
 
     @Test
-    void equal_with_different_object() {
+    void equals_with_different_object() {
         Task task = new Task();
         App app = new App();
 
@@ -87,7 +86,7 @@ public class TaskTest {
     }
 
     @Test
-    void equal_with_different_id() {
+    void equals_with_different_id() {
         Task task1 = new Task();
         task1.setId(GIVEN_ID);
         task1.setTitle(GIVEN_TITLE);
@@ -100,7 +99,7 @@ public class TaskTest {
     }
 
     @Test
-    void equal_with_different_title() {
+    void equals_with_different_title() {
         Task task1 = new Task();
         task1.setId(GIVEN_ID);
         task1.setTitle(GIVEN_TITLE);
@@ -113,7 +112,7 @@ public class TaskTest {
     }
 
     @Test
-    void equal_with_different_id_title() {
+    void equals_with_different_id_title() {
         Task task1 = new Task();
         task1.setId(GIVEN_ID);
         task1.setTitle(GIVEN_TITLE);
