@@ -20,8 +20,10 @@ class TaskControllerTest {
     }
 
     @Test
-    void list() {
+    void listWithoutTasks() {
         assertThat(controller.list()).isEmpty();
+
+        verify(taskService).getTasks();
     }
 
     @Test
