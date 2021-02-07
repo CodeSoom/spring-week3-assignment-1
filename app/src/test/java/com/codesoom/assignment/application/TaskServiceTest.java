@@ -16,20 +16,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskServiceTest {
 
     private static final String TASK_TITLE = "test";
-    private static final String UPDATE_POSTFIX = "new Task";
+    private static final String UPDATE_POSTFIX = "new";
 
     private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        // subject
         taskService = new TaskService();
-
-        // fixture
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-
-        taskService.createTask(task);
     }
 
     @Nested
@@ -44,7 +37,7 @@ class TaskServiceTest {
             @BeforeEach
             void setUp() {
                 task = new Task();
-                task.setTitle("두 번쨰 할 일");
+                task.setTitle(TASK_TITLE);
 
                 taskService.createTask(task);
             }
@@ -55,7 +48,20 @@ class TaskServiceTest {
                 List<Task> tasks = taskService.getTasks();
 
                 assertThat(tasks).isNotEmpty();
-                assertThat(tasks).hasSize(2);
+                assertThat(tasks).hasSize(1);
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일이 존재하지 않는다면")
+        class Context_without_task {
+
+            @Test
+            @DisplayName("빈 목록을 반환한다")
+            void it_returns_list() {
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).isEmpty();
             }
         }
     }
@@ -63,10 +69,19 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
+        Task task;
 
         @Nested
         @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id {
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle(TASK_TITLE);
+
+                taskService.createTask(task);
+            }
 
             @Test
             @DisplayName("해당 ID를 갖는 할 일을 반환한다")
@@ -113,15 +128,16 @@ class TaskServiceTest {
     class Describe_updateTask {
         Task task;
 
-        @BeforeEach
-        void setUp() {
-            task = new Task();
-            task.setTitle(UPDATE_POSTFIX + "!!!");
-        }
-
         @Nested
         @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id_and_task {
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle(UPDATE_POSTFIX + "!!!");
+                taskService.createTask(task);
+            }
 
             @Test
             @DisplayName("해당 ID를 갖는 할 일의 Title을 변경하고 반환한다")
@@ -149,10 +165,17 @@ class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
+        Task task;
 
         @Nested
         @DisplayName("저장된 할 일의 ID가 주어진다면")
         class Context_with_valid_id {
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                taskService.createTask(task);
+            }
 
             @Test
             @DisplayName("해당 ID를 갖는 할 일을 삭제하고 반환한다")
@@ -180,5 +203,4 @@ class TaskServiceTest {
             }
         }
     }
-
 }
