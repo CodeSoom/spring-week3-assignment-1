@@ -30,15 +30,15 @@ public class Task {
         this.title = title;
     }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == null)
-//            return false;
-//
-//        if (getClass() != obj.getClass())
-//            return false;
-//
-//        Task task = (Task)obj;
-//        return this.id.equals(task.getId()) && this.title.equals(task.getTitle());
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (getClass() != obj.getClass())
+            return false;
+
+        Task task = (Task)obj;
+        return this.id.equals(task.getId()) && this.title.equals(task.getTitle());
+    }
 }
