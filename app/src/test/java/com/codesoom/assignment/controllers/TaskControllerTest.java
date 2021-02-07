@@ -11,6 +11,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -34,6 +36,9 @@ class TaskControllerTest {
         given(taskService.getTask(1L)).willReturn(task);
 
         given(taskService.getTask((100L)))
+                .willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.updateTask(eq(100L), any(Task.class)))
                 .willThrow(new TaskNotFoundException(100L));
     }
 
@@ -86,5 +91,14 @@ class TaskControllerTest {
         controller.update(1L, task);
 
         verify(taskService).updateTask(1L, task);
+    }
+
+    @Test
+    void updateNotExistingTask() {
+        Task task = new Task();
+        task.setTitle("Updated Task1");
+
+        assertThatThrownBy(() -> controller.update(100L, task))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 }
