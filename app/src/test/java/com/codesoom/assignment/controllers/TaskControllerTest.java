@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,6 +32,9 @@ class TaskControllerTest {
         given(taskService.getTasks()).willReturn(tasks);
 
         given(taskService.getTask(1L)).willReturn(task);
+
+        given(taskService.getTask((100L)))
+                .willThrow(new TaskNotFoundException(100L));
     }
 
     @Test
@@ -53,6 +58,14 @@ class TaskControllerTest {
         assertThat(controller.detail(1L)).isNotNull();
 
         verify(taskService).getTask(1L);
+    }
+
+    @Test
+    void detailWithNotExistingId() {
+        assertThatThrownBy(() -> controller.detail(100L))
+                .isInstanceOf(TaskNotFoundException.class);
+
+        verify(taskService).getTask(100L);
     }
 
     @Test
