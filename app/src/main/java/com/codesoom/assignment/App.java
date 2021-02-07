@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class App {
     public String getGreeting() {
-        return "Hellog, world!";
+        return "Hello, world!";
     }
 
     public static void main(String[] args) {
