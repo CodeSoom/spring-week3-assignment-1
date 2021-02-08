@@ -65,13 +65,20 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateTask() {
-        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("original title");
-
+    void updateTaskWithExistingId() {
         Task task = new Task();
         task.setTitle("updated title");
         taskService.updateTask(1L, task);
 
         assertThat(taskService.getTask(1L).getTitle()).isEqualTo("updated title");
+    }
+
+    @Test
+    void updateTaskWithNotExistingId() {
+        Task task = new Task();
+        task.setTitle("updated title");
+
+        assertThatThrownBy(() -> taskService.updateTask(100L, task))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 }
