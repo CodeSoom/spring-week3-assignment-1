@@ -66,14 +66,24 @@ public class TaskControllerWebTest {
     @Test
     void create() throws Exception {
         mockMvc.perform(post("/tasks/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\" : \"new task\"}"))
-                .andExpect(status().isCreated());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"title\" : \"new task\"}")
+        )
+            .andExpect(status().isCreated());
     }
 
     @Test
     void deleteTask() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void update() throws Exception {
+        mockMvc.perform(put("/tasks/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"title\" : \"new task\"}")
+        )
+            .andExpect(status().isOk());
     }
 }
