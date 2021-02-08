@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,6 +44,11 @@ public class TaskControllerWebTest {
         given(taskService.getTask(1L)).willReturn(task);
 
         given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.deleteTask(100L)).willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.updateTask(eq(100L), any(Task.class))).willThrow(new TaskNotFoundException(100L));
+
     }
 
     @Test
@@ -79,11 +86,26 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    void deleteTaskWithNotExistingId() throws Exception {
+        mockMvc.perform(delete("/tasks/100"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void update() throws Exception {
         mockMvc.perform(put("/tasks/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"title\" : \"new task\"}")
         )
             .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateTaskWithNotExistingId() throws Exception {
+        mockMvc.perform(put("/tasks/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\" : \"new task\"}")
+        )
+                .andExpect(status().isNotFound());
     }
 }
