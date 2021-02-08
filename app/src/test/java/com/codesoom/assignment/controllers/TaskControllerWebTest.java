@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,5 +61,19 @@ public class TaskControllerWebTest {
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create() throws Exception {
+        mockMvc.perform(post("/tasks/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\" : \"new task\"}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void deleteTask() throws Exception {
+        mockMvc.perform(delete("/tasks/1"))
+                .andExpect(status().isNoContent());
     }
 }
