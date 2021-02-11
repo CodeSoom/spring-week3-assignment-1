@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,48 +57,62 @@ public class TaskControllerWebTest {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Test Task")));
+
+        verify(taskService).getTasks();
     }
 
     @Test
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk());
+
+        verify(taskService).getTask(1L);
     }
 
     @Test
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
+
+        verify(taskService).getTask(100L);
     }
 
     @Test
-    void create() throws Exception {
-        mockMvc.perform(post("/tasks/")
+    void createTask() throws Exception {
+        mockMvc.perform(post("/tasks")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"title\" : \"new task\"}")
+            .content("{\"title\":\"new task\"}")
         )
             .andExpect(status().isCreated());
+
+        verify(taskService).createTask(any(Task.class));
     }
 
     @Test
-    void deleteTask() throws Exception {
+    void deleteTaskWithExistingID() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
+
+        verify(taskService).deleteTask(1L);
     }
 
     @Test
     void deleteTaskWithNotExistingId() throws Exception {
         mockMvc.perform(delete("/tasks/100"))
                 .andExpect(status().isNotFound());
+
+        verify(taskService).deleteTask(100L);
     }
 
     @Test
-    void update() throws Exception {
+    void updateTaskWithExistingId() throws Exception {
         mockMvc.perform(put("/tasks/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"title\" : \"new task\"}")
         )
             .andExpect(status().isOk());
+
+        verify(taskService).updateTask(eq(1L), any(Task.class));
     }
 
     @Test
@@ -107,5 +122,7 @@ public class TaskControllerWebTest {
                 .content("{\"title\" : \"new task\"}")
         )
                 .andExpect(status().isNotFound());
+
+        verify(taskService).updateTask(eq(100L), any(Task.class));
     }
 }
