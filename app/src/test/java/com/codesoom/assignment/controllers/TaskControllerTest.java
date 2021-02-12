@@ -106,6 +106,25 @@ class TaskControllerTest {
     }
 
     @Test
+    void patchExistingTask() {
+        Task task = new Task();
+        task.setTitle("Updated Task1");
+
+        controller.patch(1L, task);
+
+        verify(taskService).updateTask(1L, task);
+    }
+
+    @Test
+    void patchNotExistingTask() {
+        Task task = new Task();
+        task.setTitle("Updated Task1");
+
+        assertThatThrownBy(() -> controller.patch(100L, task))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
     void deleteExistingTask() {
         controller.delete(1L);
 
