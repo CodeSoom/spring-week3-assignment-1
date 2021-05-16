@@ -15,6 +15,7 @@ build
 
 # Intellij IDEA
 .idea
+*.iml
 
 # macOS
 .DS_Store
