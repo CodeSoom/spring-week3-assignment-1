@@ -9,6 +9,8 @@ class HelloControllerTest {
     @Test
     void sayHello() {
         HelloController controller = new HelloController();
-        assertThat(controller.sayHello()).isEqualTo("Hello, world!");
+        String test = controller.sayHello();
+        assertThat(test)
+                .isEqualTo("Hello, world!");
     }
 }
