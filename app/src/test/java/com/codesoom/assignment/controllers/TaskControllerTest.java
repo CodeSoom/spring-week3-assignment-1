@@ -96,4 +96,15 @@ class TaskControllerTest {
         assertThat(patchedTask.getId()).isEqualTo(newTaskId);
         assertThat(patchedTask.getTitle()).isEqualTo(TITLE + UPDATED);
     }
+
+    @Test
+    void deleteTask() {
+        List<Task> tasks = controller.list();
+        assertThat(tasks).hasSize(1);
+
+        controller.delete(ID);
+
+        tasks = controller.list();
+        assertThat(tasks).hasSize(0);
+    }
 }
