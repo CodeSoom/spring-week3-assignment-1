@@ -16,7 +16,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,6 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class TaskControllerWebTest {
+
+    private final Long VALID_ID = 1L;
+    private final Long INVALID_ID = 999L;
+    
     @Autowired
     private MockMvc mockMvc;
 
@@ -41,14 +44,14 @@ class TaskControllerWebTest {
 
         given(taskService.getTasks()).willReturn(tasks);
 
-        given(taskService.getTask(1L)).willReturn(task);
+        given(taskService.getTask(VALID_ID)).willReturn(task);
 
-        given(taskService.getTask(100L))
-                .willThrow(new TaskNotFoundException(100L));
+        given(taskService.getTask(INVALID_ID))
+                .willThrow(new TaskNotFoundException(INVALID_ID));
 
-        given(taskService.deleteTask(1L)).willReturn(task);
-        given(taskService.deleteTask(100L))
-                .willThrow(new TaskNotFoundException(100L));
+        given(taskService.deleteTask(VALID_ID)).willReturn(task);
+        given(taskService.deleteTask(INVALID_ID))
+                .willThrow(new TaskNotFoundException(INVALID_ID));
     }
 
     @Test
