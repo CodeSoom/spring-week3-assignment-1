@@ -30,10 +30,12 @@ class TaskControllerTest {
     void getTaskListWithTwoTask() {
         Task task1 = new Task();
 
+        task1.setId(1L);
         task1.setTitle("task1");
         taskService.createTask(task1);
 
         Task task2 = new Task();
+        task2.setId(2L);
         task2.setTitle("task2");
         taskService.createTask(task2);
 
@@ -47,6 +49,7 @@ class TaskControllerTest {
     void getTaskById() {
         Task source = new Task();
 
+        source.setId(1L);
         source.setTitle("task1");
         taskService.createTask(source);
 
@@ -59,6 +62,7 @@ class TaskControllerTest {
     void getTaskWithInvalidId() {
         Task source = new Task();
 
+        source.setId(1L);
         source.setTitle("task1");
         taskService.createTask(source);
 
@@ -73,6 +77,7 @@ class TaskControllerTest {
     void create() {
         Task source = new Task();
 
+        source.setId(1L);
         source.setTitle("task1");
 
         Task task = taskController.create(source);
@@ -84,10 +89,9 @@ class TaskControllerTest {
     void update() {
         Task source = new Task();
 
+        source.setId(1L);
         source.setTitle("task1");
         taskService.createTask(source);
-
-        source.setTitle("task2");
 
         long created_task_id = 1L;
         Task task = taskController.update(created_task_id, source);
@@ -99,10 +103,9 @@ class TaskControllerTest {
     void patch() {
         Task source = new Task();
 
+        source.setId(1L);
         source.setTitle("task1");
         taskService.createTask(source);
-
-        source.setTitle("task2");
 
         long created_task_id = 1L;
         Task test = taskController.patch(created_task_id, source);
@@ -115,9 +118,11 @@ class TaskControllerTest {
         Task source1 = new Task();
 
         source1.setTitle("task1");
+        source1.setId(1L);
         taskService.createTask(source1);
 
         Task source2 = new Task();
+        source2.setId(2L);
         source2.setTitle("task2");
         taskService.createTask(source2);
 
