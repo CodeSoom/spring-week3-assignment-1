@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,13 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("/tasks API")
+@DisplayName("/tasks")
 class TaskControllerTest {
-    private final Long taskId1 = 1L;
-    private final Long taskId2 = 2L;
-    private final String taskTitle1 = "Test1";
-    private final String taskTitle2 = "Test2";
+    private final Long validTaskId = 1L;
+    private final Long addtionalValidTaskId = 2L;
+    private final Long invalidTaskId = 100L;
+    private final String validTaskTitle = "Test1";
+    private final String additionalValidTaskTitle = "Test2";
     private TaskController taskController;
 
     @BeforeEach
@@ -22,50 +25,62 @@ class TaskControllerTest {
         taskController = new TaskController(taskService);
 
         Task task = new Task();
-        task.setTitle(taskTitle1);
+        task.setTitle(validTaskTitle);
         taskController.create(task);
     }
 
     @Test
-    @DisplayName("GET 전체 할 일 목록을 조회한다.")
+    @DisplayName("전체 할 일 목록을 조회한다.")
     void listTasks() {
-        Task task = new Task();
-        task.setId(taskId1);
-        task.setTitle(taskTitle1);
-
         assertThat(taskController.list()).hasSize(1);
-        assertThat(taskController.detail(taskId1)
-                                 .getTitle()).isEqualTo(task.getTitle());
+        assertThat(taskController.detail(validTaskId)
+                                 .getTitle()).isEqualTo(validTaskTitle);
     }
 
     @Test
-    @DisplayName("POST /{id} 할 일을 추가한다.")
+    @DisplayName("할 일 목록에 등록된 할 일을 조회한다.")
+    void getTaskExists() {
+        assertThat(taskController.detail(validTaskId)
+                                 .getTitle()).isEqualTo(validTaskTitle);
+    }
+
+    @Test
+    @DisplayName("할 일 목록에 없는 할 일을 조회한다.")
+    void taskNotFound() {
+        assertThatThrownBy(() -> taskController.detail(invalidTaskId))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("할 일을 추가한다.")
     void createNewTask() {
         Task task = new Task();
-        task.setTitle(taskTitle2);
+        task.setTitle(additionalValidTaskTitle);
+
         taskController.create(task);
 
         assertThat(taskController.list()).hasSize(2);
-        assertThat(taskController.detail(taskId2)
-                                 .getTitle()).isEqualTo(taskTitle2);
+        assertThat(taskController.detail(addtionalValidTaskId)
+                                 .getTitle()).isEqualTo(additionalValidTaskTitle);
     }
 
     @Test
-    @DisplayName("PUT /{id} 지정한 할 일을 갱신한다.")
+    @DisplayName("지정한 할 일을 갱신한다.")
     void updateTask() {
-        assertThat(taskController.list()).hasSize(1);
-
         Task newTask = new Task();
-        newTask.setTitle(taskTitle2);
-        taskController.update(taskId1, newTask);
-        assertThat(taskController.detail(taskId1)
-                                 .getTitle()).isEqualTo(taskTitle2);
+        newTask.setTitle(additionalValidTaskTitle);
+
+        taskController.update(validTaskId, newTask);
+
+        assertThat(taskController.detail(validTaskId)
+                                 .getTitle()).isEqualTo(additionalValidTaskTitle);
     }
 
     @Test
-    @DisplayName("DELETE /{id} 지정한 할 일을 삭제한다.")
+    @DisplayName("지정한 할 일을 삭제한다.")
     void deleteTask() {
-        taskController.delete(taskId1);
+        taskController.delete(validTaskId);
+
         assertThat(taskController.list()).isEmpty();
     }
 }
