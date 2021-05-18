@@ -16,6 +16,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +45,10 @@ class TaskControllerWebTest {
 
         given(taskService.getTask(100L))
                 .willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.deleteTask(1L)).willReturn(task);
+        given(taskService.deleteTask(100L))
+                .willThrow(new TaskNotFoundException(100L));
     }
 
     @Test
@@ -61,6 +67,18 @@ class TaskControllerWebTest {
     @Test
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteWithValidId() throws Exception {
+        mockMvc.perform(delete("/tasks/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteWithInvalidId() throws Exception {
+        mockMvc.perform(delete("/tasks/100"))
                 .andExpect(status().isNotFound());
     }
 }
