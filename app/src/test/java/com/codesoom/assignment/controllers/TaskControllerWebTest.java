@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,10 +65,12 @@ public class TaskControllerWebTest {
         given(taskService.getTasks()).willReturn(taskList);
 
         // when
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/tasks"))
         // then
-               .andExpect(status().isOk());
-        //TODO: test taskList
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0]").value(source1))
+                .andExpect(jsonPath("$[1]").value(source2));
     }
 
     @Test
