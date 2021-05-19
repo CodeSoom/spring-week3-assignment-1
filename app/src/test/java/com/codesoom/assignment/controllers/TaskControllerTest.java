@@ -16,8 +16,9 @@ class TaskControllerTest {
     private TaskService taskService;
 
     private final Long NOT_FOUND_TASK_ID = 100L; // 목록에 없는 할 일 ID
+    private final Long NEW_TASK_ID = 1L; // 새로 생성할 할 일 ID
     private final String NEW_TASK_TITLE = "Test Title"; // 새로 생성할 할 일 제목
-    private final String UPDATE_TASK_TITLE = "Test Title Updated";
+    private final String UPDATE_TASK_TITLE = "Test Title Updated"; // 수정된 할 일 제목
     private final String TASK_NOT_FOUND_ERROR_MESSAGE = "해당하는 Task가 존재하지 않습니다.";
 
     @BeforeEach
@@ -28,7 +29,6 @@ class TaskControllerTest {
 
     }
 
-    
     @Test
     @DisplayName("빈 할 일 목록을 조회합니다.")
     void listEmpty() {
@@ -87,15 +87,15 @@ class TaskControllerTest {
         Task newTask = new Task();
         newTask.setTitle(NEW_TASK_TITLE);
 
-        Long netTaskId = 1L;
+        Long foundTaskId = NEW_TASK_ID; // 조회할 할 일 ID
 
         //when
         taskService.saveTask(newTask);
-        Task foundTask = controller.detail(netTaskId);
+        Task foundTask = controller.detail(foundTaskId);
 
         //then
         Assertions.assertThat(foundTask).isNotNull();
-        Assertions.assertThat(foundTask.getId()).isEqualTo(netTaskId);
+        Assertions.assertThat(foundTask.getId()).isEqualTo(foundTaskId);
         Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
 
     }
@@ -108,17 +108,17 @@ class TaskControllerTest {
         Task task1 = new Task();
         task1.setTitle(NEW_TASK_TITLE);
 
-        Long netTaskId = 1L;
+        Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
 
         //when
         controller.create(task1);
-        Task foundTask = controller.detail(netTaskId);
+        Task foundTask = controller.detail(newTaskId);
 
         //then
         Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
 
         Assertions.assertThat(foundTask).isNotNull();
-        Assertions.assertThat(foundTask.getId()).isEqualTo(netTaskId);
+        Assertions.assertThat(foundTask.getId()).isEqualTo(newTaskId);
         Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
 
     }
@@ -128,7 +128,7 @@ class TaskControllerTest {
     void updateInvalid() {
 
         //given
-        Long updateTaskId = 1L; // 수정할 할 일 ID
+        Long updateTaskId = NEW_TASK_ID; // 수정할 할 일 ID
 
         Task paramTask = new Task(); // 파라미터로 사용될 할 일 객체
         paramTask.setTitle(UPDATE_TASK_TITLE);
@@ -187,7 +187,7 @@ class TaskControllerTest {
         newTask.setTitle(NEW_TASK_TITLE);
         Task targetTask = controller.create(newTask);
 
-        Long deleteTaskId = 1L; // 삭제할 할 일 ID
+        Long deleteTaskId = targetTask.getId(); // 삭제할 할 일 ID
 
         // 삭제 전에는 등록한 할 일이 존재합니다.
         Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
