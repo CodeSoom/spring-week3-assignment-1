@@ -44,5 +44,8 @@ public class TaskTest {
         Task task3 = new Task();
         task3.setTitle(ENGLISH_TITLE);
         assertThat(task3.getTitle()).isEqualTo(ENGLISH_TITLE);
+
+        Task task4 = new Task();
+        assertThat(task4.getTitle()).isNull();
     }
 }
