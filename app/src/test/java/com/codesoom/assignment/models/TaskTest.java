@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskTest {
     @Test
-    public void testId() {
+    void testId() {
         Long NEGATIVE_ID = -1L;
         Long ZERO_ID = 0L;
         Long POSITIVE_ID = 1L;
@@ -28,7 +28,7 @@ public class TaskTest {
     }
 
     @Test
-    public void testTitle() {
+    void testTitle() {
         String EMPTY_TITLE = "";
         String KOREAN_TITLE = "할 일";
         String ENGLISH_TITLE = "Todo";
