@@ -11,7 +11,6 @@ import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.services.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +24,13 @@ import java.util.List;
 @CrossOrigin("*")
 public class TaskController {
 
-    @Autowired
     private TaskService taskService;
 
     private Logger log = LoggerFactory.getLogger(TaskController.class);
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     /**
      * 모든 할 일 리스트를 반환합니다.
