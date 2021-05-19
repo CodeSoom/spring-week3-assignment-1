@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import java.util.Objects;
+
 public class Task {
     private Long id;
     private String title;
@@ -31,9 +33,6 @@ public class Task {
 
     @Override
     public int hashCode() {
-        // id, title이 null를 고려한 hashCode.. 이게.. 맞나..??
-        int result = id != null ? id.hashCode() * 31 : 0;
-        result += title != null ? title.hashCode() * 31 : 0;
-        return result;
+        return Objects.hash(id, title);
     }
 }
