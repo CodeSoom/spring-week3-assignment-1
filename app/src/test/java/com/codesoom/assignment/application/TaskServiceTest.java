@@ -10,10 +10,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TaskServiceTest {
-    private static final String TASK_TITLE = "test";
+    private static final Long VALID_TASK_ID = 1L;
+    private static final Long INVALID_TASK_ID = 100L;
+    private static final String VALID_TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "!!!";
+
     private TaskService taskService;
 
     @BeforeEach
@@ -23,7 +27,7 @@ class TaskServiceTest {
 
         // fixture
         Task task = new Task();
-        task.setTitle(TASK_TITLE);
+        task.setTitle(VALID_TASK_TITLE);
         taskService.createTask(task);
     }
 
@@ -31,23 +35,24 @@ class TaskServiceTest {
     @DisplayName("전체 할 일 목록을 조회한다.")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
-        assertThat(tasks).hasSize(1);
-
-        Task task = tasks.get(0);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        assertAll(
+                () -> assertThat(tasks).hasSize(1),
+                () -> assertThat(tasks.get(0)
+                                      .getTitle()).isEqualTo(VALID_TASK_TITLE));
     }
 
     @Test
     @DisplayName("할 일 목록에 등록된 할 일을 조회한다.")
     void getTaskWithValidId() {
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        Task task = taskService.getTask(VALID_TASK_ID);
+        assertThat(task.getTitle())
+                .isEqualTo(VALID_TASK_TITLE);
     }
 
     @Test
     @DisplayName("할 일 목록에 없는 할 일을 조회한다.")
     void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(100L))
+        assertThatThrownBy(() -> taskService.getTask(INVALID_TASK_ID))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
@@ -58,24 +63,29 @@ class TaskServiceTest {
                                  .size();
 
         Task task = new Task();
-        task.setTitle(TASK_TITLE);
+        task.setTitle(VALID_TASK_TITLE);
 
         taskService.createTask(task);
 
         int newSize = taskService.getTasks()
                                  .size();
 
-        assertThat(newSize - oldSize).isEqualTo(1);
+        assertThat(newSize - oldSize)
+                .isEqualTo(1);
     }
 
     @Test
     @DisplayName("지정한 할 일을 갱신한다.")
     void updateTask() {
         Task source = new Task();
-        source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
-        taskService.updateTask(1L, source);
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
+        source.setTitle(VALID_TASK_TITLE + UPDATE_POSTFIX);
+
+        taskService.updateTask(VALID_TASK_ID, source);
+
+        Task task = taskService.getTask(VALID_TASK_ID);
+
+        assertThat(task.getTitle())
+                .isEqualTo(VALID_TASK_TITLE + UPDATE_POSTFIX);
     }
 
     @Test
@@ -84,12 +94,13 @@ class TaskServiceTest {
         int oldSize = taskService.getTasks()
                                  .size();
 
-        taskService.deleteTask(1L);
+        taskService.deleteTask(VALID_TASK_ID);
 
         int newSize = taskService.getTasks()
                                  .size();
 
-        assertThat(oldSize - newSize).isEqualTo(1);
+        assertThat(oldSize - newSize)
+                .isEqualTo(1);
     }
 
 }
