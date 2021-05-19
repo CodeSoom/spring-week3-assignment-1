@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
     private TaskController controller;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        controller = new TaskController(new TaskService());
+        taskService = new TaskService();
+        controller = new TaskController(taskService);
     }
 
     @Test
