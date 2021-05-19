@@ -1,194 +1,186 @@
 package com.codesoom.assignment.models;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Task 클래스의")
 class TaskTest {
 
-    @Test
-    void testEqualsWithDifferentTypeOfObject() {
-        // given
-        Task task1 = new Task();
-        task1.setTitle("task1");
+    @Nested
+    @DisplayName("equals 메소드는")
+    class Describe_of_equals {
 
-        Object notTask = new Object();
+        @Nested
+        @DisplayName("만약 Task Type과 관련없는 객체가 주어진다면")
+        class Context_with_different_type_of_object {
 
-        // when
-        assertThat(task1.equals(notTask))
-        // then
-                .isFalse();
+            final private Task task1;
+
+            Context_with_different_type_of_object() {
+                this.task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
+            }
+
+            @Test
+            @DisplayName("false를 리턴한다")
+            void it_returns_false() {
+                Object notTask = new Object();
+
+                assertThat(task1.equals(notTask))
+                        .isFalse();
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 title이 다른 Task 객체가 주어진다면")
+        class Context_with_differnt_title {
+
+            final private Task task1;
+
+            Context_with_differnt_title() {
+                this.task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
+            }
+
+            @Test
+            @DisplayName("false를 리턴한다")
+            void it_retuns_false() {
+                Task task2 = new Task();
+                task2.setId(1L);
+                task2.setTitle("differentTitle");
+
+                assertThat(task1.equals(task2))
+                        .isFalse();
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 id가 다른 Task 객체가 주어진다면")
+        class Context_with_differnt_id {
+
+            final private Task task1;
+
+            Context_with_differnt_id() {
+                this.task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
+            }
+
+            @Test
+            @DisplayName("false를 리턴한다")
+            void it_returns_false() {
+                Task task2 = new Task();
+                long differentId = task1.getId() + 1L;
+                task2.setId(differentId);
+                task2.setTitle("task1");
+
+                assertThat(task1.equals(task2))
+                        .isFalse();
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 id와 title이 같은 객체가 주어진다면")
+        class Context_with_attributes_are_same {
+
+            final private Task task1;
+
+            Context_with_attributes_are_same() {
+                this.task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
+            }
+
+            @Test
+            @DisplayName("true를 리턴한다")
+            void it_returns_true() {
+                Task task2 = new Task();
+                task2.setId(task1.getId());
+                task2.setTitle(task1.getTitle());
+
+                assertThat(task1.equals(task2))
+                        .isTrue();
+            }
+        }
+
     }
 
-    @Test
-    void testEqualsWithDifferentTitleOfTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
+    @Nested
+    @DisplayName("hashCode 메소드는")
+    class Describe_of_hashCode {
 
-        Task task2 = new Task();
-        task2.setId(1L);
-        task2.setTitle("differentTitle");
+        @Nested
+        @DisplayName("만약 title이 다른 Task 두 객체로부터 호출된다면")
+        class Context_with_differnt_title {
 
-        // when
-        assertThat(task1.equals(task2))
-        // then
-                .isFalse();
-    }
+            @Test
+            @DisplayName("각각 다른 hashCode를 반환한다")
+            void it_returns_different_hash_code() {
+                Task task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
 
-    @Test
-    void testEqualsWithDifferentIdOfTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
+                Task task2 = new Task();
+                task2.setId(1L);
+                task2.setTitle("task2");
 
-        Task task2 = new Task();
-        task2.setId(2L);
-        task2.setTitle("task1");
+                Integer codeOfTask1 = task1.hashCode();
+                Integer codeOfTask2 = task2.hashCode();
 
-        // when
-        assertThat(task1.equals(task2))
-        // then
-                .isFalse();
-    }
+                assertThat(codeOfTask1.equals(codeOfTask2))
+                        .isFalse();
+            }
+        }
 
-    @Test
-    void testEqualsWithSameTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
+        @Nested
+        @DisplayName("만약 id가 다른 Task 두 객체로부터 호출된다면")
+        class Context_with_differnt_id {
 
-        Task task2 = new Task();
-        task2.setId(1L);
-        task2.setTitle("task1");
+            @Test
+            @DisplayName("각각 다른 hashCode를 반환한다")
+            void if_returns_differnet_hash_code() {
+                Task task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
 
-        // when
-        assertThat(task1.equals(task2))
-        // then
-                .isTrue();
-    }
+                Task task2 = new Task();
+                task2.setId(2L);
+                task2.setTitle("task1");
 
-    @Test
-    void testHashCodeWithDifferentTitleOfTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
+                Integer codeOfTask1 = task1.hashCode();
+                Integer codeOfTask2 = task2.hashCode();
 
-        Task task2 = new Task();
-        task2.setId(1L);
-        task2.setTitle("task2");
+                assertThat(codeOfTask1.equals(codeOfTask2))
+                        .isFalse();
+            }
+        }
 
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
+        @Nested
+        @DisplayName("만약 attribute가 동일한 Task 객체들로부터 호출된다면")
+        class Context_with_same_attributes {
 
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-        // then
-                .isFalse();
-    }
+            @Test
+            @DisplayName("각각 동일한 hashCode를 반환한다")
+            void it_returns_same_hash_code() {
+                Task task1 = new Task();
+                task1.setId(1L);
+                task1.setTitle("task1");
 
-    @Test
-    void testHashCodeWithDifferentIdOfTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
+                Task task2 = new Task();
+                task2.setId(1L);
+                task2.setTitle("task1");
 
-        Task task2 = new Task();
-        task2.setId(2L);
-        task2.setTitle("task1");
+                Integer codeOfTask1 = task1.hashCode();
+                Integer codeOfTask2 = task2.hashCode();
 
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
-
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-                // then
-                .isFalse();
-    }
-
-    @Test
-    void testHashCodeWithSameTask() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-        task1.setTitle("task1");
-
-        Task task2 = new Task();
-        task2.setId(1L);
-        task2.setTitle("task1");
-
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
-
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-                // then
-                .isTrue();
-    }
-
-    @Test
-    void testHashCodeWithNullId() {
-        // given
-        Task task1 = new Task();
-        task1.setTitle("task1");
-
-        Task task2 = new Task();
-        task2.setTitle("task1");
-
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
-
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-                // then
-                .isTrue();
-    }
-
-    @Test
-    void testHashCodeWithNullTitle() {
-        // given
-        Task task1 = new Task();
-        task1.setId(1L);
-
-        Task task2 = new Task();
-        task2.setId(1L);
-
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
-
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-                // then
-                .isTrue();
-    }
-
-    @Test
-    void testHashCodeWithNullIdAndTitle() {
-        // given
-        Task task1 = new Task();
-
-        Task task2 = new Task();
-
-        Integer codeOfTask1 = task1.hashCode();
-        Integer codeOfTask2 = task2.hashCode();
-
-        // when
-        assertThat(codeOfTask1.equals(codeOfTask2))
-        // then
-                .isTrue();
-
-        // given
-        task1.setTitle("task1");
-        Integer codeOfTitledTask = task1.hashCode();
-
-        // when
-        assertThat(codeOfTitledTask.equals(codeOfTask2))
-        // then
-                .isFalse();
+                assertThat(codeOfTask1.equals(codeOfTask2))
+                        .isTrue();
+            }
+        }
     }
 }
