@@ -5,6 +5,14 @@ public class Task {
 
     private String title;
 
+    public Task(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public Task() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -19,5 +27,10 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Task{ id=\'%s\', title=\'%s\'}", id,title);
     }
 }

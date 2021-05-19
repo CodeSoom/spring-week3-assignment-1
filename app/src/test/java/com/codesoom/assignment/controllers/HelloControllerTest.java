@@ -1,13 +1,10 @@
 package com.codesoom.assignment.controllers;
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("HelloController 유닛 테스트")
+@DisplayName("HelloController")
 class HelloControllerTest {
     private HelloController helloController;
 
@@ -17,10 +14,8 @@ class HelloControllerTest {
     }
 
     @Test
-    @DisplayName("sayHello 유닛 테스트")
+    @DisplayName("sayHello()  호출시 Hello, World 리턴")
     void sayHello(){
         assertThat(helloController.sayHello()).isEqualTo("Hello, World");
     }
-
-
 }

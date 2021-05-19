@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,7 +20,7 @@ public class HelloControllerWebTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("sayHello() MockMVC return 값 테스트")
+    @DisplayName("sayHello() 호출시 HTTP 상태값은 200 Hello, World가 포함된 String을 리턴")
     void sayHello() throws Exception {
         mockMvc.perform(get("/")
                 .accept(MediaType.APPLICATION_JSON))
