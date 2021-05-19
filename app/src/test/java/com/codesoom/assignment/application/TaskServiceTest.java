@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,95 +13,185 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("TaskService 클래스의")
 class TaskServiceTest {
-    private static final Long VALID_TASK_ID = 1L;
-    private static final Long INVALID_TASK_ID = 100L;
-    private static final String VALID_TASK_TITLE = "test";
-    private static final String UPDATE_POSTFIX = "!!!";
-
     private TaskService taskService;
 
     @BeforeEach
     void setUp() {
         // subject
         taskService = new TaskService();
-
-        // fixture
-        Task task = new Task();
-        task.setTitle(VALID_TASK_TITLE);
-        taskService.createTask(task);
     }
 
-    @Test
-    @DisplayName("전체 할 일 목록을 조회한다.")
-    void getTasks() {
-        List<Task> tasks = taskService.getTasks();
-        assertAll(
-                () -> assertThat(tasks).hasSize(1),
-                () -> assertThat(tasks.get(0)
-                                      .getTitle()).isEqualTo(VALID_TASK_TITLE));
+    @Nested
+    @DisplayName("getTasks 메서드는")
+    class Describe_getTasks {
+
+        @Nested
+        @DisplayName("만약 1개의 할 일이 등록되어 있다면")
+        class Context_with_one_task {
+            // fixture
+            private final String validTaskTitle = "test";
+
+            @BeforeEach
+            void prepareTasks() {
+                // fixture
+                Task task = new Task();
+                task.setTitle(validTaskTitle);
+                taskService.createTask(task);
+            }
+
+            @Test
+            @DisplayName("등록된 할 일 1개를 반환한다")
+            void It_returns_one_task() {
+                List<Task> tasks = taskService.getTasks();
+                assertAll(
+                        () -> assertThat(tasks).hasSize(1),
+                        () -> assertThat(tasks.get(0)
+                                              .getTitle()).isEqualTo(validTaskTitle));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 목록에 등록된 할 일을 조회한다.")
-    void getTaskWithValidId() {
-        Task task = taskService.getTask(VALID_TASK_ID);
-        assertThat(task.getTitle())
-                .isEqualTo(VALID_TASK_TITLE);
+    @Nested
+    @DisplayName("getTask 메서드는")
+    class Describe_getTask {
+
+        @Nested
+        @DisplayName("만약 기존에 등록된 할 일을 조회한다면")
+        class Context_with_valid_task {
+            private final Long validTaskId = 1L;
+            private final String validTaskTitle = "test";
+
+            @BeforeEach
+            void prepareTasks() {
+                // fixture
+                Task task = new Task();
+                task.setTitle(validTaskTitle);
+                taskService.createTask(task);
+            }
+
+            @Test
+            @DisplayName("해당하는 할 일을 반환한다")
+            void It_returns_the_task() {
+                Task task = taskService.getTask(validTaskId);
+                assertThat(task.getTitle())
+                        .isEqualTo(validTaskTitle);
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 할 일 목록에 없는 할 일을 조회한다면")
+        class Context_with_invalid_id {
+            private final Long invalidTaskId = 100L;
+
+            @Test
+            @DisplayName("Task Not Found 예외를 던진다")
+            void It_throws_TaskNotFoundException() {
+                assertThatThrownBy(() -> taskService.getTask(invalidTaskId))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 목록에 없는 할 일을 조회한다.")
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(INVALID_TASK_ID))
-                .isInstanceOf(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("createTask 메서드는")
+    class Describe_createTask {
+
+        @Nested
+        @DisplayName("만약 새로운 할 일이 주어진다면")
+        class Context_with_one_task {
+            private Task task;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
+                task.setTitle("test");
+            }
+
+            @Test
+            @DisplayName("새로운 할 일을 생성한다.")
+            void It_creates_one_task() {
+                final int oldSize = taskService.getTasks()
+                                               .size();
+
+                taskService.createTask(task);
+
+                int newSize = taskService.getTasks()
+                                         .size();
+
+                assertThat(newSize - oldSize)
+                        .isEqualTo(1);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("새로운 할 일을 등록한다.")
-    void createTask() {
-        int oldSize = taskService.getTasks()
-                                 .size();
 
-        Task task = new Task();
-        task.setTitle(VALID_TASK_TITLE);
+    @Nested
+    @DisplayName("updateTask 메서드는")
+    class Describe_updateTask {
 
-        taskService.createTask(task);
+        @Nested
+        @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
+        class Context_with_one_task {
+            private final Long validTaskId = 1L;
+            private final String validTaskTitle = "test";
+            private final String updatePostfix = "!!!";
 
-        int newSize = taskService.getTasks()
-                                 .size();
+            @BeforeEach
+            void prepareTasks() {
+                Task task = new Task();
+                String validTaskTitle = "test";
+                task.setTitle(validTaskTitle);
+                taskService.createTask(task);
+            }
 
-        assertThat(newSize - oldSize)
-                .isEqualTo(1);
+            @Test
+            @DisplayName("기존 할 일의 제목을 새로운 제목으로 갱신한다")
+            void It_updates_one_task() {
+                Task source = new Task();
+                source.setTitle(validTaskTitle + updatePostfix);
+
+                taskService.updateTask(validTaskId, source);
+
+                Task task = taskService.getTask(validTaskId);
+                assertThat(task.getTitle())
+                        .isEqualTo(validTaskTitle + updatePostfix);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("지정한 할 일을 갱신한다.")
-    void updateTask() {
-        Task source = new Task();
-        source.setTitle(VALID_TASK_TITLE + UPDATE_POSTFIX);
+    @Nested
+    @DisplayName("deleteTask 메서드는")
+    class Describe_deleteTask {
 
-        taskService.updateTask(VALID_TASK_ID, source);
+        @Nested
+        @DisplayName("만약 기존 할 일의 ID가 주어진다면")
+        class Context_with_one_task {
 
-        Task task = taskService.getTask(VALID_TASK_ID);
+            @BeforeEach
+            void prepareTasks() {
+                String validTaskTitle = "test";
+                Task task = new Task();
+                task.setTitle(validTaskTitle);
+                taskService.createTask(task);
+            }
 
-        assertThat(task.getTitle())
-                .isEqualTo(VALID_TASK_TITLE + UPDATE_POSTFIX);
+            @Test
+            @DisplayName("주어진 ID의 할 일을 제거한다")
+            void It_deletes_one_task() {
+                int oldSize = taskService.getTasks()
+                                         .size();
+
+                Long validTaskId = 1L;
+                taskService.deleteTask(validTaskId);
+
+                int newSize = taskService.getTasks()
+                                         .size();
+
+                assertThat(oldSize - newSize)
+                        .isEqualTo(1);
+            }
+        }
     }
-
-    @Test
-    @DisplayName("지정한 할 일을 삭제한다.")
-    void deleteTask() {
-        int oldSize = taskService.getTasks()
-                                 .size();
-
-        taskService.deleteTask(VALID_TASK_ID);
-
-        int newSize = taskService.getTasks()
-                                 .size();
-
-        assertThat(oldSize - newSize)
-                .isEqualTo(1);
-    }
-
 }
