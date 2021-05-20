@@ -7,45 +7,41 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
 
-    private Long FIRST_TASK_ID = 1L;
-    private Long SECOND_TASK_ID = 2L;
-
-    private String FIRST_TASK_TITLE = "test1";
-    private String SECOND_TASK_TITLE = "test2";
-
     private TaskService taskService;
+
+    private Task firstTask;
+    private Task secondTask;
 
     @BeforeEach
     void setUp() {
         // subject
-        taskService = new TaskService();
+        this.taskService = new TaskService();
 
         // fixtures
         Task task1 = new Task();
-        task1.setTitle(FIRST_TASK_TITLE);
+        task1.setTitle("test1");
 
         Task task2 = new Task();
-        task2.setTitle(SECOND_TASK_TITLE);
+        task2.setTitle("test2");
 
-        taskService.createTask(task1);
-        taskService.createTask(task2);
+        this.firstTask = this.taskService.createTask(task1);
+        this.secondTask = this.taskService.createTask(task2);
     }
 
     @Test
     void testGetTasks() {
-        assertThat(taskService.getTasks()).isNotEmpty();
+        assertThat(this.taskService.getTasks()).isNotEmpty();
     }
 
     @Test
     void testGetTask() {
-        assertThat(taskService.getTask(FIRST_TASK_ID).getTitle())
-                .isEqualTo(FIRST_TASK_TITLE);
-        assertThat(taskService.getTask(SECOND_TASK_ID).getTitle())
-                .isEqualTo(SECOND_TASK_TITLE);
+        assertThat(this.taskService.getTask(this.firstTask.getId()).getTitle())
+                .isEqualTo(this.firstTask.getTitle());
+        assertThat(this.taskService.getTask(this.secondTask.getId()).getTitle())
+                .isEqualTo(this.secondTask.getTitle());
         assertThatThrownBy(() -> taskService.getTask(10L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
@@ -53,26 +49,26 @@ class TaskServiceTest {
     @Test
     void testCreateTask() {
         Task task3 = new Task();
-        assertThat(taskService.createTask(task3).getTitle()).isNull();
+        assertThat(this.taskService.createTask(task3).getTitle()).isNull();
     }
 
     @Test
     void testUpdateTask() {
-        String UPDATED_TITLE = "updated title";
+        String updatedTitle = "updated title";
         Task src = new Task();
-        src.setId(FIRST_TASK_ID);
-        src.setTitle(UPDATED_TITLE);
-        assertThat(taskService.updateTask(FIRST_TASK_ID, src).getTitle())
-                .isEqualTo(UPDATED_TITLE);
+        src.setId(this.firstTask.getId());
+        src.setTitle(updatedTitle);
+        assertThat(this.taskService.updateTask(this.firstTask.getId(), src).getTitle())
+                .isEqualTo(updatedTitle);
     }
 
     @Test
     void testDeleteTask() {
-        assertThat(taskService.deleteTask(FIRST_TASK_ID).getId())
-                .isEqualTo(FIRST_TASK_ID);
-        assertThatThrownBy(() -> taskService.deleteTask(FIRST_TASK_ID))
+        assertThat(this.taskService.deleteTask(this.firstTask.getId()).getId())
+                .isEqualTo(this.firstTask.getId());
+        assertThatThrownBy(() -> taskService.deleteTask(this.firstTask.getId()))
                 .isInstanceOf(TaskNotFoundException.class);
-        assertThat(taskService.deleteTask(SECOND_TASK_ID).getTitle())
-                .isEqualTo(SECOND_TASK_TITLE);
+        assertThat(this.taskService.deleteTask(this.secondTask.getId()).getTitle())
+                .isEqualTo(this.secondTask.getTitle());
     }
 }
