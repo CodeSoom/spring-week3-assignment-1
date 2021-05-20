@@ -98,36 +98,54 @@ public class TaskControllerWebTest {
         }
     }
 
-    @Test
-    public void getTask() throws Exception {
-        // given
-        Task task = new Task();
+    @Nested
+    @DisplayName("'/tasks/:id'에 GET 요청시")
+    class Describe_of_GET_tasks_with_id {
 
-        task.setId(1L);
-        task.setTitle("task1");
-        given(taskService.getTask(task.getId()))
-                .willReturn(task);
+        @Nested
+        @DisplayName("존재하는 Task의 id를 path에 포함시키면")
+        class Context_of_exist_id {
 
-        // when
-        mockMvc.perform(get(String.format("/tasks/%d", task.getId())))
-        // then
-                .andExpect(status().isOk())
-                .andExpect(content().json("{'id':1, 'title':'task1'}"));
+            private Task task;
 
-    }
+            @BeforeEach
+            void setup() {
+                this.task = generateTask(1L, "task1");
 
-    @Test
-    public void getTaskWithInvalidId() throws Exception {
-        // given
-        long invalidId = 42L;
-        given(taskService.getTask(invalidId))
-                .willThrow(new TaskNotFoundException(invalidId));
+                given(taskService.getTask(task.getId()))
+                        .willReturn(task);
+            }
 
-        // when
-        mockMvc.perform(get(String.format("/tasks/%d", invalidId)))
-        // then
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Task not found"));
+            @Test
+            @DisplayName("Task 정보를 JSON으로 응답한다")
+            public void getTask() throws Exception {
+                mockMvc.perform(get(String.format("/tasks/%d", task.getId())))
+                        .andExpect(status().isOk())
+                        .andExpect(content().json("{'id':1, 'title':'task1'}"));
+            }
+        }
+
+        @Nested
+        @DisplayName("존재하지 않는 Task의 id를 path에 포함시키면")
+        class Context_of_non_existent_id {
+
+            private long nonExistentId;
+
+            @BeforeEach
+            void setup() {
+                this.nonExistentId = 42L;
+                given(taskService.getTask(nonExistentId))
+                        .willThrow(new TaskNotFoundException(nonExistentId));
+            }
+
+            @Test
+            @DisplayName("404 상태코드와 에러메세지를 반환한다")
+            public void getTaskWithInvalidId() throws Exception {
+                mockMvc.perform(get(String.format("/tasks/%d", nonExistentId)))
+                        .andExpect(status().isNotFound())
+                        .andExpect(jsonPath("$.message").value("Task not found"));
+            }
+        }
     }
 
     @Test
