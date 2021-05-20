@@ -25,6 +25,30 @@ class TaskControllerTest {
         taskController = new TaskController(taskService);
     }
 
+    @Test
+    @DisplayName("목록은 처음에는 빈 목록이어야한다.")
+    void list(){
+        TaskController controller = new TaskController();
+        assertThat(controller.list()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("task를 만들었다면, 더이상 빈 목록은 아니게 된다.")
+    void createNewTest(){
+        TaskController controller = new TaskController();
+        Task task = new Task();
+
+        task.setTitle("hello");
+        controller.create(task);
+        assertThat(controller.list()).isNotEmpty();
+        assertThat(controller.list()).hasSize(1);
+
+        task.setTitle("hello2");
+        controller.create(task);
+        assertThat(controller.list()).hasSize(2);
+    }
+
+
     @Nested
     @DisplayName("list 메소드")
     class method_of_list {
@@ -65,24 +89,5 @@ class TaskControllerTest {
         newTask.setId(id);
         newTask.setTitle(title);
         return newTask;
-    }
-
-    @Test
-    @DisplayName("테스트는 초기값이 0이다.")
-    public void list(){
-        TaskController taskController = new TaskController(taskService);
-        assertThat(taskController.list()).isEmpty();
-    }
-
-    @Test
-    public void create(){
-        TaskController taskController = new TaskController(taskService);
-
-        Task task = new Task();
-        task.setTitle("hello");
-
-        taskController.create(task);
-
-        assertThat(taskController.list()).isNotEmpty();
     }
 }
