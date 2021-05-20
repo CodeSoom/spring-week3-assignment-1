@@ -75,4 +75,4 @@ class TaskServiceTest {
         assertThat(taskService.deleteTask(SECOND_TASK_ID).getTitle())
                 .isEqualTo(SECOND_TASK_TITLE);
     }
- }
+}
