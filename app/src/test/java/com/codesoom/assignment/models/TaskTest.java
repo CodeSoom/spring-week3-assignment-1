@@ -29,23 +29,8 @@ public class TaskTest {
 
     @Test
     void testTitle() {
-        String emptyTitle = "";
-        String koreanTitle = "할 일";
-        String englishTitle = "Todo";
-
-        Task task1 = new Task();
-        task1.setTitle(emptyTitle);
-        assertThat(task1.getTitle()).isEqualTo(emptyTitle);
-
-        Task task2 = new Task();
-        task2.setTitle(koreanTitle);
-        assertThat(task2.getTitle()).isEqualTo(koreanTitle);
-
-        Task task3 = new Task();
-        task3.setTitle(englishTitle);
-        assertThat(task3.getTitle()).isEqualTo(englishTitle);
-
-        Task task4 = new Task();
-        assertThat(task4.getTitle()).isNull();
+        Task task = new Task();
+        task.setTitle("title");
+        assertThat(task.getTitle()).isEqualTo(task.getTitle());
     }
 }
