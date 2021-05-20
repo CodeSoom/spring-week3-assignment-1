@@ -4,6 +4,9 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("TaskController 클래스 Web")
 public class TaskControllerWebTest {
 
     @MockBean
@@ -36,41 +40,62 @@ public class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void getEmptyListOfTask() throws Exception {
-        // given
-        List<Task> emptyList = Collections.<Task>emptyList();
-        given(taskService.getTasks()).willReturn(emptyList);
-
-        // when
-        mockMvc.perform(get("/tasks"))
-        // then
-                .andExpect(status().isOk())
-                .andExpect(content().string("[]"));
+    private Task generateTask(long id, String title) {
+        Task task = new Task();
+        task.setId(id);
+        task.setTitle(title);
+        return task;
     }
 
-    @Test
-    public void getTaskListWithTwoTask() throws Exception {
-        // given
-        Task source1 = new Task();
-        source1.setId(1L);
-        source1.setTitle("Task1");
+    @Nested
+    @DisplayName("'/tasks'에 GET 요청시")
+    class Describe_of_GET_tasks {
 
-        Task source2 = new Task();
-        source2.setId(2L);
-        source2.setTitle("Task2");
+        @Nested
+        @DisplayName("만약 tasks가 비어있다면")
+        class Context_of_empty_tasks {
 
-        List<Task> taskList = List.of(source1, source2);
+            @BeforeEach
+            void setup() {
+                List<Task> emptyList = Collections.<Task>emptyList();
+                given(taskService.getTasks()).willReturn(emptyList);
+            }
 
-        given(taskService.getTasks()).willReturn(taskList);
+            @Test
+            @DisplayName("비어있는 배열을 응답한다")
+            public void it_returns_empty_array() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("[]"));
+            }
+        }
 
-        // when
-        mockMvc.perform(get("/tasks"))
-        // then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0]").value(source1))
-                .andExpect(jsonPath("$[1]").value(source2));
+        @Nested
+        @DisplayName("만약 tasks가 비어있지 않다면")
+        class Context_of_not_empty_tasks {
+
+            private Task source1;
+            private Task source2;
+
+            @BeforeEach
+            void setup() {
+                this.source1 = generateTask(1L, "task1");
+                this.source2 = generateTask(2L, "task2");
+                List<Task> taskList = List.of(source1, source2);
+
+                given(taskService.getTasks()).willReturn(taskList);
+            }
+
+            @Test
+            @DisplayName("모든 tasks를 JSON 배열로 응답한다")
+            public void it_returns_all_tasks() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(2)))
+                        .andExpect(jsonPath("$[0]").value(source1))
+                        .andExpect(jsonPath("$[1]").value(source2));
+            }
+        }
     }
 
     @Test
