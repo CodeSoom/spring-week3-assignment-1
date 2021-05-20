@@ -40,8 +40,6 @@ class TaskServiceTest {
     void testGetTask() {
         assertThat(this.taskService.getTask(this.firstTask.getId()).getTitle())
                 .isEqualTo(this.firstTask.getTitle());
-        assertThat(this.taskService.getTask(this.secondTask.getId()).getTitle())
-                .isEqualTo(this.secondTask.getTitle());
         assertThatThrownBy(() -> taskService.getTask(10L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
