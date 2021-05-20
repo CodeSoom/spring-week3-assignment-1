@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.web.bind.annotation.PatchMapping;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,12 +44,15 @@ class TaskControllerTest {
         @Nested
         @DisplayName("Task가 존재할 경우")
         class Context_exist_task {
+            @BeforeEach
+            void ready() {
+                createTestTask("test");
+                createTestTask("test2");
+            }
+
             @Test
             @DisplayName("Task 전체 list를 리턴한다.")
             void it_return_all() {
-                createTestTask("test");
-                createTestTask("test2");
-
                 assertThat(controller.list()).hasSize(2);
             }
         }
