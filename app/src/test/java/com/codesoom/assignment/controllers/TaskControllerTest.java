@@ -31,7 +31,6 @@ class TaskControllerTest {
 
         controller.create(task);
         assertThat(controller.list()).isNotEmpty();
-        assertThat(controller.list()).hasSize(1);
 
         controller.create(task);
         assertThat(controller.list()).hasSize(2);
