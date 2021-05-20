@@ -7,43 +7,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TaskTest {
     @Test
     void testId() {
-        Long NEGATIVE_ID = -1L;
-        Long ZERO_ID = 0L;
-        Long POSITIVE_ID = 1L;
+        Long negativeId = -1L;
+        Long zeroId = 0L;
+        Long positiveId = 1L;
 
         // 음수인 id를 가지는 Task 인스턴스의 id를 반환받는 경우
         Task task1 = new Task();
-        task1.setId(NEGATIVE_ID);
-        assertThat(task1.getId()).isEqualTo(NEGATIVE_ID);
+        task1.setId(negativeId);
+        assertThat(task1.getId()).isEqualTo(negativeId);
 
         // 0인 id를 가지는 Task 인스턴스의 id를 반환받는 경우
         Task task2 = new Task();
-        task2.setId(ZERO_ID);
-        assertThat(task2.getId()).isEqualTo(ZERO_ID);
+        task2.setId(zeroId);
+        assertThat(task2.getId()).isEqualTo(zeroId);
 
         // 양수인 id를 가지는 Task 인스턴스의 id를 반환받는 경우
         Task task3 = new Task();
-        task3.setId(POSITIVE_ID);
-        assertThat(task3.getId()).isEqualTo(POSITIVE_ID);
+        task3.setId(positiveId);
+        assertThat(task3.getId()).isEqualTo(positiveId);
     }
 
     @Test
     void testTitle() {
-        String EMPTY_TITLE = "";
-        String KOREAN_TITLE = "할 일";
-        String ENGLISH_TITLE = "Todo";
+        String emptyTitle = "";
+        String koreanTitle = "할 일";
+        String englishTitle = "Todo";
 
         Task task1 = new Task();
-        task1.setTitle(EMPTY_TITLE);
-        assertThat(task1.getTitle()).isEqualTo(EMPTY_TITLE);
+        task1.setTitle(emptyTitle);
+        assertThat(task1.getTitle()).isEqualTo(emptyTitle);
 
         Task task2 = new Task();
-        task2.setTitle(KOREAN_TITLE);
-        assertThat(task2.getTitle()).isEqualTo(KOREAN_TITLE);
+        task2.setTitle(koreanTitle);
+        assertThat(task2.getTitle()).isEqualTo(koreanTitle);
 
         Task task3 = new Task();
-        task3.setTitle(ENGLISH_TITLE);
-        assertThat(task3.getTitle()).isEqualTo(ENGLISH_TITLE);
+        task3.setTitle(englishTitle);
+        assertThat(task3.getTitle()).isEqualTo(englishTitle);
 
         Task task4 = new Task();
         assertThat(task4.getTitle()).isNull();
