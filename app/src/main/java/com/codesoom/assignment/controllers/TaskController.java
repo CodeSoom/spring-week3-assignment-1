@@ -13,6 +13,7 @@ import java.util.List;
 public class TaskController {
     private TaskService taskService;
 
+    // 의존관계를 생성자에 넣었다.
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
