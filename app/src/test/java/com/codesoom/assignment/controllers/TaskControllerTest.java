@@ -89,7 +89,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
-            void it_return_404_status_and_err_message() throws Exception {
+            void it_return_404_status_and_err_message(){
                 Assertions.assertThatThrownBy( () -> controller.detail(NOT_FOUND_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
@@ -112,7 +112,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("조회된 할 일을 반환합니다.")
-            void it_return_found_task_and() throws Exception {
+            void it_return_found_task() {
                 Task foundTask = controller.detail(foundTaskId);
 
                 Assertions.assertThat(foundTask).isNotNull();
@@ -142,15 +142,11 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("생성된 할 일을 반환합니다.")
-            void it_return_created_task() throws Exception {
-                controller.create(paramTask);
-                Task foundTask = controller.detail(newTaskId);
+            void it_return_created_task() {
+                Task createdTask = controller.create(paramTask);
 
-                Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
-
-                Assertions.assertThat(foundTask).isNotNull();
-                Assertions.assertThat(foundTask.getId()).isEqualTo(newTaskId);
-                Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+                Assertions.assertThat(createdTask.getId()).isEqualTo(newTaskId);
+                Assertions.assertThat(createdTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
             }
 
         }
@@ -175,7 +171,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
-            void it_return_404_status_and_err_message() throws Exception {
+            void it_return_404_status_and_err_message() {
                 Assertions.assertThatThrownBy( () -> controller.update(updateTaskId, paramTask))
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
@@ -203,7 +199,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("수정된 할 일을 반환합니다.")
-            void it_return_updated_task_and() throws Exception {
+            void it_return_updated_task()  {
                 Task updatedTask = controller.update(updateTaskId, paramTask);
 
                 Assertions.assertThat(updatedTask).isNotNull();
@@ -225,7 +221,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
-            void it_return_404_status_and_err_message() throws Exception {
+            void it_return_404_status_and_err_message() {
                 Assertions.assertThatThrownBy( () -> controller.delete(NOT_FOUND_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
@@ -250,7 +246,7 @@ class TaskControllerTest {
 
             @Test
             @DisplayName("204 상태코드를 반환합니다.")
-            void it_return_and_204_status() throws Exception {
+            void it_return_and_204_status() {
                 controller.delete(deleteTaskId);
                 Assertions.assertThat(controller.list()).isEmpty();
             }
