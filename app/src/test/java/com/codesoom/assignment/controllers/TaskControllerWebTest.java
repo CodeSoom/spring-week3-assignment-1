@@ -1,8 +1,10 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.application.TaskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,12 +16,12 @@ public class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc; // 우리가 new 하지 않고, 스프링이 알아서 자동으로 넣어준다 => autowired
 
-//    @MockBean
-//    private TaskService taskService;
+    @MockBean
+    private TaskService taskService;
 
     @Test
-    void list() throws Exception {
-        mockMvc.perform(get("/tasks")).andExpect(status().isNotFound());
+    public void list() throws Exception {
+        mockMvc.perform(get("/tasks")).andExpect(status().isOk());
     }
 
 //    @Test
