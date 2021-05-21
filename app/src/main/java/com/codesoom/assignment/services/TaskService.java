@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ public class TaskService {
     public List<Task> getTaskList() {
         log.info(">>> Access Service 할 일 목록 조회");
         return tasksMap.values().stream()
-                    .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     /**
