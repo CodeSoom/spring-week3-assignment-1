@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -148,78 +148,132 @@ public class TaskControllerWebTest {
         }
     }
 
-    @Test
-    public void createTask() throws Exception {
-        // given
-        Task source = new Task();
-        source.setId(1L);
-        source.setTitle("task1");
-        given(taskService.createTask(source))
-                .willReturn(source);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String sourceJson = objectMapper.writeValueAsString(source);
+    @Nested
+    @DisplayName("'/tasks'에 POST 요청시")
+    class Describe_of_POST_tasks {
 
-        // when
-        mockMvc.perform(post("/tasks")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(sourceJson))
-        // then
-                .andExpect(status().isCreated())
-                .andExpect(content().json(sourceJson));
+        @Nested
+        @DisplayName("만약 Task에 관한 정보를 요청 body로 포함시켰고, 생성에 성공했다면")
+        class Context_of_success {
+
+            private Task source;
+            private String sourceAsJson;
+
+            @BeforeEach
+            void setup() throws JsonProcessingException {
+                this.source = generateTask(1L, "task1");
+
+                given(taskService.createTask(source))
+                        .willReturn(source);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                this.sourceAsJson = objectMapper.writeValueAsString(source);
+            }
+
+            @Test
+            @DisplayName("생성된 Task 정보를 JSON으로 응답한다")
+            public void createTask() throws Exception {
+                mockMvc.perform(post("/tasks")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(sourceAsJson))
+                        .andExpect(status().isCreated())
+                        .andExpect(content().json(sourceAsJson));
+            }
+        }
     }
 
-    @Test
-    public void updateTask() throws Exception {
-        // given
-        Task source = new Task();
-        source.setId(1L);
-        source.setTitle("task1");
-        given(taskService.updateTask(source.getId(), source))
-                .willReturn(source);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String sourceJson = objectMapper.writeValueAsString(source);
+    @Nested
+    @DisplayName("'/tasks/:id'로 PUT 요청시")
+    class Describe_of_PUT_tasks_with_id {
 
-        // when
-        mockMvc.perform(put(String.format("/tasks/%d", source.getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(sourceJson))
-                // then
-                .andExpect(status().isOk())
-                .andExpect(content().json(sourceJson));
+        @Nested
+        @DisplayName("만약 Task에 관한 정보를 요청 body로 포함시켰고, 업데이트에 성공했다면")
+        class Context_of_success {
 
+            private Task source;
+            private String sourceAsJson;
+
+            @BeforeEach
+            void setup() throws JsonProcessingException {
+                this.source = generateTask(1L, "task1");
+
+                given(taskService.updateTask(source.getId(), source))
+                        .willReturn(source);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                this.sourceAsJson = objectMapper.writeValueAsString(source);
+            }
+
+            @Test
+            @DisplayName("업데이트한 Task 정보를 JSON으로 응답한다")
+            public void updateTask() throws Exception {
+                mockMvc.perform(put(String.format("/tasks/%d", source.getId()))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(sourceAsJson))
+                        .andExpect(status().isOk())
+                        .andExpect(content().json(sourceAsJson));
+            }
+        }
     }
 
-    @Test
-    public void patchTask() throws Exception {
-        // given
-        Task source = new Task();
-        source.setId(1L);
-        source.setTitle("task1");
-        given(taskService.updateTask(source.getId(), source))
-                .willReturn(source);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String sourceJson = objectMapper.writeValueAsString(source);
+    @Nested
+    @DisplayName("'/tasks/:id'로 PATCH 요청시")
+    class Describe_of_PATCH_tasks_with_id {
 
-        // when
-        mockMvc.perform(patch(String.format("/tasks/%d", source.getId()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(sourceJson))
-                // then
-                .andExpect(status().isOk())
-                .andExpect(content().json(sourceJson));
+        @Nested
+        @DisplayName("만약 Task에 관한 정보를 요청 body로 포함시켰고, 업데이트에 성공했다면")
+        class Context_of_success {
 
+            private Task source;
+            private String sourceAsJson;
+
+            @BeforeEach
+            void setup() throws JsonProcessingException {
+                this.source = generateTask(1L, "task1");
+
+                given(taskService.updateTask(source.getId(), source))
+                        .willReturn(source);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                this.sourceAsJson = objectMapper.writeValueAsString(source);
+            }
+
+            @Test
+            @DisplayName("업데이트한 Task 정보를 JSON으로 응답한다")
+            public void updateTask() throws Exception {
+                mockMvc.perform(put(String.format("/tasks/%d", source.getId()))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(sourceAsJson))
+                        .andExpect(status().isOk())
+                        .andExpect(content().json(sourceAsJson));
+            }
+        }
     }
 
-    @Test
-    public void deleteTask() throws Exception {
-        // given
-        given(taskService.deleteTask(1L))
-                .willReturn(null);
+    @Nested
+    @DisplayName("'/tasks/:id'로 DELETE 요청시")
+    class Describe_of_DELETE_tasks_with_id {
 
-        // when
-        mockMvc.perform(delete(String.format("/tasks/%d", 1L)))
-                // then
-                .andExpect(status().isNoContent());
+        @Nested
+        @DisplayName("존재하는 Task의 id를 path에 포함시켰고, 삭제를 성공했다면")
+        class Context_of_exist_id {
 
+            private Task givenTask;
+
+            @BeforeEach
+            void setup() {
+                this.givenTask = generateTask(1L, "task1");
+
+                given(taskService.deleteTask(1L))
+                        .willReturn(null);
+            }
+
+            @Test
+            @DisplayName("NoContent 상태코드를 응답한다")
+            public void it_returns_no_content() throws Exception {
+                mockMvc.perform(delete(String.format("/tasks/%d", givenTask.getId())))
+                        .andExpect(status().isNoContent());
+            }
+        }
     }
 }
