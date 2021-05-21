@@ -227,5 +227,4 @@ class TaskControllerTest {
                 .hasMessage("Task not found: 2")
                 .hasStackTraceContaining("TaskNotFoundException");
     }
-
 }
