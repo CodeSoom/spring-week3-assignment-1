@@ -24,6 +24,15 @@ class TaskControllerTest {
         return newTask;
     }
 
+    private TaskService generateTaskService(long taskCount) {
+        TaskService newTaskService = new TaskService();
+        for (long i = 1L; i <= taskCount; i++) {
+            Task newTask = generateTask(i, String.format("task%d", i));
+            newTaskService.createTask(newTask);
+        }
+        return newTaskService;
+    }
+
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
@@ -47,28 +56,41 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks에 비어있지 않다면")
+        @DisplayName("만약 tasks가 비어있지 않다면")
         class Context_of_not_empty_tasks {
 
-            private Task task1;
-            private Task task2;
+            private TaskService size1;
+            private TaskService size2;
+            private TaskService size100;
+            private TaskController controller1;
+            private TaskController controller2;
+            private TaskController controller100;
 
             @BeforeEach
             void setTasksNotEmpty() {
-                this.task1 = generateTask(1L, "task1");
-                this.task2 = generateTask(2L, "task2");
+                size1 = generateTaskService(1);
+                size2 = generateTaskService(2);
+                size100 = generateTaskService(100);
 
-                taskService.createTask(task1);
-                taskService.createTask(task2);
+                controller1 = new TaskController(size1);
+                controller2 = new TaskController(size2);
+                controller100 = new TaskController(size100);
             }
 
             @Test
-            @DisplayName("두 Task를 배열로 반환한다")
+            @DisplayName("객체 배열을 반환한다")
             void it_returns_task_array() {
-                List<Task> tasks = taskController.list();
+                List<Task> tasks = controller1.list();
                 assertThat(tasks)
-                        .hasSize(2)
-                        .contains(task1, task2);
+                        .hasSize(1);
+
+                tasks = controller2.list();
+                assertThat(tasks)
+                        .hasSize(2);
+
+                tasks = controller100.list();
+                assertThat(tasks)
+                        .hasSize(100);
             }
         }
     }
@@ -77,24 +99,31 @@ class TaskControllerTest {
     @DisplayName("getTask 메서드는")
     class Describe_of_getTask {
 
-        private Task source;
+        private Task givenTask;
 
         @BeforeEach
         void appendSourceToTasks() {
-            this.source = generateTask(1L, "task1");
-            taskService.createTask(source);
+            this.givenTask = generateTask(1L, "task1");
+            givenTask = taskService.createTask(givenTask);
         }
 
         @Nested
         @DisplayName("만약 유효한 id가 인자로 주어지면")
         class Context_of_valid_id {
 
+            private long validId;
+
+            @BeforeEach
+            void setValidId() {
+                validId = givenTask.getId();
+            }
+
             @Test
-            @DisplayName("id에 해당하는 Task 객체를 반환한다")
+            @DisplayName("id에 해당하는 객체를 반환한다")
             void it_returns_task() {
-                Task task = taskController.detail(source.getId());
+                Task task = taskController.detail(validId);
                 assertThat(task)
-                        .isEqualTo(source);
+                        .isEqualTo(givenTask);
             }
         }
 
@@ -102,11 +131,18 @@ class TaskControllerTest {
         @DisplayName("만약 유효하지 않은 id가 인자로 주어지면")
         class Context_of_invalid_id {
 
+            private long invalidId;
+
+            @BeforeEach
+            void setInvalidId() {
+                taskController.delete(givenTask.getId());
+                invalidId = givenTask.getId();
+            }
+
             @Test
             @DisplayName("'Task not found' 메시지를 담은 예외를 던진다")
             void it_throws_exception() {
-                long non_existent_id = source.getId() + 42;
-                Throwable thrown = catchThrowable(() -> { taskController.detail(non_existent_id); });
+                Throwable thrown = catchThrowable(() -> { taskController.detail(invalidId); });
                 assertThat(thrown)
                         .hasMessageContaining("Task not found");
             }
@@ -121,23 +157,25 @@ class TaskControllerTest {
         @DisplayName("만약 Task 객체가 인자로 주어지면")
         class Context_of_valid_task_object {
 
-            private Task source;
+            private Task givenTask;
 
             @BeforeEach
             void setSource() {
-                this.source = generateTask(1L, "task1");
+                this.givenTask = generateTask(1L, "task1");
             }
 
             @Test
-            @DisplayName("Task를 추가하고 추가한 Task를 반환한다")
+            @DisplayName("객체를 추가하고 추가한 객체를 반환한다")
             void it_returns_task_appending_task_to_tasks() {
-                Task createdTask = taskController.create(source);
+                Task createdTask = taskController.create(givenTask);
                 assertThat(createdTask)
-                        .isEqualTo(source);
+                        .isEqualTo(givenTask)
+                        .withFailMessage("추가한 객체를 반환하지 않았다");
 
-                createdTask = taskController.detail(source.getId());
+                createdTask = taskController.detail(givenTask.getId());
                 assertThat(createdTask)
-                        .isEqualTo(source);
+                        .isEqualTo(givenTask)
+                        .withFailMessage("객체가 추가되지 않았다");
             }
         }
     }
@@ -150,27 +188,29 @@ class TaskControllerTest {
         @DisplayName("만약 유효한 id와 Task 객체가 인자로 주어지면")
         class Context_of_valid_id_and_task {
 
-            private Task source;
-            private Task dest;
+            private Task givenTask;
+            private Task destTask;
 
             @BeforeEach
             void createTaskAnd() {
-                this.source = generateTask(1L, "task1");
-                this.dest = generateTask(1L, "updatedTask");
+                this.givenTask = generateTask(1L, "givenTask");
+                this.destTask = generateTask(1L, "destTask");
 
-                taskService.createTask(source);
+                taskService.createTask(givenTask);
             }
 
             @Test
-            @DisplayName("주어진 인자에 따라 Task를 갱신하다")
+            @DisplayName("객체를 갱신하고, 갱신한 객체를 반환한다")
             void it_returns_task_updating_it() {
-                Task updatedTask = taskController.update(source.getId(), dest);
+                Task updatedTask = taskController.update(givenTask.getId(), destTask);
                 assertThat(updatedTask)
-                        .isEqualTo(dest);
+                        .isEqualTo(destTask)
+                        .withFailMessage("객체한 객체가 반환되지 않았다");
 
-                updatedTask = taskController.detail(source.getId());
+                updatedTask = taskController.detail(givenTask.getId());
                 assertThat(updatedTask)
-                        .isEqualTo(dest);
+                        .isEqualTo(destTask)
+                        .withFailMessage("객체가 갱신되지 않았다");
             }
         }
     }
@@ -183,27 +223,29 @@ class TaskControllerTest {
         @DisplayName("만약 유효한 id와 Task 객체가 인자로 주어지면")
         class Context_of_valid_id_and_task {
 
-            private Task source;
-            private Task dest;
+            private Task givenTask;
+            private Task destTask;
 
             @BeforeEach
             void createTaskAnd() {
-                this.source = generateTask(1L, "task1");
-                this.dest = generateTask(1L, "updatedTask");
+                this.givenTask = generateTask(1L, "givenTask");
+                this.destTask = generateTask(1L, "destTask");
 
-                taskService.createTask(source);
+                taskService.createTask(givenTask);
             }
 
             @Test
-            @DisplayName("주어진 인자에 따라 Task를 갱신하다")
+            @DisplayName("주어진 인자에 따라 객체를 갱신하다")
             void it_returns_task_updating_it() {
-                Task updatedTask = taskController.update(source.getId(), dest);
+                Task updatedTask = taskController.update(givenTask.getId(), destTask);
                 assertThat(updatedTask)
-                        .isEqualTo(dest);
+                        .isEqualTo(destTask)
+                        .withFailMessage("갱신한 객체가 반환되지 않았다");
 
-                updatedTask = taskController.detail(source.getId());
+                updatedTask = taskController.detail(givenTask.getId());
                 assertThat(updatedTask)
-                        .isEqualTo(dest);
+                        .isEqualTo(destTask)
+                        .withFailMessage("객체가 갱신되지 않았다");
             }
         }
     }
@@ -216,26 +258,28 @@ class TaskControllerTest {
         @DisplayName("만약 유효한 id가 인자로 주어지면")
         class Context_of_valid_id {
 
-            private Task source1;
-            private Task source2;
+            private Task task1;
+            private Task task2;
+            private long validId;
 
             @BeforeEach
             void setSources() {
-                source1 = generateTask(1L, "task1");
-                source2 = generateTask(2L, "task2");
+                task1 = generateTask(1L, "task1");
+                task2 = generateTask(2L, "task2");
 
-                taskService.createTask(source1);
-                taskService.createTask(source2);
+                taskService.createTask(task1);
+                taskService.createTask(task2);
+                validId = task1.getId();
             }
 
             @Test
-            @DisplayName("해당 id task를 tasks에서 삭제하고, 아무 값도 반환하지 않는다")
+            @DisplayName("해당 id 객체를 tasks에서 삭제하고, 아무 값도 반환하지 않는다")
             void it_returns_noting() {
-                taskController.delete(source1.getId());
+                taskController.delete(validId);
 
                 assertThat(taskController.list())
                         .hasSize(1)
-                        .doesNotContain(source1);
+                        .doesNotContain(task1);
             }
         }
     }
