@@ -3,11 +3,15 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Nested
+@DisplayName("TaskService 클래스의")
 class TaskServiceTest {
 
     private TaskService taskService;
@@ -29,6 +33,35 @@ class TaskServiceTest {
 
         this.firstTask = this.taskService.createTask(task1);
         this.secondTask = this.taskService.createTask(task2);
+    }
+
+    @Nested
+    @DisplayName("getTask 메소드는")
+    class Describe_getTask {
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 있다면")
+        class Context_with_existing_task {
+
+            @Test
+            @DisplayName("할 일을 반환한다")
+            void it_returns_a_task() {
+                assertThat(taskService.getTask(firstTask.getId()).getTitle())
+                        .isEqualTo(firstTask.getTitle());
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 없다면")
+        class Context_with_no_task {
+
+            @Test
+            @DisplayName("TaskNotFoundException 예외를 던진다")
+            void it_returns_TaskNotFoundException() {
+                assertThatThrownBy(() -> taskService.getTask(10L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Test
