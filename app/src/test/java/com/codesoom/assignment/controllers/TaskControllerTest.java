@@ -6,10 +6,12 @@ import com.codesoom.assignment.services.TaskService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+@DisplayName("TaskController의 단위 테스트")
 class TaskControllerTest {
 
     private TaskController controller;
@@ -17,186 +19,243 @@ class TaskControllerTest {
 
     private final Long NOT_FOUND_TASK_ID = 100L; // 목록에 없는 할 일 ID
     private final Long NEW_TASK_ID = 1L; // 새로 생성할 할 일 ID
+
     private final String NEW_TASK_TITLE = "Test Title"; // 새로 생성할 할 일 제목
     private final String UPDATE_TASK_TITLE = "Test Title Updated"; // 수정된 할 일 제목
     private final String TASK_NOT_FOUND_ERROR_MESSAGE = "해당하는 Task가 존재하지 않습니다.";
 
     @BeforeEach
     void setUp(){
-
         taskService = new TaskService();
         controller = new TaskController(taskService);
+    }
+
+    @Nested
+    @DisplayName("list 메소드는")
+    class Describe_list {
+
+        @Nested
+        @DisplayName("만약 목록이 비어있다면")
+        class Context_empty {
+
+            @Test
+            @DisplayName("빈 할 일 목록을 반환합니다.")
+            void it_return_emptyList() {
+
+                List<Task> taskList = controller.list();
+
+                Assertions.assertThat(taskList).isEmpty();
+                Assertions.assertThat(taskList).hasSize(0);
+            }
+
+        }
+
+        @Nested
+        @DisplayName("만약 목록이 비어있지 않다면")
+        class Context_not_empty {
+
+            @BeforeEach
+            void setUp() {
+                Task task1 = new Task();
+                Task task2 = new Task();
+                taskService.saveTask(task1);
+                taskService.saveTask(task2);
+            }
+
+            @Test
+            @DisplayName("비어있지 않은 할 일 목록을 반환합니다.")
+            void it_return_list() {
+                List<Task> taskList = controller.list();
+                Assertions.assertThat(taskList).isNotEmpty().hasSize(2);
+            }
+
+        }
 
     }
 
-    @Test
-    @DisplayName("빈 할 일 목록을 조회합니다.")
-    void listEmpty() {
+    @Nested
+    @DisplayName("detail 메소드는")
+    class Describe_detail {
 
-        //given
+        @Nested
+        @DisplayName("만약 할 일 목록에 없는 할 일을 조회한다면")
+        class Context_invalid_task_id {
 
-        //when
-        List<Task> taskList = controller.list();
+            @BeforeEach
+            void setUp() {
+                Task newTask = new Task();
+                taskService.saveTask(newTask);
+            }
 
-        //then
-        Assertions.assertThat(taskList).isEmpty();
-        Assertions.assertThat(taskList).hasSize(0);
+            @Test
+            @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
+            void it_return_404_status_and_err_message() throws Exception {
+                Assertions.assertThatThrownBy( () -> controller.detail(NOT_FOUND_TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class)
+                        .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
+            }
 
-    }
-    
-    @Test
-    @DisplayName("비어있지 않은 할 일 목록을 조회합니다.")
-    void list() {
+        }
 
-        //given
-        Task task1 = new Task();
-        Task task2 = new Task();
-        taskService.saveTask(task1);
-        taskService.saveTask(task2);
+        @Nested
+        @DisplayName("만약 할 일 목록에 있는 할 일을 조회한다면")
+        class Context_valid_task_id {
 
-        //when
-        List<Task> taskList = controller.list();
+            private Long foundTaskId = NEW_TASK_ID; // 조회할 할 일 ID
 
-        //then
-        Assertions.assertThat(taskList).isNotEmpty().hasSize(2);
+            @BeforeEach
+            void setUp() {
+                Task newTask = new Task();
+                newTask.setTitle(NEW_TASK_TITLE);
+                taskService.saveTask(newTask);
+            }
 
-    }
+            @Test
+            @DisplayName("조회된 할 일을 반환합니다.")
+            void it_return_found_task_and() throws Exception {
+                Task foundTask = controller.detail(foundTaskId);
 
-    @Test
-    @DisplayName("할 일 목록에 없는 할 일을 조회 할 때 에러를 확인합니다.")
-    void detailInValid() {
+                Assertions.assertThat(foundTask).isNotNull();
+                Assertions.assertThat(foundTask.getId()).isEqualTo(foundTaskId);
+                Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+            }
 
-        //given
-        Task newTask = new Task();
-
-        //when
-        taskService.saveTask(newTask);
-
-        //then
-        Assertions.assertThatThrownBy( () -> controller.detail(NOT_FOUND_TASK_ID))
-                .isInstanceOf(TaskNotFoundException.class)
-                .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
-
-    }
-
-    @Test
-    @DisplayName("할 일 목록에 있는 할 일을 조회합니다.")
-    void detailValid() {
-
-        //given
-        Task newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
-
-        Long foundTaskId = NEW_TASK_ID; // 조회할 할 일 ID
-
-        //when
-        taskService.saveTask(newTask);
-        Task foundTask = controller.detail(foundTaskId);
-
-        //then
-        Assertions.assertThat(foundTask).isNotNull();
-        Assertions.assertThat(foundTask.getId()).isEqualTo(foundTaskId);
-        Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+        }
 
     }
 
-    @Test
-    @DisplayName("새 할 일을 생성하여 할 일 목록에 저장합니다.")
-    void create() {
+    @Nested
+    @DisplayName("create 메소드는")
+    class Describe_create {
 
-        //given
-        Task task1 = new Task();
-        task1.setTitle(NEW_TASK_TITLE);
+        @Nested
+        @DisplayName("만약 할 일 생성 요청을 보낸다면")
+        class Context_valid_task_id {
 
-        Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
+            private Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
+            private Task paramTask = new Task();
 
-        //when
-        controller.create(task1);
-        Task foundTask = controller.detail(newTaskId);
+            @BeforeEach
+            void setUp() {
+                paramTask.setTitle(NEW_TASK_TITLE);
+            }
 
-        //then
-        Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
+            @Test
+            @DisplayName("생성된 할 일을 반환합니다.")
+            void it_return_created_task() throws Exception {
+                controller.create(paramTask);
+                Task foundTask = controller.detail(newTaskId);
 
-        Assertions.assertThat(foundTask).isNotNull();
-        Assertions.assertThat(foundTask.getId()).isEqualTo(newTaskId);
-        Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+                Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
 
-    }
+                Assertions.assertThat(foundTask).isNotNull();
+                Assertions.assertThat(foundTask.getId()).isEqualTo(newTaskId);
+                Assertions.assertThat(foundTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+            }
 
-    @Test
-    @DisplayName("할 일 목록에 없는 할 일을 수정 할 때 에러를 확인합니다.")
-    void updateInvalid() {
-
-        //given
-        Long updateTaskId = NEW_TASK_ID; // 수정할 할 일 ID
-
-        Task paramTask = new Task(); // 파라미터로 사용될 할 일 객체
-        paramTask.setTitle(UPDATE_TASK_TITLE);
-
-        //when
-        //then
-        Assertions.assertThatThrownBy( () -> controller.update(updateTaskId, paramTask))
-                .isInstanceOf(TaskNotFoundException.class)
-                .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
+        }
 
     }
 
-    @Test
-    @DisplayName("할 일 목록에 있는 할 일을 수정합니다.")
-    void updateValid() {
+    @Nested
+    @DisplayName("update 메소드는")
+    class Describe_update {
 
-        //given
-        Task newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
-        Task targetTask = controller.create(newTask);
+        @Nested
+        @DisplayName("만약 할 일 목록에 없는 할 일을 수정한다면")
+        class Context_invalid_task_id {
 
-        Long updateTaskId = targetTask.getId(); // 수정할 할 일 ID
+            private Long updateTaskId = NEW_TASK_ID; // 수정할 할 일 ID
+            private Task paramTask = new Task(); // 파라미터로 사용될 할 일 객체
 
-        Task paramTask = new Task(); // 파라미터로 사용될 할 일 객체
-        paramTask.setTitle(UPDATE_TASK_TITLE);
+            @BeforeEach
+            void setUp() {
+                paramTask.setTitle(UPDATE_TASK_TITLE);
+            }
 
-        //when
-        Task updatedTask = controller.update(updateTaskId, paramTask);
+            @Test
+            @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
+            void it_return_404_status_and_err_message() throws Exception {
+                Assertions.assertThatThrownBy( () -> controller.update(updateTaskId, paramTask))
+                        .isInstanceOf(TaskNotFoundException.class)
+                        .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
+            }
 
-        //then
-        Assertions.assertThat(updatedTask).isNotNull();
-        Assertions.assertThat(updatedTask.getId()).isEqualTo(updateTaskId);
-        Assertions.assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+        }
+
+        @Nested
+        @DisplayName("만약 할 일 목록에 있는 할 일을 수정한다면")
+        class Context_valid_task_id {
+
+            private Long updateTaskId; // 수정할 할 일 ID
+            private Task paramTask = new Task(); // 파라미터로 사용될 할 일 객체
+
+            @BeforeEach
+            void setUp() {
+                Task newTask = new Task();
+                newTask.setTitle(NEW_TASK_TITLE);
+
+                Task targetTask = controller.create(newTask);
+                updateTaskId = targetTask.getId();
+
+                paramTask.setTitle(UPDATE_TASK_TITLE);
+            }
+
+            @Test
+            @DisplayName("수정된 할 일을 반환합니다.")
+            void it_return_updated_task_and() throws Exception {
+                Task updatedTask = controller.update(updateTaskId, paramTask);
+
+                Assertions.assertThat(updatedTask).isNotNull();
+                Assertions.assertThat(updatedTask.getId()).isEqualTo(updateTaskId);
+                Assertions.assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+            }
+
+        }
 
     }
 
-    @Test
-    @DisplayName("할 일 목록에 없는 할 일을 삭제 할 때 에러를 확인합니다.")
-    void deleteInvalid() {
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Describe_delete {
 
-        //give
-        //when
-        //then
-        Assertions.assertThatThrownBy( () -> controller.delete(NOT_FOUND_TASK_ID))
-                .isInstanceOf(TaskNotFoundException.class)
-                .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
+        @Nested
+        @DisplayName("만약 할 일 목록에 없는 할 일을 삭제한다면")
+        class Context_invalid_task_id {
 
-    }
+            @Test
+            @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
+            void it_return_404_status_and_err_message() throws Exception {
+                Assertions.assertThatThrownBy( () -> controller.delete(NOT_FOUND_TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class)
+                        .hasMessageContaining(TASK_NOT_FOUND_ERROR_MESSAGE);
+            }
 
-    @Test
-    @DisplayName("할 일 목록에 있는 할 일을 삭제합니다.")
-    void deleteValid() {
+        }
 
-        //give
-        Task newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
-        Task targetTask = controller.create(newTask);
+        @Nested
+        @DisplayName("만약 할 일 목록에 있는 할 일을 삭제한다면")
+        class Context_valid_task_id {
 
-        Long deleteTaskId = targetTask.getId(); // 삭제할 할 일 ID
+            Long deleteTaskId;
 
-        // 삭제 전에는 등록한 할 일이 존재합니다.
-        Assertions.assertThat(controller.list()).isNotEmpty().hasSize(1);
+            @BeforeEach
+            void setUp() {
+                Task newTask = new Task();
+                newTask.setTitle(NEW_TASK_TITLE);
+                Task targetTask = controller.create(newTask);
 
-        //when
-        controller.delete(deleteTaskId);
+                deleteTaskId = targetTask.getId(); // 삭제할 할 일 ID
+            }
 
-        //then
-        Assertions.assertThat(controller.list()).isEmpty();
+            @Test
+            @DisplayName("204 상태코드를 반환합니다.")
+            void it_return_and_204_status() throws Exception {
+                controller.delete(deleteTaskId);
+                Assertions.assertThat(controller.list()).isEmpty();
+            }
+
+        }
 
     }
 
