@@ -32,8 +32,9 @@ class TaskServiceTest {
             public void getTasks(){
                 assertThat(taskService.getTasks()).isEmpty();
             }
+
             @Test
-            @DisplayName("추가된 목록은 더이상 비어있지 않다.")
+            @DisplayName("Task가 추가되었다면, 리스트는 빈 배열이 아니다.")
             public void getTaskWithValidId(){
                 Task generatedTask = generatedTask();
 
@@ -49,7 +50,7 @@ class TaskServiceTest {
         @DisplayName("tasks/{id}")
         class taskService_details{
             @Test
-            @DisplayName("유효하지 않은 아이디를 찾을 때 에러를 발생시킨다.")
+            @DisplayName("아이디를 찾을 때 해당 값이 없다면 에러를 발생시킨다.")
             public void getTaskWithInvalidId(){
                 assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
             }

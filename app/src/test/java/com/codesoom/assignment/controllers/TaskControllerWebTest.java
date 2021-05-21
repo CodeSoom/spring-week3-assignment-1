@@ -6,15 +6,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest
+@AutoConfigureMockMvc
+@DisplayName("TaskControllerWebTest")
+class TaskControllerWebTest {
 
-@DisplayName("TaskController 클래스")
-class TaskControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
 
     private TaskController taskController;
     private TaskService taskService;
@@ -27,9 +36,14 @@ class TaskControllerTest {
 
     @Test
     @DisplayName("목록은 처음에는 빈 목록이어야한다.")
-    void list(){
-        TaskController controller = new TaskController();
-        assertThat(controller.list()).isEmpty();
+    void list() throws Exception {
+        mockMvc.perform(get("/tasks")).andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("에러 발생.")
+    void list2() throws Exception {
+        mockMvc.perform(get("/tasks/100")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -57,7 +71,7 @@ class TaskControllerTest {
         @DisplayName("if tasks isEmpty")
         class if_tasks_isEmpty {
             @Test
-            @DisplayName("빈 배열을 리턴한다.")
+            @DisplayName("return []")
             void return_empty_list(){
                 List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).isEmpty();

@@ -5,12 +5,6 @@ public class Task {
 
     private String title;
 
-    public Task(){}
-    public Task(int i, String one) {
-        this.id = (long) i;
-        this.title = one;
-    }
-
     public Long getId() {
         return id;
     }
