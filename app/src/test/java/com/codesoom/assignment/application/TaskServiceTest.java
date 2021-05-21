@@ -76,12 +76,11 @@ class TaskServiceTest {
 
     @Test
     void generateId() {
-        TaskService taskService = new TaskService();
         try{
             Method method = taskService.getClass().getDeclaredMethod("generateId");
             method.setAccessible(true);
             Long ref = (Long) method.invoke(taskService);
-            assertThat(ref).isEqualTo(1L);
+            assertThat(ref).isEqualTo(2L);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
