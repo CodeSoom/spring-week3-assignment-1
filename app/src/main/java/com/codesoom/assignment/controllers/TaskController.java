@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    @Autowired
+
     private TaskService taskService;
 
     public TaskController(TaskService taskService) {

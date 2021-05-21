@@ -19,5 +19,4 @@ class HelloControllerTest {
             assertThat(controller.sayHello()).isEqualTo("Hello, world!");
         }
     }
-
 }
