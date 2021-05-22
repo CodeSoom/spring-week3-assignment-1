@@ -48,7 +48,7 @@ class TaskControllerTest {
         class Context_of_empty_tasks {
 
             @Test
-            @DisplayName("비어있는 배열을 반환한다")
+            @DisplayName("비어있는 리스트를 반환한다")
             void it_returns_empty_array() {
                 List<Task> tasks = taskController.list();
                 assertThat(tasks).isEmpty();
@@ -78,7 +78,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("객체 배열을 반환한다")
+            @DisplayName("tasks에 등록된 모든 '할 일'을 리스트로 반환한다")
             void it_returns_task_array() {
                 List<Task> tasks = controller1.list();
                 assertThat(tasks)
@@ -119,7 +119,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("id에 해당하는 객체를 반환한다")
+            @DisplayName("'할 일'을 반환한다")
             void it_returns_task() {
                 Task task = taskController.detail(validId);
                 assertThat(task)
@@ -165,17 +165,17 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("객체를 추가하고 추가한 객체를 반환한다")
+            @DisplayName("'할 일'을 추가하고 추가한 '할 일'을 반환한다")
             void it_returns_task_appending_task_to_tasks() {
                 Task createdTask = taskController.create(givenTask);
                 assertThat(createdTask)
                         .isEqualTo(givenTask)
-                        .withFailMessage("추가한 객체를 반환하지 않았다");
+                        .withFailMessage("추가한 '할 일'를 반환하지 않았다");
 
                 createdTask = taskController.detail(givenTask.getId());
                 assertThat(createdTask)
                         .isEqualTo(givenTask)
-                        .withFailMessage("객체가 추가되지 않았다");
+                        .withFailMessage("'할 일'이 추가되지 않았다");
             }
         }
     }
@@ -200,17 +200,17 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("객체를 갱신하고, 갱신한 객체를 반환한다")
+            @DisplayName("'할 일'을 갱신하고, 갱신한 '할 일'을 반환한다")
             void it_returns_task_updating_it() {
                 Task updatedTask = taskController.update(givenTask.getId(), destTask);
                 assertThat(updatedTask)
                         .isEqualTo(destTask)
-                        .withFailMessage("객체한 객체가 반환되지 않았다");
+                        .withFailMessage("갱신한 '할 일'이 반환되지 않았다");
 
                 updatedTask = taskController.detail(givenTask.getId());
                 assertThat(updatedTask)
                         .isEqualTo(destTask)
-                        .withFailMessage("객체가 갱신되지 않았다");
+                        .withFailMessage("'할 일'이 갱신되지 않았다");
             }
         }
     }
@@ -235,17 +235,17 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("주어진 인자에 따라 객체를 갱신하다")
+            @DisplayName("'할 일'을 갱신하고, 갱신한 '할 일'을 반환한다")
             void it_returns_task_updating_it() {
                 Task updatedTask = taskController.update(givenTask.getId(), destTask);
                 assertThat(updatedTask)
                         .isEqualTo(destTask)
-                        .withFailMessage("갱신한 객체가 반환되지 않았다");
+                        .withFailMessage("갱신한 '할 일'이 반환되지 않았다");
 
                 updatedTask = taskController.detail(givenTask.getId());
                 assertThat(updatedTask)
                         .isEqualTo(destTask)
-                        .withFailMessage("객체가 갱신되지 않았다");
+                        .withFailMessage("'할 일'이 갱신되지 않았다");
             }
         }
     }
@@ -273,7 +273,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("해당 id 객체를 tasks에서 삭제하고, 아무 값도 반환하지 않는다")
+            @DisplayName("해당되는 '할 일'을 tasks에서 삭제하고, 아무 값도 반환하지 않는다")
             void it_returns_noting() {
                 taskController.delete(validId);
 
@@ -283,5 +283,4 @@ class TaskControllerTest {
             }
         }
     }
-
 }
