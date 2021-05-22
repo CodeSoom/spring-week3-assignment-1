@@ -1,7 +1,7 @@
 package com.codesoom.assignment.models;
 
 /**
- * 할 일
+ * 할 일.
  */
 public class Task {
 

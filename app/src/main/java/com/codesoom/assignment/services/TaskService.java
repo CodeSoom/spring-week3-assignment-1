@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 할 일(Task) 데이터를 가공하여 반환합니다.
+ * 할 일(Task) 데이터에 대한 CRUD 작업을 담당합니다.
  */
 @Service
 public class TaskService {

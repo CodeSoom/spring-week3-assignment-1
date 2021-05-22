@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 할 일(Task) 관련 Request를 수신하고 Response를 반환합니다.
+ * 할 일과 관련된 http 요청 처리를 담당합니다.
  */
 @RestController
 @RequestMapping("/tasks")

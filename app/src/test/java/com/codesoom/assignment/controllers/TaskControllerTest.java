@@ -22,7 +22,7 @@ class TaskControllerTest {
 
     private final String NEW_TASK_TITLE = "Test Title"; // 새로 생성할 할 일 제목
     private final String UPDATE_TASK_TITLE = "Test Title Updated"; // 수정된 할 일 제목
-    private final String TASK_NOT_FOUND_ERROR_MESSAGE = "해당하는 Task가 존재하지 않습니다.";
+    private final String TASK_NOT_FOUND_ERROR_MESSAGE = "존재하지 않는 Task이기 때문에 찾을 수 없습니다.";
 
     @BeforeEach
     void setUp(){

@@ -10,7 +10,7 @@ public class TaskNotFoundException extends RuntimeException{
 
     private Logger log = LoggerFactory.getLogger(TaskNotFoundException.class);
 
-    private String message = "해당하는 Task가 존재하지 않습니다.";
+    private String message = "존재하지 않는 Task이기 때문에 찾을 수 없습니다.";
 
     public TaskNotFoundException() {
         log.error(message);
