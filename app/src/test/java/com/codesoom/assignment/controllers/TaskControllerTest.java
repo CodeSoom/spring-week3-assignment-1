@@ -102,7 +102,7 @@ class TaskControllerTest {
     @DisplayName("create method")
     class DescribeCreateTask {
         @Nested
-        @DisplayName("when a valid task")
+        @DisplayName("with a valid task")
         class ContextWithValidTask {
             @Test
             @DisplayName("It adds to the list and returns created task")
@@ -122,7 +122,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("when a invalid task")
+        @DisplayName("with a invalid task")
         class ContextWithInvalidTask {
             @Test
             @DisplayName("It throw the task not found exception")
