@@ -73,8 +73,8 @@ class TaskControllerTest {
     @DisplayName("detail method")
     class DescribeGetTask {
         @Nested
-        @DisplayName("when exist a task")
-        class ContextWithTasks {
+        @DisplayName("when exist matched task")
+        class ContextWithMatchedTask {
             @Test
             @DisplayName("It returns a task that matches the ID")
             void detailTheTask() {
@@ -84,12 +84,16 @@ class TaskControllerTest {
                 assertThat(task.getId()).isEqualTo(ID);
                 assertThat(task.getTitle()).isEqualTo(TITLE);
             }
+        }
 
+        @Nested
+        @DisplayName("when no matched task")
+        class ContextWithNoMatchedTask {
             @Test
             @DisplayName("It throw the task not found exception")
             void detailNoTask() {
                 assertThatThrownBy(() -> controller.detail(ID * 0L))
-                    .isInstanceOf(TaskNotFoundException.class);
+                        .isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
