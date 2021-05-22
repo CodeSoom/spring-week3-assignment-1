@@ -6,6 +6,7 @@ import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -26,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -59,48 +63,110 @@ class TaskControllerWebTest {
         sourceTask.setTitle(TITLE);
         tasks.add(sourceTask);
 
-        given(taskService.getTasks()).willReturn(tasks);
+//        given(taskService.getTasks()).willReturn(tasks);
 
-        given(taskService.getTask(VALID_ID)).willReturn(sourceTask);
-
-        given(taskService.getTask(INVALID_ID))
-                .willThrow(new TaskNotFoundException(INVALID_ID));
-
-        given(taskService.deleteTask(VALID_ID)).willReturn(sourceTask);
-
-        given(taskService.deleteTask(INVALID_ID))
-                .willThrow(new TaskNotFoundException(INVALID_ID));
-
-        sourceTask.setTitle(TITLE + UPDATED);
-
-        given(taskService.updateTask(eq(VALID_ID), any(Task.class)))
-                .willReturn(sourceTask);
-
-        given(taskService.updateTask(eq(INVALID_ID), any(Task.class)))
-                .willThrow(new TaskNotFoundException(INVALID_ID));
+//        given(taskService.getTask(VALID_ID)).willReturn(sourceTask);
+//
+//        given(taskService.getTask(INVALID_ID))
+//                .willThrow(new TaskNotFoundException(INVALID_ID));
+//
+//        given(taskService.deleteTask(VALID_ID)).willReturn(sourceTask);
+//
+//        given(taskService.deleteTask(INVALID_ID))
+//                .willThrow(new TaskNotFoundException(INVALID_ID));
+//
+//        sourceTask.setTitle(TITLE + UPDATED);
+//
+//        given(taskService.updateTask(eq(VALID_ID), any(Task.class)))
+//                .willReturn(sourceTask);
+//
+//        given(taskService.updateTask(eq(INVALID_ID), any(Task.class)))
+//                .willThrow(new TaskNotFoundException(INVALID_ID));
     }
 
-    @Test
-    @DisplayName("Get tasks, expected ok")
-    void list() throws Exception {
-        mockMvc.perform(get("/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test Task")));
+    @Nested
+    @DisplayName("Request GET /tasks")
+    class DescribeGetTasks {
+        @Nested
+        @DisplayName("when exist tasks")
+        class ContextWithTasks {
+            @BeforeEach
+            void prepare() throws Exception {
+                List<Task> tasks = new ArrayList<>();
+                tasks.add(sourceTask);
+
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            @Test
+            @DisplayName("It responses tasks array")
+            void list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(1)))
+                        .andExpect(jsonPath("$[0]").value(sourceTask));
+            }
+        }
+
+        @Nested
+        @DisplayName("when empty tasks")
+        class ContextWithEmptyTasks {
+            @BeforeEach
+            void prepare() throws Exception {
+                List<Task> tasks = new ArrayList<>();
+
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            @Test
+            @DisplayName("It responses empty array")
+            void list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("[]"));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("Get one task matches ID, with valid ID, expected ok")
-    void detailWithValidId() throws Exception {
-        mockMvc.perform(get("/tasks/1"))
-                .andExpect(status().isOk());
+    @Nested
+    @DisplayName("Request GET /tasks/:id")
+    class DescribeGetTask {
+        @Nested
+        @DisplayName("when valid ID")
+        class ContextWithTaskValidId {
+            @BeforeEach
+            void prepare() throws Exception {
+                given(taskService.getTask(VALID_ID)).willReturn(sourceTask);
+            }
+
+            @Test
+            @DisplayName("It responses a task")
+            void ItGetTask() throws Exception {
+                mockMvc.perform(get("/tasks/" + VALID_ID))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value(sourceTask.getId()))
+                        .andExpect(jsonPath("$.title").value(sourceTask.getTitle()));
+            }
+        }
+
+        @Nested
+        @DisplayName("when invalid ID")
+        class ContextWithTaskInvalidId {
+            @BeforeEach
+            void prepare() throws Exception {
+                given(taskService.getTask(INVALID_ID))
+                        .willThrow(new TaskNotFoundException(INVALID_ID));
+            }
+
+            @Test
+            @DisplayName("It responses not found code")
+            void ItGetTask() throws Exception {
+                mockMvc.perform(get("/tasks/" + INVALID_ID))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("Get one task matches ID, with invalid ID, expected not found")
-    void detailWithInvalidId() throws Exception {
-        mockMvc.perform(get("/tasks/999"))
-                .andExpect(status().isNotFound());
-    }
 
     @Test
     @DisplayName("Delete one task matches ID, with valid ID, expected no content")
