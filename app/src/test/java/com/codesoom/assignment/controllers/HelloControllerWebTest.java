@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("HelloController web")
 class HelloControllerWebTest {
     private final String HELLO = "Hello, world!";
 
@@ -19,6 +21,7 @@ class HelloControllerWebTest {
     private MockMvc mockMvc;
 
     @Test
+    @DisplayName("It returns the greeting \"Hello, world!\", expected ok")
     void sayHello() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())

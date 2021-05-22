@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("TaskController web")
 class TaskControllerWebTest {
 
     private final Long VALID_ID = 1L;
@@ -79,6 +81,7 @@ class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("Get tasks, expected ok")
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
@@ -86,30 +89,35 @@ class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("Get one task matches ID, with valid ID, expected ok")
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("Get one task matches ID, with invalid ID, expected not found")
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @DisplayName("Delete one task matches ID, with valid ID, expected no content")
     void deleteWithValidId() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
+    @DisplayName("Delete one task matches ID, with invalid ID, expected not found")
     void deleteWithInvalidId() throws Exception {
         mockMvc.perform(delete("/tasks/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @DisplayName("Update a task matches ID, with valid ID, expected ok")
     void updateWithValidId() throws Exception {
         String content = objectMapper.writeValueAsString(sourceTask);
 
@@ -121,6 +129,7 @@ class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("Update a task matches ID, with invalid ID, expected not found")
     void updateWithInvalidId() throws Exception {
         String content = objectMapper.writeValueAsString(sourceTask);
 
@@ -132,6 +141,7 @@ class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("Patch a task matches ID, with valid ID, expected ok")
     void patchWithValidId() throws Exception {
         String content = objectMapper.writeValueAsString(sourceTask);
 
@@ -143,6 +153,7 @@ class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("Patch a task matches ID, with invalid ID, expected not found")
     void patchWithInvalidId() throws Exception {
         String content = objectMapper.writeValueAsString(sourceTask);
 

@@ -3,12 +3,14 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("TaskController class")
 class TaskControllerTest {
 
     private final Long ID = 1L;
@@ -32,6 +34,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It returns a list contains task model")
     void tasks() {
         List<Task> tasks = controller.list();
         assertThat(tasks).isNotEmpty();
@@ -39,6 +42,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It returns a task that matches the ID")
     void task() {
         Task task = controller.detail(ID);
 
@@ -48,6 +52,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It puts a new task into list and returns nothing")
     void createNewTask() {
         Task task = new Task();
         task.setTitle("Test");
@@ -69,6 +74,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It updates the task and return returns it")
     void updateTask() {
         Task task = controller.detail(ID);
         task.setTitle(TITLE + UPDATED);
@@ -81,6 +87,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It patches the task and return returns it")
     void patchTask() {
         Task newTask = new Task();
         newTask.setTitle(TITLE);
@@ -97,6 +104,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("It deletes the task from the list and return nothing")
     void deleteTask() {
         List<Task> tasks = controller.list();
         assertThat(tasks).hasSize(1);

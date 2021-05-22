@@ -3,6 +3,7 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("TaskServiceTest class")
 class TaskServiceTest {
 
     private final String TASK_TITLE = "test";
@@ -29,6 +31,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("It returns tasks")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
 
@@ -39,18 +42,21 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("It returns a task matches ID")
     void getTaskWithValidId() {
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
+    @DisplayName("It throw the not found exception if ID mismatch")
     void getTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.getTask(99L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
+    @DisplayName("It creates new task, puts it in list, and return nothing")
     void createTask() {
         int oldSize = taskService.getTasks().size();
 
@@ -67,6 +73,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("It delete a task matched ID and return nothing")
     void deleteTask() {
         int oldSize = taskService.getTasks().size();
 
@@ -78,14 +85,14 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("It update a task matched ID and return the task")
     void updateTask() {
         final Long ID = 1L;
 
         Task source = new Task();
         source.setTitle(TASK_TITLE + TASK_UPDATE_POSTFIX);
-        taskService.updateTask(ID, source);
 
-        Task task = taskService.getTask(ID);
+        Task task = taskService.updateTask(ID, source);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + TASK_UPDATE_POSTFIX);
     }
 }
