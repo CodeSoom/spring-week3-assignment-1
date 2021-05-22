@@ -101,4 +101,9 @@ class TaskServiceTest {
         taskService.createTask(task);
         return task;
     }
+
+    @Test
+    public void deleteTaskWithNotExistedId(){
+        assertThatThrownBy(() -> taskService.deleteTask(1L)).isInstanceOf(TaskNotFoundException.class);
+    }
 }
