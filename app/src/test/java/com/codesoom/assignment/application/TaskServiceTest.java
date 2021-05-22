@@ -16,28 +16,24 @@ class TaskServiceTest {
 
     private TaskService taskService;
 
-    private Task firstTask;
-    private Task secondTask;
-
     @BeforeEach
     void setUp() {
         // subject
         this.taskService = new TaskService();
-
-        // fixtures
-        Task task1 = new Task();
-        task1.setTitle("test1");
-
-        Task task2 = new Task();
-        task2.setTitle("test2");
-
-        this.firstTask = this.taskService.createTask(task1);
-        this.secondTask = this.taskService.createTask(task2);
     }
 
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
+
+        private Task task;
+
+        @BeforeEach
+        void setUp() {
+            Task src = new Task();
+            src.setTitle("test");
+            task = taskService.createTask(src);
+        }
 
         @Nested
         @DisplayName("주어진 id에 해당하는 할 일이 있다면")
@@ -46,8 +42,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 반환한다")
             void it_returns_a_task() {
-                assertThat(taskService.getTask(firstTask.getId()).getTitle())
-                        .isEqualTo(firstTask.getTitle());
+                assertThat(taskService.getTask(task.getId()).getTitle())
+                        .isEqualTo(task.getTitle());
             }
         }
 
@@ -57,49 +53,158 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("TaskNotFoundException 예외를 던진다")
-            void it_returns_TaskNotFoundException() {
+            void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(10L))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
 
-    @Test
-    void testGetTasks() {
-        assertThat(this.taskService.getTasks()).isNotEmpty();
+    @Nested
+    @DisplayName("getTasks 메소드는")
+    class Describe_getTasks {
+
+        @Nested
+        @DisplayName("할 일이 있다면")
+        class Context_with_tasks {
+
+            private Task task;
+
+            @BeforeEach
+            void setUp() {
+                Task src = new Task();
+                src.setTitle("test");
+                task = taskService.createTask(src);
+            }
+
+            @Test
+            @DisplayName("할 일 목록을 가져온다")
+            void it_returns_all_tasks() {
+                assertThat(taskService.getTasks()).isNotEmpty();
+                assertThat(taskService.getTasks().get(0).getTitle())
+                        .isEqualTo(task.getTitle());
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일이 없다면")
+        class Context_without_task {
+
+            @Test
+            @DisplayName("빈 목록을 반환한다")
+            void it_returns_empty_list() {
+                assertThat(taskService.getTasks()).isEmpty();
+            }
+        }
     }
 
-    @Test
-    void testGetTask() {
-        assertThat(this.taskService.getTask(this.firstTask.getId()).getTitle())
-                .isEqualTo(this.firstTask.getTitle());
-        assertThatThrownBy(() -> taskService.getTask(10L))
-                .isInstanceOf(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("createTask 메소드는")
+    class Describe_createTask {
+
+        @Nested
+        @DisplayName("할 일을 넘기면")
+        class Context_with_task {
+
+            private Task task;
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle("test");
+            }
+
+            @Test
+            @DisplayName("할 일을 추가하고 반환한다")
+            void it_returns_task() {
+                assertThat(taskService.createTask(task).getTitle())
+                        .isEqualTo(task.getTitle());
+            }
+        }
     }
 
-    @Test
-    void testCreateTask() {
-        Task task3 = new Task();
-        assertThat(this.taskService.createTask(task3).getTitle()).isNull();
+    @Nested
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTask {
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 있다면")
+        class Context_with_existing_task {
+
+            private Task task;
+            private Long taskId;
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle("test");
+                taskId = taskService.createTask(task).getId();
+            }
+
+            @Test
+            @DisplayName("할 일을 수정하고 반환한다")
+            void it_returns_task() {
+                String updatedTitle = "updated title";
+                Task src = new Task();
+                src.setTitle(updatedTitle);
+                assertThat(taskService.updateTask(taskId, src).getTitle())
+                        .isEqualTo(src.getTitle());
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 없다면")
+        class Context_without_task {
+
+            @Test
+            @DisplayName("TaskNotFoundException 예외를 던진다")
+            void it_throws_TaskNotFoundException() {
+                String updatedTitle = "updated title";
+                Task src = new Task();
+                src.setTitle(updatedTitle);
+                assertThatThrownBy(() -> taskService.updateTask(1L, src))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    void testUpdateTask() {
-        String updatedTitle = "updated title";
-        Task src = new Task();
-        src.setId(this.firstTask.getId());
-        src.setTitle(updatedTitle);
-        assertThat(this.taskService.updateTask(this.firstTask.getId(), src).getTitle())
-                .isEqualTo(updatedTitle);
-    }
 
-    @Test
-    void testDeleteTask() {
-        assertThat(this.taskService.deleteTask(this.firstTask.getId()).getId())
-                .isEqualTo(this.firstTask.getId());
-        assertThatThrownBy(() -> taskService.deleteTask(this.firstTask.getId()))
-                .isInstanceOf(TaskNotFoundException.class);
-        assertThat(this.taskService.deleteTask(this.secondTask.getId()).getTitle())
-                .isEqualTo(this.secondTask.getTitle());
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 있다면")
+        class Context_with_task {
+
+            private Task task;
+            private Long taskId;
+
+            @BeforeEach
+            void setUp() {
+                task = new Task();
+                task.setTitle("test");
+                taskId = taskService.createTask(task).getId();
+            }
+
+            @Test
+            @DisplayName("할 일을 삭제하고 반환한다")
+            void it_returns_task() {
+                assertThat(taskService.deleteTask(taskId).getId())
+                        .isEqualTo(taskId);
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 id에 해당하는 할 일이 없다면")
+        class Context_without_task {
+
+            @Test
+            @DisplayName("TaskNotFoundException 예외를 던진다")
+            void it_throws_TaskNotFoundException() {
+                assertThatThrownBy(() -> taskService.deleteTask(1L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }
