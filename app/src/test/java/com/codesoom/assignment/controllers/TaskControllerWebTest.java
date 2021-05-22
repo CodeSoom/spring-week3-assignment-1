@@ -53,262 +53,185 @@ public class TaskControllerWebTest {
     private TaskService taskService;
 
     @Nested
-    @DisplayName("GET 메소드")
-    class GetMethod {
+    @DisplayName("GET /tasks 는")
+    class GetTasks {
 
-        @Nested
-        @DisplayName("TaskList 목록에 대한")
-        class givenTaskList {
+        @BeforeEach
+        void setUp() {
+            List<Task> taskList = new ArrayList<>();
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
+            taskList.add(task);
 
-            @BeforeEach
-            void setUp() {
-                List<Task> taskList = new ArrayList<>();
-                Task task = new Task();
-                task.setTitle(TASK_TITLE);
-                taskList.add(task);
-
-                given(taskService.getTasks()).willReturn(taskList);
-            }
-
-            @Nested
-            @DisplayName("요청이 들어오면")
-            class whenRequest {
-
-                @Test
-                @DisplayName("모든 TaskList 를 리턴한다")
-                void thenReturnTaskList() throws Exception {
-                    mockMvc.perform(get("/tasks"))
-                           .andExpect(status().isOk())
-                           .andExpect(content().string(containsString(TASK_TITLE)));
-                }
-            }
+            given(taskService.getTasks()).willReturn(taskList);
         }
 
-        @Nested
-        @DisplayName("Task 상세정보에 대한")
-        class givenDetailTask {
-
-            @Nested
-            @DisplayName("Task id 값이 유효하면")
-            class whenRequestWithValidTaskId {
-
-                @BeforeEach
-                void setUp() {
-                    Task task = new Task();
-                    task.setTitle(TASK_TITLE);
-
-                    given(taskService.getTask(EXIST_ID)).willReturn(task);
-                }
-
-                @Test
-                @DisplayName("Task 를 리턴한다")
-                void thenReturnTask() throws Exception {
-                    mockMvc.perform(get("/tasks/" + EXIST_ID))
-                           .andExpect(status().isOk())
-                           .andExpect(content().string(containsString(TASK_TITLE)));
-                }
-            }
-
-            @Nested
-            @DisplayName("Task id 값이 null 이거나 유효하지 않으면")
-            class whenRequestWithNullOrInvalidTaskId {
-
-                @BeforeEach
-                void setUp() {
-                    Task task = new Task();
-                    task.setTitle(TASK_TITLE);
-
-                    given(taskService.getTask(null)).willThrow(new TaskNotFoundException(null));
-                    given(taskService.getTask(WRONG_ID)).willThrow(new TaskNotFoundException(WRONG_ID));
-                }
-
-                @Test
-                @DisplayName("TaskNotFoundException 예외를 던진다")
-                void thenReturnTaskNotFoundException() throws Exception {
-                    mockMvc.perform(get("/tasks/" + null))
-                           .andExpect(status().is4xxClientError());
-                    mockMvc.perform(get("/tasks/" + WRONG_ID))
-                           .andExpect(status().isNotFound());
-                }
-            }
+        @Test
+        @DisplayName("모든 할 일 목록과 OK (200 status) 응답한다")
+        void thenReturnTaskList() throws Exception {
+            mockMvc.perform(get("/tasks"))
+                   .andExpect(status().isOk())
+                   .andExpect(content().string(containsString(TASK_TITLE)));
         }
     }
 
     @Nested
-    @DisplayName("POST 메소드")
-    class postMethod {
+    @DisplayName("GET /tasks/{taskId} 는")
+    class GetTask {
 
-        @Nested
-        @DisplayName("새 Task 에 대한")
-        class givenCreateNewTask {
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
 
-            @Nested
-            @DisplayName("등록 요청이 유효 하면")
-            class whenRequestWithValid {
+            given(taskService.getTask(EXIST_ID)).willReturn(task);
+        }
 
-                @Test
-                @DisplayName("새 Task 를 저장하고 리턴한다")
-                void thenReturnNewTask() throws Exception {
-                    Task task = new Task();
-                    task.setTitle(TASK_CREATE_PREFIX + TASK_TITLE);
-                    String taskContent = objectMapper.writeValueAsString(task);
+        @Test
+        @DisplayName("할 일 상세정보와 OK (200 status) 응답한다")
+        void thenReturnTask() throws Exception {
+            mockMvc.perform(get("/tasks/" + EXIST_ID))
+                   .andExpect(status().isOk())
+                   .andExpect(content().string(containsString(TASK_TITLE)));
+        }
 
-                    when(taskService.createTask(any(Task.class))).thenReturn(task);
+        @Test
+        @DisplayName("TaskNotFoundException 예외를 던진다")
+        void thenReturnTaskNotFoundException() throws Exception {
+            given(taskService.getTask(WRONG_ID)).willThrow(new TaskNotFoundException(WRONG_ID));
 
-                    mockMvc.perform(post("/tasks")
-                                   .content(taskContent)
-                                   .contentType(MediaType.APPLICATION_JSON)
-                                   .accept(MediaType.APPLICATION_JSON))
-                           .andExpect(status().isCreated())
-                           .andExpect(content().string(containsString(TASK_CREATE_PREFIX + TASK_TITLE)));
-                }
-            }
+            mockMvc.perform(get("/tasks/" + null))
+                   .andExpect(status().is4xxClientError());
+            mockMvc.perform(get("/tasks/" + WRONG_ID))
+                   .andExpect(status().isNotFound());
+        }
+    }
 
-            @Nested
-            @DisplayName("등록 요청이 Null 이면")
-            class whenRequestWithNull {
+    @Nested
+    @DisplayName("POST /tasks 는")
+    class postTask {
 
-                @Test
-                @DisplayName("NullPointException 예외를 던진다")
-                void thenReturnNullPointException() {
+        @Test
+        @DisplayName("새 Task 를 저장하고 OK (200 status) 응답한다")
+        void thenReturnNewTask() throws Exception {
+            Task task = new Task();
+            task.setTitle(TASK_CREATE_PREFIX + TASK_TITLE);
+            String taskContent = objectMapper.writeValueAsString(task);
+
+            when(taskService.createTask(any(Task.class))).thenReturn(task);
+
+            mockMvc.perform(post("/tasks")
+                   .content(taskContent)
+                   .contentType(MediaType.APPLICATION_JSON)
+                   .accept(MediaType.APPLICATION_JSON))
+                   .andExpect(status().isCreated())
+                   .andExpect(content().string(containsString(TASK_CREATE_PREFIX + TASK_TITLE)));
+        }
+
+        @Test
+        @DisplayName("NullPointException 예외를 던진다")
+        void thenReturnNullPointException() {
                     /* TODO
                         Add Service logic
                     */
-                }
-            }
+        }
 
-            @Nested
-            @DisplayName("등록 요청이 유효하지 않으면")
-            class whenRequestWithInvalid {
-
-                @Test
-                @DisplayName("Task 를 저장하지 않고 요청을 끝낸다")
-                void thenReturnNothing() {
+        @Test
+        @DisplayName("Task 를 저장하지 않고 (4xx status) 응답한다")
+        void thenReturnNothing() {
                     /* TODO
                         Add Service logic
                     */
-                }
-            }
         }
     }
 
     @Nested
-    @DisplayName("PUT & PATCH 메소드")
-    class putAndPatchMethod {
+    @DisplayName("PUT & PATCH /tasks/{taskId} 는")
+    class putAndPatchTask {
 
-        @Nested
-        @DisplayName("수정 할 Task 에 대한")
-        class givenUpdateTask {
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
 
-            @Nested
-            @DisplayName("Task id 값이 유효 하면")
-            class whenRequestWithValidTaskId {
+            given(taskService.getTask(EXIST_ID)).willReturn(task);
+        }
 
-                @BeforeEach
-                void setUp() {
-                    Task task = new Task();
-                    task.setTitle(TASK_TITLE);
+        @Test
+        @DisplayName("Task 를 수정하고 OK (200 status) 응답한다")
+        void thenReturnModifiedTask() throws Exception {
+            Task requestTask = new Task();
+            requestTask.setTitle(TASK_UPDATE_PREFIX + TASK_TITLE);
+            String taskContent = objectMapper.writeValueAsString(requestTask);
 
-                    given(taskService.getTask(EXIST_ID)).willReturn(task);
-                }
+            when(taskService.updateTask(eq(EXIST_ID), any(Task.class))).thenReturn(requestTask);
 
-                @Test
-                @DisplayName("Task 를 수정하고 저장한 뒤 리턴한다")
-                void thenReturnModifiedTask() throws Exception {
-                    Task requestTask = new Task();
-                    requestTask.setTitle(TASK_UPDATE_PREFIX + TASK_TITLE);
-                    String taskContent = objectMapper.writeValueAsString(requestTask);
+            mockMvc.perform(put("/tasks/" + EXIST_ID)
+                   .content(taskContent)
+                   .contentType(MediaType.APPLICATION_JSON)
+                   .accept(MediaType.APPLICATION_JSON))
+                   .andExpect(status().isOk())
+                   .andExpect(content().string(containsString(TASK_UPDATE_PREFIX + TASK_TITLE)));
 
-                    when(taskService.updateTask(eq(EXIST_ID), any(Task.class))).thenReturn(requestTask);
+            requestTask.setTitle(TASK_TITLE);
+            taskContent = objectMapper.writeValueAsString(requestTask);
 
-                    mockMvc.perform(put("/tasks/" + EXIST_ID)
-                           .content(taskContent)
-                           .contentType(MediaType.APPLICATION_JSON)
-                           .accept(MediaType.APPLICATION_JSON))
-                           .andExpect(status().isOk())
-                           .andExpect(content().string(containsString(TASK_UPDATE_PREFIX + TASK_TITLE)));
+            mockMvc.perform(patch("/tasks/" + EXIST_ID)
+                   .content(taskContent)
+                   .contentType(MediaType.APPLICATION_JSON)
+                   .accept(MediaType.APPLICATION_JSON))
+                   .andExpect(status().isOk())
+                   .andExpect(content().string(containsString(TASK_TITLE)));
+        }
 
-                    requestTask.setTitle(TASK_TITLE);
-                    taskContent = objectMapper.writeValueAsString(requestTask);
+        @Test
+        @DisplayName("TaskNotFoundException 예외를 던진다")
+        void thenReturnTaskNotFoundException() throws Exception {
+            Task requestTask = new Task();
+            requestTask.setTitle(TASK_UPDATE_PREFIX + TASK_TITLE);
+            String taskContent = objectMapper.writeValueAsString(requestTask);
 
-                    mockMvc.perform(patch("/tasks/" + EXIST_ID)
-                           .content(taskContent)
-                           .contentType(MediaType.APPLICATION_JSON)
-                           .accept(MediaType.APPLICATION_JSON))
-                           .andExpect(status().isOk())
-                           .andExpect(content().string(containsString(TASK_TITLE)));
-                }
-            }
+            when(taskService.updateTask(eq(WRONG_ID), any(Task.class))).thenThrow(new TaskNotFoundException(WRONG_ID));
 
-            @Nested
-            @DisplayName("Task id 값이 Null 이거나 유효하지 않으면")
-            class whenRequestWithNullOrInvalidTaskId {
-
-                @Test
-                @DisplayName("TaskNotFoundException 예외를 던진다")
-                void thenReturnTaskNotFoundException() throws Exception {
-                    Task requestTask = new Task();
-                    requestTask.setTitle(TASK_UPDATE_PREFIX + TASK_TITLE);
-                    String taskContent = objectMapper.writeValueAsString(requestTask);
-
-                    when(taskService.updateTask(eq(WRONG_ID), any(Task.class))).thenThrow(new TaskNotFoundException(WRONG_ID));
-
-                    mockMvc.perform(put("/tasks/" + WRONG_ID)
-                           .content(taskContent)
-                           .contentType(MediaType.APPLICATION_JSON)
-                           .accept(MediaType.APPLICATION_JSON))
-                           .andExpect(status().isNotFound())
-                           .andExpect(content().string(containsString(TASK_NOT_FOUND)));
-                }
-            }
+            mockMvc.perform(put("/tasks/" + WRONG_ID)
+                   .content(taskContent)
+                   .contentType(MediaType.APPLICATION_JSON)
+                   .accept(MediaType.APPLICATION_JSON))
+                   .andExpect(status().isNotFound())
+                   .andExpect(content().string(containsString(TASK_NOT_FOUND)));
         }
     }
 
     @Nested
-    @DisplayName("DELETE 메소드")
-    class deleteMethod {
+    @DisplayName("DELETE /tasks/{taskId} 는")
+    class deleteTask {
 
-        @Nested
-        @DisplayName("삭제 할 Task 에 대한")
-        class givenDeleteTask {
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
 
-            @Nested
-            @DisplayName("Task id 값이 유효 하면")
-            class whenRequestWithValidTaskId {
+            given(taskService.getTask(EXIST_ID)).willReturn(task);
+        }
 
-                @BeforeEach
-                void setUp() {
-                    Task task = new Task();
-                    task.setTitle(TASK_TITLE);
+        @Test
+        @DisplayName("Task 를 삭제하고 No Content (204 status) 응답한다")
+        void thenReturnNoContent() throws Exception {
+            Task task = new Task();
+            when(taskService.deleteTask(eq(EXIST_ID))).thenReturn(task);
 
-                    given(taskService.getTask(EXIST_ID)).willReturn(task);
-                }
+            mockMvc.perform(delete("/tasks/" + EXIST_ID))
+                   .andExpect(status().isNoContent());
+        }
 
-                @Test
-                @DisplayName("Task 를 삭제하고 No Content (204 status) 리턴한다")
-                void thenReturnNoContent() throws Exception {
-                    Task task = new Task();
-                    when(taskService.deleteTask(eq(EXIST_ID))).thenReturn(task);
+        @Test
+        @DisplayName("TaskNotFoundException 예외를 던진다")
+        void thenReturnTaskNotFoundException() throws Exception {
+            when(taskService.deleteTask(eq(WRONG_ID))).thenThrow(new TaskNotFoundException(WRONG_ID));
 
-                    mockMvc.perform(delete("/tasks/" + EXIST_ID))
-                           .andExpect(status().isNoContent());
-                }
-            }
-
-            @Nested
-            @DisplayName("Task id 값이 Null 이거나 유효하지 않으면")
-            class whenRequestWithInvalidTaskId {
-
-                @Test
-                @DisplayName("TaskNotFoundException 예외를 던진다")
-                void thenReturnTaskNotFoundException() throws Exception {
-                    when(taskService.deleteTask(eq(WRONG_ID))).thenThrow(new TaskNotFoundException(WRONG_ID));
-
-                    mockMvc.perform(delete("/tasks/" + WRONG_ID))
-                           .andExpect(status().isNotFound())
-                           .andExpect(content().string(containsString(TASK_NOT_FOUND)));
-                }
-            }
+            mockMvc.perform(delete("/tasks/" + WRONG_ID))
+                   .andExpect(status().isNotFound())
+                   .andExpect(content().string(containsString(TASK_NOT_FOUND)));
         }
     }
 }
