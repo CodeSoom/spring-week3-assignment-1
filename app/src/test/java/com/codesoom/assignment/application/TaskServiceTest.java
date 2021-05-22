@@ -7,13 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
@@ -62,44 +60,26 @@ class TaskServiceTest {
         @DisplayName("만약 tasks가 비어있지 않다면")
         class Context_of_tasks_not_empty {
 
-            private List<AbstractMap.SimpleEntry<TaskService, TasksSize>> taskServiceEntrys;
+            private List<TaskService> taskServices;
 
             @BeforeEach
             void setup() {
-                taskServiceEntrys = new ArrayList<>();
+                taskServices = new ArrayList<>();
 
                 for (long i = 1L; i <= 100L; i++) {
-                    AbstractMap.SimpleEntry<TaskService, TasksSize> entry
-                            = new AbstractMap.SimpleEntry<>(generateTaskService(i), new TasksSize(i));
-                    taskServiceEntrys.add(entry);
+                    taskServices.add(generateTaskService(i));
                 }
             }
 
             @Test
             @DisplayName("tasks에 포함된 모든 '할 일'들을 반환한다")
             void it_returns_all_tasks() {
-                taskServiceEntrys.forEach(entry -> {
-                            TaskService taskService = entry.getKey();
-                            long tasksSize = entry.getValue().getSize();
-                            if (tasksSize > Integer.MAX_VALUE) {
-                                fail("tasks 사이즈가 너무 커서 'hasSize' 메소드로 비교할 수 없습니다");
-                            }
+                int taskSize = 1;
 
-                            assertThat(taskService.getTasks())
-                                    .hasSize((int)tasksSize);
-                        }
-                );
-            }
-
-            private class TasksSize {
-                private long size;
-
-                public TasksSize(long size) {
-                    this.size = size;
-                }
-
-                public long getSize() {
-                    return size;
+                for (TaskService taskService : taskServices) {
+                    assertThat(taskService.getTasks())
+                            .hasSize(taskSize);
+                    taskSize += 1;
                 }
             }
         }
