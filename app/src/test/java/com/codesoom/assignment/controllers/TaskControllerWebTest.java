@@ -1,6 +1,6 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskEmptyTitleException;
+import com.codesoom.assignment.EmptyTaskTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
@@ -142,7 +142,7 @@ class TaskControllerWebTest {
                 content = objectMapper.writeValueAsString(invalidTask);
 
                 given(taskService.createTask(any(Task.class)))
-                        .willThrow(new TaskEmptyTitleException());
+                        .willThrow(new EmptyTaskTitleException());
             }
 
             @Test

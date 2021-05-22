@@ -1,6 +1,6 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskEmptyTitleException;
+import com.codesoom.assignment.EmptyTaskTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -125,10 +125,10 @@ class TaskServiceTest {
             @DisplayName("It throw the bad request exception")
             void createTask() {
                 assertThatThrownBy(() -> taskService.createTask(null))
-                        .isInstanceOf(TaskEmptyTitleException.class);
+                        .isInstanceOf(EmptyTaskTitleException.class);
 
                 assertThatThrownBy(() -> taskService.createTask(newTask))
-                        .isInstanceOf(TaskEmptyTitleException.class);
+                        .isInstanceOf(EmptyTaskTitleException.class);
             }
         }
     }

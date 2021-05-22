@@ -1,6 +1,6 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskEmptyTitleException;
+import com.codesoom.assignment.EmptyTaskTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
@@ -130,7 +130,7 @@ class TaskControllerTest {
                 Task newTask = new Task();
 
                 assertThatThrownBy(() -> controller.create(newTask))
-                    .isInstanceOf(TaskEmptyTitleException.class);
+                    .isInstanceOf(EmptyTaskTitleException.class);
             }
         }
     }
