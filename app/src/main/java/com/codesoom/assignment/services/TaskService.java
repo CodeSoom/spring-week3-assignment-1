@@ -49,17 +49,17 @@ public class TaskService {
 
     /**
      * 새로운 할 일을 등록합니다.
-     * @param newTaskTitle 새로 등록할 할 일 제목
+     * @param taskTitle 새로 등록할 할 일 제목
      * @return 등록한 할 일
      */
-    public Task saveTask(String newTaskTitle) {
+    public Task saveNewTask(String taskTitle) {
         log.info(">>> Access Service 할 일 등록");
 
         Long newTaskId = getNewTaskId();
 
         Task newTask = new Task();
         newTask.setId(newTaskId);
-        newTask.setTitle(newTaskTitle);
+        newTask.setTitle(taskTitle);
 
         tasksMap.put(newTask.getId(), newTask);
 

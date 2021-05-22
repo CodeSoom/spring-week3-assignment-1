@@ -173,7 +173,7 @@ class TaskControllerWebTest {
                 newTask.setId(NEW_TASK_ID);
                 newTask.setTitle(NEW_TASK_TITLE);
 
-                given(taskService.saveTask(newTask.getTitle())).willReturn(newTask);
+                given(taskService.saveNewTask(newTask.getTitle())).willReturn(newTask);
 
             }
 

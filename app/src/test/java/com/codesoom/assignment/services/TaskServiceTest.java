@@ -55,8 +55,8 @@ class TaskServiceTest {
             void setUp() {
                 String taskTitle1 = NEW_TASK_TITLE + "1";
                 String taskTitle2 = NEW_TASK_TITLE + "2";
-                taskService.saveTask(taskTitle1);
-                taskService.saveTask(taskTitle2);
+                taskService.saveNewTask(taskTitle1);
+                taskService.saveNewTask(taskTitle2);
             }
 
             @Test
@@ -80,7 +80,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                taskService.saveTask(NEW_TASK_TITLE);
+                taskService.saveNewTask(NEW_TASK_TITLE);
             }
 
             @Test
@@ -100,7 +100,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                taskService.saveTask(NEW_TASK_TITLE);
+                taskService.saveNewTask(NEW_TASK_TITLE);
             }
 
             @Test
@@ -118,7 +118,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("saveTask 메소드는")
+    @DisplayName("saveNewTask 메소드는")
     class Describe_saveTask {
 
         @Nested
@@ -130,7 +130,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("생성된 할 일을 반환합니다. 할 일 목록에 생성된 할 일이 조회됩니다.")
             void it_return_created_task() {
-                Task createdTask = taskService.saveTask(NEW_TASK_TITLE);
+                Task createdTask = taskService.saveNewTask(NEW_TASK_TITLE);
 
                 Assertions.assertThat(createdTask.getId()).isEqualTo(newTaskId);
                 Assertions.assertThat(createdTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
@@ -179,7 +179,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task targetTask = taskService.saveTask(NEW_TASK_TITLE);
+                Task targetTask = taskService.saveNewTask(NEW_TASK_TITLE);
                 updateTaskId = targetTask.getId();
 
                 paramTask.setTitle(UPDATE_TASK_TITLE);
@@ -229,7 +229,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task targetTask = taskService.saveTask(NEW_TASK_TITLE);
+                Task targetTask = taskService.saveNewTask(NEW_TASK_TITLE);
                 removedTaskId = targetTask.getId(); // 삭제할 할 일 ID
             }
 
