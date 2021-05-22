@@ -111,14 +111,15 @@ class TaskControllerWebTest {
 
             @BeforeEach
             void setUp() {
-                given(taskService.findTaskOne(NOT_FOUND_TASK_ID)).willThrow(TaskNotFoundException.class);
+                given(taskService.findTaskOne(NOT_FOUND_TASK_ID)).willThrow(new TaskNotFoundException());
             }
 
             @Test
             @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
             void it_return_404_status_and_err_message() throws Exception {
                 mockMvc.perform(get("/tasks/"+NOT_FOUND_TASK_ID))
-                        .andExpect(status().isNotFound());
+                        .andExpect(status().isNotFound())
+                        .andExpect(content().string(TASK_NOT_FOUND_ERROR_MESSAGE));
             }
 
         }
@@ -172,13 +173,13 @@ class TaskControllerWebTest {
                 newTask.setId(NEW_TASK_ID);
                 newTask.setTitle(NEW_TASK_TITLE);
 
-                given(taskService.saveTask(newTask)).willReturn(newTask);
+                given(taskService.saveTask(newTask.getTitle())).willReturn(newTask);
 
             }
 
             @Test
-            @DisplayName("200 상태코드와 생성된 할 일을 반환합니다.")
-            void it_return_created_task_and_200_status() throws Exception {
+            @DisplayName("201 상태코드와 생성된 할 일을 반환합니다.")
+            void it_return_created_task_and_201_status() throws Exception {
 
                 mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +207,7 @@ class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 paramTask.setTitle(NEW_TASK_TITLE);
-                given(taskService.updateTask(NOT_FOUND_TASK_ID, UPDATE_TASK_TITLE)).willThrow(new TaskNotFoundException());
+                given(taskService.updateTask(NOT_FOUND_TASK_ID, paramTask.getTitle())).willThrow(new TaskNotFoundException());
             }
 
             @Test
@@ -215,7 +216,8 @@ class TaskControllerWebTest {
                 mockMvc.perform(put("/tasks/"+NOT_FOUND_TASK_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(paramTask)))
-                        .andExpect(status().isNotFound());
+                        .andExpect(status().isNotFound())
+                        .andExpect(content().string(TASK_NOT_FOUND_ERROR_MESSAGE));
             }
 
         }
@@ -275,7 +277,8 @@ class TaskControllerWebTest {
             @DisplayName("404 상태코드와 에러 메세지를 반환합니다.")
             void it_return_404_status_and_err_message() throws Exception {
                 mockMvc.perform(delete("/tasks/"+NOT_FOUND_TASK_ID))
-                        .andExpect(status().isNotFound());
+                        .andExpect(status().isNotFound())
+                        .andExpect(content().string(TASK_NOT_FOUND_ERROR_MESSAGE));
             }
 
         }

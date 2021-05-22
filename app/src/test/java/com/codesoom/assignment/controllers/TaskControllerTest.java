@@ -56,10 +56,10 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task1 = new Task();
-                Task task2 = new Task();
-                taskService.saveTask(task1);
-                taskService.saveTask(task2);
+                String taskTitle1 = NEW_TASK_TITLE + "1";
+                String taskTitle2 = NEW_TASK_TITLE + "2";
+                taskService.saveTask(taskTitle1);
+                taskService.saveTask(taskTitle2);
             }
 
             @Test
@@ -83,8 +83,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                taskService.saveTask(newTask);
+                taskService.saveTask(NEW_TASK_TITLE);
             }
 
             @Test
@@ -105,9 +104,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                newTask.setTitle(NEW_TASK_TITLE);
-                taskService.saveTask(newTask);
+                taskService.saveTask(NEW_TASK_TITLE);
             }
 
             @Test

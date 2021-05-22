@@ -79,7 +79,7 @@ public class TaskController {
         log.info("==== Req Param ====");
         log.info("newTask : " + newTask.toString());
         log.info("===================");
-        Task createdTask = this.taskService.saveTask(newTask);
+        Task createdTask = this.taskService.saveTask(newTask.getTitle());
 
         log.info(">>>>>>>>>>>> Response : " + createdTask.toString());
 

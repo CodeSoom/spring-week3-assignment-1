@@ -53,10 +53,10 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task task1 = new Task();
-                Task task2 = new Task();
-                taskService.saveTask(task1);
-                taskService.saveTask(task2);
+                String taskTitle1 = NEW_TASK_TITLE + "1";
+                String taskTitle2 = NEW_TASK_TITLE + "2";
+                taskService.saveTask(taskTitle1);
+                taskService.saveTask(taskTitle2);
             }
 
             @Test
@@ -80,8 +80,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                taskService.saveTask(newTask);
+                taskService.saveTask(NEW_TASK_TITLE);
             }
 
             @Test
@@ -101,9 +100,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                newTask.setTitle(NEW_TASK_TITLE);
-                taskService.saveTask(newTask);
+                taskService.saveTask(NEW_TASK_TITLE);
             }
 
             @Test
@@ -129,17 +126,11 @@ class TaskServiceTest {
         class Context_valid_task_id {
 
             private Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
-            private Task paramTask = new Task();
-
-            @BeforeEach
-            void setUp() {
-                paramTask.setTitle(NEW_TASK_TITLE);
-            }
 
             @Test
             @DisplayName("생성된 할 일을 반환합니다.")
             void it_return_created_task() {
-                Task createdTask = taskService.saveTask(paramTask);
+                Task createdTask = taskService.saveTask(NEW_TASK_TITLE);
 
                 Assertions.assertThat(createdTask.getId()).isEqualTo(newTaskId);
                 Assertions.assertThat(createdTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
@@ -183,10 +174,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                newTask.setTitle(NEW_TASK_TITLE);
-
-                Task targetTask = taskService.saveTask(newTask);
+                Task targetTask = taskService.saveTask(NEW_TASK_TITLE);
                 updateTaskId = targetTask.getId();
 
                 paramTask.setTitle(UPDATE_TASK_TITLE);
@@ -231,10 +219,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task newTask = new Task();
-                newTask.setTitle(NEW_TASK_TITLE);
-                Task targetTask = taskService.saveTask(newTask);
-
+                Task targetTask = taskService.saveTask(NEW_TASK_TITLE);
                 removedTaskId = targetTask.getId(); // 삭제할 할 일 ID
             }
 
