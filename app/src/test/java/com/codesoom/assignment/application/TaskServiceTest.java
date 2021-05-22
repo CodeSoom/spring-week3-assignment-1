@@ -12,6 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("TaskService 클래스의")
 class TaskServiceTest {
@@ -19,7 +20,6 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        // subject
         taskService = new TaskService();
     }
 
@@ -30,19 +30,17 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 1개의 할 일이 등록되어 있다면")
         class Context_with_one_task {
-            // fixture
             private final String validTaskTitle = "test";
 
             @BeforeEach
             void prepareTasks() {
-                // fixture
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
                 taskService.createTask(task);
             }
 
             @Test
-            @DisplayName("등록된 할 일 1개를 반환한다")
+            @DisplayName("등록되어 있는 할 일 1개를 반환한다")
             void It_returns_one_task() {
                 List<Task> tasks = taskService.getTasks();
                 assertAll(
@@ -58,14 +56,13 @@ class TaskServiceTest {
     class Describe_getTask {
 
         @Nested
-        @DisplayName("만약 기존에 등록된 할 일을 조회한다면")
+        @DisplayName("만약 등록되어 있는 할 일을 조회한다면")
         class Context_with_valid_task {
             private final Long validTaskId = 1L;
             private final String validTaskTitle = "test";
 
             @BeforeEach
             void prepareTasks() {
-                // fixture
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
                 taskService.createTask(task);
@@ -86,7 +83,7 @@ class TaskServiceTest {
             private final Long invalidTaskId = 100L;
 
             @Test
-            @DisplayName("Task Not Found 예외를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 내용의 예외를 던진다")
             void It_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(invalidTaskId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -110,7 +107,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("새로운 할 일을 생성한다.")
+            @DisplayName("새로운 할 일을 생성한다")
             void It_creates_one_task() {
                 final int oldSize = taskService.getTasks()
                                                .size();
@@ -189,8 +186,9 @@ class TaskServiceTest {
                 int newSize = taskService.getTasks()
                                          .size();
 
-                assertThat(oldSize - newSize)
-                        .isEqualTo(1);
+                assertEquals(1,
+                             oldSize - newSize,
+                             "할 일을 제거한 이후 할 일 개수가 1개 줄어든다");
             }
         }
     }
