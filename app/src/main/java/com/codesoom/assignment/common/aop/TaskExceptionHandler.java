@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 할 일 관련 예외가 던져졌을 떄, 해당 예외에 맞는 Response를 반환합니다.
+ * 할 일과 관련된 예외의 처리를 담당합니다.
  */
 @RestControllerAdvice
 public class TaskExceptionHandler {
