@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
@@ -109,7 +108,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setNonExistentId() {
-                notAppendedTask = generateTask(1L, "notAppended");
+                notAppendedTask = generateTask(-1L, "notAppended");
                 nonExistentId = notAppendedTask.getId();
             }
 
