@@ -1,3 +1,11 @@
+- HelloController 유닛 테스트
+- HelloController MockMVC 테스트
+- Task 모델 테스트 
+- ✅ TaskService 테스트
+- TaskController 유닛 테스트
+* TaskController MockMVC 테스트
+
+
 Service layer에
 - @Service, @Component를 붙여줌으로써, 컨트롤러에게 명시해준다.(스프링이 관리하는 애다! 라고 알려주는 것)
 
