@@ -128,12 +128,17 @@ class TaskServiceTest {
             private Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
 
             @Test
-            @DisplayName("생성된 할 일을 반환합니다.")
+            @DisplayName("생성된 할 일을 반환합니다. 할 일 목록에 생성된 할 일이 조회됩니다.")
             void it_return_created_task() {
                 Task createdTask = taskService.saveTask(NEW_TASK_TITLE);
 
                 Assertions.assertThat(createdTask.getId()).isEqualTo(newTaskId);
                 Assertions.assertThat(createdTask.getTitle()).isEqualTo(NEW_TASK_TITLE);
+
+                // 새로운 할 일이 생성되었음을 확인
+                Task foundTask = taskService.findTaskOne(createdTask.getId());
+                Assertions.assertThat(foundTask.getId()).isEqualTo(createdTask.getId());
+                Assertions.assertThat(foundTask.getTitle()).isEqualTo(createdTask.getTitle());
             }
 
         }
@@ -181,13 +186,18 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("수정된 할 일을 반환합니다.")
+            @DisplayName("수정된 할 일을 반환합니다. 할 일 목록에서 수정된 할 일이 조회됩니다.")
             void it_return_updated_task() {
                 Task updatedTask = taskService.updateTask(updateTaskId, paramTask.getTitle());
 
                 Assertions.assertThat(updatedTask).isNotNull();
                 Assertions.assertThat(updatedTask.getId()).isEqualTo(updateTaskId);
                 Assertions.assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+
+                // 해당 할 일이 수정되었음을 확인
+                Task foundTask = taskService.findTaskOne(updatedTask.getId());
+                Assertions.assertThat(foundTask.getId()).isEqualTo(updatedTask.getId());
+                Assertions.assertThat(foundTask.getTitle()).isEqualTo(updatedTask.getTitle());
             }
 
         }
@@ -224,10 +234,14 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("제거한 할 일을 반환합니다.")
-            void it_return_and_204_status() {
-                Task deletedTask = taskService.removeTask(removedTaskId);
-                Assertions.assertThat(deletedTask.getId()).isEqualTo(removedTaskId);
+            @DisplayName("삭제한 할 일을 반환합니다. 할 일 목록에서는 해당 할 일이 조회되지 않습니다.")
+            void it_return_and_deleted_task() {
+                Task removedTask = taskService.removeTask(removedTaskId);
+                Assertions.assertThat(removedTask.getId()).isEqualTo(removedTaskId);
+
+                // 현재 할 일 목록에서 삭제됨을 확인
+                Assertions.assertThatThrownBy( () -> taskService.findTaskOne(removedTask.getId()))
+                        .isInstanceOf(TaskNotFoundException.class);
             }
 
         }
