@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -48,18 +50,13 @@ class TaskControllerWebTest {
 
     @Test
     @DisplayName("task를 만들었다면, 더이상 빈 목록은 아니게 된다.")
-    void createNewTest(){
-        TaskController controller = new TaskController();
-        Task task = new Task();
-
-        task.setTitle("hello");
-        controller.create(task);
-        assertThat(controller.list()).isNotEmpty();
-        assertThat(controller.list()).hasSize(1);
-
-        task.setTitle("hello2");
-        controller.create(task);
-        assertThat(controller.list()).hasSize(2);
+    void createNewTest() throws Exception {
+        mockMvc.perform(
+                post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"hello\"}")
+        )
+                .andExpect(status().isCreated());
     }
 
 
