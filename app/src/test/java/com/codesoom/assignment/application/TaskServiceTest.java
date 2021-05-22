@@ -47,7 +47,7 @@ class TaskServiceTest {
         class Context_of_empty_tasks {
 
             @Test
-            @DisplayName("비어있는 배열을 반환한다")
+            @DisplayName("비어있는 리스트를 반환한다")
             void it_returns_empty_array() {
                 List<Task> tasks = taskService.getTasks();
 
@@ -71,7 +71,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("tasks에 포함된 모든 객체를 반환한다")
+            @DisplayName("tasks에 포함된 모든 '할 일'들을 반환한다")
             void it_returns_all_tasks() {
                 assertThat(size1.getTasks()).hasSize(1);
                 assertThat(size2.getTasks()).hasSize(2);
@@ -100,7 +100,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks에 존재하지 않는 객체 id를 인자로 입력하면")
+        @DisplayName("만약 tasks에 존재하지 않는 '할 일'의 id를 인자로 입력하면")
         class Context_of_non_existent_id {
 
             private Task notAppendedTask;
@@ -121,7 +121,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks에 포함된 객체의 id를 인자로 전달 받으면")
+        @DisplayName("만약 tasks에 포함된 '할 일'의 id를 인자로 전달 받으면")
         class Context_of_exist_id {
 
             private long existId;
@@ -132,7 +132,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("id에 해당하는 task를 반환한다")
+            @DisplayName("id에 해당하는 '할 일'을 반환한다")
             void getTask() {
                 Task task = taskService.getTask(existId);
 
@@ -158,17 +158,17 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("새 객체를 생성 및 tasks에 추가하고, 추가한 객체를 반환한다")
+            @DisplayName("새 '할 일'을 생성 및 tasks에 추가하고, 추가한 '할 일'을 반환한다")
             void it_appends_new_task_and_returns_it() {
                 Task createdTask = taskService.createTask(givenTask);
                 assertThat(createdTask)
                         .isEqualTo(givenTask)
-                        .withFailMessage("추가한 객체가 반환되지 않았다");
+                        .withFailMessage("추가한 '할 일'이 반환되지 않았다");
 
                 createdTask = taskService.getTask(givenTask.getId());
                 assertThat(createdTask)
                         .isEqualTo(givenTask)
-                        .withFailMessage("새 객체가 tasks에 추가되지 않았다");
+                        .withFailMessage("새 '할 일'이 tasks에 추가되지 않았다");
             }
         }
     }
@@ -194,16 +194,16 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("기존 객체를 갱신한 후, 갱신한 객체를 반환한다 ")
+            @DisplayName("'할 일'을 갱신한 후, 갱신한 '할 일'을 반환한다 ")
             void it_updates_task_and_returns_it() {
                 Task updatedTask = taskService.updateTask(givenTaskId, givenTask);
 
                 assertThat(updatedTask).isEqualTo(givenTask)
-                        .withFailMessage("갱신한 객체를 적절히 반환하지 않았다");
+                        .withFailMessage("갱신한 '할 일'을 적절히 반환하지 않았다");
 
                 updatedTask = taskService.getTask(givenTask.getId());
                 assertThat(updatedTask).isEqualTo(givenTask)
-                        .withFailMessage("기존 객체를 갱신하지 않았다");
+                        .withFailMessage("'할 일'을 갱신하지 않았다");
             }
         }
     }
@@ -225,7 +225,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks에 존재하지 않는 객체 id를 인자로 전달하면")
+        @DisplayName("만약 tasks에 존재하지 않는 '할 일' id를 인자로 전달하면")
         class Context_of_non_existent_id {
 
             private Long nonExistentId;
@@ -246,7 +246,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks에 존재하는 객체의 id를 인자로 전달하면")
+        @DisplayName("만약 tasks에 존재하는 '할 일'의 id를 인자로 전달하면")
         class Context_of_exist_id {
 
             private Long existId;
@@ -257,15 +257,15 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("해당 id 객체를 tasks에서 제거하고, 제거한 객체를 반환한다")
+            @DisplayName("해당 id '할 일'을 tasks에서 제거하고, 제거한 '할 일'을 반환한다")
             void it_removes_task_from_tasks_and_returns_it() {
                 Task deletedTask = taskService.deleteTask(existId);
 
                 assertThat(deletedTask).isEqualTo(givenTask)
-                        .withFailMessage("삭제한 객체가 반환되지 않았다");
+                        .withFailMessage("삭제한 '할 일'이 반환되지 않았다");
                 assertThatThrownBy(() -> taskService.getTask(existId))
                         .isInstanceOf(TaskNotFoundException.class)
-                        .withFailMessage("객체가 삭제되지 않았다");
+                        .withFailMessage("'할 일'이 삭제되지 않았다");
             }
         }
     }
