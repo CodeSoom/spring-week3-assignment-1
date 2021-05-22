@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import org.springframework.util.StringUtils;
+
 import java.util.Objects;
 
 public class Task {
@@ -23,7 +25,6 @@ public class Task {
         this.title = title;
     }
 
-    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Task)) {
             return false;

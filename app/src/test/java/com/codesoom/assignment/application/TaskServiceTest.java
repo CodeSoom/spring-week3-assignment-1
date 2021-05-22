@@ -124,6 +124,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("It throw the bad request exception")
             void createTask() {
+                assertThatThrownBy(() -> taskService.createTask(null))
+                        .isInstanceOf(TaskEmptyTitleException.class);
+
                 assertThatThrownBy(() -> taskService.createTask(newTask))
                         .isInstanceOf(TaskEmptyTitleException.class);
             }
