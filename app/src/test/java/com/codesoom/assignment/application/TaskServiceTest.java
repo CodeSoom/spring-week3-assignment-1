@@ -1,5 +1,6 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.TaskEmptyTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,6 @@ class TaskServiceTest {
     void setup() {
         taskService = new TaskService();
 
-        // fixtures (미리 만들어지는 것들)
         Task task = new Task();
         task.setTitle(TASK_TITLE);
 
@@ -75,7 +75,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("when no exist a task with a matching ID")
+        @DisplayName("when no task with a matching ID")
         class ContextWithTask {
             @Test
             @DisplayName("It throw the not found exception")
@@ -86,44 +86,109 @@ class TaskServiceTest {
         }
     }
 
-    @Test
-    @DisplayName("It creates new task, puts it in list, and return nothing")
-    void createTask() {
-        int oldSize = taskService.getTasks().size();
+    @Nested
+    @DisplayName("createTask method")
+    class DescribeCreateTask {
+        int lastSize;
+        Long lastId;
+        Task newTask;
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
+        @BeforeEach
+        void prepare() {
+            List<Task> tasks = taskService.getTasks();
+            lastSize = tasks.size();
+            lastId = taskService.currentId();
 
-        taskService.createTask(task);
+            newTask = new Task();
+        }
 
-        assertThat(taskService.getTasks()).hasSize(2);
+        @Nested
+        @DisplayName("when task title is not empty")
+        class ContextWithTaskTitle {
+            @Test
+            @DisplayName("It creates and returns a new task ")
+            void createTask() {
+                newTask.setTitle(TASK_TITLE);
 
-        int newSize = taskService.getTasks().size();
+                Task createdTask = taskService.createTask(newTask);
 
-        assertThat(newSize - oldSize).isEqualTo(1);
+                assertThat(taskService.getTasks()).hasSize(lastSize + 1);
+                assertThat(createdTask.getId()).isEqualTo(lastId + 1);
+                assertThat(createdTask.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
+
+        @Nested
+        @DisplayName("when task title is empty")
+        class ContextWithoutTaskTitle {
+            @Test
+            @DisplayName("It throw the bad request exception")
+            void createTask() {
+                assertThatThrownBy(() -> taskService.createTask(newTask))
+                        .isInstanceOf(TaskEmptyTitleException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("It delete a task matched ID and return nothing")
-    void deleteTask() {
-        int oldSize = taskService.getTasks().size();
+    @Nested
+    @DisplayName("deleteTask method")
+    class DescribeDeleteTask {
+        @Nested
+        @DisplayName("when exist a task with a matching ID")
+        class ContextWithMatchedTask {
+            @Test
+            @DisplayName("It returns deleted and returns the task")
+            void deleteTask() {
+                Task deletedTask = taskService.deleteTask(1L);
 
-        taskService.deleteTask(1L);
+                assertThat(deletedTask.getId()).isEqualTo(1L);
+                assertThat(deletedTask.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
 
-        int newSize = taskService.getTasks().size();
-
-        assertThat(newSize - oldSize).isEqualTo(-1);
+        @Nested
+        @DisplayName("when no task with a matching ID")
+        class ContextWithoutMatchedTask {
+            @Test
+            @DisplayName("It throw the not found exception")
+            void deleteTask() {
+                assertThatThrownBy(() -> taskService.deleteTask(99L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("It update a task matched ID and return the task")
-    void updateTask() {
-        final Long ID = 1L;
+    @Nested
+    @DisplayName("updateTask method")
+    class DescribeUpdateTask {
+        Task source;
 
-        Task source = new Task();
-        source.setTitle(TASK_TITLE + TASK_UPDATE_POSTFIX);
+        @BeforeEach
+        void prepare() {
+            source = new Task();
+            source.setTitle(TASK_TITLE + TASK_UPDATE_POSTFIX);
+        }
 
-        Task task = taskService.updateTask(ID, source);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE + TASK_UPDATE_POSTFIX);
+        @Nested
+        @DisplayName("when exist a task with a matching ID")
+        class ContextWithMatchedTask {
+            @Test
+            @DisplayName("It updates and returns the task")
+            void updateTask() {
+                Task task = taskService.updateTask(1L, source);
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE + TASK_UPDATE_POSTFIX);
+            }
+        }
+
+        @Nested
+        @DisplayName("when no task with a matching ID")
+        class ContextWithoutMatchedTask {
+            @Test
+            @DisplayName("It throw the not found exception")
+            void deleteTask() {
+                assertThatThrownBy(() -> taskService.updateTask(99L, source))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }

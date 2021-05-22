@@ -1,8 +1,10 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.TaskEmptyTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,10 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
+        if (source == null || StringUtils.isEmpty(source.getTitle())) {
+            throw new TaskEmptyTitleException();
+        }
+
         Task task = new Task();
         task.setId(generateId());
         task.setTitle(source.getTitle());
@@ -45,6 +51,10 @@ public class TaskService {
         tasks.remove(task);
 
         return task;
+    }
+
+    public Long currentId() {
+        return newId;
     }
 
     private Long generateId() {
