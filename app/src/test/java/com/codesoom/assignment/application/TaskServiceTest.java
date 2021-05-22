@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskServiceTest class")
+@DisplayName("TaskService class")
 class TaskServiceTest {
 
     private final String TASK_TITLE = "test";
@@ -30,29 +31,59 @@ class TaskServiceTest {
         taskService.createTask(task);
     }
 
-    @Test
-    @DisplayName("It returns tasks")
-    void getTasks() {
-        List<Task> tasks = taskService.getTasks();
+    @Nested
+    @DisplayName("getTasks method")
+    class DescribeGetTasks {
+        @Nested
+        @DisplayName("when empty tasks")
+        class ContextWithEmptyTasks {
+            @Test
+            @DisplayName("It returns empty list")
+            void getTasks() {
+                List<Task> tasks = (new TaskService()).getTasks();
+                assertThat(tasks).isEmpty();
+            }
+        }
 
-        assertThat(tasks).hasSize(1);
+        @Nested
+        @DisplayName("when some tasks")
+        class ContextWithSomeTasks {
+            @Test
+            @DisplayName("It returns task list")
+            void getTasks() {
+                List<Task> tasks = taskService.getTasks();
+                assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+                Task task = tasks.get(0);
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("It returns a task matches ID")
-    void getTaskWithValidId() {
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
-    }
+    @Nested
+    @DisplayName("getTask method")
+    class DescribeGetTask {
+        @Nested
+        @DisplayName("when exist a task with a matching ID")
+        class ContextWithoutTask {
+            @Test
+            @DisplayName("It returns a task")
+            void getTaskWithValidId() {
+                Task task = taskService.getTask(1L);
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
 
-    @Test
-    @DisplayName("It throw the not found exception if ID mismatch")
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(99L))
-                .isInstanceOf(TaskNotFoundException.class);
+        @Nested
+        @DisplayName("when no exist a task with a matching ID")
+        class ContextWithTask {
+            @Test
+            @DisplayName("It throw the not found exception")
+            void getTaskWithInvalidId() {
+                assertThatThrownBy(() -> taskService.getTask(99L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Test
