@@ -261,28 +261,32 @@ class TaskControllerTest {
         @DisplayName("만약 유효한 id가 인자로 주어지면")
         class Context_of_valid_id {
 
-            private Task task1;
-            private Task task2;
+            private Task deleteTargetTask;
             private long validId;
+            private long beforeCount;
+            private long afterCount;
 
             @BeforeEach
-            void setSources() {
-                task1 = generateTask(1L, "task1");
-                task2 = generateTask(2L, "task2");
+            void setUp() {
+                deleteTargetTask = generateTask(1L, "task1");
+                Task task = generateTask(2L, "task2");
 
-                taskService.createTask(task1);
-                taskService.createTask(task2);
-                validId = task1.getId();
+                taskService.createTask(deleteTargetTask);
+                taskService.createTask(task);
+
+                validId = deleteTargetTask.getId();
+                beforeCount = taskController.list().size();
             }
 
             @Test
-            @DisplayName("해당되는 '할 일'을 tasks에서 삭제하고, 아무 값도 반환하지 않는다")
+            @DisplayName("해당되는 '할 일'을 '할 일 목록'에서 삭제한다")
             void it_returns_noting() {
                 taskController.delete(validId);
 
-                assertThat(taskController.list())
-                        .hasSize(1)
-                        .doesNotContain(task1);
+                afterCount = taskController.list().size();
+
+                assertThat(beforeCount - 1)
+                        .isEqualTo(afterCount);
             }
         }
     }
