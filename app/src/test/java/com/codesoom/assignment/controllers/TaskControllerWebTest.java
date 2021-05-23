@@ -22,8 +22,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -85,7 +84,6 @@ public class TaskControllerWebTest {
     @Nested
     @DisplayName("특정한 할 일을 요청할 때")
     class Describe_detailMvc {
-        Task task = new Task();
 
         @Nested
         @DisplayName("요청한 ID에 맞는 할 일이 없다면")
@@ -134,7 +132,6 @@ public class TaskControllerWebTest {
         @DisplayName("Title 내용이 주어지면")
         class Context_exist_title {
             Task source = new Task();
-            Task task = new Task();
 
             @BeforeEach
             void setUp() {
@@ -144,21 +141,23 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("할 일을 생성하고, 생성된 할 일을 리턴, 201 응답코드를 전달합니다.")
             void it_create_task_and_return() throws Exception {
-                given(taskService.createTask(source)).willReturn(task);
-                source.setTitle("Test");
-                task.setTitle("Test");
-                task.setId(1L);
+                given(taskService.createTask(any())).will(invocation -> {
+                   Task task = invocation.getArgument(0);
+                   task.setId(1L);
+                   task.setTitle("Test");
+                   return task;
+                });
 
                 final ResultActions actions = mockMvc.perform(post("/tasks")
-                        .content(mapper.writeValueAsString(source))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(source))
                         .accept(MediaType.APPLICATION_JSON));
 
                 actions
-                        .andExpect(status().isCreated());
-//                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                        .andExpect(jsonPath("$.title", is("Test")))
-//                        .andExpect(jsonPath("$.id", is(1L)));
+                        .andExpect(status().isCreated())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("title", is("Test")))
+                        .andExpect(jsonPath("id", is(1)));
             }
         }
     }
@@ -180,38 +179,163 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("TaskNotFound 예외를 던지고, 404 응답코드를 전달합니다.")
             void it_throw_exception() throws Exception {
-                given(taskService.updateTask(100L, source))
+                given(taskService.updateTask(eq(100L), any(Task.class)))
                         .willThrow(TaskNotFoundException.class);
-                given(taskService.getTask(100L))
-                        .willThrow(TaskNotFoundException.class);
-                source.setTitle("New Task");
 
                 final ResultActions actions = mockMvc.perform(patch("/tasks/100")
                         .content(mapper.writeValueAsString(source))
                         .contentType(MediaType.APPLICATION_JSON));
-//                        .accept(MediaType.APPLICATION_JSON));
 
                 actions
                         .andExpect(status().isNotFound());
             }
         }
+
+        @Nested
+        @DisplayName("등록된 ID로 요청하면")
+        class Context_with_registered_ID {
+            Task source = new Task();
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("등록된 ID의 내용을 변경하고, 변경된 할 일을 리턴, 200 응답코드를 전달합니다.")
+            void it_update_task_and_return() throws Exception {
+                given(taskService.updateTask((long)eq(1), any(Task.class)))
+                        .will(invocation -> {
+                            Task task = invocation.getArgument(0);
+                            task.setId(1L);
+                            task.setTitle("New Test");
+                            return task;
+                        });
+
+                final ResultActions actions = mockMvc.perform(patch("/tasks/1")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isOk());
+//                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                        .andExpect(jsonPath("title", is("New Test")))
+//                        .andExpect(jsonPath("id", is(1)));
+            }
+        }
     }
 
-    @Test
-    void updateMvcTest() throws Exception {
-        mockMvc.perform(put("/tasks/1 title:New Test"))
-                .andExpect(status().isOk());
+    @Nested
+    @DisplayName("등록된 할 일을 수정할 때")
+    class Describe_patchMvc {
+
+        @Nested
+        @DisplayName("등록되지 않은 ID로 요청하면")
+        class Context_with_not_registered_ID {
+            Task source = new Task();
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("TaskNotFound 예외를 던지고, 404 응답코드를 전달합니다.")
+            void it_throw_exception() throws Exception {
+                given(taskService.updateTask(eq(100L), any(Task.class)))
+                        .willThrow(TaskNotFoundException.class);
+
+                final ResultActions actions = mockMvc.perform(patch("/tasks/100")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("등록된 ID로 요청하면")
+        class Context_with_registered_ID {
+            Task source = new Task();
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("등록된 ID의 내용을 변경하고, 변경된 할 일을 리턴, 200 응답코드를 전달합니다.")
+            void it_update_task_and_return() throws Exception {
+                given(taskService.updateTask((long)eq(1), any(Task.class)))
+                        .will(invocation -> {
+                            Task task = invocation.getArgument(0);
+                            task.setId(1L);
+                            task.setTitle("New Test");
+                            return task;
+                        });
+
+                final ResultActions actions = mockMvc.perform(patch("/tasks/1")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isOk());
+//                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                        .andExpect(jsonPath("title", is("New Test")))
+//                        .andExpect(jsonPath("id", is(1)));
+            }
+        }
     }
 
-    @Test
-    void patchMvcTest() throws Exception {
-        mockMvc.perform(patch("/tasks/1 title:New Test"))
-                .andExpect(status().isOk());
-    }
+    @Nested
+    @DisplayName("등록된 할 일을 삭제할 때")
+    class Describe_deleteMvc {
+        Task source = new Task();
 
-    @Test
-    void deleteMvcTest() throws Exception {
-        mockMvc.perform(delete("/tasks/1"))
-                .andExpect(status().isNoContent());
+        @Nested
+        @DisplayName("등록되지 않은 ID를 요청하면")
+        class Context_with_not_registered_ID {
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("TaskNotFound 예외를 던지고, 404 응답코드를 전달합니다.")
+            void it_throw_exception() throws Exception {
+                given(taskService.deleteTask(any()))
+                        .willThrow(TaskNotFoundException.class);
+
+                final ResultActions actions = mockMvc.perform(delete("/tasks/100")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("등록된 ID를 요청하면")
+        class Context_with_registered_ID {
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("등록된 할 일을 삭제하고, 204 응답코드를 전달합니다.")
+            void it_delete_task() throws Exception {
+                given(taskService.deleteTask(any())).willReturn(null);
+
+                final ResultActions actions = mockMvc.perform(delete("/tasks/1"));
+
+                actions
+                        .andExpect(status().isNoContent());
+            }
+        }
     }
 }
