@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,25 +32,20 @@ public class HelloControllerWebTest {
             @Test
             @DisplayName("Http Status는 200이다.")
             void sayhello_response_status_ok() throws Exception {
-
-                ResultActions resultActions = mockMvc
+                mockMvc
                         .perform(get("/")
-                                .contentType(MediaType.APPLICATION_JSON));
-
-                resultActions
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andDo(print());
             }
 
             @Test
-            @DisplayName("Hello, World 값을 응답한다.")
+            @DisplayName("특정 메시지를 리턴해준다")
             void sayhello_response_data() throws Exception {
 
-                ResultActions resultActions = mockMvc
+                mockMvc
                         .perform(get("/")
-                                .contentType(MediaType.APPLICATION_JSON));
-
-                resultActions
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(content().string(containsString("Hello, World")))
                         .andDo(print());
             }

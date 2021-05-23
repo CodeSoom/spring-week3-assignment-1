@@ -14,9 +14,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 
+@DisplayName("TestController")
 class TaskControllerTest {
     private TaskController taskController;
     private TaskService taskService;
+
+    private Task task;
+    private List<Task> tasks;
 
     @BeforeEach
     public void setUp() {
@@ -31,7 +35,7 @@ class TaskControllerTest {
         return task;
     }
 
-    public Task findTaskById(List<Task> tasks, Long taskId){
+    public Task findTaskById(List<Task> tasks, Long taskId) {
         return tasks
                 .stream()
                 .filter(x -> x.getId()
@@ -45,7 +49,7 @@ class TaskControllerTest {
     @DisplayName("list() 메서드는")
     class Describe_list {
         @Nested
-        @DisplayName("Task 목록이 존재한다면")
+        @DisplayName("할 일에 대한 목록이 존재한다면")
         class Context_valid_not_empty_list {
             @Test
             @DisplayName("Null이 아니고 비어 있지 않은 목록을 반환한다.")
@@ -62,7 +66,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("생성된 Task의 수 만큼의 목록을 반환한다.")
+            @DisplayName("생성된 할 일의 수 만큼의 목록을 반환한다.")
             void list_valid_return() {
                 //given
                 int listSize = 5;
@@ -79,7 +83,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("Task 목록이 비어있다면")
+        @DisplayName("할 일의 목록이 비어있다면")
         class Context_invalid_empty_list {
             @Test
             @DisplayName("빈 목록을 반환한다.")
@@ -98,35 +102,32 @@ class TaskControllerTest {
     @DisplayName("detail(id) 메서드는")
     class Describe_detail {
         @Nested
-        @DisplayName("요청한 Task 목록이 있다면")
+        @DisplayName("요청한 할 일이 목록에 있다면")
         class Context_valid_detail {
+            private Long taskId;
+            private Task returnTask;
+
+            @BeforeEach
+            void setUpValidDetail() {
+                //given
+                task = makeTask("New Task");
+                taskId = task.getId();
+                //when
+                tasks = taskController.list();
+                returnTask = findTaskById(tasks, taskId);
+            }
+
             @Test
             @DisplayName("리턴 값은 null이 아니다.")
             void detail_with_valid_not_null() {
-                //given
-                Task task = makeTask("New Task");
-                Long taskId = task.getId();
-
-                //when
-                List<Task> tasks = taskController.list();
-                Task returnTask = findTaskById(tasks, taskId);
-
                 //then
                 assertThat(returnTask)
                         .isNotNull();
             }
 
             @Test
-            @DisplayName("요청한 Task를 반환한다.")
+            @DisplayName("요청한 할일을 반환한다.")
             void detail_with_valid() {
-                //given
-                Task task = makeTask("New Task");
-                Long taskId = task.getId();
-
-                //when
-                List<Task> tasks = taskController.list();
-                Task returnTask = findTaskById(tasks, taskId);
-
                 //then
                 assertThat(returnTask.getTitle())
                         .isEqualTo(task.getTitle());
@@ -136,14 +137,14 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 Task가 목록에 없다면")
+        @DisplayName("요청한 할일이 목록에 없다면")
         class Context_invalid_detail {
+            private Long taskId = 1L;
+            private String errorMessage = String.format("Task not found: %d", taskId);
+
             @Test
             @DisplayName("TaskNotFoundException 발생")
             void detail_invalid_exception() {
-                //given
-                Long taskId = 1L;
-                String errorMessage = "Task not found: " + taskId;
                 //when
                 Throwable thrown = catchThrowable(() -> {
                     taskController.detail(taskId);
@@ -161,19 +162,24 @@ class TaskControllerTest {
     @DisplayName("create(Task) 메소드는")
     class Describe_create {
         @Nested
-        @DisplayName("Task가 정상적으로 등록되면")
+        @DisplayName("할 일이 정상적으로 등록되면")
         class Context_create_valid {
-            @Test
-            @DisplayName("요청한 Task와 동일한 Task를 반환한다. ")
-            void create_valid_task() {
+            private String title;
+            private Task returnTask;
+
+            @BeforeEach
+            void setUpValidCreate() {
                 //given
-                String title = "Second Title";
-                Task task = new Task();
+                title = "Second Title";
+                task = new Task();
                 task.setTitle(title);
-
                 //when
-                Task returnTask = taskController.create(task);
+                returnTask = taskController.create(task);
+            }
 
+            @Test
+            @DisplayName("요청한 할 일과 동일한 할 일을 반환한다. ")
+            void create_valid_task() {
                 //then
                 assertThat(returnTask)
                         .extracting("title")
@@ -188,14 +194,21 @@ class TaskControllerTest {
         @Nested
         @DisplayName("목록에 있는 Task를 수정한다면")
         class Context_valid_update_task {
+            private Long taskId;
+
+            @BeforeEach
+            void setUpValidUpdate() {
+                //given
+                task = makeTask("First Title");
+                taskId = task.getId();
+                task = taskController.detail(taskId);
+            }
+
             @Test
             @DisplayName("목록의 Task 정보를 수정한다")
             void update_valid_update_task() {
                 //given
-                Task task = makeTask("First Title");
-                Long taskId = task.getId();
-                Task preTask = taskController.detail(taskId);
-                String preTitle = preTask.getTitle();
+                String preTitle = task.getTitle();
                 Task newTask = makeTask("Second Title");
 
                 //when
@@ -208,13 +221,8 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("목록의 Task 정보를 수정 후 Task를 반환한다.")
+            @DisplayName("목록의 할 일을 수정 후 반환한다.")
             void update_valid_update_task_return() {
-                //given
-                Task task = makeTask("First Title");
-                Long taskId = task.getId();
-                Task preTask = taskController.detail(taskId);
-
                 //when
                 Task returnTask = taskController.update(taskId, task);
 
@@ -228,13 +236,21 @@ class TaskControllerTest {
         @Nested
         @DisplayName("목록에 없는 Task를 수정한다면")
         class Context_invalid_update_task {
+            private Long taskId;
+            private String errorMessage;
+
+            @BeforeEach
+            void setUpInvalidUpdate() {
+                //given
+                Task task = makeTask("First Title");
+                taskId = task.getId() + 1L;
+
+            }
+
             @Test
             @DisplayName("TaskNotFoundException을 발생한다.")
             void invalid_update_task_exception() {
-                //given
-                Task task = makeTask("First Title");
-                Long taskId = task.getId()+1L;
-                String errorMessage = "Task not found: " + taskId;
+                errorMessage = "Task not found: " + taskId;
 
                 //when
                 Throwable thrown = catchThrowable(() -> {
@@ -251,16 +267,15 @@ class TaskControllerTest {
     }
 
 
-
     @Nested
     @DisplayName("delete(id) 메소드는")
-    class Describe_delete{
+    class Describe_delete {
         @Nested
         @DisplayName("목록에 있는 Task 를 지우면")
-        class Context_valid_delete{
+        class Context_valid_delete {
             @Test
             @DisplayName("요청한 Task를 삭제한다.")
-            void delete_valid_task(){
+            void delete_valid_task() {
                 //given
                 Task task = makeTask("First Title");
                 Long taskId = task.getId();
@@ -278,13 +293,13 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("목록에 없는 Task 를 지우면")
-        class Context_invalid_delete{
+        class Context_invalid_delete {
             @Test
             @DisplayName("TaskNotFoundException을 발생한다.")
             void invalid_delete_task_exception() {
                 //given
                 Task task = makeTask("First Title");
-                Long taskId = task.getId()+1L;
+                Long taskId = task.getId() + 1L;
                 String errorMessage = "Task not found: " + taskId;
 
                 //when
@@ -296,7 +311,6 @@ class TaskControllerTest {
                 assertThat(thrown)
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessage(errorMessage);
-
             }
         }
     }
