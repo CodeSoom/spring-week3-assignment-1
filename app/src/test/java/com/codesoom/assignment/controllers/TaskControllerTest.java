@@ -105,7 +105,7 @@ class TaskControllerTest {
 
         @BeforeEach
         void appendSourceToTasks() {
-            this.givenTask = generateTask(1L, "task1");
+            givenTask = generateTask(1L, "task1");
             givenTask = taskService.createTask(givenTask);
         }
 
@@ -164,7 +164,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setSource() {
-                this.givenTask = generateTask(1L, "task1");
+                givenTask = generateTask(1L, "task1");
             }
 
             @Test
@@ -196,8 +196,8 @@ class TaskControllerTest {
 
             @BeforeEach
             void createTaskAnd() {
-                this.givenTask = generateTask(1L, "givenTask");
-                this.destTask = generateTask(1L, "destTask");
+                givenTask = generateTask(1L, "givenTask");
+                destTask = generateTask(1L, "destTask");
 
                 taskService.createTask(givenTask);
             }
@@ -231,8 +231,8 @@ class TaskControllerTest {
 
             @BeforeEach
             void createTaskAnd() {
-                this.givenTask = generateTask(1L, "givenTask");
-                this.destTask = generateTask(1L, "destTask");
+                givenTask = generateTask(1L, "givenTask");
+                destTask = generateTask(1L, "destTask");
 
                 taskService.createTask(givenTask);
             }
