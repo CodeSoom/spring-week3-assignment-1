@@ -129,7 +129,7 @@ class TaskControllerTest {
     class Describe_update {
 
         @Nested
-        @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
+        @DisplayName("만약 등록되어 있는 할 일의 ID와 새로운 제목이 주어진다면")
         class Context_with_valid_task {
             private final String validTaskTitle = "test1";
             private final String additionalValidTaskTitle = "test2";
@@ -161,7 +161,7 @@ class TaskControllerTest {
     class Describe_patch {
 
         @Nested
-        @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
+        @DisplayName("만약 등록되어 있는 할 일의 ID와 새로운 제목이 주어진다면")
         class Context_with_one_task {
             private final String validTaskTitle = "test1";
             private final String additionalValidTaskTitle = "test2";
@@ -193,7 +193,7 @@ class TaskControllerTest {
     class Describe_delete {
 
         @Nested
-        @DisplayName("만약 기존 할 일의 ID가 주어진다면")
+        @DisplayName("만약 등록되어 있는 할 일의 ID가 주어진다면")
         class Context_with_task_id {
             private final Long validTaskId = 1L;
 
