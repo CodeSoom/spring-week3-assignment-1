@@ -36,7 +36,7 @@ class HelloControllerWebTest {
 
 
         @Nested
-        @DisplayName("만약 GET 요청을 보내면")
+        @DisplayName("GET 요청을 보내면")
         class Context_of_get {
 
             private ResultActions perform;

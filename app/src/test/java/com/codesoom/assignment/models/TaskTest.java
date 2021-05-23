@@ -172,7 +172,7 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayName("만약 attribute가 동일한 Task 객체들로부터 호출된다면")
+        @DisplayName("attribute가 동일한 두 개의 '할 일' 객체가 주어진다면")
         class Context_with_same_attributes {
 
             private Task task1;
@@ -188,7 +188,7 @@ class TaskTest {
             }
 
             @Test
-            @DisplayName("각각 동일한 hashCode를 반환한다")
+            @DisplayName("두 객체의 hashCode는 같다")
             void it_returns_same_hash_code() {
                 Integer codeOfTask1 = task1.hashCode();
                 Integer codeOfTask2 = task2.hashCode();
