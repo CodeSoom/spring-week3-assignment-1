@@ -207,7 +207,8 @@ public class Describe_TaskController {
                 mockMvc.perform(put("/tasks/1")
                         .content(objectMapper.writeValueAsString(newData))
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString("new task test")));
             }
 
             @Test
@@ -218,7 +219,8 @@ public class Describe_TaskController {
                 mockMvc.perform(patch("/tasks/1")
                         .content(objectMapper.writeValueAsString(newData))
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString("new task test")));
             }
         }
 
