@@ -98,12 +98,14 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 새로운 할 일이 주어진다면")
         class Context_with_one_task {
+            private final String validTaskTitle = "test";
+            private final Long validTaskId = 1L;
             private Task task;
 
             @BeforeEach
             void prepareTask() {
                 task = new Task();
-                task.setTitle("test");
+                task.setTitle(validTaskTitle);
             }
 
             @Test
@@ -112,13 +114,17 @@ class TaskServiceTest {
                 final int oldSize = taskService.getTasks()
                                                .size();
 
-                taskService.createTask(task);
+                Task newTask = taskService.createTask(task);
 
                 int newSize = taskService.getTasks()
                                          .size();
 
                 assertThat(newSize - oldSize)
                         .isEqualTo(1);
+                assertThat(newTask.getId())
+                        .isEqualTo(validTaskId);
+                assertThat(newTask.getTitle())
+                        .isEqualTo(validTaskTitle);
             }
         }
     }
@@ -129,7 +135,7 @@ class TaskServiceTest {
     class Describe_updateTask {
 
         @Nested
-        @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
+        @DisplayName("만약 등록되어 있는 할 일의 ID와 새로운 제목이 주어진다면")
         class Context_with_one_task {
             private final Long validTaskId = 1L;
             private final String validTaskTitle = "test";
@@ -144,7 +150,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("기존 할 일의 제목을 새로운 제목으로 갱신한다")
+            @DisplayName("등록되어 있는 할 일의 제목을 새로운 제목으로 갱신한다")
             void It_updates_one_task() {
                 Task source = new Task();
                 source.setTitle(validTaskTitle + updatePostfix);
@@ -163,14 +169,16 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("만약 기존 할 일의 ID가 주어진다면")
-        class Context_with_one_task {
+        @DisplayName("만약 등록되어 있는 할 일의 ID가 주어진다면")
+        class Context_with_valid_task {
+            private final Long validTaskId = 1L;
 
             @BeforeEach
             void prepareTasks() {
-                String validTaskTitle = "test";
+                final String validTaskTitle = "test";
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
+
                 taskService.createTask(task);
             }
 
@@ -180,7 +188,6 @@ class TaskServiceTest {
                 int oldSize = taskService.getTasks()
                                          .size();
 
-                Long validTaskId = 1L;
                 taskService.deleteTask(validTaskId);
 
                 int newSize = taskService.getTasks()
@@ -189,6 +196,27 @@ class TaskServiceTest {
                 assertEquals(1,
                              oldSize - newSize,
                              "할 일을 제거한 이후 할 일 개수가 1개 줄어든다");
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 등록되어 있지 않은 할 일의 ID가 주어진다면")
+        class Context_with_invalid_task {
+            private final Long invalidTaskId = 100L;
+
+            @BeforeEach
+            void prepareTasks() {
+                final String validTaskTitle = "test";
+                Task task = new Task();
+                task.setTitle(validTaskTitle);
+                taskService.createTask(task);
+            }
+
+            @Test
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
+            void It_throws_task_not_found_exception() {
+                assertThatThrownBy(() -> taskService.deleteTask(invalidTaskId))
+                        .isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
