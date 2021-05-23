@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -141,10 +142,11 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("'Task not found' 메시지를 담은 예외를 던진다")
+            @DisplayName("'할 일'을 찾을 수 없다는 예외를 던진다")
             void it_throws_exception() {
                 Throwable thrown = catchThrowable(() -> { taskController.detail(invalidId); });
                 assertThat(thrown)
+                        .isInstanceOf(TaskNotFoundException.class)
                         .hasMessageContaining("Task not found");
             }
         }
