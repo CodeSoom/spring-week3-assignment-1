@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -175,7 +177,7 @@ public class Describe_TaskController {
                 objectMapper = new ObjectMapper();
                 Task task = new Task();
                 task.setTitle("new task test");
-                given(taskService.updateTask(1L, task)).willReturn(task);
+                given(taskService.updateTask(eq(1L), any(Task.class))).willReturn(task);
             }
 
             @Test
@@ -209,7 +211,7 @@ public class Describe_TaskController {
             void setUp() {
                 Task task = new Task();
                 task.setTitle("new task test");
-                given(taskService.updateTask(100L, task))
+                given(taskService.updateTask(eq(100L), any(Task.class)))
                         .willThrow(new TaskNotFoundException(100L));
             }
 
