@@ -70,6 +70,25 @@ public class Describe_TaskController {
                         .andExpect(content().string(containsString(task.getTitle())));
             }
         }
+
+        @Nested
+        @DisplayName("할 일이 없을때")
+        class Context_without_task {
+
+            @BeforeEach
+            void setUp() {
+                List<Task> tasks = new ArrayList<>();
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            @Test
+            @DisplayName("빈 목록을 반환한다")
+            void It_returns_task_list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().json("[]"));
+            }
+        }
     }
 
     @Nested
