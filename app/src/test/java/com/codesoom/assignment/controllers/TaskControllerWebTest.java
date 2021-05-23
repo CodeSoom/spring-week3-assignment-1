@@ -3,6 +3,8 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
+    private ObjectMapper mapper;
 
     @MockBean
     private TaskService taskService;
@@ -110,6 +116,8 @@ public class TaskControllerWebTest {
 
                 final ResultActions actions = mockMvc.perform(get("/tasks/1"));
 
+                actions.andDo(MockMvcResultHandlers.print());
+
                 actions
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -118,10 +126,75 @@ public class TaskControllerWebTest {
         }
     }
 
-    @Test
-    void createMvcTest() throws Exception {
-        mockMvc.perform(post("/tasks title:Test"))
-                .andExpect(status().isCreated());
+    @Nested
+    @DisplayName("할 일 생성을 요청할 때")
+    class Describe_createMvc {
+
+        @Nested
+        @DisplayName("Title 내용이 주어지면")
+        class Context_exist_title {
+            Task source = new Task();
+            Task task = new Task();
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("할 일을 생성하고, 생성된 할 일을 리턴, 201 응답코드를 전달합니다.")
+            void it_create_task_and_return() throws Exception {
+                given(taskService.createTask(source)).willReturn(task);
+                source.setTitle("Test");
+                task.setTitle("Test");
+                task.setId(1L);
+
+                final ResultActions actions = mockMvc.perform(post("/tasks")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isCreated());
+//                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                        .andExpect(jsonPath("$.title", is("Test")))
+//                        .andExpect(jsonPath("$.id", is(1L)));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("등록된 할 일을 수정할 때")
+    class Describe_updateMvc {
+
+        @Nested
+        @DisplayName("등록되지 않은 ID로 요청하면")
+        class Context_with_not_registered_ID {
+            Task source = new Task();
+
+            @BeforeEach
+            void setUp() {
+                mapper = new ObjectMapper();
+            }
+
+            @Test
+            @DisplayName("TaskNotFound 예외를 던지고, 404 응답코드를 전달합니다.")
+            void it_throw_exception() throws Exception {
+                given(taskService.updateTask(100L, source))
+                        .willThrow(TaskNotFoundException.class);
+                given(taskService.getTask(100L))
+                        .willThrow(TaskNotFoundException.class);
+                source.setTitle("New Task");
+
+                final ResultActions actions = mockMvc.perform(patch("/tasks/100")
+                        .content(mapper.writeValueAsString(source))
+                        .contentType(MediaType.APPLICATION_JSON));
+//                        .accept(MediaType.APPLICATION_JSON));
+
+                actions
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
     @Test

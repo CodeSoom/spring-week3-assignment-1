@@ -137,8 +137,6 @@ class TaskServiceTest {
         class Context_with_not_registered_ID {
             Long notRegisteredId = 100L;
 
-
-
             @Test
             @DisplayName("TaskNotFound 예외를 던집니다.")
             void it_throw_TaskNotFoundException() {
