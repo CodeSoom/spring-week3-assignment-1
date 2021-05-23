@@ -128,7 +128,7 @@ class TaskServiceTest {
             private Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
 
             @Test
-            @DisplayName("생성된 할 일을 반환합니다. 할 일 목록에 생성된 할 일이 조회됩니다.")
+            @DisplayName("생성된 할 일을 반환합니다.")
             void it_return_created_task() {
                 Task createdTask = taskService.saveNewTask(NEW_TASK_TITLE);
 
@@ -186,7 +186,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("수정된 할 일을 반환합니다. 할 일 목록에서 수정된 할 일이 조회됩니다.")
+            @DisplayName("수정된 할 일을 반환합니다.")
             void it_return_updated_task() {
                 Task updatedTask = taskService.updateTask(updateTaskId, paramTask.getTitle());
 
@@ -234,7 +234,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("삭제한 할 일을 반환합니다. 할 일 목록에서는 해당 할 일이 조회되지 않습니다.")
+            @DisplayName("할 일을 삭제하고, 삭제한 할 일을 반환합니다.")
             void it_return_and_deleted_task() {
                 Task removedTask = taskService.removeTask(removedTaskId);
                 Assertions.assertThat(removedTask.getId()).isEqualTo(removedTaskId);
