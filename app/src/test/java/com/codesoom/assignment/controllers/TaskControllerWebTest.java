@@ -106,20 +106,22 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 Task의 id를 path에 포함시키면")
         class Context_of_exist_id {
 
-            private Task task;
+            private Task existTask;
+            private long givenId;
 
             @BeforeEach
             void setup() {
-                this.task = generateTask(1L, "task1");
+                this.existTask = generateTask(1L, "task1");
+                givenId = existTask.getId();
 
-                given(taskService.getTask(task.getId()))
-                        .willReturn(task);
+                given(taskService.getTask(givenId))
+                        .willReturn(existTask);
             }
 
             @Test
             @DisplayName("Task 정보를 JSON으로 응답한다")
             public void getTask() throws Exception {
-                mockMvc.perform(get(String.format("/tasks/%d", task.getId())))
+                mockMvc.perform(get(String.format("/tasks/%d", givenId)))
                         .andExpect(status().isOk())
                         .andExpect(content().json("{'id':1, 'title':'task1'}"));
             }
@@ -191,13 +193,15 @@ public class TaskControllerWebTest {
         class Context_of_success {
 
             private Task source;
+            private long givenId;
             private String sourceAsJson;
 
             @BeforeEach
             void setup() throws JsonProcessingException {
                 this.source = generateTask(1L, "task1");
+                givenId = source.getId();
 
-                given(taskService.updateTask(source.getId(), source))
+                given(taskService.updateTask(givenId, source))
                         .willReturn(source);
 
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -225,13 +229,15 @@ public class TaskControllerWebTest {
         class Context_of_success {
 
             private Task source;
+            private long givenId;
             private String sourceAsJson;
 
             @BeforeEach
             void setup() throws JsonProcessingException {
                 this.source = generateTask(1L, "task1");
+                givenId = source.getId();
 
-                given(taskService.updateTask(source.getId(), source))
+                given(taskService.updateTask(givenId, source))
                         .willReturn(source);
 
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -241,7 +247,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("업데이트한 Task 정보를 JSON으로 응답한다")
             public void updateTask() throws Exception {
-                mockMvc.perform(put(String.format("/tasks/%d", source.getId()))
+                mockMvc.perform(put(String.format("/tasks/%d", givenId))
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(sourceAsJson))
                         .andExpect(status().isOk())
@@ -258,20 +264,22 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 Task의 id를 path에 포함시켰고, 삭제를 성공했다면")
         class Context_of_exist_id {
 
+            private long givenId;
             private Task givenTask;
 
             @BeforeEach
             void setup() {
                 this.givenTask = generateTask(1L, "task1");
+                givenId = givenTask.getId();
 
-                given(taskService.deleteTask(1L))
+                given(taskService.deleteTask(givenId))
                         .willReturn(null);
             }
 
             @Test
             @DisplayName("NoContent 상태코드를 응답한다")
             public void it_returns_no_content() throws Exception {
-                mockMvc.perform(delete(String.format("/tasks/%d", givenTask.getId())))
+                mockMvc.perform(delete(String.format("/tasks/%d", givenId)))
                         .andExpect(status().isNoContent());
             }
         }
