@@ -114,41 +114,41 @@ class TaskControllerTest {
             }
 
             @Nested
-            @DisplayName("만약 유효한 id가 인자로 주어지면")
-            class Context_of_valid_id {
+            @DisplayName("만약 존재하는 '할 일'의 id가 인자로 주어지면")
+            class Context_of_exist_id {
 
-                private long validId;
+                private long existId;
 
                 @BeforeEach
                 void setValidId() {
-                    validId = givenTask.getId();
+                    existId = givenTask.getId();
                 }
 
                 @Test
                 @DisplayName("'할 일'을 반환한다")
                 void it_returns_task() {
-                    Task task = taskController.detail(validId);
+                    Task task = taskController.detail(existId);
                     assertThat(task)
                             .isEqualTo(givenTask);
                 }
             }
 
             @Nested
-            @DisplayName("만약 유효하지 않은 id가 인자로 주어지면")
-            class Context_of_invalid_id {
+            @DisplayName("만약 존재하지 않는 '할 일'의 id가 인자로 주어지면")
+            class Context_of_non_existent_id {
 
-                private long invalidId;
+                private long nonExistentId;
 
                 @BeforeEach
                 void setInvalidId() {
                     taskController.delete(givenTask.getId());
-                    invalidId = givenTask.getId();
+                    nonExistentId = givenTask.getId();
                 }
 
                 @Test
                 @DisplayName("'할 일'을 찾을 수 없다는 예외를 던진다")
                 void it_throws_exception() {
-                    Throwable thrown = catchThrowable(() -> { taskController.detail(invalidId); });
+                    Throwable thrown = catchThrowable(() -> { taskController.detail(nonExistentId); });
                     assertThat(thrown)
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessageContaining("Task not found");
