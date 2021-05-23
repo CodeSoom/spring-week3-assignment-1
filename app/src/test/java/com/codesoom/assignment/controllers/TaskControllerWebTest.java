@@ -79,8 +79,8 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() {
-                this.source1 = generateTask(1L, "task1");
-                this.source2 = generateTask(2L, "task2");
+                source1 = generateTask(1L, "task1");
+                source2 = generateTask(2L, "task2");
                 List<Task> taskList = List.of(source1, source2);
 
                 given(taskService.getTasks()).willReturn(taskList);
@@ -111,7 +111,7 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() {
-                this.existTask = generateTask(1L, "task1");
+                existTask = generateTask(1L, "task1");
                 givenId = existTask.getId();
 
                 given(taskService.getTask(givenId))
@@ -135,7 +135,7 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() {
-                this.nonExistentId = 42L;
+                nonExistentId = 42L;
                 given(taskService.getTask(nonExistentId))
                         .willThrow(new TaskNotFoundException(nonExistentId));
             }
@@ -163,13 +163,13 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() throws JsonProcessingException {
-                this.source = generateTask(1L, "task1");
+                source = generateTask(1L, "task1");
 
                 given(taskService.createTask(source))
                         .willReturn(source);
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                this.sourceAsJson = objectMapper.writeValueAsString(source);
+                sourceAsJson = objectMapper.writeValueAsString(source);
             }
 
             @Test
@@ -198,14 +198,14 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() throws JsonProcessingException {
-                this.source = generateTask(1L, "task1");
+                source = generateTask(1L, "task1");
                 givenId = source.getId();
 
                 given(taskService.updateTask(givenId, source))
                         .willReturn(source);
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                this.sourceAsJson = objectMapper.writeValueAsString(source);
+                sourceAsJson = objectMapper.writeValueAsString(source);
             }
 
             @Test
@@ -234,14 +234,14 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() throws JsonProcessingException {
-                this.source = generateTask(1L, "task1");
+                source = generateTask(1L, "task1");
                 givenId = source.getId();
 
                 given(taskService.updateTask(givenId, source))
                         .willReturn(source);
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                this.sourceAsJson = objectMapper.writeValueAsString(source);
+                sourceAsJson = objectMapper.writeValueAsString(source);
             }
 
             @Test
@@ -269,7 +269,7 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setup() {
-                this.givenTask = generateTask(1L, "task1");
+                givenTask = generateTask(1L, "task1");
                 givenId = givenTask.getId();
 
                 given(taskService.deleteTask(givenId))
