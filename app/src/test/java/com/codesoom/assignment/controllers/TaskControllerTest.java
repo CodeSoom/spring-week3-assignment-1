@@ -103,51 +103,56 @@ class TaskControllerTest {
 
         private Task givenTask;
 
-        @BeforeEach
-        void appendSourceToTasks() {
-            givenTask = generateTask(1L, "task1");
-            givenTask = taskService.createTask(givenTask);
-        }
-
         @Nested
-        @DisplayName("만약 유효한 id가 인자로 주어지면")
-        class Context_of_valid_id {
-
-            private long validId;
+        @DisplayName("등록된 '할 일'들이 있을 때")
+        class Context_of_appended_task {
 
             @BeforeEach
-            void setValidId() {
-                validId = givenTask.getId();
+            void appendSourceToTasks() {
+                givenTask = generateTask(1L, "task1");
+                givenTask = taskService.createTask(givenTask);
             }
 
-            @Test
-            @DisplayName("'할 일'을 반환한다")
-            void it_returns_task() {
-                Task task = taskController.detail(validId);
-                assertThat(task)
-                        .isEqualTo(givenTask);
+            @Nested
+            @DisplayName("만약 유효한 id가 인자로 주어지면")
+            class Context_of_valid_id {
+
+                private long validId;
+
+                @BeforeEach
+                void setValidId() {
+                    validId = givenTask.getId();
+                }
+
+                @Test
+                @DisplayName("'할 일'을 반환한다")
+                void it_returns_task() {
+                    Task task = taskController.detail(validId);
+                    assertThat(task)
+                            .isEqualTo(givenTask);
+                }
             }
-        }
 
-        @Nested
-        @DisplayName("만약 유효하지 않은 id가 인자로 주어지면")
-        class Context_of_invalid_id {
+            @Nested
+            @DisplayName("만약 유효하지 않은 id가 인자로 주어지면")
+            class Context_of_invalid_id {
 
-            private long invalidId;
+                private long invalidId;
 
-            @BeforeEach
-            void setInvalidId() {
-                taskController.delete(givenTask.getId());
-                invalidId = givenTask.getId();
-            }
+                @BeforeEach
+                void setInvalidId() {
+                    taskController.delete(givenTask.getId());
+                    invalidId = givenTask.getId();
+                }
 
-            @Test
-            @DisplayName("'할 일'을 찾을 수 없다는 예외를 던진다")
-            void it_throws_exception() {
-                Throwable thrown = catchThrowable(() -> { taskController.detail(invalidId); });
-                assertThat(thrown)
-                        .isInstanceOf(TaskNotFoundException.class)
-                        .hasMessageContaining("Task not found");
+                @Test
+                @DisplayName("'할 일'을 찾을 수 없다는 예외를 던진다")
+                void it_throws_exception() {
+                    Throwable thrown = catchThrowable(() -> { taskController.detail(invalidId); });
+                    assertThat(thrown)
+                            .isInstanceOf(TaskNotFoundException.class)
+                            .hasMessageContaining("Task not found");
+                }
             }
         }
     }
