@@ -44,7 +44,7 @@ public class Describe_TaskController {
 
     @Nested
     @DisplayName("할 일 목록을 요청받은 경우")
-    class Context_with_tasks_request {
+    class Describe_with_tasks_request {
 
         @Nested
         @DisplayName("할 일이 있을떄")
@@ -93,7 +93,7 @@ public class Describe_TaskController {
 
     @Nested
     @DisplayName("할 일의 세부사항을 요청받은 경우")
-    class Context_with_task_detail_request {
+    class Describe_with_task_detail_request {
 
         @Nested
         @DisplayName("요청받은 id의 할 일이 존재할 때")
@@ -135,7 +135,7 @@ public class Describe_TaskController {
 
     @Nested
     @DisplayName("할 일 생성을 요청받은 경우")
-    class Context_with_request_creating_task {
+    class Describe_with_request_creating_task {
 
         private Map<String, String> data;
 
@@ -183,7 +183,7 @@ public class Describe_TaskController {
 
     @Nested
     @DisplayName("할 일 수정을 요청받은 경우")
-    class Context_with_request_updating_task {
+    class Describe_with_request_updating_task {
 
         @Nested
         @DisplayName("요청받은 id에 해당하는 할 일이 있다면")
@@ -250,7 +250,7 @@ public class Describe_TaskController {
 
     @Nested
     @DisplayName("할 일 삭제를 요청받은 경우")
-    class Context_with_request_deleting_task {
+    class Describe_with_request_deleting_task {
 
         private Task task;
 
