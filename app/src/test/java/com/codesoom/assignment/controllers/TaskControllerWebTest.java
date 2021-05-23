@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -50,9 +53,9 @@ public class TaskControllerWebTest {
         @Nested
         @DisplayName("만약 등록되어 있는 할 일 ID와 새로운 제목이 주어진다면")
         class Context_of_valid_task {
-            private Task newTask = new Task();
             private final Long validTaskId = 1L;
             private final String additionalValidTaskTitle = "test2";
+            private Task newTask = new Task();
 
             @BeforeEach
             void when() {
@@ -184,15 +187,12 @@ public class TaskControllerWebTest {
         class Context_of_one_task {
             private final Long validTaskId = 1L;
             private final String validTaskTitle = "test1";
-            private List<Task> tasks = new ArrayList<>();
             private Task task = new Task();
 
             @BeforeEach
             void when() {
                 task.setId(validTaskId);
                 task.setTitle(validTaskTitle);
-
-                tasks.add(task);
 
                 given(taskService.getTask(validTaskId))
                         .willReturn(task);
@@ -229,6 +229,7 @@ public class TaskControllerWebTest {
             void It_returns_empty_list() throws Exception {
                 mockMvc.perform(get("/tasks"))
                        .andExpect(status().isOk())
+                       .andExpect(jsonPath("$[*]", hasSize(0)))
                        .andExpect(content().string("[]"));
             }
         }
@@ -256,7 +257,13 @@ public class TaskControllerWebTest {
             void It_returns_one_task() throws Exception {
                 mockMvc.perform(get("/tasks"))
                        .andExpect(status().isOk())
-                       .andExpect(content().string(containsString(validTaskTitle)));
+                       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                       .andExpect(jsonPath("$[*]", hasSize(1)))
+                       .andExpect(jsonPath("$[0].id",
+                                           is(validTaskId.intValue()))
+                                 )
+                       .andExpect(jsonPath("$[0].title",
+                                           containsString(validTaskTitle)));
 
                 verify(taskService).getTasks();
             }
