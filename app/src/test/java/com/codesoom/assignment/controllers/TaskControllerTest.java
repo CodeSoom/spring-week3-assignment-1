@@ -126,8 +126,8 @@ class TaskControllerTest {
     class Describe_create {
 
         @Nested
-        @DisplayName("만약 할 일 생성 요청을 보낸다면")
-        class Context_valid_task_id {
+        @DisplayName("만약 새로운 할 일을 생성하는 경우")
+        class Context_new_task {
 
             private Long newTaskId = NEW_TASK_ID; // 생성할 할 일 ID
             private Task paramTask = new Task();
