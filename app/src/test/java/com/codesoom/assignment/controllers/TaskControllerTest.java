@@ -68,7 +68,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setTasksNotEmpty() {
-                sizes = new ArrayList<>(Arrays.asList(1, 2, 100, 1024, Integer.MAX_VALUE));
+                sizes = new ArrayList<>(Arrays.asList(1, 2, 100, 1024));
                 taskControllers = new ArrayList<>();
 
                 sizes.forEach(size -> taskControllers.add(new TaskController(generateTaskService(size))));
