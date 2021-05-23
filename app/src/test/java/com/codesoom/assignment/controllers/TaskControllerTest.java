@@ -46,7 +46,7 @@ class TaskControllerTest {
     class Describe_of_list {
 
         @Nested
-        @DisplayName("만약 tasks가 비어있다면")
+        @DisplayName("만약 '할 일 목록'이 비어있다면")
         class Context_of_empty_tasks {
 
             @Test
@@ -58,7 +58,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 tasks가 비어있지 않다면")
+        @DisplayName("만약 '할 일 목록'이 비어있지 않다면")
         class Context_of_not_empty_tasks {
 
             private TaskService size1;
@@ -80,7 +80,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("tasks에 등록된 모든 '할 일'을 리스트로 반환한다")
+            @DisplayName("'할 일 목록'에 등록된 모든 '할 일'을 리스트로 반환한다")
             void it_returns_task_array() {
                 List<Task> tasks = controller1.list();
                 assertThat(tasks)
