@@ -20,16 +20,11 @@ class HelloControllerTest {
     @DisplayName("sayHello 메서드는")
     class Describe_sayHello {
 
-        @Nested
-        @DisplayName("만약 호출된다면")
-        class Context_with_empty {
-
-            @Test
-            @DisplayName("인사말을 반환한다")
-            void It_returns_greeting() {
-                assertThat(helloController.sayHello())
-                        .isEqualTo("Hello, world!");
-            }
+        @Test
+        @DisplayName("인사말을 반환한다")
+        void It_returns_greeting() {
+            assertThat(helloController.sayHello())
+                    .isEqualTo("Hello, world!");
         }
     }
 }
