@@ -236,7 +236,7 @@ class TaskControllerTest {
                 @Test
                 @DisplayName("'할 일'을 갱신하고, 갱신한 '할 일'을 반환한다")
                 void it_returns_task_updating_it() {
-                    Task updatedTask = taskController.update(givenTask.getId(), destTask);
+                    Task updatedTask = taskController.patch(givenTask.getId(), destTask);
                     assertThat(updatedTask)
                             .isEqualTo(destTask)
                             .withFailMessage("갱신한 '할 일'이 반환되지 않았다");
