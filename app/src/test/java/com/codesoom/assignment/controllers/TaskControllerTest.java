@@ -78,7 +78,18 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 등록되어 있지 않는 할 일 1개를 조회 요청한다면")
         class Context_with_invalid_task {
-            private final Long invalidTaskId = 100L;
+            private final int totalTaskCound = 2;
+            private final Long invalidTaskId = totalTaskCound + 1L;
+
+            @BeforeEach
+            void prepareTasks() {
+                for (Long id = 1L; id <= totalTaskCound; id++) {
+                    System.out.println(id);
+                    Task task = new Task();
+                    task.setTitle("test" + id);
+                    taskController.create(task);
+                }
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 내용의 예외를 던진다")
