@@ -118,7 +118,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("TaskNotFoundException을 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> taskService.getTask(nonExistentId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -243,7 +243,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("TaskNotFoundException을 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(nonExistentId))
                         .isInstanceOf(TaskNotFoundException.class);
