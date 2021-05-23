@@ -96,27 +96,28 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 새로운 할 일을 등록 요청한다면")
         class Context_with_valid_task {
-            private final String validTaskTitle = "test";
+            private final String validTaskTitle = "test1";
             private final Long additionalValidTaskId = 2L;
-            private final String additionalValidTaskTitle = "Test2";
+            private final String additionalValidTaskTitle = "test2";
+            private final Integer expectedSize = 2;
+            private Task newTask = new Task();
 
             @BeforeEach
             void prepareTasks() {
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
                 taskController.create(task);
+
+                newTask.setTitle(additionalValidTaskTitle);
             }
 
             @Test
             @DisplayName("새로운 할 일을 생성 후 생성한 할 일을 응답한다")
             void It_creates_one_task() {
-                Task task = new Task();
-                task.setTitle(additionalValidTaskTitle);
-
-                taskController.create(task);
+                taskController.create(newTask);
 
                 assertAll(
-                        () -> assertThat(taskController.list()).hasSize(2),
+                        () -> assertThat(taskController.list()).hasSize(expectedSize),
                         () -> assertThat(taskController.detail(additionalValidTaskId)
                                                        .getTitle()).isEqualTo(additionalValidTaskTitle));
             }
@@ -130,23 +131,23 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
         class Context_with_valid_task {
-            private final String validTaskTitle = "test";
-            private final String additionalValidTaskTitle = "Test2";
+            private final String validTaskTitle = "test1";
+            private final String additionalValidTaskTitle = "test2";
             private final Long validTaskId = 1L;
+            private Task newTask = new Task();
 
             @BeforeEach
             void prepareTasks() {
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
                 taskController.create(task);
+
+                newTask.setTitle(additionalValidTaskTitle);
             }
 
             @Test
             @DisplayName("지정한 할 일의 제목을 새로운 제목으로 갱신 후 응답한다")
             void It_updates_one_task() {
-                Task newTask = new Task();
-                newTask.setTitle(additionalValidTaskTitle);
-
                 taskController.update(validTaskId, newTask);
 
                 assertThat(taskController.detail(validTaskId)
@@ -162,23 +163,23 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 기존에 등록된 할 일의 ID와 새로운 제목이 주어진다면")
         class Context_with_one_task {
-            private final String validTaskTitle = "test";
-            private final String additionalValidTaskTitle = "Test2";
+            private final String validTaskTitle = "test1";
+            private final String additionalValidTaskTitle = "test2";
             private final Long validTaskId = 1L;
+            private Task newTask = new Task();
 
             @BeforeEach
             void prepareTasks() {
                 Task task = new Task();
                 task.setTitle(validTaskTitle);
                 taskController.create(task);
+
+                newTask.setTitle(additionalValidTaskTitle);
             }
 
             @Test
             @DisplayName("지정한 할 일의 제목을 새로운 제목으로 갱신 후 응답한다")
             void It_updates_one_task() {
-                Task newTask = new Task();
-                newTask.setTitle(additionalValidTaskTitle);
-
                 taskController.patch(validTaskId, newTask);
 
                 assertThat(taskController.detail(validTaskId)
