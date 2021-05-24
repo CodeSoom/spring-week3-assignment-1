@@ -1,9 +1,13 @@
 package com.codesoom.assignment.models;
 
+/**
+ * 할 일.
+ */
 public class Task {
-    private Long id;
 
-    private String title;
+    private Long id; // 할 일 Id
+
+    private String title; // 할 일 제목
 
     public Long getId() {
         return id;
@@ -20,4 +24,10 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Task{id=%s, title=%s}", id, title);
+    }
+
 }
