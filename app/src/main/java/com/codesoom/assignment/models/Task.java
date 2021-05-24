@@ -1,5 +1,9 @@
 package com.codesoom.assignment.models;
 
+import org.springframework.util.StringUtils;
+
+import java.util.Objects;
+
 public class Task {
     private Long id;
 
@@ -19,5 +23,13 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Task)) {
+            return false;
+        }
+        return id.equals(((Task)obj).getId())
+            && title.equals(((Task)obj).getTitle());
     }
 }

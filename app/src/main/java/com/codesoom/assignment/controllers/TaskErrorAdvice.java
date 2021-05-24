@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.EmptyTaskTitleException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -15,5 +16,12 @@ public class TaskErrorAdvice {
     @ExceptionHandler(TaskNotFoundException.class)
     public ErrorResponse handleNotFound() {
         return new ErrorResponse("Task not found");
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmptyTaskTitleException.class)
+    public ErrorResponse handleBadRequest() {
+        return new ErrorResponse("Empty Task title");
     }
 }
