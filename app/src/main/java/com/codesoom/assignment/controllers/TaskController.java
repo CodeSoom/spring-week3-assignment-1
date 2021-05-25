@@ -13,6 +13,7 @@ import java.util.List;
 public class TaskController {
     private TaskService taskService;
 
+    // 의존관계를 생성자에 넣었다.
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -45,7 +46,7 @@ public class TaskController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public Task delete(@PathVariable Long id) {
+        return taskService.deleteTask(id);
     }
 }
