@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HelloControllerTest {
@@ -10,6 +11,6 @@ class HelloControllerTest {
         HelloController controller = new HelloController();
         String result = controller.sayHello();
         assertEquals("Hello, world!", result);
-        // TODO: result -> Hello, world!
+        assertThat(result).isEqualTo("Hello, world!");
     }
 }
