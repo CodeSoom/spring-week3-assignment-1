@@ -1,7 +1,7 @@
 # 테스트 작성하기
 
 ## 과제 목표
-
+init
 ![image](https://user-images.githubusercontent.com/14071105/104756530-45f47f80-579f-11eb-9bbf-d47d065e207b.png)
 
 우리가 작성한 코드가 올바르게 동작하는지 자동으로 확인해 줄 수 있는 유닛 테스트를 작성해 주세요.  
