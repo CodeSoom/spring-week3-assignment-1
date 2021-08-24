@@ -32,100 +32,120 @@ class TaskControllerWebTest {
     @MockBean
     private TaskService taskService;
 
-    private Task task;
-    private Task newTask;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final Long VALID_ID = 1L;
     private static final Long INVALID_ID = 100L;
     private static final String TASK_TITLE = "my first task";
-    private static final String NEW_TASK_TITLE = "my new task";
 
-    @BeforeEach
-    void setup() {
-        List<Task> tasks = new ArrayList<>();
+    private final Task taskFixture = new Task(VALID_ID, TASK_TITLE);
+    private final TaskNotFoundException taskNotFoundException = new TaskNotFoundException(INVALID_ID);
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-        task = new Task(1L, TASK_TITLE);
+    @Nested
+    class ListTest {
+        @BeforeEach
+        void setup() {
+            List<Task> tasks = new ArrayList<>();
+            tasks.add(taskFixture);
 
-        tasks.add(task);
+            given(taskService.getTasks()).willReturn(tasks);
+        }
 
-        newTask = new Task(2L, NEW_TASK_TITLE);
-
-        given(taskService.getTasks()).willReturn(tasks);
-
-        given(taskService.getTask(VALID_ID)).willReturn(task);
-        given(taskService.getTask(INVALID_ID)).willThrow(new TaskNotFoundException(INVALID_ID));
-
-        given(taskService.createTask(newTask)).willReturn(newTask);
-
-        given(taskService.updateTask(VALID_ID, newTask)).willReturn(newTask);
-        given(taskService.updateTask(INVALID_ID, newTask)).willThrow(new TaskNotFoundException(INVALID_ID));
-
-        given(taskService.deleteTask(VALID_ID)).willReturn(task);
-        given(taskService.deleteTask(INVALID_ID)).willThrow(new TaskNotFoundException((INVALID_ID)));
+        @Test
+        void list() throws Exception {
+            mockMvc.perform(get("/tasks"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(TASK_TITLE)));
+        }
     }
 
-    @Test
-    void list() throws Exception {
-        mockMvc.perform(get("/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(TASK_TITLE)));
+    @Nested
+    class DetailTest {
+        @BeforeEach
+        void setup() {
+            given(taskService.getTask(VALID_ID)).willReturn(taskFixture);
+            given(taskService.getTask(INVALID_ID)).willThrow(taskNotFoundException);
+        }
+
+        @Test
+        void detailWithValidId() throws Exception {
+            mockMvc.perform(get("/tasks/" + VALID_ID))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(TASK_TITLE)));
+        }
+
+        @Test
+        void detailWithInvalidId() throws Exception {
+            mockMvc.perform(get("/tasks/" + INVALID_ID))
+                    .andExpect(status().isNotFound());
+        }
     }
 
-    @Test
-    void detailWithValidId() throws Exception {
-        mockMvc.perform(get("/tasks/" + VALID_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(TASK_TITLE)));
+    @Nested
+    class CreateTest {
+        @BeforeEach
+        void setup() {
+            given(taskService.createTask(taskFixture)).willReturn(taskFixture);
+        }
+
+        @Test
+        void create() throws Exception {
+            String content = objectMapper.writeValueAsString(taskFixture);
+
+            mockMvc.perform(post("/tasks")
+                            .content(content)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated());
+        }
     }
 
-    @Test
-    void detailWithInvalidId() throws Exception {
-        mockMvc.perform(get("/tasks/" + INVALID_ID))
-                .andExpect(status().isNotFound());
+    @Nested
+    class UpdateTest {
+        @BeforeEach
+        void setup() {
+            given(taskService.updateTask(VALID_ID, taskFixture)).willReturn(taskFixture);
+            given(taskService.updateTask(INVALID_ID, taskFixture)).willThrow(taskNotFoundException);
+        }
+
+        @Test
+        void updateWithValidId() throws Exception {
+            String content = objectMapper.writeValueAsString(taskFixture);
+
+            mockMvc.perform(put("/tasks/" + VALID_ID)
+                            .content(content)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void updateWithInvalidId() throws Exception {
+            // TODO: 테스트 실패 - 수정하기
+            String content = objectMapper.writeValueAsString(taskFixture);
+
+            mockMvc.perform(put("/tasks/" + INVALID_ID)
+                            .content(content)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+        }
     }
 
-    @Test
-    void create() throws Exception {
-        String content = objectMapper.writeValueAsString(newTask);
+    @Nested
+    class DeleteTest {
+        @BeforeEach
+        void setup() {
+            given(taskService.deleteTask(VALID_ID)).willReturn(taskFixture);
+            given(taskService.deleteTask(INVALID_ID)).willThrow(taskNotFoundException);
+        }
 
-        mockMvc.perform(post("/tasks")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-    }
+        @Test
+        void deleteWithValidId() throws Exception {
+            mockMvc.perform(delete("/tasks/" + VALID_ID))
+                    .andExpect(status().isNoContent());
+        }
 
-    @Test
-    void updateWithValidId() throws Exception {
-        String content = objectMapper.writeValueAsString(newTask);
-
-        mockMvc.perform(put("/tasks/" + VALID_ID)
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void updateWithInvalidId() throws Exception {
-        // TODO: 테스트 실패 - 수정하기
-        String content = objectMapper.writeValueAsString(newTask);
-
-        mockMvc.perform(put("/tasks/" + INVALID_ID)
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void deleteWithValidId() throws Exception {
-        mockMvc.perform(delete("/tasks/" + VALID_ID))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void deleteWithInvalidId() throws Exception {
-        mockMvc.perform(delete("/tasks/" + INVALID_ID))
-                .andExpect(status().isNotFound());
+        @Test
+        void deleteWithInvalidId() throws Exception {
+            mockMvc.perform(delete("/tasks/" + INVALID_ID))
+                    .andExpect(status().isNotFound());
+        }
     }
 }
