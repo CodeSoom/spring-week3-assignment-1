@@ -27,9 +27,7 @@ public class TaskService {
         Task task = new Task();
         task.setId(generateId());
         task.setTitle(source.getTitle());
-
         tasks.add(task);
-
         return task;
     }
 
