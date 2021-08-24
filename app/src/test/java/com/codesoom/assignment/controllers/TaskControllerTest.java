@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskControllerTest {
-    private TaskService taskService = new TaskService();
+    TaskService taskService = new TaskService();
     TaskController controller;
 
     @BeforeEach
@@ -18,6 +18,11 @@ class TaskControllerTest {
 
     @Test
     void list() {
+        //given
+
+        //when
+
+        //then
         assertThat(controller.list()).isEmpty();
     }
 
