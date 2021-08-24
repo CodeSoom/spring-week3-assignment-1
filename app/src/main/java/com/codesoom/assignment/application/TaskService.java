@@ -24,6 +24,11 @@ public class TaskService {
         this.idGenerator = idGenerator;
     }
 
+    public void clear() {
+        tasks.clear();
+        sequence = 0L;
+    }
+
     public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
