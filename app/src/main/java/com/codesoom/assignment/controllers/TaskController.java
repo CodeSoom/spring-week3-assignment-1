@@ -23,10 +23,6 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    public TaskController() {
-        this.taskService = new TaskService();
-    }
-
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }

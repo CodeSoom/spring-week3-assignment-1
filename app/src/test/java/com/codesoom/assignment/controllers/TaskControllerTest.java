@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +11,12 @@ import org.junit.jupiter.api.Test;
 class TaskControllerTest {
 
     private TaskController controller;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        controller = new TaskController();
+        taskService = new TaskService();
+        controller = new TaskController(taskService);
     }
 
     @Test
