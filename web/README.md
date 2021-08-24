@@ -1,14 +1,8 @@
-# Thanks for checking out Marko
+# Marko Webpack Example
 
-## Overview
+Webpack을 이용해서 Marko 실행 예제입니다.
 
-This project is powered by `@marko/serve` and `@marko/build`.  
+## Sources
 
-- Run `npm run dev` to start the development server
-- Run `npm run build` to build a production-ready node.js server
-- Run `npm start` to run the production server
-
-## Adding Pages
-
-Pages map to the directory structure. You can add additional pages by creating files/directories under `src/pages` with `.marko` files.  Learn more in the [`@marko/serve` docs](https://github.com/marko-js/cli/blob/master/packages/serve/README.md).
-
+* https://markojs.com/
+* https://markojs.com/docs/webpack/
