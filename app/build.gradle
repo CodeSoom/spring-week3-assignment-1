@@ -61,6 +61,10 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    // Equals And HashCode Test - Equals Verifier
+    testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '3.7.1'
+
 }
 
 application {

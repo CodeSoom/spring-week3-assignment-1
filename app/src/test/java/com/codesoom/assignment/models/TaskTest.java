@@ -1,5 +1,6 @@
 package com.codesoom.assignment.models;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,5 +19,11 @@ class TaskTest {
 
         // then
         assertThat(task).isEqualTo(new Task(id, title));
+    }
+
+    @Test
+    @DisplayName("할 일 Equals And HashCode 테스트")
+    void taskEqualsAndHashCode() {
+        EqualsVerifier.simple().forClass(Task.class).verify();
     }
 }
