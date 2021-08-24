@@ -4,6 +4,7 @@ import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.repository.TaskRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -27,7 +28,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일 리스트에 대한 조회 요청을 했을 때")
+    @DisplayName("전체 할 일 리스트에 대한 조회 요청을 했을 때")
     class GetTaskList {
         @Test
         @DisplayName("할 일이 없으면 빈 리스트를 리턴한다.")
@@ -37,17 +38,17 @@ class TaskControllerTest {
         }
 
         @Test
-        @DisplayName("할 일이 있으면 할 일 리스트를 리턴한다.")
+        @DisplayName("할 일이 1개 이상이면 할 일 리스트를 리턴한다.")
         void getTasks() {
             assertThat(controller.getTaskList().size()).isGreaterThan(0);
         }
     }
 
     @Nested
-    @DisplayName("할 일에 대한 조회 요청을 했을 때")
+    @DisplayName("할 일(id)에 대한 조회 요청을 했을 때")
     class GetTask {
         @Test
-        @DisplayName("할 일을 찾지 못했다면 TaskNotFound 예외를 발생시킨다.")
+        @DisplayName("할 일(id)을 찾지 못했다면 TaskNotFound 예외를 발생시킨다.")
         void getTasksWithoutTask() {
             assertThatThrownBy(() -> {
                 Task task = controller.getTask(9999L);
@@ -55,8 +56,8 @@ class TaskControllerTest {
         }
 
         @Test
-        @DisplayName("할 일을 찾으면 할 일을 리턴한다.")
-        void getTasks() {
+        @DisplayName("할 일(id)을 찾으면 할 일을 리턴한다.")
+        void getTask() {
             controller.getTask(findId);
             assertThat(controller.getTask(findId).getTitle()).isEqualTo("title");
         }
@@ -78,11 +79,11 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일에 대한 수정 요청이 오면")
+    @DisplayName("할 일(id)에 대한 수정 요청이 오면")
     class UpdateTask {
 
         @Test
-        @DisplayName("할 일을 수정한다.")
+        @DisplayName("할 일(id)을 수정한다.")
         void updateTask() {
             String newTitle = "New Title";
             Task newTask = new Task(findId, newTitle);
@@ -94,11 +95,11 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일에 대한 완료 요청이 오면")
+    @DisplayName("할 일(id)에 대한 완료 요청이 오면")
     class CompleteTask {
 
         @Test
-        @DisplayName("할 일을 리스트에서 제외한다.")
+        @DisplayName("할 일(id)을 리스트에서 제외한다.")
         void completeTask() {
 
             controller.completeTask(findId);
@@ -107,6 +108,12 @@ class TaskControllerTest {
             }).isInstanceOf(TaskNotFoundException.class);
 
         }
+    }
+
+    @Test
+    void taskToString() {
+        Task task = controller.getTask(findId);
+        Assertions.assertThat(task.toString()).isEqualTo("Task{id=1, title=title}");
     }
 
 }
