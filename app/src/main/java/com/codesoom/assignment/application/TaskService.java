@@ -23,11 +23,8 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    public Task createTask(Task source) {
-        Task task = new Task();
+    public Task createTask(Task task) {
         task.setId(generateId());
-        task.setTitle(source.getTitle());
-
         tasks.add(task);
 
         return task;
