@@ -36,6 +36,7 @@ class TaskControllerWebTest {
     private Task newTask;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     private static final Long VALID_ID = 1L;
     private static final Long INVALID_ID = 100L;
     private static final String TASK_TITLE = "my first task";
@@ -45,13 +46,11 @@ class TaskControllerWebTest {
     void setup() {
         List<Task> tasks = new ArrayList<>();
 
-        task = new Task();
-        task.setTitle(TASK_TITLE);
+        task = new Task(1L, TASK_TITLE);
 
         tasks.add(task);
 
-        newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
+        newTask = new Task(2L, NEW_TASK_TITLE);
 
         given(taskService.getTasks()).willReturn(tasks);
 

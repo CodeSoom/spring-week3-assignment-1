@@ -22,16 +22,14 @@ class TaskServiceTest {
     void setUpService() {
         service = new TaskService();
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
+        Task task = new Task(1L, TASK_TITLE);
 
         service.createTask(task);
     }
 
     @BeforeEach
     void setUpFixtures() {
-        newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
+        newTask = new Task(2L, NEW_TASK_TITLE);
     }
 
     @Test

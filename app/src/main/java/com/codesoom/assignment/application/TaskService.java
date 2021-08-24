@@ -42,9 +42,7 @@ public class TaskService {
      * @return 새로 등록된 할 일
      */
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+        Task task = new Task(generateId(), source.getTitle());
 
         tasks.add(task);
 
@@ -59,9 +57,8 @@ public class TaskService {
      */
     public Task updateTask(Long id, Task source) {
         Task task = getTask(id);
-        task.setTitle(source.getTitle());
 
-        return task;
+        return new Task(task.getId(), source.getTitle());
     }
 
     /**
