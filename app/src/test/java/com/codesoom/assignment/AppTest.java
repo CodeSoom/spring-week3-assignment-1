@@ -14,13 +14,14 @@ public final class AppTest {
     @Nested
     @DisplayName("getGreeting 메소드는")
     class Describe_getGreeting {
+        @Nested
         @DisplayName("선조건")
         class Context_precondition {
             @Nested
             @DisplayName("App 클래스가 null인 환경에서")
             class Context_app_null {
                 @Test
-                @DisplayName("NullPointerException을 발생시킨다.")
+                @DisplayName("NullPointerException을 던진다.")
                 void it_throw_a_nullPointException() {
                     assertThatExceptionOfType(NullPointerException.class).isThrownBy((() -> app.getGreeting()));
                 }

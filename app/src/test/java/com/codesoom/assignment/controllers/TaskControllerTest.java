@@ -33,7 +33,7 @@ public class TaskControllerTest {
             @DisplayName("TaskController 클래스가 null인 환경에서")
             class Context_taskController_null {
                 @Test
-                @DisplayName("NullPointException을 발생시킨다.")
+                @DisplayName("NullPointException을 던진다.")
                 void it_throw_a_nullPointException() {
                     assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> taskController.list());
                 }
@@ -48,7 +48,7 @@ public class TaskControllerTest {
                 }
 
                 @Test
-                @DisplayName("NullPointException을 발생시킨다.")
+                @DisplayName("NullPointException을 던진다.")
                 void it_throw_a_nullPointException() {
                     assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> taskController.list());
                 }

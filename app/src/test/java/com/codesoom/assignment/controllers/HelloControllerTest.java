@@ -21,7 +21,7 @@ public final class HelloControllerTest {
             @DisplayName("HelloController가 null인 환경에서")
             class Context_helloController_null {
                 @Test
-                @DisplayName("NullPointerException을 발생시킨다.")
+                @DisplayName("NullPointerException을 던진다.")
                 void it_throw_a_nullPointException() {
                     assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> helloController.sayHello());
                 }
