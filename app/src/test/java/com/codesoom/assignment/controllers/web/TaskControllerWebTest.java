@@ -13,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -124,12 +122,8 @@ public class TaskControllerWebTest {
 
             mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toString(TaskList.FIRST.toTask())))
+                .content(TaskList.FIRST.toTask().toString()))
                 .andExpect(status().isCreated());
-        }
-
-        private String toString(Object object) throws JsonProcessingException {
-            return new ObjectMapper().writeValueAsString(object);
         }
     }
 
@@ -149,12 +143,8 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(put("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(TaskList.SECOND.toTask())))
+                    .content(TaskList.SECOND.toTask().toString()))
                     .andExpect(status().isNotFound());
-            }
-
-            private String toString(Object object) throws JsonProcessingException {
-                return new ObjectMapper().writeValueAsString(object);
             }
         }
 
@@ -170,12 +160,8 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(put("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(TaskList.SECOND.toTask())))
+                    .content(TaskList.SECOND.toTask().toString()))
                     .andExpect(status().isOk());
-            }
-
-            private String toString(Object object) throws JsonProcessingException {
-                return new ObjectMapper().writeValueAsString(object);
             }
         }
     }
@@ -196,12 +182,8 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(TaskList.SECOND.toTask())))
+                    .content(TaskList.SECOND.toTask().toString()))
                     .andExpect(status().isNotFound());
-            }
-
-            private String toString(Object object) throws JsonProcessingException {
-                return new ObjectMapper().writeValueAsString(object);
             }
         }
 
@@ -217,12 +199,8 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(TaskList.SECOND.toTask())))
+                    .content(TaskList.SECOND.toTask().toString()))
                     .andExpect(status().isOk());
-            }
-
-            private String toString(Object object) throws JsonProcessingException {
-                return new ObjectMapper().writeValueAsString(object);
             }
         }
     }

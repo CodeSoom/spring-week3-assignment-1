@@ -50,4 +50,8 @@ public class Task {
         return Objects.equals(id, task.id) && Objects.equals(title, task.title);
     }
 
+    @Override
+    public String toString() {
+        return String.format("{\"id\":%s,\"title\":\"%s\"}", id, title);
+    }
 }
