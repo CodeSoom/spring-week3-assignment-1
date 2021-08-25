@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskTest {
 
+
+
     @Test
     @DisplayName("객체 생성 테스트")
     void create() {
