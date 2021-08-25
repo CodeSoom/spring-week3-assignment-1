@@ -30,7 +30,7 @@ class TaskServiceTest {
         @DisplayName("등록된 할 일이 없다면")
         class Context_no_have_tasks {
             @Test
-            @DisplayName("비어있는 리스트를 리턴한다")
+            @DisplayName("비어있는 리스트를 리턴합니다")
             void it_returns_emptyTasks() {
                 final List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).isEmpty();
@@ -51,7 +51,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("할 일들을 리턴한다")
+            @DisplayName("할 일들을 리턴합니다")
             void it_returns_tasks() {
                 // when
                 final List<Task> tasks = taskService.getTasks();
@@ -70,7 +70,7 @@ class TaskServiceTest {
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
         class Context_matchId_NotExist {
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다.")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던집니다")
             void it_returns_TaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(NOT_EXIST_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -91,7 +91,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("할 일을 리턴한다")
+            @DisplayName("할 일을 리턴합니다")
             void it_returns_task() {
                 //when
                 Task foundTask = taskService.getTask(1L);
@@ -116,7 +116,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("생성한 할 일을 반환합니다.")
+            @DisplayName("생성한 할 일을 반환합니다")
             void createTask() {
                 //when
                 Task createdTask = taskService.createTask(task);
@@ -177,7 +177,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("할 일을 삭제합니다.")
+            @DisplayName("할 일을 삭제합니다")
             void deleteTask() {
                 //when
                 taskService.deleteTask(createdTask.getId());

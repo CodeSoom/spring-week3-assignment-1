@@ -32,7 +32,7 @@ class TaskControllerTest {
         @DisplayName("등록된 할 일이 없다면")
         class Context_no_have_tasks {
             @Test
-            @DisplayName("비어있는 리스트를 리턴한다")
+            @DisplayName("비어있는 리스트를 리턴합니다")
             void it_returns_emptyTasks() {
                 final List<Task> list = controller.list();
                 assertThat(list).isEmpty();
@@ -53,7 +53,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("할 일들을 리턴한다")
+            @DisplayName("할 일들을 리턴합니다")
             void it_returns_tasks() {
                 // when
                 final List<Task> list = controller.list();
@@ -72,7 +72,7 @@ class TaskControllerTest {
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
         class Context_matchId_NotExist {
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다.")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던집니다")
             void it_returns_TaskNotFoundException() {
                 assertThatThrownBy(() -> controller.detail(NOT_EXIST_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -93,7 +93,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("할 일을 리턴한다")
+            @DisplayName("할 일을 리턴합니다")
             void it_returns_task() {
                 //when
                 Task foundTask = controller.detail(id);
@@ -118,7 +118,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("생성한 할 일을 반환합니다.")
+            @DisplayName("생성한 할 일을 반환합니다")
             void createTask() {
                 //when
                 Task createdTask = controller.create(task);
@@ -152,7 +152,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
+            @DisplayName("입력받은 제목으로 수정된 할 일을 리턴합니다")
             void updateTask() {
                 //when
                 controller.update(itemId, updateTask);
@@ -213,7 +213,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("할 일을 삭제합니다.")
+            @DisplayName("할 일을 삭제합니다")
             void deleteTask() {
                 //when
                 controller.delete(createdTask.getId());
