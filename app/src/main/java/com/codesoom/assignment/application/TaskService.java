@@ -4,8 +4,9 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * 할 일을 반환하고 생성,수정,삭제하는 일을 처리합니다.
@@ -13,35 +14,32 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    private List<Task> tasks;
-    private Long newId;
+    private final HashMap<Long, Task> tasks;
 
-    public TaskService(Long initialId, List<Task> tasks) {
-        this.newId = initialId;
+    public TaskService(HashMap<Long, Task> tasks) {
         this.tasks = tasks;
     }
 
     public TaskService() {
-        this(0L, new ArrayList<>());
+        this(new HashMap<>());
     }
 
     /**
      * 할 일 목록을 리턴합니다.
      * @return 할 일 목록
      */
-    public List<Task> getTasks() {
-        return tasks;
+    public Collection<Task> getTasks() {
+        return tasks.values();
     }
 
     /**
      * id에 해당되는 할 일을 리턴합니다.
      * @param id 할 일의 식별자
      * @return 할 일
+     * @throws TaskNotFoundException 해당하는 식별자의 할 일을 찾지 못한 경우
      */
     public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
+        return Optional.ofNullable(tasks.get(id))
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
@@ -51,11 +49,12 @@ public class TaskService {
      * @return 새로 등록된 할 일
      */
     public Task createTask(Task source) {
-        Task task = new Task(generateId(), source.getTitle());
+        Long id = (long) source.hashCode();
+        Task newTask = new Task(id, source.getTitle());
 
-        tasks.add(task);
+        tasks.put(id, newTask);
 
-        return task;
+        return newTask;
     }
 
     /**
@@ -63,31 +62,26 @@ public class TaskService {
      * @param id 할 일의 식별자
      * @param source 수정된 할 일
      * @return 수정 된 할 일
+     * @throws TaskNotFoundException 해당하는 식별자의 할 일을 찾지 못한 경우
      */
     public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
+        Task task = tasks.replace(id, new Task(id, source.getTitle()));
 
-        return new Task(task.getId(), source.getTitle());
+        return Optional.ofNullable(task)
+                .map((oldTask) -> new Task(id, source.getTitle()))
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /**
      * id에 해당되는 할 일을 삭제하고 리턴합니다.
      * @param id 할 일의 식별자
      * @return 삭제 된 할 일
+     * @throws TaskNotFoundException 해당하는 식별자의 할 일을 찾지 못한 경우
      */
     public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
+        Task task = tasks.remove(id);
 
-        return task;
-    }
-
-    /**
-     * 새로운 식별자를 생성하여 리턴합니다.
-     * @return 새로운 식별자
-     */
-    private Long generateId() {
-        newId += 1;
-        return newId;
+        return Optional.ofNullable(task)
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 }

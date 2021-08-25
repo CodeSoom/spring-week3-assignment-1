@@ -5,6 +5,7 @@ import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class TaskController {
      * @return 할 일 목록
      */
     @GetMapping
-    public List<Task> list() {
+    public Collection<Task> list() {
         return taskService.getTasks();
     }
 

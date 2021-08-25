@@ -3,81 +3,122 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskServiceTest {
     private TaskService service;
-    private Task newTask;
 
+    private static final Long VALID_ID = 1L;
     private static final Long INVALID_ID = 100L;
     private static final String TASK_TITLE = "my first task";
     private static final String NEW_TASK_TITLE = "my new task";
 
-    @BeforeEach
-    void setUpService() {
-        service = new TaskService();
+    private final Task newTask =  new Task(2L, NEW_TASK_TITLE);
 
-        Task task = new Task(1L, TASK_TITLE);
+    @Nested
+    class GetTests {
+        @BeforeEach
+        void setup() {
+            HashMap<Long, Task> tasks = new HashMap<>();
+            tasks.put(VALID_ID, new Task(VALID_ID, TASK_TITLE));
+            service = new TaskService(tasks);
+        }
 
-        service.createTask(task);
+        @Test
+        void getTasks() {
+            Collection<Task> result = service.getTasks();
+
+            assertThat(result).hasSize(1);
+        }
+
+        @Test
+        void getTaskWithValidId() {
+            Task result = service.getTask(VALID_ID);
+
+            assertThat(result.getId())
+                    .isEqualTo(VALID_ID);
+            assertThat(result.getTitle())
+                    .isEqualTo(TASK_TITLE);
+        }
+
+        @Test
+        void getTaskWithInvalidId() {
+            assertThatThrownBy(() -> service.getTask(INVALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
-    @BeforeEach
-    void setUpFixtures() {
-        newTask = new Task(2L, NEW_TASK_TITLE);
+    @Nested
+    class CreateTests {
+        @BeforeEach
+        void setup() {
+            service = new TaskService();
+        }
+
+        @Test
+        void createTask() {
+            service.createTask(new Task(VALID_ID, TASK_TITLE));
+        }
     }
 
-    @Test
-    void getTasks() {
-        List<Task> result = service.getTasks();
+    @Nested
+    class UpdateTests {
+        @BeforeEach
+        void setup() {
+            HashMap<Long, Task> tasks = new HashMap<>();
+            tasks.put(VALID_ID, new Task(VALID_ID, TASK_TITLE));
+            service = new TaskService(tasks);
+        }
 
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTitle()).isEqualTo(TASK_TITLE);
+        @Test
+        void updateTaskWithValidId() {
+            Task result = service.updateTask(VALID_ID, newTask);
+
+            assertThat(result.getId())
+                    .isEqualTo(VALID_ID);
+            assertThat(result.getTitle())
+                    .isEqualTo(NEW_TASK_TITLE);
+        }
+
+        @Test
+        void updateTaskWithInvalidId() {
+            assertThatThrownBy(() -> service.updateTask(INVALID_ID, newTask))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
-    @Test
-    void getTaskWithValidId() {
-        Task taskInService = service.getTasks().get(0);
+    @Nested
+    class DeleteTests {
+        @BeforeEach
+        void setup() {
+            HashMap<Long, Task> tasks = new HashMap<>();
+            tasks.put(VALID_ID, new Task(VALID_ID, TASK_TITLE));
+            service = new TaskService(tasks);
+        }
 
-        Task result = service.getTask(taskInService.getId());
+        @Test
+        void deleteTaskWithValidId() {
+            Task result = service.deleteTask(VALID_ID);
 
-        assertThat(result.getTitle())
-                .isEqualTo(taskInService.getTitle());
-    }
+            assertThat(service.getTasks()).isEmpty();
+            assertThatThrownBy(() -> service.getTask(VALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
 
-    @Test
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> service.getTask(INVALID_ID))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
+            assertThat(result.getId()).isEqualTo(VALID_ID);
+            assertThat(result.getTitle()).isEqualTo(TASK_TITLE);
+        }
 
-    @Test
-    void updateTaskWithValidId() {
-        Task taskInService = service.getTasks().get(0);
-
-        Task result = service.updateTask(taskInService.getId(), newTask);
-
-        assertThat(result.getTitle())
-                .isEqualTo(NEW_TASK_TITLE);
-    }
-
-    @Test
-    void updateTaskWithInvalidId() {
-        assertThatThrownBy(() -> service.updateTask(INVALID_ID, newTask))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
-    void deleteTaskWithValidId() {
-        Task taskInService = service.getTasks().get(0);
-
-        service.deleteTask(taskInService.getId());
-
-        assertThat(service.getTasks()).isEmpty();
+        @Test
+        void deleteTaskWithInvalidId() {
+            assertThatThrownBy(() ->  service.deleteTask(INVALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 }

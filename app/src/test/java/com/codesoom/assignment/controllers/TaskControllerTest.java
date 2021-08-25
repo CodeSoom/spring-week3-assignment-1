@@ -3,10 +3,10 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -30,104 +30,121 @@ class TaskControllerTest {
     }
 
     void setUpNotEmptyTaskService() {
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(originalTaskFixture);
+        HashMap<Long, Task> tasks = new HashMap<>();
+        tasks.put(VALID_ID, originalTaskFixture);
 
-        taskService = new TaskService(VALID_ID + 1, tasks);
+        taskService = new TaskService();
         controller = new TaskController(taskService);
     }
 
-    @Test
-    void listWithEmptyTasks() {
-        setUpEmptyTaskService();
+    @Nested
+    class ListTests {
+        @Test
+        void listWithEmptyTasks() {
+            setUpEmptyTaskService();
 
-        assertThat(controller.list()).hasSize(0);
+            assertThat(controller.list()).hasSize(0);
+        }
+
+        @Test
+        void listWithNotEmptyTasks() {
+            setUpNotEmptyTaskService();
+
+            assertThat(controller.list()).hasSize(1);
+        }
     }
 
-    @Test
-    void listWithNotEmptyTasks() {
-        setUpNotEmptyTaskService();
+    @Nested
+    class DetailTests {
+        @Test
+        void detailWithValidId() {
+            setUpNotEmptyTaskService();
 
-        assertThat(controller.list()).hasSize(1);
+            Task result = controller.detail(VALID_ID);
+
+            assertThat(result.getTitle()).isEqualTo(TASK_TITLE);
+        }
+
+        @Test
+        void detailWithInvalidId() {
+            setUpNotEmptyTaskService();
+
+            assertThatThrownBy(() -> controller.detail(INVALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
+    @Nested
+    class CreateTests {
+        @Test
+        void create() {
+            setUpEmptyTaskService();
 
-    @Test
-    void detailWithValidId() {
-        setUpNotEmptyTaskService();
+            Task result = controller.create(newTaskFixture);
 
-        Task result = controller.detail(VALID_ID);
-
-        assertThat(result.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
+        }
     }
 
-    @Test
-    void detailWithInvalidId() {
-        setUpNotEmptyTaskService();
+    @Nested
+    class UpdateTests {
+        @Test
+        void updateWithValidId() {
+            setUpNotEmptyTaskService();
 
-        assertThatThrownBy(() -> controller.detail(INVALID_ID))
-                .isInstanceOf(TaskNotFoundException.class);
+            Task result = controller.update(VALID_ID, newTaskFixture);
+
+            assertThat(result.getId()).isEqualTo(VALID_ID);
+            assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
+        }
+
+        @Test
+        void updateWithInvalidId() {
+            setUpNotEmptyTaskService();
+
+            assertThatThrownBy(() -> controller.update(INVALID_ID, newTaskFixture))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
-    @Test
-    void create() {
-        setUpEmptyTaskService();
+    @Nested
+    class PatchTests {
+        @Test
+        void patchWithValidId() {
+            setUpNotEmptyTaskService();
 
-        Task result = controller.create(newTaskFixture);
+            Task result = controller.patch(VALID_ID, newTaskFixture);
 
-        assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
+            assertThat(result.getId()).isEqualTo(VALID_ID);
+            assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
+        }
+
+        @Test
+        void patchWithInvalidId() {
+            setUpNotEmptyTaskService();
+
+            assertThatThrownBy(() -> controller.patch(INVALID_ID, newTaskFixture))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
-    @Test
-    void updateWithValidId() {
-        setUpNotEmptyTaskService();
+    @Nested
+    class DeleteTests {
+        @Test
+        void deleteWithValidId() {
+            setUpNotEmptyTaskService();
 
-        Task result = controller.update(VALID_ID, newTaskFixture);
+            controller.delete(VALID_ID);
 
-        assertThat(result.getId()).isEqualTo(VALID_ID);
-        assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
-    }
+            assertThat(controller.list()).isEmpty();
+        }
 
-    @Test
-    void updateWithInvalidId() {
-        setUpNotEmptyTaskService();
+        @Test
+        void deleteWithInvalidId() {
+            setUpNotEmptyTaskService();
 
-        assertThatThrownBy(() -> controller.update(INVALID_ID, newTaskFixture))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
-    void patchWithValidId() {
-        setUpNotEmptyTaskService();
-
-        Task result = controller.patch(VALID_ID, newTaskFixture);
-
-        assertThat(result.getId()).isEqualTo(VALID_ID);
-        assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
-    }
-
-    @Test
-    void patchWithInvalidId() {
-        setUpNotEmptyTaskService();
-
-        assertThatThrownBy(() -> controller.patch(INVALID_ID, newTaskFixture))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
-    void deleteWithValidId() {
-        setUpNotEmptyTaskService();
-
-        controller.delete(VALID_ID);
-
-        assertThat(controller.list()).isEmpty();
-    }
-
-    @Test
-    void deleteWithInvalidId() {
-        setUpNotEmptyTaskService();
-
-        assertThatThrownBy(() -> controller.delete(INVALID_ID))
-                .isInstanceOf(TaskNotFoundException.class);
+            assertThatThrownBy(() -> controller.delete(INVALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 }

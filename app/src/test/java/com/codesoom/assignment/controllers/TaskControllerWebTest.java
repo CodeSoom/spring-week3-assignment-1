@@ -96,7 +96,9 @@ class TaskControllerWebTest {
             mockMvc.perform(post("/tasks")
                             .content(content)
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isCreated());
+                    .andExpect(status().isCreated())
+                    .andExpect(content().string(containsString(TASK_TITLE)))
+                    .andExpect(content().string(containsString(VALID_ID.toString())));
         }
     }
 
@@ -115,7 +117,8 @@ class TaskControllerWebTest {
             mockMvc.perform(put("/tasks/" + VALID_ID)
                             .content(content)
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(VALID_ID.toString())));
         }
 
         @Test
