@@ -68,7 +68,7 @@ class TaskControllerTest {
 
   @Nested
   @DisplayName("detail메소드에서")
-  class Describe_detail {
+  class Describe_Detail {
 
     @Nested
     @DisplayName("저장되지 않은 task의 id로 조회할 때")
@@ -90,5 +90,6 @@ class TaskControllerTest {
     }
 
   }
+
 
 }
