@@ -2,9 +2,12 @@ package com.codesoom.assignment.controllers;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,6 +20,7 @@ class TaskControllerTest {
 
   private TaskController taskController;
   private Task task;
+  private Long NotFoundId = 0L;
 
   @BeforeEach
   void setUp() {
@@ -26,7 +30,7 @@ class TaskControllerTest {
   }
 
   @Nested
-  @DisplayName("list메소드에서 ")
+  @DisplayName("list메소드에서")
   class Describe_List {
 
     @Nested
@@ -34,14 +38,32 @@ class TaskControllerTest {
     class Context_WithoutAnyTask {
 
       @Test
-      @DisplayName("빈 list를 return한다.")
+      @DisplayName("빈 list를 return")
       void ItReturnEmptyList() {
         assertThat(taskController.list()).isEmpty();
 
       }
     }
 
-  }
+    @Nested
+    @DisplayName("저장된 task가 있을 때")
+    class Context_WithTask {
 
+      @BeforeEach
+      void setUp() {
+
+        taskController.create(task);
+
+      }
+
+      @Test
+      @DisplayName("저장된 task가 담긴 리스트를 return")
+      void ItReturnListWithTask() {
+        List<Task> taskList = taskController.list();
+        assertThat(taskController.list()).isEqualTo(taskList);
+      }
+    }
+
+  }
 
 }
