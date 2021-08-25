@@ -81,11 +81,13 @@ class TaskServiceTest {
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
         class Context_matchId_exist {
             Task task;
+            Long id;
 
             @BeforeEach
             void prepareTask() {
                 task = new Task();
-                taskService.createTask(task);
+                Task createdTask = taskService.createTask(this.task);
+                id = createdTask.getId();
             }
 
             @Test
