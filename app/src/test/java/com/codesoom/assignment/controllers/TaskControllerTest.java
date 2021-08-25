@@ -31,7 +31,7 @@ class TaskControllerTest {
         taskService = new TaskService(new TaskIdGenerator());
         taskController = new TaskController(taskService);
 
-        taskService.clear();
+        TaskService.clear();
         task1 = taskService.createTask(Task.from(TASK_TITLE_ONE));
         task2 = taskService.createTask(Task.from(TASK_TITLE_TWO));
     }
@@ -56,13 +56,13 @@ class TaskControllerTest {
     @DisplayName("아이디를 통해 할 일을 조회 할 수 있습니다.")
     @Test
     void detail() {
-        Task findTask = taskController.detail(task1.getId());
+        Task task = taskController.detail(task1.getId());
 
-        assertThat(findTask).isEqualTo(task1);
+        assertThat(task).isEqualTo(task1);
 
-        findTask = taskController.detail(task2.getId());
+        task = taskController.detail(task2.getId());
 
-        assertThat(findTask).isEqualTo(task2);
+        assertThat(task).isEqualTo(task2);
     }
 
     @DisplayName("유효하지 않은 아이디로 할 일을 검색하면 예외가 발생합니다.")
@@ -103,12 +103,22 @@ class TaskControllerTest {
     @DisplayName("할 일을 삭제할 수 있습니다.")
     @Test
     void deleteTask() {
+        final int originLength = taskController.list().size();
+
         taskController.delete(task1.getId());
 
-        final List<Task> findTasks = taskController.list();
+        final int afterLength = taskController.list().size();
 
-        assertThat(findTasks).hasSize(1);
-        assertThatThrownBy(()-> taskController.detail(task1.getId()))
+        assertThat(originLength - afterLength).isEqualTo(1);
+
+    }
+
+    @DisplayName("존재하지 않는 할 일을 삭제하려 하면 예외가 발생합니다. ")
+    @Test
+    void deleteTaskInvalid() {
+        taskController.delete(task1.getId());
+
+        assertThatThrownBy(()-> taskController.delete(task1.getId()))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 }

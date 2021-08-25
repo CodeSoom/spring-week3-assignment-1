@@ -14,7 +14,7 @@ public class TaskSteps {
         return addConfig(post(PATH), contents);
     }
 
-    public static MockHttpServletRequestBuilder putWithConfig(Long id, String contents) {
+    public static MockHttpServletRequestBuilder putWithConfig(Object id, String contents) {
         return addConfig(put(PATH + "/" + id), contents);
     }
 

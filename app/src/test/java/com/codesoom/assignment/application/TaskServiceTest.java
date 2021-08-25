@@ -110,13 +110,13 @@ class TaskServiceTest {
     @Test
     void deleteTask() {
         final Task savedTask = taskService.createTask(Task.from(TEST_ONE_TITLE));
-        final Task findTask = taskService.getTask(savedTask.getId());
+        final Task foundTask = taskService.getTask(savedTask.getId());
         List<Task> tasks = taskService.getTasks();
 
-        assertThat(findTask).isEqualTo(findTask);
+        assertThat(foundTask).isEqualTo(savedTask);
         assertThat(tasks).isNotNull().hasSize(1);
 
-        taskService.deleteTask(findTask.getId());
+        taskService.deleteTask(foundTask.getId());
         tasks = taskService.getTasks();
 
         assertThat(tasks).isEmpty();

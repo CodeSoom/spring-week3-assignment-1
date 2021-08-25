@@ -1,25 +1,30 @@
 package com.codesoom.assignment.models;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Task 모델 테스트")
 class TaskTest {
 
-    public static final long FIRST_ID = 1L;
+    public static final String title = "test";
 
     @DisplayName("할 일을 생성한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"t1", "test2", "testtest3"})
-    void create(String title) {
-        Task newTask1 = new Task();
-        newTask1.setId(FIRST_ID);
-        newTask1.setTitle(title);
+    @Test
+    void create() {
+        Task task = new Task(1L, title);
 
-        assertThat(newTask1.getTitle()).isNotEqualTo(title);
-        assertThat(newTask1.getId()).isEqualTo(FIRST_ID);
+        assertThat(task.getTitle()).isEqualTo(title);
+        assertThat(task.getId()).isEqualTo(1L);
+    }
+
+    @DisplayName("Task 객체는 동등성 비교를 한다.")
+    @Test
+    void equivalenceTask() {
+        final Task source = new Task(1L, title);
+        final Task target = new Task(1L, title);
+
+        assertThat(source).isEqualTo(target);
     }
 }

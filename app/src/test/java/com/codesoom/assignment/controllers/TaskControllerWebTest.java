@@ -7,26 +7,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,8 +107,8 @@ public class TaskControllerWebTest {
     void detail() throws Exception {
         mockMvc.perform(get("/tasks/" + test1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.title").value("test1"))
+                .andExpect(jsonPath("$.id").value(test1.getId()))
+                .andExpect(jsonPath("$.title").value(test1.getTitle()))
                 .andReturn();
     }
 
@@ -147,28 +143,47 @@ public class TaskControllerWebTest {
 
     }
 
-    @DisplayName("유효하지 않은 식별자의 할 일을 수정하려 하면 실패합니다. - PUT OR PATCH /tasks/{invalidId}")
+    @DisplayName("존재하지 않거나 찾을 수 없는 식별자의 할 일을 수정하려 하면 실패합니다. - PUT OR PATCH /tasks/{invalidId}")
     @Test
-    void updateTaskInvalid() throws Exception {
+    void updateTaskInvalidFromNotFoundId() throws Exception {
         final String contents = objectMapper.writeValueAsString(test3);
 
         mockMvc.perform(TaskSteps.putWithConfig(INVALID_ID, contents))
                 .andExpect(status().isNotFound());
     }
 
+    @DisplayName("유효하지 않은 타입의 식별자를 전달하면 실패합니다. - PUT OR PATCH /tasks/{invalidId}")
+    @ParameterizedTest
+    @MethodSource("provideInvalidArguments")
+    void updateTaskInvalidType(Object arg) throws Exception {
+        final String contents = objectMapper.writeValueAsString(test3);
+
+        mockMvc.perform(TaskSteps.putWithConfig(arg, contents))
+                .andExpect(status().isBadRequest());
+    }
+
+    public static Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of("abc"),
+                Arguments.of(1.0)
+        );
+    }
+
     @DisplayName("할 일을 삭제할 수 있습니다 - DELETE /tasks/{id}")
     @Test
     void deleteTask() throws Exception {
-        mockMvc.perform(get("/tasks/" + test1.getId()))
+        final String path = "/tasks/";
+
+        mockMvc.perform(get(path + test1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.title").value("test1"))
+                .andExpect(jsonPath("$.id").value(test1.getId()))
+                .andExpect(jsonPath("$.title").value(test1.getTitle()))
                 .andReturn();
 
-        mockMvc.perform(delete("/tasks/" + test1.getId()))
+        mockMvc.perform(delete(path + test1.getId()))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/tasks/"+test1.getId()))
+        mockMvc.perform(get(path + test1.getId()))
                 .andExpect(status().isNotFound());
     }
 
