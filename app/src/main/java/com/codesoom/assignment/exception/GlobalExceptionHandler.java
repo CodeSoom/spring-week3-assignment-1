@@ -13,7 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandler {
 
     /**
-     * 메소드 Argument 타입이 일치하지 않는 경우 발생하는 예외입니다.
+     * 메소드 Argument 타입이 일치하지 않는 경우 예외를 던집니다.
      * 
      * @param e MethodArgumentTypeMismatchException 예외
      */

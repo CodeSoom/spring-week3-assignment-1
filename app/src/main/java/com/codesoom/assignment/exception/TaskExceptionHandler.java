@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class TaskExceptionHandler {
 
     /**
-     * 조회된 할 일이 없는 경우 발생하는 예외입니다.
+     * 조회된 할 일이 없는 경우 예외를 던집니다.
      */
     @ResponseStatus(code= HttpStatus.NOT_FOUND, reason = "No Such Task Found.")
     @ExceptionHandler(TaskNotFoundException.class)
