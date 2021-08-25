@@ -1,5 +1,7 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,17 +15,22 @@ public class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private TaskService taskService = new TaskService();
+
     @Test
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void detailWithValidId() throws Exception {
-//        mockMvc.perform(get("/tasks/1"))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void detailWithValidId() throws Exception {
+        Task task = new Task();
+        taskService.createTask(task);
+
+        mockMvc.perform(get("/tasks/1"))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void detailWithInValidId() throws Exception {
