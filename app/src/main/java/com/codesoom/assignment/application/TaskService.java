@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class TaskService {
-    private final Map<Long, Task> tasks = new ConcurrentHashMap<>();
+    private static final Map<Long, Task> tasks = new ConcurrentHashMap<>();
     private static Long sequence = 0L;
 
     private final IdGenerator<Long> idGenerator;
@@ -24,7 +24,7 @@ public class TaskService {
         this.idGenerator = idGenerator;
     }
 
-    public void clear() {
+    public static void clear() {
         tasks.clear();
         sequence = 0L;
     }

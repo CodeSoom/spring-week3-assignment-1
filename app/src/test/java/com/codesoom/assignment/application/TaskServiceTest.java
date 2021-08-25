@@ -29,6 +29,7 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService(idGenerator);
+        TaskService.clear();
     }
 
 
@@ -87,7 +88,6 @@ class TaskServiceTest {
     @ParameterizedTest
     @MethodSource("provideTaskAndNewTitle")
     void updateTask(Task sourceTask, Task targetTask) {
-        taskService.clear();
         taskService.createTask(sourceTask);
         final Task updatedTask = taskService.updateTask(ID_ONE, targetTask);
 
@@ -123,11 +123,5 @@ class TaskServiceTest {
         assertThatThrownBy(()->taskService.getTask(savedTask.getId()))
                 .isInstanceOf(TaskNotFoundException.class);
     }
-
-
-
-
-
-
 
 }

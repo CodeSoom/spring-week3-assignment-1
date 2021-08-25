@@ -47,7 +47,7 @@ class TaskControllerTest {
     @DisplayName("할 일이 없으면 빈 리스트가 조회됩니다.")
     @Test
     void listWithoutEntity() {
-        taskService.clear();
+        TaskService.clear();
         final List<Task> list = taskController.list();
 
         assertThat(list).isEmpty();
