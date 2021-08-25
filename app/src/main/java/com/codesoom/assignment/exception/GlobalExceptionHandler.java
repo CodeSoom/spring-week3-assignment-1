@@ -13,13 +13,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandler {
 
     /**
-     * 조회된 할 일이 없는 경우 발생하는 예외입니다.
-     */
-    @ResponseStatus(code=HttpStatus.NOT_FOUND, reason = "No Such Task Found.")
-    @ExceptionHandler(TaskNotFoundException.class)
-    public void NoSuchTaskFound() { }
-
-    /**
      * 메소드 Argument 타입이 일치하지 않는 경우 발생하는 예외입니다.
      * 
      * @param e MethodArgumentTypeMismatchException 예외

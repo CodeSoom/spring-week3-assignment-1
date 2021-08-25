@@ -1,7 +1,7 @@
 package com.codesoom.assignment.exception;
 
 /**
- * 할 일이 발견되지 않은 경우 발생하는 예외입니다.
+ * 할 일을 찾을 수 없는 경우 던집니다.
  */
 public class TaskNotFoundException extends RuntimeException{
 

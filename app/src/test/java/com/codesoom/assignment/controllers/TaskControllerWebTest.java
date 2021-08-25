@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,12 +40,12 @@ public class TaskControllerWebTest {
 
         given(taskService.getTaskList()).willReturn(tasks);
         given(taskService.getTask(1L)).willReturn(task);
+        given(taskService.createTask(task)).willReturn(task);
     }
 
     @Nested
     @DisplayName("할 일(id)에 대한 조회 요청을 했을 때")
     class GetTask {
-
         @Test
         @DisplayName("전체 리스트 요청일 경우 OK를 응답한다.")
         void list() throws Exception {
@@ -76,8 +77,19 @@ public class TaskControllerWebTest {
             mockMvc.perform(get("/tasks/undefined"))
                     .andExpect(status().isNotFound());
         }
-
     }
+
+    @Nested
+    @DisplayName("할 일(id)에 대한 등록 요청이 왔을 때")
+    class CreateTask {
+        @Test
+        @DisplayName("요청이 정상적인 경우 할 일을 등록한다.")
+        void createTask() throws Exception {
+            mockMvc.perform(post("/tasks"))
+                    .andExpect(status().isCreated());
+        }
+    }
+
 
 
 

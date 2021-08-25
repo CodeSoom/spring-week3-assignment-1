@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Task Controller 입니다.
+ * 할 일을 생성, 조회, 수정, 삭제하는 Controller 입니다.
  */
 @RestController
 @RequestMapping("/tasks")
@@ -25,8 +25,8 @@ public class TaskController {
     }
 
     /**
-     * 할 일 리스트를 전체 조회하는 컨트롤러입니다.
-     * @return List<Task> 전체 할 일 리스트
+     * 할 일 리스트를 리턴합니다.
+     * @return 전체 할 일 리스트
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -35,10 +35,10 @@ public class TaskController {
     }
 
     /**
-     * id로 찾은 할 일을 조회하는 컨트롤러입니다.
+     * id에 해당하는 할 일을 리턴합니다.
      *
      * @param id 조회할 식별자 Id
-     * @return Task 조회한 할 일
+     * @return 조회한 할 일
      */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -47,10 +47,10 @@ public class TaskController {
     }
 
     /**
-     * 새로운 할 일을 생성하는 컨트롤러입니다.
+     * 새로운 할 일을 등록한 후 등록한 할 일을 리턴합니다.
      *
      * @param task 생성 요청된 할 일
-     * @return Task 생성된 할 일
+     * @return 생성된 할 일
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -59,11 +59,11 @@ public class TaskController {
     }
 
     /**
-     * 할 일을 찾아서 title을 변경합니다.
+     * 할 일을 찾아서 title을 변경 후 변경된 할 일을 리턴합니다.
      *
      * @param id 수정할 식별자 Id
      * @param requestTask 변경 요청된 할 일
-     * @return Task 변경된 할 일
+     * @return 변경된 할 일
      */
     @RequestMapping(value = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.OK)

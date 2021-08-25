@@ -38,9 +38,10 @@ class TaskControllerTest {
         }
 
         @Test
-        @DisplayName("할 일이 1개 이상이면 할 일 리스트를 리턴한다.")
+        @DisplayName("할 일이 있으면 할 일 리스트를 리턴한다.")
         void getTasks() {
-            assertThat(controller.getTaskList().size()).isGreaterThan(0);
+            controller.createTask(new Task(2L, "title2"));
+            assertThat(controller.getTaskList().size()).isEqualTo(2);
         }
     }
 
