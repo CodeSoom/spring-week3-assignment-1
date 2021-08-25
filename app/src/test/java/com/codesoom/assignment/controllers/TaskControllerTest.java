@@ -91,5 +91,33 @@ class TaskControllerTest {
 
   }
 
+  @Nested
+  @DisplayName("Create메소드에서")
+  class Describe_Create {
+
+    @Nested
+    @DisplayName("Task객체가 주어질때")
+    class Context_WithValidTask {
+
+      private Task validTask;
+
+      @BeforeEach
+      void setUp() {
+        validTask = new Task();
+        validTask.setTitle("createTest");
+      }
+
+      @Test
+      @DisplayName("주어진 객체의 title로 생성한 task객체를 return")
+      void It_ReturnNewTaskByValidTaskTitle() {
+        Task returningTask = taskController.create(validTask);
+        assertThat(validTask.getTitle()).isEqualTo(returningTask.getTitle())
+            .withFailMessage("주어진 task의 title을 바탕으로 생성한 task를 return해야합니다.");
+
+      }
+    }
+
+  }
+
 
 }
