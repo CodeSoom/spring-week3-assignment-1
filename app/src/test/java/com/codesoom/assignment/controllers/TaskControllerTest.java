@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("TaskController 테스트")
 class TaskControllerTest {
     private TaskController taskController;
-    private TaskService taskService;
 
     private static final String TASK_TITLE_ONE = "test1";
     private static final String TASK_TITLE_TWO = "test2";
@@ -28,7 +27,7 @@ class TaskControllerTest {
 
     @BeforeEach
     void setup() {
-        taskService = new TaskService(new TaskIdGenerator());
+        TaskService taskService = new TaskService(new TaskIdGenerator());
         taskController = new TaskController(taskService);
 
         TaskService.clear();
@@ -93,10 +92,26 @@ class TaskControllerTest {
         assertThat(findTask.getTitle()).isEqualTo(TASK_UPDATE_TITLE);
     }
 
-    @DisplayName("유효하지 않은 할 일을 수정하려 할 경우 예외가 발생합니다.")
+    @DisplayName("존재하지 않는 식별자의 할 일을 수정하려 할 경우 예외가 발생합니다.")
     @Test
     void updateTaskInvalid() {
         assertThatThrownBy(()-> taskController.update(10L, Task.from(TASK_UPDATE_TITLE)))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @DisplayName("할 일을 수정할 수 있습니다.")
+    @Test
+    void patchTask() {
+        taskController.patch(task1.getId(), Task.from(TASK_UPDATE_TITLE));
+        final Task findTask = taskController.detail(task1.getId());
+
+        assertThat(findTask.getTitle()).isEqualTo(TASK_UPDATE_TITLE);
+    }
+
+    @DisplayName("존재하지 않는 식별자의  할 일을 수정하려 할 경우 예외가 발생합니다.")
+    @Test
+    void patchTaskInvalid() {
+        assertThatThrownBy(()-> taskController.patch(10L, Task.from(TASK_UPDATE_TITLE)))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
