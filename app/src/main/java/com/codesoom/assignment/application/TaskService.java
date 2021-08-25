@@ -24,11 +24,9 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
-        tasks.add(task);
-        return task;
+        source.setId(generateId());
+        tasks.add(source);
+        return source;
     }
 
     public Task updateTask(Long id, Task source) {

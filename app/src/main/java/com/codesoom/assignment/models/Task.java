@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import org.springframework.stereotype.Component;
+
 public class Task {
     private Long id;
 
