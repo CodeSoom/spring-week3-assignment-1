@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,7 +65,7 @@ class TaskControllerWebTest {
         @BeforeEach
         void setup() {
             given(taskService.getTask(VALID_ID)).willReturn(taskFixture);
-            given(taskService.getTask(INVALID_ID)).willThrow(taskNotFoundException);
+            given(taskService.getTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
         }
 
         @Test
@@ -84,7 +86,7 @@ class TaskControllerWebTest {
     class CreateTest {
         @BeforeEach
         void setup() {
-            given(taskService.createTask(taskFixture)).willReturn(taskFixture);
+            given(taskService.createTask(any(Task.class))).willReturn(taskFixture);
         }
 
         @Test
@@ -102,8 +104,8 @@ class TaskControllerWebTest {
     class UpdateTest {
         @BeforeEach
         void setup() {
-            given(taskService.updateTask(VALID_ID, taskFixture)).willReturn(taskFixture);
-            given(taskService.updateTask(INVALID_ID, taskFixture)).willThrow(taskNotFoundException);
+            given(taskService.updateTask(eq(VALID_ID), any(Task.class))).willReturn(taskFixture);
+            given(taskService.updateTask(eq(INVALID_ID), any(Task.class))).willThrow(taskNotFoundException);
         }
 
         @Test
@@ -118,7 +120,6 @@ class TaskControllerWebTest {
 
         @Test
         void updateWithInvalidId() throws Exception {
-            // TODO: 테스트 실패 - 수정하기
             String content = objectMapper.writeValueAsString(taskFixture);
 
             mockMvc.perform(put("/tasks/" + INVALID_ID)
@@ -133,7 +134,7 @@ class TaskControllerWebTest {
         @BeforeEach
         void setup() {
             given(taskService.deleteTask(VALID_ID)).willReturn(taskFixture);
-            given(taskService.deleteTask(INVALID_ID)).willThrow(taskNotFoundException);
+            given(taskService.deleteTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
         }
 
         @Test
