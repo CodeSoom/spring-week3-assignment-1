@@ -24,7 +24,7 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 저장되어 있는 모든 Task를 요청하는 경우,
+     * 저장되어 있는 모든 Task를 요청하는 경우,
      * 저장되어있는 모든 Task를 리턴한다.
      *
      * @return 저장되어있는 모든 Task
@@ -35,8 +35,8 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 저장되어 있는 Task중 특정한 Task를 요청하는 경우,
-     * id에 해당하는 Task를 리턴한다.
+     * id와 함께 Task 데이터를 요청하는 경우,
+     * 해당 id를 가지고 있는 Task를 리턴한다.
      *
      * @param id Task의 id
      * @return id에 해당하는 Task
@@ -48,7 +48,7 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 새로운 Task의 생성을 요청하는 경우,
+     * 새로운 Task의 생성을 요청하는 경우,
      * 새로운 Task를 생성하고,
      * 생성한 Task를 리턴한다.
      *
@@ -62,7 +62,7 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 저장되어 있는 Task의 수정을 요청하는 경우,
+     * 저장되어 있는 Task의 수정을 요청하는 경우,
      * id에 해당하는 Task를 업데이트하고,
      * 업데이트한 Task를 리턴한다.
      *
@@ -78,7 +78,7 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 저장되어 있는 Task의 수정을 요청하는 경우,
+     * 저장되어 있는 Task의 수정을 요청하는 경우,
      * id에 해당하는 Task를 업데이트하고,
      * 업데이트한 Task를 리턴한다.
      *
@@ -94,7 +94,7 @@ public class TaskController {
     }
 
     /**
-     * 클라이언트가 저장되어 있는 Task의 삭제를 요청하는 경우,
+     * 저장되어 있는 Task의 삭제를 요청하는 경우,
      * id에 해당하는 Task를 삭제한다.
      *
      * @param id 삭제할 Task의 id
