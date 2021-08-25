@@ -13,8 +13,17 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
-    private Long newId = 0L;
+    private List<Task> tasks;
+    private Long newId;
+
+    public TaskService(Long initialId, List<Task> tasks) {
+        this.newId = initialId;
+        this.tasks = tasks;
+    }
+
+    public TaskService() {
+        this(0L, new ArrayList<>());
+    }
 
     /**
      * 할 일 목록을 리턴합니다.
