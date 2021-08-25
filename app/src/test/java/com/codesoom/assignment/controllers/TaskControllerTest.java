@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("Task Controller는")
@@ -40,8 +42,13 @@ class TaskControllerTest {
         @Test
         @DisplayName("할 일이 있으면 할 일 리스트를 리턴한다.")
         void getTasks() {
+            Task task = controller.getTask(findId);
             controller.createTask(new Task(2L, "title2"));
-            assertThat(controller.getTaskList().size()).isEqualTo(2);
+            Task task2 = controller.getTask(2L);
+            List<Task> taskList = controller.getTaskList();
+
+            assertThat(taskList.size()).isEqualTo(2);
+            assertThat(taskList).contains(task, task2);
         }
     }
 
