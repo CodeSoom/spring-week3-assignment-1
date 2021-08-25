@@ -48,7 +48,7 @@ class TaskControllerTest {
     @DisplayName("할 일(id)에 대한 조회 요청을 했을 때")
     class GetTask {
         @Test
-        @DisplayName("할 일(id)을 찾지 못했다면 TaskNotFound 예외를 발생시킨다.")
+        @DisplayName("할 일(id)을 찾지 못했다면 TaskNotFound 예외를 던진다.")
         void getTasksWithoutTask() {
             assertThatThrownBy(() -> {
                 Task task = controller.getTask(9999L);
