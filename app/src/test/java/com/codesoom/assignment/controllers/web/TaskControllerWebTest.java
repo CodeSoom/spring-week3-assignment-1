@@ -1,13 +1,11 @@
 package com.codesoom.assignment.controllers.web;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.codesoom.assignment.TaskNotFoundException;
@@ -53,10 +51,6 @@ public class TaskControllerWebTest {
         public Long getId() {
             return this.id;
         }
-
-        public String getTitle() {
-            return this.title;
-        }
     }
 
     @Nested
@@ -66,12 +60,13 @@ public class TaskControllerWebTest {
         @Test
         @DisplayName("모든 할 일 목록을 응답한다")
         void it_response_200() throws Exception {
+            Task task = TaskList.FIRST.toTask();
+
             given(taskService.getTasks())
-                .willReturn(Collections.singletonList(TaskList.FIRST.toTask()));
+                .willReturn(Collections.singletonList(task));
 
             mockMvc.perform(get("/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(TaskList.FIRST.getTitle())));
+                .andExpect(status().isOk());
         }
     }
 
@@ -86,8 +81,10 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404를 응답한다")
             void it_response_404() throws Exception {
-                given(taskService.getTask(TaskList.SECOND.getId()))
-                    .willThrow(new TaskNotFoundException(TaskList.SECOND.getId()));
+                Long id = TaskList.SECOND.getId();
+
+                given(taskService.getTask(id))
+                    .willThrow(new TaskNotFoundException(id));
 
                 mockMvc.perform(get("/tasks/2"))
                     .andExpect(status().isNotFound());
@@ -101,8 +98,11 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
-                given(taskService.getTask(TaskList.FIRST.getId()))
-                    .willReturn(TaskList.FIRST.toTask());
+                Long id = TaskList.FIRST.getId();
+                Task task = TaskList.FIRST.toTask();
+
+                given(taskService.getTask(id))
+                    .willReturn(task);
 
                 mockMvc.perform(get("/tasks/1"))
                     .andExpect(status().isOk());
@@ -117,12 +117,14 @@ public class TaskControllerWebTest {
         @Test
         @DisplayName("201을 응답한다")
         void it_response_201() throws Exception {
-            given(taskService.createTask(TaskList.FIRST.toTask()))
-                .willReturn(TaskList.FIRST.toTask());
+            Task task = TaskList.FIRST.toTask();
+
+            given(taskService.createTask(task))
+                .willReturn(task);
 
             mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TaskList.FIRST.toTask().toString()))
+                .content(task.toString()))
                 .andExpect(status().isCreated());
         }
     }
@@ -138,12 +140,15 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
-                given(taskService.updateTask(TaskList.SECOND.getId(), TaskList.SECOND.toTask()))
-                    .willThrow(new TaskNotFoundException(TaskList.SECOND.getId()));
+                Long id = TaskList.SECOND.getId();
+                Task task = TaskList.SECOND.toTask();
+
+                given(taskService.updateTask(id, task))
+                    .willThrow(new TaskNotFoundException(id));
 
                 mockMvc.perform(put("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TaskList.SECOND.toTask().toString()))
+                    .content(task.toString()))
                     .andExpect(status().isNotFound());
             }
         }
@@ -155,12 +160,15 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
-                given(taskService.updateTask(TaskList.FIRST.getId(), TaskList.SECOND.toTask()))
-                    .willReturn(new Task(TaskList.FIRST.getId(), "SECOND TASK"));
+                Long id = TaskList.FIRST.getId();
+                Task task = TaskList.SECOND.toTask();
+
+                given(taskService.updateTask(id, task))
+                    .willReturn(new Task(id, task.getTitle()));
 
                 mockMvc.perform(put("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TaskList.SECOND.toTask().toString()))
+                    .content(task.toString()))
                     .andExpect(status().isOk());
             }
         }
@@ -177,12 +185,15 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
-                given(taskService.updateTask(TaskList.SECOND.getId(), TaskList.SECOND.toTask()))
-                    .willThrow(new TaskNotFoundException(TaskList.SECOND.getId()));
+                Long id = TaskList.SECOND.getId();
+                Task task = TaskList.SECOND.toTask();
+
+                given(taskService.updateTask(id, task))
+                    .willThrow(new TaskNotFoundException(id));
 
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TaskList.SECOND.toTask().toString()))
+                    .content(task.toString()))
                     .andExpect(status().isNotFound());
             }
         }
@@ -194,12 +205,15 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
-                given(taskService.updateTask(TaskList.FIRST.getId(), TaskList.SECOND.toTask()))
-                    .willReturn(new Task(TaskList.FIRST.getId(), "SECOND TASK"));
+                Long id = TaskList.FIRST.getId();
+                Task task = TaskList.SECOND.toTask();
+
+                given(taskService.updateTask(id, task))
+                    .willReturn(new Task(id, "SECOND TASK"));
 
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TaskList.SECOND.toTask().toString()))
+                    .content(task.toString()))
                     .andExpect(status().isOk());
             }
         }
@@ -216,8 +230,10 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
-                given(taskService.deleteTask(TaskList.SECOND.getId()))
-                    .willThrow(new TaskNotFoundException(TaskList.SECOND.getId()));
+                Long id = TaskList.SECOND.getId();
+
+                given(taskService.deleteTask(id))
+                    .willThrow(new TaskNotFoundException(id));
 
                 mockMvc.perform(delete("/tasks/2"))
                     .andExpect(status().isNotFound());
@@ -231,8 +247,11 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("204를 응답한다")
             void it_response_204() throws Exception {
-                given(taskService.deleteTask(TaskList.FIRST.getId()))
-                    .willReturn(TaskList.FIRST.toTask());
+                Long id = TaskList.FIRST.getId();
+                Task task = TaskList.FIRST.toTask();
+
+                given(taskService.deleteTask(id))
+                    .willReturn(task);
 
                 mockMvc.perform(delete("/tasks/1"))
                     .andExpect(status().isNoContent());
