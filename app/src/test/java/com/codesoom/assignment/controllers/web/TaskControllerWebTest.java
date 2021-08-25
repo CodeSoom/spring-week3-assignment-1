@@ -124,7 +124,7 @@ public class TaskControllerWebTest {
 
             mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(task.toString()))
+                .content(task.stringify()))
                 .andExpect(status().isCreated());
         }
     }
@@ -148,7 +148,7 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(put("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(task.toString()))
+                    .content(task.stringify()))
                     .andExpect(status().isNotFound());
             }
         }
@@ -168,7 +168,7 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(put("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(task.toString()))
+                    .content(task.stringify()))
                     .andExpect(status().isOk());
             }
         }
@@ -193,7 +193,7 @@ public class TaskControllerWebTest {
 
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(task.toString()))
+                    .content(task.stringify()))
                     .andExpect(status().isNotFound());
             }
         }
@@ -209,11 +209,11 @@ public class TaskControllerWebTest {
                 Task task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
-                    .willReturn(new Task(id, "SECOND TASK"));
+                    .willReturn(new Task(id, task.getTitle()));
 
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(task.toString()))
+                    .content(task.stringify()))
                     .andExpect(status().isOk());
             }
         }

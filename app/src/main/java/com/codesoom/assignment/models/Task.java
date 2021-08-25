@@ -33,6 +33,10 @@ public class Task {
         this.title = title;
     }
 
+    public String stringify() {
+        return String.format("{\"id\":%s,\"title\":\"%s\"}", id, title);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, title);
@@ -50,8 +54,4 @@ public class Task {
         return Objects.equals(id, task.id) && Objects.equals(title, task.title);
     }
 
-    @Override
-    public String toString() {
-        return String.format("{\"id\":%s,\"title\":\"%s\"}", id, title);
-    }
 }
