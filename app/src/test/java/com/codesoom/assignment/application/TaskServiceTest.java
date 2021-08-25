@@ -31,8 +31,8 @@ class TaskServiceTest {
         class Context_no_have_tasks {
             @Test
             @DisplayName("비어있는 리스트를 리턴한다")
-            void it_returns_emptyTask() {
-                List<Task> tasks = taskService.getTasks();
+            void it_returns_emptyTasks() {
+                final List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).isEmpty();
             }
         }
@@ -40,17 +40,21 @@ class TaskServiceTest {
         @Nested
         @DisplayName("등록된 할 일이 있다면")
         class Context_have_tasks {
+            Task task1, task2;
+
+            @BeforeEach
+            void prepareTasks() {
+                task1 = new Task();
+                task2 = new Task();
+                taskService.createTask(task1);
+                taskService.createTask(task2);
+            }
+
             @Test
             @DisplayName("할 일들을 리턴한다")
             void it_returns_tasks() {
-                Task task1 = new Task();
-                Task task2 = new Task();
-
-                taskService.createTask(task1);
-                taskService.createTask(task2);
-
                 // when
-                List<Task> tasks = taskService.getTasks();
+                final List<Task> tasks = taskService.getTasks();
 
                 //then
                 assertThat(tasks.size()).isEqualTo(2);
@@ -66,7 +70,7 @@ class TaskServiceTest {
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
         class Context_matchId_NotExist {
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 에러를 발생시킨다.")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다.")
             void it_returns_TaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(NOT_EXIST_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -76,13 +80,17 @@ class TaskServiceTest {
         @Nested
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
         class Context_matchId_exist {
+            Task task;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
+                taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("할 일을 리턴한다")
             void it_returns_task() {
-                //given
-                Task task = new Task();
-                taskService.createTask(task);
-
                 //when
                 Task foundTask = taskService.getTask(1L);
 
@@ -98,13 +106,16 @@ class TaskServiceTest {
         @Nested
         @DisplayName("할 일을 생성했다면")
         class Context_create_a_task {
+            Task task;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
+            }
+
             @Test
             @DisplayName("생성한 할 일을 반환합니다.")
             void createTask() {
-                //given
-                Task task = new Task();
-                task.setTitle(TASK_TITLE);
-
                 //when
                 Task createdTask = taskService.createTask(task);
 
@@ -121,19 +132,25 @@ class TaskServiceTest {
         @Nested
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
         class Context_matchId_exist {
-            @Test
-            @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
-            void updateTask() {
-                //given
-                Task task = new Task();
+            Task task, updateTask;
+            Long itemId;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
                 task.setTitle(TASK_TITLE);
 
                 Task createdTask = taskService.createTask(task);
-                Long itemId = createdTask.getId();
+                itemId = createdTask.getId();
 
-                //when
-                Task updateTask = new Task();
+                updateTask = new Task();
                 updateTask.setTitle("update title");
+            }
+
+            @Test
+            @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
+            void updateTask() {
+                //when
                 taskService.updateTask(itemId, updateTask);
 
                 //then
@@ -149,22 +166,24 @@ class TaskServiceTest {
         @Nested
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
         class Context_matchId_exist {
+            Task task, createdTask;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
+                createdTask = taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("할 일을 삭제합니다.")
             void deleteTask() {
-                //given
-                Task task = new Task();
-                Task createdTask = taskService.createTask(task);
-
                 //when
                 taskService.deleteTask(createdTask.getId());
 
                 //then
-                List<Task> tasks = taskService.getTasks();
+                final List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).doesNotContain(task);
             }
         }
-
     }
-
 }
