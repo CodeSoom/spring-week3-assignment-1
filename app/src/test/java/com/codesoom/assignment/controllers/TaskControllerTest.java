@@ -66,4 +66,29 @@ class TaskControllerTest {
 
   }
 
+  @Nested
+  @DisplayName("detail메소드에서")
+  class Describe_detail {
+
+    @Nested
+    @DisplayName("저장되지 않은 task의 id로 조회할 때")
+    class Context_NotFoundTaskId {
+
+      @BeforeEach
+      void setUp() {
+        taskController.create(task);
+      }
+
+      @Test
+      @DisplayName("404상태코드와 에러메세지를 return")
+      void It_Return404AndErrorMessage() {
+        assertThatThrownBy(
+            () -> taskController.detail(NotFoundId),
+            "저장되지 않은 task를 조회할때의 에러가 throw."
+        ).isInstanceOf(TaskNotFoundException.class);
+      }
+    }
+
+  }
+
 }
