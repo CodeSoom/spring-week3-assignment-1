@@ -15,7 +15,7 @@ class HelloControllerTest {
     class Describe_sayHello {
         @Test
         @DisplayName("문자열을 리턴합니다")
-        void it_returns_() {
+        void it_returns_String() {
             assertThat(helloController.sayHello()).isInstanceOf(String.class);
         }
     }
