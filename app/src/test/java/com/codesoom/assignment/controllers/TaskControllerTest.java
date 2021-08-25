@@ -19,6 +19,7 @@ class TaskControllerTest {
     TaskService taskService = new TaskService();
     private static final Long NOT_EXIST_ID = 999999999L;
     private static final String TASK_TITLE = "test";
+    private static final String UPDATE_TITLE = "update_title";
 
     @BeforeEach
     void setUp() {
@@ -55,10 +56,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일들을 리턴합니다")
             void it_returns_tasks() {
-                // when
                 final List<Task> list = controller.list();
 
-                //then
                 assertThat(list.size()).isEqualTo(2);
                 assertThat(list).contains(task1, task2);
             }
@@ -95,10 +94,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 리턴합니다")
             void it_returns_task() {
-                //when
                 Task foundTask = controller.detail(id);
 
-                //then
                 assertThat(foundTask).isEqualTo(task);
             }
         }
@@ -120,10 +117,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("생성한 할 일을 반환합니다")
             void createTask() {
-                //when
                 Task createdTask = controller.create(task);
 
-                //then
                 Task foundItem = taskService.getTask(createdTask.getId());
                 assertThat(foundItem).isEqualTo(createdTask);
             }
@@ -148,7 +143,7 @@ class TaskControllerTest {
                 itemId = createdTask.getId();
 
                 updateTask = new Task();
-                updateTask.setTitle("update title");
+                updateTask.setTitle(UPDATE_TITLE);
             }
 
             @Test
@@ -188,10 +183,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
             void updateTask() {
-                //when
                 controller.patch(itemId, updateTask);
 
-                //then
                 Task foundItem = taskService.getTask(itemId);
                 assertThat(foundItem.getTitle()).isEqualTo(updateTask.getTitle());
             }
@@ -215,10 +208,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 삭제합니다")
             void deleteTask() {
-                //when
                 controller.delete(createdTask.getId());
 
-                //then
                 final List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).doesNotContain(task);
             }
