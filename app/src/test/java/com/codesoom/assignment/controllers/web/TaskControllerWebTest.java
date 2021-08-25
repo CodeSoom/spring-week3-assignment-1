@@ -16,7 +16,8 @@ import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
-import java.util.List;
+import javax.xml.bind.annotation.XmlType.DEFAULT;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,15 +31,17 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerWebTest {
-
-    private static final String DEFAULT_TASK_TITLE = "TASK";
-    private static final String NEW_TASK_TITLE = "NEW " + DEFAULT_TASK_TITLE;
+    private static final String DEFAULT_TASK_TITLE = "DEFAULT TASK TITLE";
+    private static final String NEW_TASK_TITLE = "NEW TASK TITLE";
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private TaskService taskService;
+
+    private final Task task1 = new Task(1L, DEFAULT_TASK_TITLE);
+    private final Task task2 = new Task(2L, DEFAULT_TASK_TITLE);
 
     @Nested
     @DisplayName("GET /tasks 요청은")
@@ -47,10 +50,8 @@ public class TaskControllerWebTest {
         @Test
         @DisplayName("모든 할 일 목록을 응답한다")
         void it_response_200() throws Exception {
-            Task task = new Task(1L, DEFAULT_TASK_TITLE);
-            List<Task> tasks = Collections.singletonList(task);
             given(taskService.getTasks())
-                .willReturn(tasks);
+                .willReturn(Collections.singletonList(task1));
 
             mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
@@ -85,7 +86,7 @@ public class TaskControllerWebTest {
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
                 given(taskService.getTask(1L))
-                    .willReturn(new Task(1L, DEFAULT_TASK_TITLE));
+                    .willReturn(task1);
 
                 mockMvc.perform(get("/tasks/1"))
                     .andExpect(status().isOk());
@@ -100,13 +101,12 @@ public class TaskControllerWebTest {
         @Test
         @DisplayName("201을 응답한다")
         void it_response_201() throws Exception {
-            Task task = new Task(1L, DEFAULT_TASK_TITLE);
-            given(taskService.createTask(task))
-                .willReturn(task);
+            given(taskService.createTask(task1))
+                .willReturn(task1);
 
             mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toString(task)))
+                .content(toString(task1)))
                 .andExpect(status().isCreated());
         }
 
@@ -126,13 +126,12 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
-                Task task = new Task(2L, DEFAULT_TASK_TITLE);
-                given(taskService.updateTask(2L, task))
+                given(taskService.updateTask(2L, task2))
                     .willThrow(new TaskNotFoundException(2L));
 
                 mockMvc.perform(put("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(task)))
+                    .content(toString(task2)))
                     .andExpect(status().isNotFound());
             }
 
@@ -148,13 +147,12 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
-                Task task = new Task(1L, NEW_TASK_TITLE);
-                given(taskService.updateTask(1L, task))
+                given(taskService.updateTask(1L, task2))
                     .willReturn(new Task(1L, NEW_TASK_TITLE));
 
                 mockMvc.perform(put("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(task)))
+                    .content(toString(task2)))
                     .andExpect(status().isOk());
             }
 
@@ -175,13 +173,12 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
-                Task task = new Task(2L, DEFAULT_TASK_TITLE);
-                given(taskService.updateTask(2L, task))
+                given(taskService.updateTask(2L, task2))
                     .willThrow(new TaskNotFoundException(2L));
 
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(task)))
+                    .content(toString(task2)))
                     .andExpect(status().isNotFound());
             }
 
@@ -197,13 +194,12 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("200을 응답한다")
             void it_response_200() throws Exception {
-                Task task = new Task(1L, NEW_TASK_TITLE);
-                given(taskService.updateTask(1L, task))
+                given(taskService.updateTask(1L, task2))
                     .willReturn(new Task(1L, NEW_TASK_TITLE));
 
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(toString(task)))
+                    .content(toString(task2)))
                     .andExpect(status().isOk());
             }
 
@@ -239,9 +235,8 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("204를 응답한다")
             void it_response_204() throws Exception {
-                Task task = new Task(1L, DEFAULT_TASK_TITLE);
                 given(taskService.deleteTask(1L))
-                    .willReturn(task);
+                    .willReturn(task1);
 
                 mockMvc.perform(delete("/tasks/1"))
                     .andExpect(status().isNoContent());
