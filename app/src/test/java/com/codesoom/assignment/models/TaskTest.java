@@ -7,36 +7,48 @@ import org.junit.jupiter.api.Test;
 
 public class TaskTest {
 
+    private static final long ID = 1L;
+    private static final String TITLE = "TASK";
+
     private Task task;
 
     @BeforeEach
     void setUp() {
-        task = new Task(1L, "TITLE");
+        task = new Task(ID, TITLE);
     }
 
     @Test
-    void getter() {
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo("TITLE");
+    void getId() {
+        assertThat(task.getId()).isEqualTo(ID);
     }
 
     @Test
-    void setter() {
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo("TITLE");
+    void getTitle() {
+        assertThat(task.getTitle()).isEqualTo(TITLE);
+    }
+
+    @Test
+    void setId() {
+        assertThat(task.getId()).isEqualTo(ID);
 
         long expectId = 2L;
-        String expectTitle = "NEW";
-
         task.setId(expectId);
-        task.setTitle(expectTitle);
 
         assertThat(task.getId()).isEqualTo(expectId);
+    }
+
+    @Test
+    void setTitle() {
+        assertThat(task.getTitle()).isEqualTo(TITLE);
+
+        String expectTitle = "NEW";
+        task.setTitle(expectTitle);
+
         assertThat(task.getTitle()).isEqualTo(expectTitle);
     }
 
     @Test
     void stringify() {
-        assertThat(task.stringify()).isEqualTo("{\"id\":1,\"title\":\"TITLE\"}");
+        assertThat(task.stringify()).isEqualTo("{\"id\":" + ID + ",\"title\":\"" + TITLE + "\"}");
     }
 }
