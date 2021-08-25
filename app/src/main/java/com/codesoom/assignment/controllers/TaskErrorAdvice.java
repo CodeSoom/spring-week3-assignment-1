@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * /tasks 에 대한 사용자 요청이 실패한 경우를 처리합니다.
+ * 할 일에 대한 HTTP 요청이 실패한 경우를 처리합니다.
  */
 @ControllerAdvice
 public class TaskErrorAdvice {

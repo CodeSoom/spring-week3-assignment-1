@@ -1,7 +1,7 @@
 package com.codesoom.assignment.dto;
 
 /**
- * 에러에 대한 정보를 저장하고 처리합니다.
+ * 에러 상황의 정보를 표현합니다.
  */
 public class ErrorResponse {
     private String message;

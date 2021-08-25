@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * /tasks 에 대한 사용자 요청을 처리합니다.
+ * 할 일에 대한 HTTP 요청의 처리를 담당합니다.
  */
 @RestController
 @RequestMapping("/tasks")
