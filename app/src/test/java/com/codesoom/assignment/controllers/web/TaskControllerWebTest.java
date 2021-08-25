@@ -65,7 +65,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("GET /tasks는 모든 할 일 목록을 반환한다")
+    @DisplayName("GET /tasks는 모든 할 일 목록을 응답한다")
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
             .andExpect(status().isOk())
@@ -73,21 +73,21 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("GET /tasks/{id}는 존재하지 않는 id일 경우 404를 반환한다")
+    @DisplayName("GET /tasks/{id}는 존재하지 않는 할 일 일경우 404를 응답한다")
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/2"))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("GET /tasks/{id}는 존재하는 id일 경우 200을 반환한다")
+    @DisplayName("GET /tasks/{id}는 존재하는 할 일 일경우 200을 응답한다")
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
             .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("POST /tasks는 201을 반환한다")
+    @DisplayName("POST /tasks는 201을 응답한다")
     void createTask() throws Exception {
         Task task = new Task(1L, DEFAULT_TASK_TITLE);
 
@@ -98,7 +98,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("PUT /tasks/{id}는 존재하지 않는 id일 경우 404을 반환한다")
+    @DisplayName("PUT /tasks/{id}는 존재하지 않는 할 일 일경우 404을 응답한다")
     void updateTaskPutWithInvalidId() throws Exception {
         Task task = new Task(2L, DEFAULT_TASK_TITLE);
 
@@ -109,7 +109,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("PUT /tasks/{id}는 존재하는 id일 경우 200을 반환한다")
+    @DisplayName("PUT /tasks/{id}는 존재하는 할 일 일경우 200을 응답한다")
     void updateTaskPutWithValidId() throws Exception {
         Task task = new Task(1L, NEW_TASK_TITLE);
 
@@ -120,7 +120,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("PATCH /tasks/{id}는 존재하지 않는 id일 경우 404을 반환한다")
+    @DisplayName("PATCH /tasks/{id}는 존재하지 않는 할 일 일경우 404을 응답한다")
     void updateTaskPatchWithInvalidId() throws Exception {
         Task task = new Task(2L, DEFAULT_TASK_TITLE);
 
@@ -131,7 +131,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("PATCH /tasks/{id}는 존재하는 id일 경우 200을 반환한다")
+    @DisplayName("PATCH /tasks/{id}는 존재하는 할 일 일경우 200을 응답한다")
     void updateTaskPatch() throws Exception {
         Task task = new Task(1L, NEW_TASK_TITLE);
 
@@ -142,7 +142,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("DELETE /tasks/{id}는 204를 반환한다")
+    @DisplayName("DELETE /tasks/{id}는 204를 응답한다")
     void deleteTask() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
             .andExpect(status().isNoContent());
