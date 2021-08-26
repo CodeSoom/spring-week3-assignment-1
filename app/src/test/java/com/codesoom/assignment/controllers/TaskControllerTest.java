@@ -70,6 +70,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
         class Context_matchId_NotExist {
+
+            @BeforeEach
+            void prepareEmptyList() {
+                List<Task> list = controller.list();
+                list.clear();
+            }
+
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던집니다")
             void it_returns_TaskNotFoundException() {
@@ -149,10 +156,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("입력받은 제목으로 수정된 할 일을 리턴합니다")
             void updateTask() {
-                //when
                 controller.update(itemId, updateTask);
 
-                //then
                 Task foundItem = taskService.getTask(itemId);
                 assertThat(foundItem.getTitle()).isEqualTo(updateTask.getTitle());
             }

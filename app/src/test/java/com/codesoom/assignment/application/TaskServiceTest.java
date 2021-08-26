@@ -53,10 +53,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일들을 리턴합니다")
             void it_returns_tasks() {
-                // when
                 final List<Task> tasks = taskService.getTasks();
 
-                //then
                 assertThat(tasks.size()).isEqualTo(2);
                 assertThat(tasks).contains(task1, task2);
             }
@@ -69,6 +67,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
         class Context_matchId_NotExist {
+
+            @BeforeEach
+            void prepareEmptyTasks() {
+                List<Task> tasks = taskService.getTasks();
+                tasks.clear();
+            }
+
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던집니다")
             void it_returns_TaskNotFoundException() {
@@ -93,10 +98,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 리턴합니다")
             void it_returns_task() {
-                //when
                 Task foundTask = taskService.getTask(1L);
 
-                //then
                 assertThat(foundTask).isEqualTo(task);
             }
         }
@@ -118,10 +121,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("생성한 할 일을 반환합니다")
             void createTask() {
-                //when
                 Task createdTask = taskService.createTask(task);
 
-                //then
                 Task foundItem = taskService.getTask(createdTask.getId());
                 assertThat(foundItem).isEqualTo(createdTask);
             }
@@ -152,10 +153,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
             void updateTask() {
-                //when
                 taskService.updateTask(itemId, updateTask);
 
-                //then
                 Task foundItem = taskService.getTask(itemId);
                 assertThat(foundItem.getTitle()).isEqualTo(updateTask.getTitle());
             }
@@ -179,10 +178,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 삭제합니다")
             void deleteTask() {
-                //when
                 taskService.deleteTask(createdTask.getId());
 
-                //then
                 final List<Task> tasks = taskService.getTasks();
                 assertThat(tasks).doesNotContain(task);
             }
