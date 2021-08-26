@@ -33,10 +33,10 @@ class TaskServiceTest {
     class Describe_getTasks {
 
         @Nested
-        @DisplayName("task 목록이 없다면")
+        @DisplayName("tasks가 비어 있다면")
         class Context_with_no_tasks {
             @Test
-            @DisplayName("빈 목록을 반환한다.")
+            @DisplayName("빈 tasks을 반환한다.")
             void it_return_empty_tasks() {
                 final List<Task> tasks = taskService.getTasks();
 
@@ -45,7 +45,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("task 목록이 있다면")
+        @DisplayName("tasks에 task가 있다면")
         class Context_with_tasks {
 
             @BeforeEach
@@ -55,7 +55,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("task 목록을 반환한다.")
+            @DisplayName("tasks을 반환한다.")
             void it_return_tasks() {
                 final List<Task> tasks = taskService.getTasks();
 
@@ -79,7 +79,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
             @Test
             @DisplayName("id에 해당되는 Task을 반환한다.")
@@ -92,7 +92,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_inValid_id {
             @Test
             @DisplayName("TaskNotFoundException을 던진다.")
@@ -116,7 +116,7 @@ class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 목록에 추가된다.")
+        @DisplayName("Tasks에 추가된다.")
         void it_add_task() {
             assertThat(taskService.getTasks()).hasSize(0);
 
@@ -147,7 +147,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
             @Test
             @DisplayName("업데이트된 Task을 반환한다.")
@@ -162,7 +162,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_inValid_id {
             @Test
             @DisplayName("TaskNotFoundException을 던진다.")
@@ -185,7 +185,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
             @Test
             @DisplayName("삭제되는 Task을 반환한다.")
@@ -196,7 +196,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("할일 목록에서 삭제된다.")
+            @DisplayName("Tasks에서 삭제된다.")
             void it_delete_task() {
                 assertThat(taskService.getTasks()).hasSize(2);
 
@@ -207,7 +207,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_inValid_id {
             @Test
             @DisplayName("TaskNotFoundException을 던진다.")

@@ -49,7 +49,7 @@ class TaskControllerTest {
         }
 
         @Test
-        @DisplayName("task 목록을 반환합니다.")
+        @DisplayName("tasks을 반환합니다.")
         void it_return_tasks() {
             assertThat(taskController.list()).isEqualTo(tasks);
         }
@@ -66,7 +66,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
 
             @Test
@@ -77,7 +77,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_invalid_id {
 
             @Test
@@ -116,7 +116,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
 
             @Test
@@ -127,7 +127,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_invalid_id {
 
             @Test
@@ -150,7 +150,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
 
             @Test
@@ -161,7 +161,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_invalid_id {
 
             @Test
@@ -183,7 +183,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 id에 해당되는 Task가 Task 목록에 존재하지 않으면")
+        @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하지 않으면")
         class Context_with_invalid_id {
 
             @Test
