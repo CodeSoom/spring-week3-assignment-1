@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,53 +44,65 @@ class TaskControllerWebTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Nested
-    class ListTest {
+    @DisplayName("Get Request")
+    class GetRequestTest {
         @BeforeEach
         void setup() {
             List<Task> tasks = new ArrayList<>();
             tasks.add(taskFixture);
 
             given(taskService.getTasks()).willReturn(tasks);
-        }
-
-        @Test
-        void list() throws Exception {
-            mockMvc.perform(get("/tasks"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(TASK_TITLE)));
-        }
-    }
-
-    @Nested
-    class DetailTest {
-        @BeforeEach
-        void setup() {
             given(taskService.getTask(VALID_ID)).willReturn(taskFixture);
             given(taskService.getTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
         }
 
-        @Test
-        void detailWithValidId() throws Exception {
-            mockMvc.perform(get("/tasks/" + VALID_ID))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(TASK_TITLE)));
+        @Nested
+        @DisplayName("without path variables")
+        class WithoutPathVariables {
+            @Test
+            @DisplayName("returns a task list with http status code 200")
+            void list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(TASK_TITLE)));
+            }
         }
 
-        @Test
-        void detailWithInvalidId() throws Exception {
-            mockMvc.perform(get("/tasks/" + INVALID_ID))
-                    .andExpect(status().isNotFound());
+        @Nested
+        @DisplayName("with a valid test id")
+        class WithValidId {
+            @Test
+            @DisplayName("returns the task with http status code 200")
+            void detail() throws Exception {
+                mockMvc.perform(get("/tasks/" + VALID_ID))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(TASK_TITLE)));
+            }
+        }
+
+        @Nested
+        @DisplayName("with an invalid test id")
+        class WithInvalidId {
+            @Test
+            @DisplayName("returns a 404 error")
+            void detail() throws Exception {
+                mockMvc.perform(get("/tasks/" + INVALID_ID))
+                        .andExpect(status().isNotFound());
+            }
         }
     }
 
+
     @Nested
-    class CreateTest {
+    @DisplayName("Post Request")
+    class PostRequestTest {
         @BeforeEach
         void setup() {
             given(taskService.createTask(any(Task.class))).willReturn(taskFixture);
         }
 
         @Test
+        @DisplayName("returns a created task with HTTP status code 201")
         void create() throws Exception {
             String content = objectMapper.writeValueAsString(taskFixture);
 
@@ -103,53 +116,75 @@ class TaskControllerWebTest {
     }
 
     @Nested
-    class UpdateTest {
+    @DisplayName("Put Request")
+    class PutRequestTest {
         @BeforeEach
         void setup() {
             given(taskService.updateTask(eq(VALID_ID), any(Task.class))).willReturn(taskFixture);
             given(taskService.updateTask(eq(INVALID_ID), any(Task.class))).willThrow(taskNotFoundException);
         }
 
-        @Test
-        void updateWithValidId() throws Exception {
-            String content = objectMapper.writeValueAsString(taskFixture);
+        @Nested
+        @DisplayName("with a valid id")
+        class WithValidId {
+            @Test
+            @DisplayName("returns an updated task with HTTP status code 200")
+            void update() throws Exception {
+                String content = objectMapper.writeValueAsString(taskFixture);
 
-            mockMvc.perform(put("/tasks/" + VALID_ID)
-                            .content(content)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(VALID_ID.toString())));
+                mockMvc.perform(put("/tasks/" + VALID_ID)
+                                .content(content)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(VALID_ID.toString())));
+            }
         }
 
-        @Test
-        void updateWithInvalidId() throws Exception {
-            String content = objectMapper.writeValueAsString(taskFixture);
+        @Nested
+        @DisplayName("with an invalid id")
+        class WithInvalidId {
+            @Test
+            @DisplayName("returns a 404 error")
+            void update() throws Exception {
+                String content = objectMapper.writeValueAsString(taskFixture);
 
-            mockMvc.perform(put("/tasks/" + INVALID_ID)
-                            .content(content)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
+                mockMvc.perform(put("/tasks/" + INVALID_ID)
+                                .content(content)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
         }
     }
 
     @Nested
-    class DeleteTest {
+    @DisplayName("Delete Request")
+    class DeleteRequestTest {
         @BeforeEach
         void setup() {
             given(taskService.deleteTask(VALID_ID)).willReturn(taskFixture);
             given(taskService.deleteTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
         }
 
-        @Test
-        void deleteWithValidId() throws Exception {
-            mockMvc.perform(delete("/tasks/" + VALID_ID))
-                    .andExpect(status().isNoContent());
+        @Nested
+        @DisplayName("with a valid id")
+        class WithValidId {
+            @Test
+            @DisplayName("returns a deleted task with HTTP status code 204")
+            void remove() throws Exception {
+                mockMvc.perform(delete("/tasks/" + VALID_ID))
+                        .andExpect(status().isNoContent());
+            }
         }
 
-        @Test
-        void deleteWithInvalidId() throws Exception {
-            mockMvc.perform(delete("/tasks/" + INVALID_ID))
-                    .andExpect(status().isNotFound());
+        @Nested
+        @DisplayName("with an invalid id")
+        class WithInvalidId {
+            @Test
+            @DisplayName("returns a 404 error")
+            void remove() throws Exception {
+                mockMvc.perform(delete("/tasks/" + INVALID_ID))
+                        .andExpect(status().isNotFound());
+            }
         }
     }
 }
