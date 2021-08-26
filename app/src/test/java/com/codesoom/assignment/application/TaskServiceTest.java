@@ -152,12 +152,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("업데이트된 Task을 반환한다.")
             void it_return_task() {
-                final String originTitle = taskService.getTask(VALID_ID).getTitle();
                 final Task updatedTask = taskService.updateTask(VALID_ID, task2);
 
-                assertThat(updatedTask.getId()).isEqualTo(VALID_ID);
                 assertThat(updatedTask.getTitle()).isEqualTo(task2.getTitle());
-                assertThat(originTitle).isNotEqualTo(task2.getTitle());
             }
         }
 
