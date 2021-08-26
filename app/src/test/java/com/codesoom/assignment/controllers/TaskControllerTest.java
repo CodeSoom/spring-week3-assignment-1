@@ -30,7 +30,7 @@ public class TaskControllerTest {
         @DisplayName("선조건")
         class Context_precondition {
             @Nested
-            @DisplayName("TaskController 클래스가 null인 환경에서")
+            @DisplayName("'null 포인터를 참조하는 개체는 메소드를 호출할 수 없다.'를 위반한 경우")
             class Context_taskController_null {
                 @Test
                 @DisplayName("NullPointException을 던진다.")
@@ -40,9 +40,8 @@ public class TaskControllerTest {
             }
 
             @Nested
-            @DisplayName("TaskController 클래스의 멤버변수 TaskService가 null인 환경에서")
+            @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
             class Context_taskService_null {
-
                 public Context_taskService_null() {
                     taskController = new TaskController(null);
                 }
@@ -56,7 +55,7 @@ public class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("올바른 사용자 시나리오(happy path) 환경에서")
+        @DisplayName("올바른 사용자 시나리오(happy path)에서")
         class Context_happyPath {
             private final TaskService taskServiceMock = mock(TaskService.class);
 
