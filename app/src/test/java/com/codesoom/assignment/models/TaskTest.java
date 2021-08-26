@@ -33,12 +33,6 @@ class TaskTest {
     }
 
     @Test
-    @DisplayName("Task의 id를 설정한다")
-    void setId() {
-
-    }
-
-    @Test
     @DisplayName("Task의 title을 반환한다")
     void getTitle() {
         // given
@@ -50,11 +44,5 @@ class TaskTest {
 
         // then
         assertThat(getTitle).isEqualTo("Test Title");
-    }
-
-    @Test
-    @DisplayName("Task의 title을 설정한다")
-    void setTitle() {
-
     }
 }

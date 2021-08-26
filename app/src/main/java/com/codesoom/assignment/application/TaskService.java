@@ -1,54 +1,60 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.springframework.stereotype.Service;
+import com.codesoom.assignment.models.TaskIdGenerator;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Repository
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
-    private Long newId = 0L;
 
-    public List<Task> getTasks() {
-        return tasks;
+    private final TaskIdGenerator taskIdGenerator;
+    private Map<Long, Task> taskMap = new ConcurrentHashMap<>();
+
+    public TaskService(TaskIdGenerator taskIdGenerator) {
+        this.taskIdGenerator = taskIdGenerator;
     }
 
-    public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+    public Collection<Task> getTaskList() {
+        return taskMap.values();
     }
 
-    public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
-
-        tasks.add(task);
-
-        return task;
+    public Optional<Task> getTaskById(Long id) {
+        return Optional.ofNullable(taskMap.get(id));
     }
 
-    public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
-
-        return task;
+    public Task addTask(Task task) {
+        Task newTask = new Task(taskIdGenerator.nextSequence());
+        newTask.setTitle(task.getTitle());
+        taskMap.put(newTask.getId(), newTask);
+        return newTask;
     }
 
-    public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
-
-        return task;
+    public Optional<Task> replaceTask(Long id, Task task) {
+        Optional<Task> oldTask = Optional.ofNullable(taskMap.get(id));
+        oldTask.ifPresent(it -> {
+            it.setTitle(task.getTitle());
+            taskMap.put(it.getId(), it);
+        });
+        return oldTask;
     }
 
-    private Long generateId() {
-        newId += 1;
-        return newId;
+    public Optional<Task> updateTask(Long id, Task task) {
+        Optional<Task> oldTask = Optional.ofNullable(taskMap.get(id));
+        oldTask.ifPresent(it -> {
+            it.setTitle(task.getTitle());
+            taskMap.put(it.getId(), it);
+        });
+        return oldTask;
+    }
+
+    public Optional<Task> deleteTask(Long id) {
+        Task task = taskMap.get(id);
+        taskMap.remove(id);
+        return Optional.ofNullable(task);
     }
 }

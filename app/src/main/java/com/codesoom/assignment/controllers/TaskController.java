@@ -1,51 +1,57 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.exception.DataNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskRepository) {
+        this.taskService = taskRepository;
     }
 
     @GetMapping
-    public List<Task> list() {
-        return taskService.getTasks();
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Task> getTaskList() {
+        return taskService.getTaskList();
     }
 
-    @GetMapping("{id}")
-    public Task detail(@PathVariable Long id) {
-        return taskService.getTask(id);
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id).orElseThrow(() -> new DataNotFoundException(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task create(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public Task postTask(@RequestBody Task task) {
+        return taskService.addTask(task);
     }
 
-    @PutMapping("{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task putTask(@PathVariable Long id, @RequestBody Task task) {
+        return taskService.replaceTask(id, task).orElseThrow(() -> new DataNotFoundException(id));
     }
 
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Task patchTask(@PathVariable Long id, @RequestBody Task task) {
+        return taskService.updateTask(id, task).orElseThrow(() -> new DataNotFoundException(id));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id).orElseThrow(() -> new DataNotFoundException(id));
     }
 }
