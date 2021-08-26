@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("Task Controller는")
+@DisplayName("Task Controller")
 class TaskControllerTest {
 
     private TaskController controller;
@@ -30,52 +30,71 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("전체 할 일 리스트에 대한 조회 요청을 했을 때")
-    class GetTaskList {
-        @Test
-        @DisplayName("할 일이 없으면 빈 리스트를 리턴한다.")
-        void getTasksWithoutTask() {
-            controller.completeTask(findId);
-            assertThat(controller.getTaskList()).isEmpty();
+    @DisplayName("getTaskList 메소드는")
+    class Describe_getTaskList {
+
+        @Nested
+        @DisplayName("할 일이 없으면")
+        class Context_with_no_task {
+            @Test
+            @DisplayName("빈 리스트를 리턴한다.")
+            void getTasksWithoutTask() {
+                controller.completeTask(findId);
+                assertThat(controller.getTaskList()).isEmpty();
+            }
         }
 
-        @Test
-        @DisplayName("할 일이 있으면 할 일 리스트를 리턴한다.")
-        void getTasks() {
-            Task task = controller.getTask(findId);
-            controller.createTask(new Task(2L, "title2"));
-            Task task2 = controller.getTask(2L);
-            List<Task> taskList = controller.getTaskList();
+        @Nested
+        @DisplayName("할 일이 있으면")
+        class Context_with_tasks {
+            @Test
+            @DisplayName("할 일 리스트를 리턴한다.")
+            void getTasks() {
+                Task task = controller.getTask(findId);
+                controller.createTask(new Task(2L, "title2"));
+                Task task2 = controller.getTask(2L);
+                List<Task> taskList = controller.getTaskList();
 
-            assertThat(taskList.size()).isEqualTo(2);
-            assertThat(taskList).contains(task, task2);
-        }
-    }
-
-    @Nested
-    @DisplayName("할 일(id)에 대한 조회 요청을 했을 때")
-    class GetTask {
-        @Test
-        @DisplayName("할 일(id)을 찾지 못했다면 TaskNotFound 예외를 던진다.")
-        void getTasksWithoutTask() {
-            assertThatThrownBy(() -> {
-                Task task = controller.getTask(9999L);
-            }).isInstanceOf(TaskNotFoundException.class);
-        }
-
-        @Test
-        @DisplayName("할 일(id)을 찾으면 할 일을 리턴한다.")
-        void getTask() {
-            controller.getTask(findId);
-            assertThat(controller.getTask(findId).getTitle()).isEqualTo("title");
+                assertThat(taskList.size()).isEqualTo(2);
+                assertThat(taskList).contains(task, task2);
+            }
         }
     }
 
     @Nested
-    @DisplayName("할 일에 대한 등록 요청이 오면")
-    class CreateTask {
+    @DisplayName("getTask 메소드는")
+    class Describe_getTask {
+
+        @Nested
+        @DisplayName("id에 해당하는 할 일을 찾지 못하면")
+        class Context_with_find_no_task {
+            @Test
+            @DisplayName("TaskNotFound 예외를 던진다.")
+            void getTasksWithoutTask() {
+                assertThatThrownBy(() -> {
+                    Task task = controller.getTask(9999L);
+                }).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("id에 해당하는 할 일을 찾으면")
+        class Context_with_find_task {
+            @Test
+            @DisplayName("할 일을 리턴한다.")
+            void getTask() {
+                controller.getTask(findId);
+                assertThat(controller.getTask(findId).getTitle()).isEqualTo("title");
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("createTask 메소드는")
+    class Describe_createTask {
+
         @Test
-        @DisplayName("할 일을 등록한다.")
+        @DisplayName("새로운 할 일을 등록한다.")
         void createNewTask() {
 
             int oldSize = controller.getTaskList().size();
@@ -87,11 +106,10 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일(id)에 대한 수정 요청이 오면")
-    class UpdateTask {
-
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTask {
         @Test
-        @DisplayName("할 일(id)을 수정한다.")
+        @DisplayName("할 일을 수정한다.")
         void updateTask() {
             String newTitle = "New Title";
             Task newTask = new Task(findId, newTitle);
@@ -103,22 +121,21 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일(id)에 대한 완료 요청이 오면")
-    class CompleteTask {
-
+    @DisplayName("completeTask 메소드는")
+    class Describe_completeTask {
         @Test
-        @DisplayName("할 일(id)을 리스트에서 제외한다.")
+        @DisplayName("할 일을 리스트에서 제외한다.")
         void completeTask() {
-
             controller.completeTask(findId);
             assertThatThrownBy(() -> {
                 Task task = controller.getTask(findId);
             }).isInstanceOf(TaskNotFoundException.class);
-
         }
     }
 
+
     @Test
+    @DisplayName("toString 메소드는 task를 출력한다.")
     void taskToString() {
         Task task = controller.getTask(findId);
         Assertions.assertThat(task.toString()).isEqualTo("Task{id=1, title=title}");
