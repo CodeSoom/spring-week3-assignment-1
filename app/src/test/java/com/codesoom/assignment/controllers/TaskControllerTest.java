@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Task Controller")
 class TaskControllerTest {
@@ -83,7 +84,6 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 리턴한다.")
             void getTask() {
-                controller.getTask(findId);
                 assertThat(controller.getTask(findId).getTitle()).isEqualTo("title");
             }
         }
