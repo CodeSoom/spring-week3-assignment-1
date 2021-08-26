@@ -39,6 +39,7 @@ public class TaskTest {
     }
 
     @Test
+    @DisplayName("할 일을 JSON 문자로 변환한다")
     void stringify() {
         assertThat(task.stringify()).isEqualTo("{\"id\":" + ID + ",\"title\":\"" + TITLE + "\"}");
     }
