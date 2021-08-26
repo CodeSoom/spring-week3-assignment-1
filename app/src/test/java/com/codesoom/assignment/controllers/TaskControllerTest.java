@@ -8,6 +8,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TaskControllerTest {
@@ -16,17 +17,18 @@ class TaskControllerTest {
     private static final String NEW_TASK_TITLE = "new";
 
     private TaskController controller;
-    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
-        controller = new TaskController(taskService);
+        // subject
+        controller = new TaskController(new TaskService());
 
+        // fixtures
         controller.create(new Task(1L, TASK_TITLE));
     }
 
     @Test
+    @DisplayName("할 일 목록을 가져온다")
     void getTasks() {
         List<Task> list = controller.list();
 
@@ -34,6 +36,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("할 일을 생성한다")
     void createNewTask() {
         controller.create(new Task());
 
@@ -43,6 +46,14 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("단일 조회 시 존재하지 않는 할 일 이라면 예외를 던진다")
+    void getTaskWithInvalidId() {
+        assertThatThrownBy(() -> controller.detail(2L))
+            .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("단일 조회 시 존재하는 할 일 이라면 가져온다")
     void getTaskWithValidId() {
         Task task = controller.detail(1L);
 
@@ -51,19 +62,15 @@ class TaskControllerTest {
     }
 
     @Test
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> controller.delete(2L))
+    @DisplayName("수정 시 존재하지 않는 할 일 이라면 예외를 던진다")
+    void updateTaskWithInvalidId() {
+        assertThatThrownBy(() -> controller.update(2L, new Task()))
             .isInstanceOf(TaskNotFoundException.class);
     }
 
-    @Test
-    void updateTaskWithInvalidId() {
-        assertThatThrownBy(() -> {
-            controller.update(2L, new Task());
-        }).isInstanceOf(TaskNotFoundException.class);
-    }
 
     @Test
+    @DisplayName("수정 시 존재하는 할 일 이라면 수정한다")
     void updateTaskWithValidId() {
         Task newTask = new Task();
         newTask.setTitle(NEW_TASK_TITLE);
@@ -74,13 +81,14 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("삭제 시 존재하지 않는 할 일 이라면 예외를 던진다")
     void deleteTaskWithInvalidId() {
-        assertThatThrownBy(() -> {
-            controller.delete(2L);
-        }).isInstanceOf(TaskNotFoundException.class);
+        assertThatThrownBy(() -> controller.delete(2L))
+            .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
+    @DisplayName("삭제 시 존재하는 할 일 이라면 삭제한다")
     void deleteTask() {
         controller.delete(1L);
 
