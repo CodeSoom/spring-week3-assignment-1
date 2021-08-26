@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class TaskErrorAdvice {
 
-    public static String ERROR_MESSAGE = "Task not found";
-
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(TaskNotFoundException.class)
     public ErrorResponse handleNotFound() {
-        return new ErrorResponse(ERROR_MESSAGE);
+        return new ErrorResponse("Task not found");
     }
 }

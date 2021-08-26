@@ -17,10 +17,11 @@ public class TaskErrorAdviceTest {
     }
 
     @Test
-    @DisplayName("예외 객체를 생성한다")
+    @DisplayName("404 응답을 받을 시 할 일을 찾을 수 없다는 메시지를 가진 에러 객체를 생성한다")
     void handleNotFound() {
-        ErrorResponse response = taskErrorAdvice.handleNotFound();
+        String expectedMessage = "Task not found";
 
-        assertThat(response).isEqualTo(new ErrorResponse(TaskErrorAdvice.ERROR_MESSAGE));
+        assertThat(taskErrorAdvice.handleNotFound())
+            .isEqualTo(new ErrorResponse(expectedMessage));
     }
 }
