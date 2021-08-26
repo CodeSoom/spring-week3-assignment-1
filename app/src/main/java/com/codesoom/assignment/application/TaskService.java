@@ -2,21 +2,22 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * 할 일 관리를 담당합니다.
  */
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
+
+    private final List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
 
     /**
      * 모든 할 일을 리턴합니다.
+     *
      * @return 모든 할 일
      */
     public List<Task> getTasks() {
@@ -25,25 +26,26 @@ public class TaskService {
 
     /**
      * 식별자로 할 일을 찾아 리턴합니다.
+     *
      * @param id 식별자
      * @return 찾은 할 일
      * @throws TaskNotFoundException 할 일을 찾지 못한 경우
      */
     public Task getTask(Long id) {
         return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+            .filter(task -> task.getId().equals(id))
+            .findFirst()
+            .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /**
      * 할 일을 생성합니다.
+     *
      * @param source 생성할 할 일
      * @return 생성된 할 일
      */
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
+        Task task = new Task(generateId());
         task.setTitle(source.getTitle());
 
         tasks.add(task);
@@ -53,7 +55,8 @@ public class TaskService {
 
     /**
      * 식별자로 할 일을 찾고, 수정합니다.
-     * @param id 식별자
+     *
+     * @param id     식별자
      * @param source 수정할 할 일
      * @return 수정된 할 일
      */
@@ -66,6 +69,7 @@ public class TaskService {
 
     /**
      * 식별자로 할 일을 찾고, 삭제합니다.
+     *
      * @param id 식별자
      * @return 삭제된 할 일
      */
