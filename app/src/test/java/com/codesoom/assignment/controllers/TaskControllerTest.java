@@ -9,6 +9,7 @@ import com.codesoom.assignment.models.Task;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class TaskControllerTest {
@@ -28,7 +29,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("할 일 목록을 가져온다")
+    @DisplayName("할 일 목록을 조회한다")
     void getTasks() {
         List<Task> list = controller.list();
 
@@ -45,55 +46,99 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(2);
     }
 
-    @Test
-    @DisplayName("단일 조회 시 존재하지 않는 할 일 이라면 예외를 던진다")
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> controller.detail(2L))
-            .isInstanceOf(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("단일 조회 시")
+    class Describe_detail {
+
+        @Nested
+        @DisplayName("존재하지 않는 할 일 이라면")
+        class Context_notExistTask {
+
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_throws() {
+                assertThatThrownBy(() -> controller.detail(2L))
+                    .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("존재하는 할 일 이라면")
+        class Context_existTask {
+
+            @Test
+            @DisplayName("조회한다")
+            void it_detail() {
+                Task task = controller.detail(1L);
+
+                assertThat(task.getId()).isEqualTo(1L);
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("단일 조회 시 존재하는 할 일 이라면 가져온다")
-    void getTaskWithValidId() {
-        Task task = controller.detail(1L);
+    @Nested
+    @DisplayName("수정 시")
+    class Describe_updateTask {
 
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        @Nested
+        @DisplayName("존재하지 않는 할 일 이라면")
+        class Context_notExistTask {
+
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_throws() {
+                assertThatThrownBy(() -> controller.update(2L, new Task()))
+                    .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("존재하는 할 일 이라면")
+        class Context_existTask {
+
+            @Test
+            @DisplayName("수정한다")
+            void it_update() {
+                Task newTask = new Task();
+                newTask.setTitle(NEW_TASK_TITLE);
+
+                Task updatedTask = controller.update(1L, newTask);
+
+                assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("수정 시 존재하지 않는 할 일 이라면 예외를 던진다")
-    void updateTaskWithInvalidId() {
-        assertThatThrownBy(() -> controller.update(2L, new Task()))
-            .isInstanceOf(TaskNotFoundException.class);
-    }
+    @Nested
+    @DisplayName("삭제 시")
+    class Describe_delete {
 
+        @Nested
+        @DisplayName("존재하지 않는 할 일 이라면")
+        class Context_notExistTask {
 
-    @Test
-    @DisplayName("수정 시 존재하는 할 일 이라면 수정한다")
-    void updateTaskWithValidId() {
-        Task newTask = new Task();
-        newTask.setTitle(NEW_TASK_TITLE);
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_throws() {
+                assertThatThrownBy(() -> controller.delete(2L))
+                    .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
 
-        Task updatedTask = controller.update(1L, newTask);
+        @Nested
+        @DisplayName("존재하는 할 일 이라면")
+        class Context_existTask {
 
-        assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
-    }
+            @Test
+            @DisplayName("삭제한다")
+            void it_delete() {
+                controller.delete(1L);
 
-    @Test
-    @DisplayName("삭제 시 존재하지 않는 할 일 이라면 예외를 던진다")
-    void deleteTaskWithInvalidId() {
-        assertThatThrownBy(() -> controller.delete(2L))
-            .isInstanceOf(TaskNotFoundException.class);
-    }
+                int size = controller.list().size();
 
-    @Test
-    @DisplayName("삭제 시 존재하는 할 일 이라면 삭제한다")
-    void deleteTask() {
-        controller.delete(1L);
-
-        int size = controller.list().size();
-
-        assertThat(size).isZero();
+                assertThat(size).isZero();
+            }
+        }
     }
 }
