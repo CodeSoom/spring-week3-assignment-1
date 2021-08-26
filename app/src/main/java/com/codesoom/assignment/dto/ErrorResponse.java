@@ -2,6 +2,9 @@ package com.codesoom.assignment.dto;
 
 import java.util.Objects;
 
+/**
+ * 에러 응답을 담당합니다.
+ */
 public class ErrorResponse {
     private final String message;
 

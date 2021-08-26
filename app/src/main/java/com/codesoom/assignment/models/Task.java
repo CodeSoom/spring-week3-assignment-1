@@ -33,6 +33,10 @@ public class Task {
         this.title = title;
     }
 
+    /**
+     * 할 일 객체를 JSON 문자로 변환합니다.
+     * @return 변환된 JSON 문자
+     */
     public String stringify() {
         return String.format("{\"id\":%s,\"title\":\"%s\"}", id, title);
     }
