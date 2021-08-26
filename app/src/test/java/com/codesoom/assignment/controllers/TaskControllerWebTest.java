@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -112,11 +113,19 @@ public class TaskControllerWebTest {
                 .andReturn();
     }
 
-    @DisplayName("잘못된 식별자로 할 일을 조회하면 실패합니다 - GET /tasks/{invalidId}")
+    @DisplayName("존재하지 않는 식별자로 할 일을 조회하면 실패합니다 - GET /tasks/{invalidId}")
     @Test
-    void detailInvalid() throws Exception {
+    void detailNotFoundId() throws Exception {
         mockMvc.perform(get("/tasks/10"))
                 .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("존재하지 않는 식별자로 할 일을 조회하면 실패합니다 - GET /tasks/{invalidId}")
+    @ParameterizedTest
+    @ValueSource(strings = {"NaN", "null"})
+    void detailInvalidTypeId(String input) throws Exception {
+        mockMvc.perform(get("/tasks/"+input))
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("할 일을 생성할 수 있습니다. - POST /tasks")
@@ -169,7 +178,7 @@ public class TaskControllerWebTest {
         );
     }
 
-    @DisplayName("할 일을 삭제할 수 있습니다 - DELETE /tasks/{id}")
+    @DisplayName("할 일을 삭제하며 삭제된 할 일을 반환합니다 - DELETE /tasks/{id}")
     @Test
     void deleteTask() throws Exception {
         final String path = "/tasks/";

@@ -77,10 +77,10 @@ class TaskControllerTest {
     void createTask(String title) {
         final Task savedTask = taskController.create(Task.from(title));
 
-        final Task findTask = taskController.detail(savedTask.getId());
+        final Task foundTask = taskController.detail(savedTask.getId());
 
-        assertThat(findTask.getTitle()).isEqualTo(title);
-        assertThat(findTask).isEqualTo(savedTask);
+        assertThat(foundTask.getTitle()).isEqualTo(title);
+        assertThat(foundTask).isEqualTo(savedTask);
     }
 
     @DisplayName("할 일을 수정할 수 있습니다.")
@@ -108,7 +108,7 @@ class TaskControllerTest {
         assertThat(findTask.getTitle()).isEqualTo(TASK_UPDATE_TITLE);
     }
 
-    @DisplayName("존재하지 않는 식별자의  할 일을 수정하려 할 경우 예외가 발생합니다.")
+    @DisplayName("존재하지 않는 식별자의 할 일을 수정하려 할 경우 예외가 발생합니다.")
     @Test
     void patchTaskInvalid() {
         assertThatThrownBy(()-> taskController.patch(10L, Task.from(TASK_UPDATE_TITLE)))

@@ -33,7 +33,7 @@ class TaskServiceTest {
     }
 
 
-    @DisplayName("저장된 할 일이 없는경우 빈 컬렉션이 반환됩니다.")
+    @DisplayName("저장된 할 일이 없는경우 비어있는 목록이 반환됩니다.")
     @Test
     void getTasksEmpty() {
         final List<Task> tasks = taskService.getTasks();
@@ -44,12 +44,12 @@ class TaskServiceTest {
     @DisplayName("저장된 할 일이 있는 경우 저장된 할 일들이 반환됩니다.")
     @ParameterizedTest
     @MethodSource("provideTaskList")
-    void getTasks(List<Task> tasks, int size) {
-        tasks.forEach(taskService::createTask);
+    void getTasks(List<Task> sourceTasks, int size) {
+        sourceTasks.forEach(taskService::createTask);
 
-        final List<Task> response = taskService.getTasks();
+        final List<Task> tasks = taskService.getTasks();
 
-        assertThat(response).hasSize(size);
+        assertThat(tasks).hasSize(size);
     }
 
     public static Stream<Arguments> provideTaskList() {
