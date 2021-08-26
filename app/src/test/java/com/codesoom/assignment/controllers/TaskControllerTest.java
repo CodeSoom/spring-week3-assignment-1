@@ -154,5 +154,36 @@ class TaskControllerTest {
 
   }
 
+  @Nested
+  @DisplayName("Patch메소드에서")
+  class Describe_Patch {
 
+    @Nested
+    @DisplayName("Task객체와 id가 주어질때")
+    class Context_WithValidTaskAndId {
+
+      private Task modifyTask;
+      private Long givenId;
+
+      @BeforeEach
+      void setUp() {
+        modifyTask = new Task();
+        modifyTask.setTitle(MODIFY_TITLE);
+
+        givenId = taskController.create(task).getId();
+
+      }
+
+
+      @Test
+      @DisplayName("giveId의 Task를 수정하고, 수정된 Task를 return")
+      void It_ReturnModifiedTask() {
+        Task modifiedTask = taskController.patch(givenId, modifyTask);
+        assertThat(modifyTask.getTitle()).isEqualTo(modifiedTask.getTitle())
+            .withFailMessage("주어진 task의 title을 바탕으로 생성한 task를 return해야합니다.");
+
+      }
+    }
+
+  }
 }
