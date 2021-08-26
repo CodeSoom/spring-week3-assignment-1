@@ -1,7 +1,6 @@
 package com.codesoom.assignment.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,27 +13,13 @@ public final class HelloControllerTest {
     @Nested
     @DisplayName("sayHello 메소드는")
     class Describe_sayHello {
-        // @Nested
-        // @DisplayName("선조건")
-        // class Context_precondition {
-        //     @Nested
-        //     @DisplayName("<>을 위반한 경우")
-        //     class Context_helloController_null {
-        //         @Test
-        //         @DisplayName("NullPointerException을 던진다.")
-        //         void it_throw_a_nullPointException() {
-        //             assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> helloController.sayHello());
-        //         }
-        //     }
-        // }
-
         @Nested
         @DisplayName("올바른 사용자 시나리오(happy path)에서")
         class Context_happyPath {
             public Context_happyPath() {
                 helloController = new HelloController();
             }
-    
+
             @Nested
             @DisplayName("언제나")
             class Context_as_always {

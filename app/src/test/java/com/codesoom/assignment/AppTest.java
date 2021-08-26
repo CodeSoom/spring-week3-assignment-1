@@ -1,7 +1,6 @@
 package com.codesoom.assignment;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,19 +13,6 @@ public final class AppTest {
     @Nested
     @DisplayName("getGreeting 메소드는")
     class Describe_getGreeting {
-        @Nested
-        @DisplayName("선조건")
-        class Context_precondition {
-            @Nested
-            @DisplayName("'null 포인터를 참조하는 개체는 메소드를 호출할 수 없다.'를 위반한 경우")
-            class Context_app_null {
-                @Test
-                @DisplayName("NullPointerException을 던진다.")
-                void it_throw_a_nullPointException() {
-                    assertThatExceptionOfType(NullPointerException.class).isThrownBy((() -> app.getGreeting()));
-                }
-            }
-        }
 
         @Nested
         @DisplayName("올바른 사용자 시나리오(happy path)에서")

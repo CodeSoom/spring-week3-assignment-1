@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -29,15 +30,6 @@ public class TaskControllerTest {
         @Nested
         @DisplayName("선조건")
         class Context_precondition {
-            @Nested
-            @DisplayName("'null 포인터를 참조하는 개체는 메소드를 호출할 수 없다.'를 위반한 경우")
-            class Context_taskController_null {
-                @Test
-                @DisplayName("NullPointException을 던진다.")
-                void it_throw_a_nullPointException() {
-                    assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> taskController.list());
-                }
-            }
 
             @Nested
             @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
@@ -49,7 +41,8 @@ public class TaskControllerTest {
                 @Test
                 @DisplayName("NullPointException을 던진다.")
                 void it_throw_a_nullPointException() {
-                    assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> taskController.list());
+                    assertThatThrownBy(() -> taskController.list())
+                                .isInstanceOf(NullPointerException.class);
                 }
             }
         }
