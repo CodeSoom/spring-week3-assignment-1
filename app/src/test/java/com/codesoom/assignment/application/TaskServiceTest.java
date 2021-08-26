@@ -14,27 +14,24 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
-    private static final String TASK_TITLE_1 = "test";
-    private static final String TASK_TITLE_2 = "test2";
-    private static final String TASK_TITLE_3 = "test3";
-    private static final String TASK_TITLE_4 = "test4";
+    private final String[] TASK_TITLE= {"","test1", "test2", "test3", "test4", "test5"};
+    private final String TASK_UPDATE = "update";
 
-    private static final String TASK_UPDATE = "update";
     TaskService taskService = new TaskService();
 
 
     @BeforeEach
-    @DisplayName("객체들을 초기화")
+    @DisplayName("Task 객체 초기화")
     void setUp() {
 
         Task task1 = new Task();
-        task1.setTitle(TASK_TITLE_1);
+        task1.setTitle(TASK_TITLE[1]);
 
         Task task2 = new Task();
-        task2.setTitle(TASK_TITLE_2);
+        task2.setTitle(TASK_TITLE[2]);
 
         Task task3 = new Task();
-        task2.setTitle(TASK_TITLE_3);
+        task2.setTitle(TASK_TITLE[3]);
 
         taskService.createTask(task1);
         taskService.createTask(task2);
@@ -74,9 +71,9 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("Task 객체를 리턴한다")
-            void detail() {
+            void It_return_task_detail() {
 
-                assertEquals(TASK_TITLE_1, taskService.getTask(1L).getTitle());
+                assertEquals(TASK_TITLE[1], taskService.getTask(1L).getTitle());
 
             }
 
@@ -88,7 +85,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("TaskNotFoundException 예외를 던져준다")
-            void detailThrow() {
+            void It_return_task_throw() {
 
                 assertThatThrownBy(() -> {
                     taskService.getTask(100L);})
@@ -111,14 +108,14 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("아이디를 자동으로 생성하고 List에 넣어준다")
-            void create() {
+            void It_task_create() {
 
                 Task task4 = new Task();
-                task4.setTitle(TASK_TITLE_4);
+                task4.setTitle(TASK_TITLE[4]);
                 taskService.createTask(task4);
 
                 assertEquals(4L, taskService.getTask(4L).getId());
-                assertEquals(TASK_TITLE_4, taskService.getTask(4L).getTitle());
+                assertEquals(TASK_TITLE[4], taskService.getTask(4L).getTitle());
 
             }
 
@@ -136,14 +133,14 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("Task 객체를 찾아서 값을 수정해준다")
-            void update() {
+            void It_task_update() {
 
                 Task updateTask = new Task();
-                updateTask.setTitle(TASK_TITLE_1+TASK_UPDATE);
+                updateTask.setTitle(TASK_TITLE[1]+TASK_UPDATE);
 
                 taskService.updateTask(1L, updateTask);
 
-                assertEquals(TASK_TITLE_1+TASK_UPDATE, taskService.getTask(1L).getTitle());
+                assertEquals(TASK_TITLE[1]+TASK_UPDATE, taskService.getTask(1L).getTitle());
 
             }
 
@@ -161,7 +158,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("Task 객체를 찾아 List에서 삭제한다")
-            void delete() {
+            void It_task_delete() {
 
                 taskService.deleteTask(1L);
                 Assertions.assertThat(taskService.getTasks()).hasSize(2);
