@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.constant.TaskConstant;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,10 +17,6 @@ class TaskControllerTest {
 
     private TaskController taskController;
     private TaskService taskService;
-    private String title;
-    private String updateTitle;
-    private Long id;
-    private Long notExistsId;
     private Task source;
     private Task updateSource;
 
@@ -27,12 +24,8 @@ class TaskControllerTest {
     void setup() {
         taskService = new TaskService();
         taskController = new TaskController(taskService);
-        id = 1L;
-        notExistsId = 100L;
-        title = "할 일";
-        updateTitle = "수정된 할 일";
-        source = new Task(title);
-        updateSource = new Task(updateTitle);
+        source = new Task(TaskConstant.TITLE);
+        updateSource = new Task(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -46,7 +39,6 @@ class TaskControllerTest {
 
         // then
         assertThat(list.size()).isNotZero();
-        assertThat(list.size()).isOne();
     }
 
     @Test
@@ -56,7 +48,7 @@ class TaskControllerTest {
         Task task = taskController.create(source);
 
         // then
-        assertThat(task).isEqualTo(new Task(id, title));
+        assertThat(task).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
     }
 
     @Test
@@ -66,10 +58,10 @@ class TaskControllerTest {
         taskController.create(source);
 
         // when
-        Task task = taskController.detail(id);
+        Task task = taskController.detail(TaskConstant.ID);
 
         // then
-        assertThat(task).isEqualTo(new Task(id, title));
+        assertThat(task).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
     }
 
     @Test
@@ -80,7 +72,7 @@ class TaskControllerTest {
 
         // when
         // then
-        assertThatThrownBy(() -> taskService.getTask(notExistsId))
+        assertThatThrownBy(() -> taskService.getTask(TaskConstant.NOT_EXISTS_ID))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
@@ -91,10 +83,10 @@ class TaskControllerTest {
         taskController.create(source);
 
         // when
-        Task task = taskController.update(id, updateSource);
+        Task task = taskController.update(TaskConstant.ID, updateSource);
 
         // then
-        assertThat(task.getTitle()).isEqualTo(updateTitle);
+        assertThat(task.getTitle()).isEqualTo(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -104,10 +96,10 @@ class TaskControllerTest {
         taskController.create(source);
 
         // when
-        Task task = taskController.patch(id, updateSource);
+        Task task = taskController.patch(TaskConstant.ID, updateSource);
 
         // then
-        assertThat(task.getTitle()).isEqualTo(updateTitle);
+        assertThat(task.getTitle()).isEqualTo(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -117,10 +109,10 @@ class TaskControllerTest {
         taskController.create(source);
 
         // when
-        taskController.delete(id);
+        taskController.delete(TaskConstant.ID);
 
         // then
-        assertThatThrownBy(() -> taskController.detail(id))
+        assertThatThrownBy(() -> taskController.detail(TaskConstant.ID))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 }

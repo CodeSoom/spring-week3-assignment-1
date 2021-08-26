@@ -2,6 +2,7 @@ package com.codesoom.assignment.service;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.constant.TaskConstant;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,22 +16,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskServiceTest {
 
     private TaskService taskService;
-    private String title;
-    private String updateTitle;
-    private Long id;
-    private Long notExistsId;
     private Task source;
     private Task updateSource;
 
     @BeforeEach
     void setup() {
         taskService = new TaskService();
-        id = 1L;
-        notExistsId = 100L;
-        title = "할 일";
-        updateTitle = "수정된 할 일";
-        source = new Task(title);
-        updateSource = new Task(updateTitle);
+        source = new Task(TaskConstant.TITLE);
+        updateSource = new Task(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -40,7 +33,7 @@ class TaskServiceTest {
         Task task = taskService.createTask(source);
 
         // then
-        assertThat(task).isEqualTo(new Task(id, title));
+        assertThat(task).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
     }
 
     @Test
@@ -50,10 +43,10 @@ class TaskServiceTest {
         taskService.createTask(source);
 
         // when
-        Task task = taskService.getTask(id);
+        Task task = taskService.getTask(TaskConstant.ID);
 
         // then
-        assertThat(task).isEqualTo(new Task(id, title));
+        assertThat(task).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
     }
 
     @Test
@@ -64,7 +57,7 @@ class TaskServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() -> taskService.getTask(notExistsId))
+        assertThatThrownBy(() -> taskService.getTask(TaskConstant.NOT_EXISTS_ID))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
@@ -79,9 +72,7 @@ class TaskServiceTest {
 
         // then
         assertThat(tasks.size()).isNotZero();
-        assertThat(tasks.size()).isOne();
-        assertThat(tasks.get(0)).isEqualTo(new Task(id, title));
-        assertThat(tasks.get(0).getTitle()).isEqualTo(title);
+        assertThat(tasks.get(0)).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
     }
 
     @Test
@@ -91,10 +82,10 @@ class TaskServiceTest {
         taskService.createTask(source);
 
         // when
-        Task task = taskService.updateTask(id, updateSource);
+        Task task = taskService.updateTask(TaskConstant.ID, updateSource);
 
         // then
-        assertThat(task.getTitle()).isEqualTo(updateTitle);
+        assertThat(task.getTitle()).isEqualTo(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -104,7 +95,7 @@ class TaskServiceTest {
         taskService.createTask(source);
 
         // when
-        Task task = taskService.deleteTask(id);
+        Task task = taskService.deleteTask(TaskConstant.ID);
 
         // then
         assertThat(task.getTitle()).isEqualTo(source.getTitle());

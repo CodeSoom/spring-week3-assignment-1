@@ -1,5 +1,6 @@
 package com.codesoom.assignment.web;
 
+import com.codesoom.assignment.constant.TaskConstant;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -29,21 +30,13 @@ class TaskControllerWebTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String title;
-    private String updateTitle;
-    private Long id;
-    private Long notExistsId;
     private Task source;
     private Task updateSource;
 
     @BeforeEach
     void setup() {
-        id = 1L;
-        notExistsId = 100L;
-        title = "할 일";
-        updateTitle = "수정된 할 일";
-        source = new Task(title);
-        updateSource = new Task(updateTitle);
+        source = new Task(TaskConstant.TITLE);
+        updateSource = new Task(TaskConstant.UPDATE_TITLE);
     }
 
     @Test
@@ -61,12 +54,12 @@ class TaskControllerWebTest {
     void createTask() throws Exception {
         // when
         mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(source)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(source)))
 
         // then
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("title").value(title));
+        .andExpect(jsonPath("title").value(TaskConstant.TITLE));
     }
 
     @Test
@@ -78,12 +71,12 @@ class TaskControllerWebTest {
                 .content(objectMapper.writeValueAsString(source)));
 
         // when
-        mockMvc.perform(get("/tasks/" + id))
+        mockMvc.perform(get("/tasks/" + TaskConstant.ID))
 
         // then
         .andExpect(status().isOk())
         .andExpect(jsonPath("id").exists())
-        .andExpect(jsonPath("title").value(title));
+        .andExpect(jsonPath("title").value(TaskConstant.TITLE));
     }
 
     @Test
@@ -95,7 +88,7 @@ class TaskControllerWebTest {
                 .content(objectMapper.writeValueAsString(source)));
 
         // when
-        mockMvc.perform(get("/tasks/" + notExistsId))
+        mockMvc.perform(get("/tasks/" + TaskConstant.NOT_EXISTS_ID))
 
         // then
         .andExpect(status().isNotFound());
@@ -108,7 +101,7 @@ class TaskControllerWebTest {
         MvcResult mvcResult = mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(source)))
-                .andReturn();
+                        .andReturn();
         String taskId = taskId(mvcResult);
 
         // when
@@ -118,7 +111,7 @@ class TaskControllerWebTest {
 
         // then
         .andExpect(status().isOk())
-        .andExpect(jsonPath("title").value(updateTitle));
+        .andExpect(jsonPath("title").value(TaskConstant.UPDATE_TITLE));
     }
 
     @Test
@@ -138,7 +131,7 @@ class TaskControllerWebTest {
 
         // then
         .andExpect(status().isOk())
-        .andExpect(jsonPath("title").value(updateTitle));
+        .andExpect(jsonPath("title").value(TaskConstant.UPDATE_TITLE));
     }
 
     @Test
@@ -150,7 +143,7 @@ class TaskControllerWebTest {
                 .content(objectMapper.writeValueAsString(source)));
 
         // when
-        mockMvc.perform(delete("/tasks/" + id))
+        mockMvc.perform(delete("/tasks/" + TaskConstant.ID))
 
         // then
         .andExpect(status().isNoContent());
