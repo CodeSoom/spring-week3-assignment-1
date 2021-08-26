@@ -185,7 +185,7 @@ class TaskServiceTest {
         @DisplayName("요청한 id에 해당되는 Task가 Tasks에 존재하면")
         class Context_with_valid_id {
             @Test
-            @DisplayName("삭제되는 Task을 반환한다.")
+            @DisplayName("삭제된 Task을 반환한다.")
             void it_return_task() {
                 final Task deletedTask = taskService.deleteTask(VALID_ID);
 
