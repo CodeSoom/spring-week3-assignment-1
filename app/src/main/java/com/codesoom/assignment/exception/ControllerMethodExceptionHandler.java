@@ -13,7 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ControllerMethodExceptionHandler {
 
     /**
-     * 컨트롤러 메소드 Argument 타입이 일치하지 않는 경우 예외를 던집니다.
+     * 컨트롤러 메소드 Argument 타입이 일치하지 않는 경우의 예외를 처리합니다.
      * 
      * @param e MethodArgumentTypeMismatchException 예외
      */

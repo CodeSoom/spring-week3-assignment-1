@@ -6,6 +6,6 @@ package com.codesoom.assignment.exception;
 public class TaskNotFoundException extends RuntimeException{
 
     public TaskNotFoundException(String id) {
-        super(String.format("%s 를 할 일 리스트에서 찾을 수 없습니다.", id));
+        super(String.format("id %s를 할 일 리스트에서 찾을 수 없습니다.", id));
     }
 }

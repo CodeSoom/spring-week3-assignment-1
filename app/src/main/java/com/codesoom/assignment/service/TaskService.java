@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 할 일에 대한 생성, 조회, 수정, 삭제 로직을 수행하는 서비스입니다.
+ */
 @Service
 public class TaskService {
 
-    /**
-     * Task Repository 입니다.
-     */
     private final TaskRepository taskRepository;
 
     public TaskService(TaskRepository taskRepository) {
@@ -27,7 +27,6 @@ public class TaskService {
     public List<Task> getTaskList() {
         return taskRepository.getTasks();
     }
-
 
     /**
      * id에 해당하는 할 일을 조회합니다.
@@ -55,7 +54,7 @@ public class TaskService {
     }
 
     /**
-     * 할 일을 찾아서 title을 변경합니다.
+     * 변경 요청된 할 일을 찾아서 title을 변경합니다.
      *
      * @param id 수정할 식별자 Id
      * @param requestTask 변경 요청된 할 일

@@ -18,10 +18,13 @@ public class TaskRepository {
      */
     private final List<Task> tasks = new ArrayList<>();
 
+    /**
+     * 새로 발급된 Task Id 입니다.
+     */
     private Long newId = 0L;
 
     /**
-     * Id를 1씩 증가시킵니다.
+     * 새로운 Task Id를 생성합니다.
      */
     public void createNewTaskId() {
         this.newId += 1L;
@@ -58,10 +61,18 @@ public class TaskRepository {
                 .findFirst();
     }
 
+    /**
+     * 새로 발급된 Id에 대한 getter입니다.
+     * @return 새로운 Id
+     */
     public Long getNewId() {
         return newId;
     }
 
+    /**
+     * 할 일 리스트에 대한 getter입니다.
+     * @return 전체 할 일 리스트
+     */
     public List<Task> getTasks() {
         return tasks;
     }

@@ -8,16 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 할 일을 생성, 조회, 수정, 삭제하는 Controller 입니다.
+ * 할 일에 대한 생성, 조회, 수정, 삭제 요청을 처리합니다.
  */
 @RestController
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
 
-    /**
-     * Task Service 입니다.
-     */
     private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
