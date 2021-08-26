@@ -145,8 +145,8 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PUT /tasks/{id} 요청은")
-    class Describe_updateTaskPut {
+    @DisplayName("PUT, PATCH /tasks/{id} 요청은")
+    class Describe_updateTask {
 
         private Task task;
 
@@ -167,6 +167,11 @@ public class TaskControllerWebTest {
             @DisplayName("404을 응답한다")
             void it_response_404() throws Exception {
                 mockMvc.perform(put("/tasks/2")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(task.stringify()))
+                    .andExpect(status().isNotFound());
+
+                mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
                     .andExpect(status().isNotFound());
@@ -193,55 +198,7 @@ public class TaskControllerWebTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
                     .andExpect(status().isOk());
-            }
-        }
-    }
 
-    @Nested
-    @DisplayName("PATCH /tasks/{id} 요청은")
-    class Describe_updateTaskPatch {
-
-        private Task task;
-
-        @Nested
-        @DisplayName("존재하지 않는 할 일 일경우")
-        class Context_notExistTask {
-
-            @BeforeEach
-            void setUp() {
-                Long id = TaskList.SECOND.getId();
-                task = TaskList.SECOND.toTask();
-
-                given(taskService.updateTask(id, task))
-                    .willThrow(new TaskNotFoundException(id));
-            }
-
-            @Test
-            @DisplayName("404을 응답한다")
-            void it_response_404() throws Exception {
-                mockMvc.perform(patch("/tasks/2")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(task.stringify()))
-                    .andExpect(status().isNotFound());
-            }
-        }
-
-        @Nested
-        @DisplayName("존재하는 할 일 일경우")
-        class Context_existTask {
-
-            @BeforeEach
-            void setUp() {
-                Long id = TaskList.FIRST.getId();
-                task = TaskList.SECOND.toTask();
-
-                given(taskService.updateTask(id, task))
-                    .willReturn(new Task(id, task.getTitle()));
-            }
-
-            @Test
-            @DisplayName("200을 응답한다")
-            void it_response_200() throws Exception {
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
