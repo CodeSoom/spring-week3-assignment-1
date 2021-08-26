@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 class TaskControllerTest {
 
   private final String TASK_TITLE = "Test";
+  private final String CREATE_TITLE = "createTest";
+  private final String MODIFY_TITLE = "modifyTest";
 
   private TaskController taskController;
   private Task task;
@@ -104,14 +106,47 @@ class TaskControllerTest {
       @BeforeEach
       void setUp() {
         validTask = new Task();
-        validTask.setTitle("createTest");
+        validTask.setTitle(CREATE_TITLE);
       }
 
       @Test
       @DisplayName("주어진 객체의 title로 생성한 task객체를 return")
       void It_ReturnNewTaskByValidTaskTitle() {
-        Task returningTask = taskController.create(validTask);
-        assertThat(validTask.getTitle()).isEqualTo(returningTask.getTitle())
+        Task createdTask = taskController.create(validTask);
+        assertThat(validTask.getTitle()).isEqualTo(createdTask.getTitle())
+            .withFailMessage("주어진 task의 title을 바탕으로 생성한 task를 return해야합니다.");
+
+      }
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Update메소드에서")
+  class Describe_Update {
+
+    @Nested
+    @DisplayName("Task객체와 id가 주어질때")
+    class Context_WithValidTaskAndId {
+
+      private Task modifyTask;
+      private Long givenId;
+
+      @BeforeEach
+      void setUp() {
+        modifyTask = new Task();
+        modifyTask.setTitle(MODIFY_TITLE);
+
+        givenId = taskController.create(task).getId();
+
+      }
+
+
+      @Test
+      @DisplayName("giveId의 Task를 수정하고, 수정된 Task를 return")
+      void It_ReturnModifiedTask() {
+        Task modifiedTask = taskController.update(givenId, modifyTask);
+        assertThat(modifyTask.getTitle()).isEqualTo(modifiedTask.getTitle())
             .withFailMessage("주어진 task의 title을 바탕으로 생성한 task를 return해야합니다.");
 
       }
