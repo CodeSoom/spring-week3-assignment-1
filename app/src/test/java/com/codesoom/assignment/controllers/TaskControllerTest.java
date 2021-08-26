@@ -186,4 +186,37 @@ class TaskControllerTest {
     }
 
   }
+
+  @Nested
+  @DisplayName("Delete메소드에서")
+  class Describe_Delete {
+
+    @Nested
+    @DisplayName("유효한 id가 주어질때")
+    class Context_WithValidId {
+
+      private Long validId;
+      private Task deletedTask;
+
+      @BeforeEach
+      void setUp() {
+        deletedTask = taskController.create(task);
+        validId = deletedTask.getId();
+
+      }
+
+
+      @Test
+      @DisplayName("해당 id의 task를 삭제한다.")
+      void It_ReturnModifiedTask() {
+        taskController.delete(validId);
+
+        assertThatThrownBy(
+            () -> taskController.detail(validId),
+            "저장되지 않은 task를 조회할때의 에러가 throw."
+        ).isInstanceOf(TaskNotFoundException.class);
+      }
+    }
+
+  }
 }
