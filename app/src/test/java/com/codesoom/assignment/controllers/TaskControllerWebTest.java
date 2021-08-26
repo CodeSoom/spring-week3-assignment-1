@@ -9,9 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,9 +19,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,7 +38,7 @@ public class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private TaskService taskService;
 
     private ObjectMapper objectMapper;
@@ -70,7 +72,7 @@ public class TaskControllerWebTest {
         void setUp() {
             given(taskService.getTasks()).willReturn(tasks);
             given(taskService.getTask(VALID_ID)).willReturn(task1);
-            given(taskService.getTask(INVALID_ID)).willThrow(new TaskNotFoundException(INVALID_ID));
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).getTask(INVALID_ID);
         }
 
         @Nested
@@ -106,127 +108,127 @@ public class TaskControllerWebTest {
             }
         }
     }
-//
-//    @Nested
-//    @DisplayName("POST")
-//    class Post {
-//
-//        @BeforeEach
-//        void setUp() {
-//            given(taskService.createTask(task1)).willReturn(task1);
-//        }
-//
-//        @Nested
-//        @DisplayName("path \'/tasks\' 호출하면")
-//        class Path_tasks {
-//
-//            @Test
-//            @DisplayName("성공시 response(status: created, content: json tasks)를 반환합니다.")
-//            void response_created() throws Exception {
-//                mockMvc.perform(post("/tasks")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(contentTask))
-//                        .andExpect(status().isCreated())
-//                        .andExpect(content().string(contentTasks));
-//            }
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("PUT")
-//    class Put {
-//
-//        @BeforeEach
-//        void setUp() {
-//            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
-//            given(taskService.updateTask(INVALID_ID, task1)).willThrow(new TaskNotFoundException(INVALID_ID));
-//        }
-//
-//        @Nested
-//        @DisplayName("path \'/tasks/{id}\' 호출하면")
-//        class Path_tasks_id {
-//
-//            @Test
-//            @DisplayName("성공시 response(status: ok, content: task)를 반환합니다.")
-//            void response_ok() throws Exception {
-//                mockMvc.perform(put("/tasks/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(contentTask))
-//                        .andExpect(status().isOk())
-//                        .andExpect(content().string(contentTask));            }
-//
-//            @Test
-//            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
-//            void response_not_found() throws Exception {
-//                mockMvc.perform(put("/tasks/100")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(contentTask))
-//                        .andExpect(status().isNotFound());
-//            }
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("PATCH")
-//    class Patch {
-//
-//        @BeforeEach
-//        void setUp() {
-//            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
-//            given(taskService.updateTask(INVALID_ID, task1)).willThrow(new TaskNotFoundException(INVALID_ID));
-//        }
-//
-//        @Nested
-//        @DisplayName("path \'/tasks/{id}\' 호출하면")
-//        class Path_tasks_id {
-//
-//            @Test
-//            @DisplayName("성공시 response(status: ok, content: task)를 반환합니다.")
-//            void response_ok() throws Exception {
-//                mockMvc.perform(patch("/tasks/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(contentTask))
-//                        .andExpect(status().isOk())
-//                        .andExpect(content().string(contentTask));            }
-//
-//            @Test
-//            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
-//            void response_not_found() throws Exception {
-//                mockMvc.perform(patch("/tasks/100")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(contentTask))
-//                        .andExpect(status().isNotFound());
-//            }
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("DELETE")
-//    class Delete {
-//
-//        @BeforeEach
-//        void setUp() {
-//            given(taskService.deleteTask(INVALID_ID)).willThrow(new TaskNotFoundException(INVALID_ID));
-//        }
-//
-//        @Nested
-//        @DisplayName("path \'/tasks/{id}\' 호출하면")
-//        class Path_tasks_id {
-//
-//            @Test
-//            @DisplayName("성공시 response(status: no_content)를 반환합니다.")
-//            void response_no_content() throws Exception {
-//                mockMvc.perform(delete("/tasks/1"))
-//                        .andExpect(status().isNoContent());
-//            }
-//
-//            @Test
-//            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
-//            void response_not_found() throws Exception {
-//                mockMvc.perform(delete("/tasks/100"))
-//                        .andExpect(status().isNotFound());
-//            }
-//        }
-//    }
+
+    @Nested
+    @DisplayName("POST")
+    class Post {
+
+        @BeforeEach
+        void setUp() {
+            given(taskService.createTask(task1)).willReturn(task1);
+        }
+
+        @Nested
+        @DisplayName("path \'/tasks\' 호출하면")
+        class Path_tasks {
+
+            @Test
+            @DisplayName("성공시 response(status: created, content: json tasks)를 반환합니다.")
+            void response_created() throws Exception {
+                mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contentTask))
+                        .andExpect(status().isCreated())
+                        .andExpect(content().string(contentTask));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT")
+    class Put {
+
+        @BeforeEach
+        void setUp() {
+            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(INVALID_ID, task1);
+        }
+
+        @Nested
+        @DisplayName("path \'/tasks/{id}\' 호출하면")
+        class Path_tasks_id {
+
+            @Test
+            @DisplayName("성공시 response(status: ok, content: task)를 반환합니다.")
+            void response_ok() throws Exception {
+                mockMvc.perform(put("/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contentTask))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(contentTask));            }
+
+            @Test
+            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
+            void response_not_found() throws Exception {
+                mockMvc.perform(put("/tasks/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contentTask))
+                        .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH")
+    class Patch {
+
+        @BeforeEach
+        void setUp() {
+            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(INVALID_ID, task1);
+        }
+
+        @Nested
+        @DisplayName("path \'/tasks/{id}\' 호출하면")
+        class Path_tasks_id {
+
+            @Test
+            @DisplayName("성공시 response(status: ok, content: task)를 반환합니다.")
+            void response_ok() throws Exception {
+                mockMvc.perform(patch("/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contentTask))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(contentTask));            }
+
+            @Test
+            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
+            void response_not_found() throws Exception {
+                mockMvc.perform(patch("/tasks/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contentTask))
+                        .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE")
+    class Delete {
+
+        @BeforeEach
+        void setUp() {
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).deleteTask(INVALID_ID);
+        }
+
+        @Nested
+        @DisplayName("path \'/tasks/{id}\' 호출하면")
+        class Path_tasks_id {
+
+            @Test
+            @DisplayName("성공시 response(status: no_content)를 반환합니다.")
+            void response_no_content() throws Exception {
+                mockMvc.perform(delete("/tasks/1"))
+                        .andExpect(status().isNoContent());
+            }
+
+            @Test
+            @DisplayName("Task가 없으시 response(status: not_found)를 반환합니다.")
+            void response_not_found() throws Exception {
+                mockMvc.perform(delete("/tasks/100"))
+                        .andExpect(status().isNotFound());
+            }
+        }
+    }
 }
 
