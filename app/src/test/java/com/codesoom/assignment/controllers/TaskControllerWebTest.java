@@ -19,9 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -115,7 +116,7 @@ public class TaskControllerWebTest {
 
         @BeforeEach
         void setUp() {
-            given(taskService.createTask(task1)).willReturn(task1);
+            given(taskService.createTask(any(Task.class))).willReturn(task1);
         }
 
         @Nested
@@ -140,8 +141,8 @@ public class TaskControllerWebTest {
 
         @BeforeEach
         void setUp() {
-            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
-            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(INVALID_ID, task1);
+            given(taskService.updateTask(eq(VALID_ID), any(Task.class))).willReturn(task1);
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(eq(INVALID_ID), any(Task.class));
         }
 
         @Nested
@@ -174,8 +175,8 @@ public class TaskControllerWebTest {
 
         @BeforeEach
         void setUp() {
-            given(taskService.updateTask(VALID_ID, task1)).willReturn(task1);
-            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(INVALID_ID, task1);
+            given(taskService.updateTask(eq(VALID_ID), any(Task.class))).willReturn(task1);
+            willThrow(new TaskNotFoundException(INVALID_ID)).given(taskService).updateTask(eq(INVALID_ID), any(Task.class));
         }
 
         @Nested
