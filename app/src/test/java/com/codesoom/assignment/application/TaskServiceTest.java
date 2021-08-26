@@ -60,9 +60,9 @@ class TaskServiceTest {
                 final List<Task> tasks = taskService.getTasks();
 
                 assertThat(tasks).hasSize(2);
-                assertThat(tasks.get(0).getId()).isEqualTo(1L);
+                assertThat(tasks.get(0).getId()).isEqualTo(task1.getId());
                 assertThat(tasks.get(0).getTitle()).isEqualTo(task1.getTitle());
-                assertThat(tasks.get(1).getId()).isEqualTo(2L);
+                assertThat(tasks.get(1).getId()).isEqualTo(task2.getId());
                 assertThat(tasks.get(1).getTitle()).isEqualTo(task2.getTitle());
             }
         }
