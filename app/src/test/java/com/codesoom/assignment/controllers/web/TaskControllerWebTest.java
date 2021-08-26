@@ -12,6 +12,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -57,14 +58,17 @@ public class TaskControllerWebTest {
     @DisplayName("GET /tasks 요청은")
     class Describe_getTasks {
 
-        @Test
-        @DisplayName("모든 할 일 목록을 응답한다")
-        void it_response_200() throws Exception {
+        @BeforeEach
+        void setUp() {
             Task task = TaskList.FIRST.toTask();
 
             given(taskService.getTasks())
                 .willReturn(Collections.singletonList(task));
+        }
 
+        @Test
+        @DisplayName("모든 할 일 목록을 응답한다")
+        void it_response_200() throws Exception {
             mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
         }
@@ -78,14 +82,17 @@ public class TaskControllerWebTest {
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
-            @Test
-            @DisplayName("404를 응답한다")
-            void it_response_404() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.SECOND.getId();
 
                 given(taskService.getTask(id))
                     .willThrow(new TaskNotFoundException(id));
+            }
 
+            @Test
+            @DisplayName("404를 응답한다")
+            void it_response_404() throws Exception {
                 mockMvc.perform(get("/tasks/2"))
                     .andExpect(status().isNotFound());
             }
@@ -95,15 +102,18 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
-            @Test
-            @DisplayName("200을 응답한다")
-            void it_response_200() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.FIRST.getId();
                 Task task = TaskList.FIRST.toTask();
 
                 given(taskService.getTask(id))
                     .willReturn(task);
+            }
 
+            @Test
+            @DisplayName("200을 응답한다")
+            void it_response_200() throws Exception {
                 mockMvc.perform(get("/tasks/1"))
                     .andExpect(status().isOk());
             }
@@ -114,14 +124,19 @@ public class TaskControllerWebTest {
     @DisplayName("POST /tasks 요청은")
     class Describe_createTask {
 
-        @Test
-        @DisplayName("201을 응답한다")
-        void it_response_201() throws Exception {
-            Task task = TaskList.FIRST.toTask();
+        private Task task;
+
+        @BeforeEach
+        void setUp() {
+            task = TaskList.FIRST.toTask();
 
             given(taskService.createTask(task))
                 .willReturn(task);
+        }
 
+        @Test
+        @DisplayName("201을 응답한다")
+        void it_response_201() throws Exception {
             mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(task.stringify()))
@@ -133,19 +148,24 @@ public class TaskControllerWebTest {
     @DisplayName("PUT /tasks/{id} 요청은")
     class Describe_updateTaskPut {
 
+        private Task task;
+
         @Nested
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
-            @Test
-            @DisplayName("404을 응답한다")
-            void it_response_404() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.SECOND.getId();
-                Task task = TaskList.SECOND.toTask();
+                task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
                     .willThrow(new TaskNotFoundException(id));
+            }
 
+            @Test
+            @DisplayName("404을 응답한다")
+            void it_response_404() throws Exception {
                 mockMvc.perform(put("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
@@ -157,15 +177,18 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
-            @Test
-            @DisplayName("200을 응답한다")
-            void it_response_200() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.FIRST.getId();
-                Task task = TaskList.SECOND.toTask();
+                task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
                     .willReturn(new Task(id, task.getTitle()));
+            }
 
+            @Test
+            @DisplayName("200을 응답한다")
+            void it_response_200() throws Exception {
                 mockMvc.perform(put("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
@@ -178,19 +201,24 @@ public class TaskControllerWebTest {
     @DisplayName("PATCH /tasks/{id} 요청은")
     class Describe_updateTaskPatch {
 
+        private Task task;
+
         @Nested
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
-            @Test
-            @DisplayName("404을 응답한다")
-            void it_response_404() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.SECOND.getId();
-                Task task = TaskList.SECOND.toTask();
+                task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
                     .willThrow(new TaskNotFoundException(id));
+            }
 
+            @Test
+            @DisplayName("404을 응답한다")
+            void it_response_404() throws Exception {
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
@@ -202,15 +230,18 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
-            @Test
-            @DisplayName("200을 응답한다")
-            void it_response_200() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.FIRST.getId();
-                Task task = TaskList.SECOND.toTask();
+                task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
                     .willReturn(new Task(id, task.getTitle()));
+            }
 
+            @Test
+            @DisplayName("200을 응답한다")
+            void it_response_200() throws Exception {
                 mockMvc.perform(patch("/tasks/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
@@ -227,14 +258,17 @@ public class TaskControllerWebTest {
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
-            @Test
-            @DisplayName("404을 응답한다")
-            void it_response_404() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.SECOND.getId();
 
                 given(taskService.deleteTask(id))
                     .willThrow(new TaskNotFoundException(id));
+            }
 
+            @Test
+            @DisplayName("404을 응답한다")
+            void it_response_404() throws Exception {
                 mockMvc.perform(delete("/tasks/2"))
                     .andExpect(status().isNotFound());
             }
@@ -244,15 +278,18 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
-            @Test
-            @DisplayName("204를 응답한다")
-            void it_response_204() throws Exception {
+            @BeforeEach
+            void setUp() {
                 Long id = TaskList.FIRST.getId();
                 Task task = TaskList.FIRST.toTask();
 
                 given(taskService.deleteTask(id))
                     .willReturn(task);
+            }
 
+            @Test
+            @DisplayName("204를 응답한다")
+            void it_response_204() throws Exception {
                 mockMvc.perform(delete("/tasks/1"))
                     .andExpect(status().isNoContent());
             }
