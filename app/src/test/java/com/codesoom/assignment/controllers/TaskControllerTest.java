@@ -51,6 +51,20 @@ class TaskControllerTest {
     class Describe_detail {
 
         @Nested
+        @DisplayName("존재하는 할 일 이라면")
+        class Context_existTask {
+
+            @Test
+            @DisplayName("할 일을 반환한다")
+            void it_detail() {
+                Task task = controller.detail(1L);
+
+                assertThat(task.getId()).isEqualTo(1L);
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
+
+        @Nested
         @DisplayName("존재하지 않는 할 일 이라면")
         class Context_notExistTask {
 
@@ -61,25 +75,27 @@ class TaskControllerTest {
                     .isInstanceOf(TaskNotFoundException.class);
             }
         }
+    }
+
+    @Nested
+    @DisplayName("수정 시")
+    class Describe_updateTask {
 
         @Nested
         @DisplayName("존재하는 할 일 이라면")
         class Context_existTask {
 
             @Test
-            @DisplayName("조회한다")
-            void it_detail() {
-                Task task = controller.detail(1L);
+            @DisplayName("수정된 할 일을 반환한다")
+            void it_update() {
+                Task newTask = new Task();
+                newTask.setTitle(NEW_TASK_TITLE);
 
-                assertThat(task.getId()).isEqualTo(1L);
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+                Task updatedTask = controller.update(1L, newTask);
+
+                assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
             }
         }
-    }
-
-    @Nested
-    @DisplayName("수정 시")
-    class Describe_updateTask {
 
         @Nested
         @DisplayName("존재하지 않는 할 일 이라면")
@@ -92,39 +108,11 @@ class TaskControllerTest {
                     .isInstanceOf(TaskNotFoundException.class);
             }
         }
-
-        @Nested
-        @DisplayName("존재하는 할 일 이라면")
-        class Context_existTask {
-
-            @Test
-            @DisplayName("수정한다")
-            void it_update() {
-                Task newTask = new Task();
-                newTask.setTitle(NEW_TASK_TITLE);
-
-                Task updatedTask = controller.update(1L, newTask);
-
-                assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
-            }
-        }
     }
 
     @Nested
     @DisplayName("삭제 시")
     class Describe_delete {
-
-        @Nested
-        @DisplayName("존재하지 않는 할 일 이라면")
-        class Context_notExistTask {
-
-            @Test
-            @DisplayName("예외를 던진다")
-            void it_throws() {
-                assertThatThrownBy(() -> controller.delete(2L))
-                    .isInstanceOf(TaskNotFoundException.class);
-            }
-        }
 
         @Nested
         @DisplayName("존재하는 할 일 이라면")
@@ -138,6 +126,18 @@ class TaskControllerTest {
                 int size = controller.list().size();
 
                 assertThat(size).isZero();
+            }
+        }
+
+        @Nested
+        @DisplayName("존재하지 않는 할 일 이라면")
+        class Context_notExistTask {
+
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_throws() {
+                assertThatThrownBy(() -> controller.delete(2L))
+                    .isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
