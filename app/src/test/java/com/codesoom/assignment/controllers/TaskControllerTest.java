@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.codesoom.assignment.TaskIdGenerator;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
@@ -22,7 +23,9 @@ class TaskControllerTest {
     @BeforeEach
     void setUp() {
         // subject
-        controller = new TaskController(new TaskService());
+        TaskIdGenerator taskIdGenerator = new TaskIdGenerator();
+        TaskService taskService = new TaskService(taskIdGenerator);
+        controller = new TaskController(taskService);
 
         // fixtures
         controller.create(new Task(1L, TASK_TITLE));

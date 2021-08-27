@@ -3,6 +3,7 @@ package com.codesoom.assignment.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.codesoom.assignment.TaskIdGenerator;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import java.util.List;
@@ -19,7 +20,7 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         // subject
-        taskService = new TaskService();
+        taskService = new TaskService(new TaskIdGenerator());
 
         // fixtures
         taskService.createTask(new Task(1L, TASK_TITLE));
