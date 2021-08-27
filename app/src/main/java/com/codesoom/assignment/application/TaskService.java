@@ -1,11 +1,13 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.TaskNotCreateException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -23,11 +25,16 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    public Task createTask(Task task) {
-        task.setId(generateId());
-        tasks.add(task);
+    public Task createTask(Task source) {
+        if(source.getTitle() == null){
+            Optional<Task> task = Optional.empty();
+            return task.orElseThrow(() -> new TaskNotCreateException(source.getId()));
+        }
 
-        return task;
+        source.setId(generateId());
+        tasks.add(source);
+
+        return source;
     }
 
     public Task updateTask(Long id, Task source) {
@@ -48,4 +55,5 @@ public class TaskService {
         newId += 1;
         return newId;
     }
+
 }
