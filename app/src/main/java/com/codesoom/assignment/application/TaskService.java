@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final List<Task> tasks = new ArrayList<>();
-    private final IdGenerator idGenerator;
+    private final IdGenerator<Long> idGenerator;
 
-    public TaskService(IdGenerator idGenerator) {
+    public TaskService(IdGenerator<Long> idGenerator) {
         this.idGenerator = idGenerator;
     }
 
@@ -50,7 +50,7 @@ public class TaskService {
      * @return 생성된 할 일
      */
     public Task createTask(Task source) {
-        long id = idGenerator.generate();
+        Long id = idGenerator.generate();
 
         Task task = new Task(id);
         task.setTitle(source.getTitle());

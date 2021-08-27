@@ -3,12 +3,12 @@ package com.codesoom.assignment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskIdGenerator implements IdGenerator {
+public class TaskIdGenerator implements IdGenerator<Long> {
 
     private Long lastId = 0L;
 
     @Override
-    public long generate() {
+    public Long generate() {
         increaseLastId();
         return lastId;
     }

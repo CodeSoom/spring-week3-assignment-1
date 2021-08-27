@@ -1,6 +1,6 @@
 package com.codesoom.assignment;
 
 @FunctionalInterface
-public interface IdGenerator {
-    long generate();
+public interface IdGenerator<T> {
+    T generate();
 }
