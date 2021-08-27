@@ -1,10 +1,10 @@
 package com.codesoom.assignment.models.data;
 
-public class FakeTask {
+public class Book {
     private Long id;
     private String title;
 
-    public FakeTask(Long id, String title) {
+    public Book(Long id, String title) {
         this.id = id;
         this.title = title;
     }
