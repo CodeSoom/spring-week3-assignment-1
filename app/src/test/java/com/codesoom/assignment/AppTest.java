@@ -13,22 +13,16 @@ public final class AppTest {
     @Nested
     @DisplayName("getGreeting 메소드는")
     class Describe_getGreeting {
-
+        public Describe_getGreeting() {
+            app = new App();
+        }
         @Nested
-        @DisplayName("올바른 사용자 시나리오(happy path)에서")
-        class Context_happyPath {
-            public Context_happyPath() {
-                app = new App();
-            }
-
-            @Nested
-            @DisplayName("언제나")
-            class Context_as_always {
-                @Test
-                @DisplayName("인사 메시지를 리턴한다.")
-                void it_returns_a_greeting_message() {
-                    assertThat(app.getGreeting()).isEqualTo("Hello, world!");
-                }
+        @DisplayName("언제나")
+        class Context_as_always {
+            @Test
+            @DisplayName("인사 메시지를 리턴한다.")
+            void it_returns_a_greeting_message() {
+                assertThat(app.getGreeting()).isEqualTo("Hello, world!");
             }
         }
     }
