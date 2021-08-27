@@ -42,35 +42,29 @@ public class TaskControllerTest {
     @DisplayName("모든 메소드는")
     class Describe_all_method {
         @Nested
-        @DisplayName("선조건")
-        class Context_precondition {
-            @Nested
-            @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
-            class Context_taskService_null {
-                private final Long id;
-                private final Task task;
-
-                public Context_taskService_null() {
-                    id = 1L;
-                    task = new Task();
-                }
-
-                @Test
-                @DisplayName("NullPointerException을 던진다.")
-                void it_throw_a_nullPointException() {
-                    assertThatThrownBy(() -> taskController.list())
-                        .isInstanceOf(NullPointerException.class);
-                    assertThatThrownBy(() -> taskController.detail(id))
-                        .isInstanceOf(NullPointerException.class);
-                    assertThatThrownBy(() -> taskController.create(task))
-                        .isInstanceOf(NullPointerException.class);
-                    assertThatThrownBy(() -> taskController.update(id, task))
-                        .isInstanceOf(NullPointerException.class);
-                    assertThatThrownBy(() -> taskController.patch(id, task))
-                        .isInstanceOf(NullPointerException.class);
-                    assertThatThrownBy(() -> taskController.delete(id))
-                        .isInstanceOf(NullPointerException.class);
-                }
+        @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
+        class Context_taskService_null {
+            private final Long id;
+            private final Task task;
+            public Context_taskService_null() {
+                id = 1L;
+                task = new Task();
+            }
+            @Test
+            @DisplayName("NullPointerException을 던진다.")
+            void it_throw_a_nullPointException() {
+                assertThatThrownBy(() -> taskController.list())
+                    .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskController.detail(id))
+                    .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskController.create(task))
+                    .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskController.update(id, task))
+                    .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskController.patch(id, task))
+                    .isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskController.delete(id))
+                    .isInstanceOf(NullPointerException.class);
             }
         }
     }
@@ -124,29 +118,23 @@ public class TaskControllerTest {
     @ExtendWith(MockitoExtension.class)
     class Describe_detail {
         @Nested
-        @DisplayName("선조건")
-        class Context_precondition {
-            @Nested
-            @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
-            class Context_argument_null {
-                @BeforeEach
-                void setUp() {
-                    when(taskServiceMock.getTask(isNull()))
-                                .thenThrow(TaskNotFoundException.class);
-                }
-
-                @Test
-                @DisplayName("TaskNotFoundException을 던진다.")
-                void it_throw_a_taskNotFoundException() {
-                    assertThatThrownBy(() -> taskController.detail(null))
-                                .isInstanceOf(TaskNotFoundException.class);
-                }
-
-                @AfterEach
-                void tearDown() {
-                    verify(taskServiceMock, atLeastOnce())
-                        .getTask(argThat((final Long id) -> id == null));
-                }
+        @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
+        class Context_argument_null {
+            @BeforeEach
+            void setUp() {
+                when(taskServiceMock.getTask(isNull()))
+                            .thenThrow(TaskNotFoundException.class);
+            }
+            @Test
+            @DisplayName("TaskNotFoundException을 던진다.")
+            void it_throw_a_taskNotFoundException() {
+                assertThatThrownBy(() -> taskController.detail(null))
+                            .isInstanceOf(TaskNotFoundException.class);
+            }
+            @AfterEach
+            void tearDown() {
+                verify(taskServiceMock, atLeastOnce())
+                    .getTask(argThat((final Long id) -> id == null));
             }
         }
 
@@ -226,17 +214,5 @@ public class TaskControllerTest {
                 verify(taskServiceMock, atMostOnce()).getTask(anyLong());
             }
         }
-    }
-
-    @Nested
-    @DisplayName("create 메소드는")
-    class Describe_create {
-
-        @Nested
-        @DisplayName("선조건")
-        class Context_precondition {
-        }
-
-
     }
 }
