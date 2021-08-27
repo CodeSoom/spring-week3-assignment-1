@@ -27,4 +27,21 @@ class TaskErrorAdviceTest {
             assertThat(taskErrorAdvice.handleNotFound()).isInstanceOf(ErrorResponse.class);
         }
     }
+
+    @Nested
+    @DisplayName("handleBadRequest 메소드는")
+    class Describe_handleBadRequest {
+        TaskErrorAdvice taskErrorAdvice;
+
+        @BeforeEach
+        void prepareErrorResponse() {
+            taskErrorAdvice = new TaskErrorAdvice();
+        }
+
+        @Test
+        @DisplayName("객체를 생성하여 리턴합니다")
+        void it_returns_errorObject() {
+            assertThat(taskErrorAdvice.handleBadRequest()).isInstanceOf(ErrorResponse.class);
+        }
+    }
 }
