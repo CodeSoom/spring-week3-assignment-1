@@ -34,12 +34,11 @@ public class TaskController {
     }
 
     /**
-     * id와 함께 Task 데이터를 요청하는 경우,
-     * 해당 id를 가지고 있는 Task를 리턴한다.
+     * id에 해당하는 Task를 리턴한다.
      *
      * @param id Task의 id
-     * @return id에 해당하는 Task
-     * @throws TaskNotFoundException id에 해당하는 Task가 없는경우
+     * @return Task
+     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
      */
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
