@@ -24,10 +24,9 @@ public class TaskController {
     }
 
     /**
-     * 저장되어 있는 모든 Task를 요청하는 경우,
-     * 저장되어있는 모든 Task를 리턴한다.
+     * 등록된 모든 Task의 목록을 리턴합니다.
      *
-     * @return 저장되어있는 모든 Task
+     * @return 모든 Task 목록
      */
     @GetMapping
     public List<Task> list() {
@@ -35,12 +34,11 @@ public class TaskController {
     }
 
     /**
-     * id와 함께 Task 데이터를 요청하는 경우,
-     * 해당 id를 가지고 있는 Task를 리턴한다.
+     * id에 해당하는 Task를 리턴한다.
      *
      * @param id Task의 id
-     * @return id에 해당하는 Task
-     * @throws TaskNotFoundException id에 해당하는 Task가 없는경우
+     * @return Task
+     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
      */
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
@@ -48,9 +46,7 @@ public class TaskController {
     }
 
     /**
-     * 새로운 Task의 생성을 요청하는 경우,
-     * 새로운 Task를 생성하고,
-     * 생성한 Task를 리턴한다.
+     * 새로운 Task를 생성해 리턴합니다.
      *
      * @param task 새로 생성할 Task 내용
      * @return 새로 생성한 Task
