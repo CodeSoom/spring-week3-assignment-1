@@ -24,10 +24,9 @@ public class TaskController {
     }
 
     /**
-     * 저장되어 있는 모든 Task를 요청하는 경우,
-     * 저장되어있는 모든 Task를 리턴한다.
+     * 등록된 모든 Task의 목록을 리턴합니다.
      *
-     * @return 저장되어있는 모든 Task
+     * @return 모든 Task 목록
      */
     @GetMapping
     public List<Task> list() {
