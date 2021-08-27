@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotCreateException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
@@ -48,7 +49,9 @@ class TaskControllerTest {
             @BeforeEach
             void prepareTasks() {
                 task1 = new Task();
+                task1.setTitle("test1");
                 task2 = new Task();
+                task2.setTitle("test2");
                 taskService.createTask(task1);
                 taskService.createTask(task2);
             }
@@ -94,6 +97,7 @@ class TaskControllerTest {
             @BeforeEach
             void prepareTask() {
                 task = new Task();
+                task.setTitle("test");
                 Task createdTask = taskService.createTask(this.task);
                 id = createdTask.getId();
             }
@@ -112,18 +116,38 @@ class TaskControllerTest {
     @DisplayName("create 메소드는")
     class Describe_create {
         @Nested
-        @DisplayName("할 일을 생성했다면")
-        class Context_create_a_task {
+        @DisplayName("제목이 입력되지 않았다면")
+        class Context_task_no_have_title {
             Task task;
 
             @BeforeEach
             void prepareTask() {
                 task = new Task();
+                task.setTitle(null);
             }
 
             @Test
-            @DisplayName("생성한 할 일을 반환합니다")
+            @DisplayName("할 일을 생성 할 수 없다는 예외를 던집니다")
             void createTask() {
+                assertThatThrownBy(() -> controller.create(task))
+                        .isInstanceOf(TaskNotCreateException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("제목이 입력되었다면")
+        class Context_task_have_title {
+            Task task;
+
+            @BeforeEach
+            void prepareTask() {
+                task = new Task();
+                task.setTitle("test");
+            }
+
+            @Test
+            @DisplayName("할 일을 생성하여 리턴합니다")
+            void it_returns_createdTask() {
                 Task createdTask = controller.create(task);
 
                 Task foundItem = taskService.getTask(createdTask.getId());
@@ -207,6 +231,7 @@ class TaskControllerTest {
             @BeforeEach
             void prepareTask() {
                 task = new Task();
+                task.setTitle("test");
                 createdTask = taskService.createTask(task);
             }
 
