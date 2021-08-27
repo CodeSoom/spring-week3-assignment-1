@@ -1,6 +1,6 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskIdGenerator;
+import com.codesoom.assignment.IdGenerator;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final List<Task> tasks = new ArrayList<>();
-    private final TaskIdGenerator taskIdGenerator;
+    private final IdGenerator idGenerator;
 
-    public TaskService(TaskIdGenerator taskIdGenerator) {
-        this.taskIdGenerator = taskIdGenerator;
+    public TaskService(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 
     /**
@@ -50,7 +50,7 @@ public class TaskService {
      * @return 생성된 할 일
      */
     public Task createTask(Task source) {
-        long id = taskIdGenerator.generate();
+        long id = idGenerator.generate();
 
         Task task = new Task(id);
         task.setTitle(source.getTitle());
