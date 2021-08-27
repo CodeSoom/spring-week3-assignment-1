@@ -37,7 +37,7 @@ class TaskTest {
     @Test
     void equivalenceTaskSelf() {
         final Task task = new Task(1L, TITLE);
-        assertThat(task).isEqualTo(task);
+        assertThat(task.equals(task)).isTrue();
         assertThat(task).hasSameHashCodeAs(task);
     }
 
