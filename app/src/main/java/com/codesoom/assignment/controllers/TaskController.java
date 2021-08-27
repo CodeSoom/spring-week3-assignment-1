@@ -46,9 +46,7 @@ public class TaskController {
     }
 
     /**
-     * 새로운 Task의 생성을 요청하는 경우,
-     * 새로운 Task를 생성하고,
-     * 생성한 Task를 리턴한다.
+     * 새로운 Task를 생성해 리턴합니다.
      *
      * @param task 새로 생성할 Task 내용
      * @return 새로 생성한 Task
