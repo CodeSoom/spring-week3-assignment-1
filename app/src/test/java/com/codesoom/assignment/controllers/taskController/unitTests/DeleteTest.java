@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
+@DisplayName("TaskController 클래스")
 public final class DeleteTest extends TaskControllerUnitTest {
     @Nested
     @DisplayName("delete 메서드는")
