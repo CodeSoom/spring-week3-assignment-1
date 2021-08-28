@@ -3,6 +3,7 @@ package com.codesoom.assignment.service;
 import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.repository.TaskRepository;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,35 +60,52 @@ class TaskServiceTest {
         }
     }
 
-
     @Nested
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
+
+        int oldSize;
+        int newSize;
+        Task newTask;
+
+        @BeforeEach
+        void createSetUp() {
+            oldSize = taskService.getTaskList().size();
+            newTask = new Task(2L, "second");
+        }
+
         @Test
         @DisplayName("새로운 할 일을 등록한다.")
         void createTask() {
-            int oldSize = taskService.getTaskList().size();
+            taskService.createTask(newTask);
+            newSize = taskService.getTaskList().size();
 
-            Task second = new Task(2L, "second");
-            taskService.createTask(second);
-
-            int newSize = taskService.getTaskList().size();
+            Task findNewTask = taskService.getTask(2L);
 
             assertThat(newSize - oldSize).isEqualTo(1);
+            assertThat(findNewTask).isNotNull();
+            assertThat(findNewTask.getId()).isEqualTo(newTask.getId());
+            assertThat(findNewTask.getTitle()).isEqualTo(newTask.getTitle());
         }
     }
 
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
+
+        String newTitle;
+        Task source;
+
+        @BeforeEach
+        void updateSetUp() {
+            newTitle = "New Title";
+            source = new Task(null, newTitle);
+        }
+
         @Test
         @DisplayName("할 일을 수정한다.")
         void updateTask() {
-
-            String newTitle = "New Title";
-            Task source = new Task(100L, newTitle);
             taskService.updateTask(1L, source);
-
             Task task = taskService.getTask(1L);
             assertThat(task.getTitle()).isEqualTo(newTitle);
         }
