@@ -1,9 +1,10 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.exception.TaskNotFoundException;
-import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.repository.TaskRepository;
+import com.codesoom.assignment.service.TaskCommandService;
+import com.codesoom.assignment.service.TaskQueryService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,18 +16,19 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("Task Controller의")
-class TaskControllerTest {
+@DisplayName("New Task Controller의")
+class NewTaskControllerTest {
 
-    private TaskController controller;
+    private NewTaskController controller;
 
     public static final long findId = 1L;
 
     @BeforeEach
     void setUp() {
         TaskRepository taskRepository = new TaskRepository();
-        TaskService taskService = new TaskService(taskRepository);
-        controller = new TaskController(taskService);
+        TaskQueryService taskQueryService = new TaskQueryService(taskRepository);
+        TaskCommandService taskCommandService = new TaskCommandService(taskRepository, taskQueryService);
+        controller = new NewTaskController(taskQueryService, taskCommandService);
         controller.createTask(new Task(findId, "title"));
     }
 

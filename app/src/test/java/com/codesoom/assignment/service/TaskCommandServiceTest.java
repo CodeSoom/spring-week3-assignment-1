@@ -8,55 +8,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("Task Service의")
-class TaskServiceTest {
+@DisplayName("TaskCommandService의")
+class TaskCommandServiceTest {
 
     public static final String TASK_TITLE = "Test Title";
-    private TaskService taskService;
+    private TaskCommandService taskCommandService;
+    private TaskQueryService taskQueryService;
 
     @BeforeEach
     void setUp() {
         TaskRepository taskRepository = new TaskRepository();
-        taskService = new TaskService(taskRepository);
+        taskQueryService = new TaskQueryService(taskRepository);
+        taskCommandService = new TaskCommandService(taskRepository, taskQueryService);
         Task task = new Task(1L, TASK_TITLE);
-        taskService.createTask(task);
-    }
-
-    @Nested
-    @DisplayName("getTaskList 메소드는")
-    class Describe_getTaskList {
-        @Test
-        @DisplayName("할 일 리스트를 조회한다.")
-        void getTasks() {
-            assertThat(taskService.getTaskList()).hasSize(1);
-        }
-    }
-
-    @Nested
-    @DisplayName("getTask 메소드는")
-    class Describe_getTask {
-        @Nested
-        @DisplayName("유효한 Id를 조회하면")
-        class Context_with_task {
-            @Test
-            @DisplayName("할 일을 찾는다.")
-            void getTaskWithValidId() {
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TaskServiceTest.TASK_TITLE);
-            }
-        }
-
-        @Nested
-        @DisplayName("유효하지 않은 Id를 조회하면")
-        class Context_with_task_not_valid_id {
-            @Test
-            @DisplayName("TaskNotFound 예외를 던진다.")
-            void getTaskWithInValidId() {
-                assertThatThrownBy(() -> taskService.getTask(100000L))
-                        .isInstanceOf(TaskNotFoundException.class);
-            }
-        }
+        taskCommandService.createTask(task);
     }
 
     @Nested
@@ -69,17 +37,17 @@ class TaskServiceTest {
 
         @BeforeEach
         void createSetUp() {
-            oldSize = taskService.getTaskList().size();
+            oldSize = taskQueryService.getTaskList().size();
             newTask = new Task(2L, "second");
         }
 
         @Test
         @DisplayName("새로운 할 일을 등록한다.")
         void createTask() {
-            taskService.createTask(newTask);
-            newSize = taskService.getTaskList().size();
+            taskCommandService.createTask(newTask);
+            newSize = taskQueryService.getTaskList().size();
 
-            Task findNewTask = taskService.getTask(2L);
+            Task findNewTask = taskQueryService.getTask(2L);
 
             assertThat(newSize - oldSize).isEqualTo(1);
             assertThat(findNewTask).isNotNull();
@@ -104,9 +72,23 @@ class TaskServiceTest {
         @Test
         @DisplayName("할 일을 수정한다.")
         void updateTask() {
-            taskService.updateTask(1L, source);
-            Task task = taskService.getTask(1L);
+            taskCommandService.updateTask(1L, source);
+            Task task = taskQueryService.getTask(1L);
             assertThat(task.getTitle()).isEqualTo(newTitle);
         }
     }
+
+    @Nested
+    @DisplayName("completeTask 메소드는")
+    class Describe_completeTask {
+        @Test
+        @DisplayName("할 일을 리스트에서 제외한다.")
+        void completeTask() {
+            taskCommandService.completeTask(1L);
+            assertThatThrownBy(() -> {
+                Task task = taskQueryService.getTask(1L);
+            }).isInstanceOf(TaskNotFoundException.class);
+        }
+    }
+
 }
