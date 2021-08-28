@@ -58,7 +58,7 @@ public class TaskController {
     }
 
     /**
-     * id에 해당하는 Task를 업데이트하고, 업데이트한 Task를 리턴한다.
+     * id에 해당하는 Task를 업데이트하고 리턴한다.
      *
      * @param id 업데이트할 Task의 id
      * @param task 업데이트할 Task의 데이터

@@ -124,7 +124,7 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
             @AfterEach
             void tearDown() {
                 verify(taskServiceMock, atLeastOnce())
-                    .getTask(argThat((final Long id) -> id == null));
+                    .getTask(argThat(input -> input == null));
             }
         }
 
@@ -145,7 +145,7 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
             @AfterEach
             void tearDown() {
                 verify(taskServiceMock, atLeastOnce())
-                    .getTask(argThat((final Long argument) -> argument == validId));
+                    .getTask(argThat(input -> input == validId));
             }
         }
         @Nested
@@ -163,7 +163,7 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
                 @DisplayName("찾은 Task를 리턴한다.")
                 void it_returns_a_task() {
                     assertThat(taskController.detail(validId))
-                        .isEqualTo(task);
+                        .matches(output -> output.getId() == validId && taskTitle.equals(output.getTitle()));
                 }
             }
             @Nested
@@ -185,6 +185,56 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
             @AfterEach
             void tearDown() {
                 verify(taskServiceMock, atMostOnce()).getTask(anyLong());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("create 메소드는")
+    @ExtendWith(MockitoExtension.class)
+    class Describe_create {
+        @Nested
+        @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
+        class Context_argument_null {
+            @BeforeEach
+            void setUp() {
+                when(taskServiceMock.createTask(isNull()))
+                    .thenThrow(NullPointerException.class);
+            }
+
+            @Test
+            @DisplayName("NullPointerException을 던진다.")
+            void it_throw_a_nullPointException() {
+                assertThatThrownBy(() -> taskController.create(null))
+                    .isInstanceOf(NullPointerException.class);
+            }
+
+            @AfterEach
+            void tearDown() {
+                verify(taskServiceMock, atLeastOnce())
+                    .createTask(argThat(input -> input == null));
+            }
+        }
+
+        @Nested
+        @DisplayName("인자로 null이 아닌 값이 들어온 경우")
+        class Context_argument_not_null {
+            @BeforeEach
+            void setUp() {
+                when(taskServiceMock.createTask(task)).thenReturn(task);
+            }
+
+            @Test
+            @DisplayName("새로운 Task를 생성하고 리턴한다.")
+            void it_returns_a_task() {
+                assertThat(taskController.create(task))
+                .matches(output -> output.getId() == validId && taskTitle.equals(output.getTitle()));
+            }
+
+            @AfterEach
+            void testDown() {
+                verify(taskServiceMock, atMostOnce())
+                    .createTask(argThat(input -> input == task));
             }
         }
     }
