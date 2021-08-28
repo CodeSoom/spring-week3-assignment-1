@@ -47,26 +47,63 @@ class TaskServiceTest {
         }
     }
 
-    @Test
-    void addTask() {
-        taskService.addTask(new Task(2L, "Test title2"));
-        Assertions.assertEquals(taskService.getTaskList().size(), 2);
+    @Nested
+    @DisplayName("add 메서드는")
+    class testAdd {
+
+        @Nested
+        @DisplayName("할 일을 인자로 받는다면")
+        class addWithParameter {
+            @Test
+            @DisplayName("할 일을 추가하고 추가된 할 일을 반환한다")
+            void addTask() {
+                taskService.addTask(new Task(2L, "Test title2"));
+                Assertions.assertEquals(taskService.getTaskList().size(), 2);
+            }
+        }
     }
 
-    @Test
-    void replaceTask() {
-        Task newTask = new Task(1L, "New Title");
-        Assertions.assertEquals("New Title", taskService.replaceTask(1L, newTask).get().getTitle());
+    @Nested
+    @DisplayName("replace 메서드는")
+    class testReplace {
+        @Nested
+        @DisplayName("교체할 할 일을 인자로 받는다면")
+        class replaceWithParameter {
+            @Test
+            @DisplayName("할 일을 교체하고, 교체된 할 일을 반환한다.")
+            void replaceTask() {
+                Task newTask = new Task(1L, "New Title");
+                Assertions.assertEquals("New Title", taskService.replaceTask(1L, newTask).get().getTitle());
+            }
+        }
     }
 
-    @Test
-    void updateTask() {
-        Task newTask = new Task(1L, "New Title");
-        Assertions.assertEquals("New Title", taskService.replaceTask(1L, newTask).get().getTitle());
+    @Nested
+    @DisplayName("update 메서드는")
+    class testUpdate {
+        @Nested
+        @DisplayName("수정할 할 일을 인자로 받는다면")
+        class replaceWithParameter {
+            @Test
+            @DisplayName("할 일을 수정하고, 수정된 할 일을 반환한다.")
+            void updateTask() {
+                Task newTask = new Task(1L, "New Title");
+                Assertions.assertEquals("New Title", taskService.replaceTask(1L, newTask).get().getTitle());
+            }
+        }
     }
 
-    @Test
-    void deleteTask() {
-        Assertions.assertEquals(1L, taskService.deleteTask(1L).get().getId());
+    @Nested
+    @DisplayName("delete 메서드는")
+    class testDelete {
+        @Nested
+        @DisplayName("삭제할 할 일 식별자를 인자로 받는다면")
+        class deleteWithParameter {
+            @Test
+            @DisplayName("할 일을 삭제하고, 삭제된 할 일을 반환한다.")
+            void deleteTask() {
+                Assertions.assertEquals(1L, taskService.deleteTask(1L).get().getId());
+            }
+        }
     }
 }
