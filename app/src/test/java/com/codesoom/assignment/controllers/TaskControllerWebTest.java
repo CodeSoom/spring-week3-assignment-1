@@ -4,7 +4,6 @@ import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class TaskControllerWebTest {
     private TaskService taskService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         ArrayList<Task> tasks = new ArrayList<>();
         Task task = new Task(1L, "title");
         tasks.add(task);
@@ -137,34 +135,46 @@ public class TaskControllerWebTest {
         }
     }
 
-
     @Nested
-    @DisplayName("할 일(id)에 대한 등록 요청이 왔을 때")
-    class CreateTask {
+    @DisplayName("createTask 메소드는")
+    class Describe_createTask {
+        Task newTask;
+
+        @BeforeEach
+        void CreateTaskSetUp() {
+            newTask = new Task(2L, "title2");
+            given(taskService.createTask(newTask)).willReturn(newTask);
+        }
+
         @Test
-        @DisplayName("요청이 정상적인 경우 할 일을 등록한다.")
+        @DisplayName("새로운 할 일을 등록한다.")
         void createTask() throws Exception {
-            Task task2 = new Task(2L, "title2");
             mockMvc.perform(post("/tasks")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(task2)))
+                    .content(objectMapper.writeValueAsString(newTask)))
                     .andExpect(status().isCreated())
                     .andDo(print());
         }
     }
 
     @Nested
-    @DisplayName("할 일(id)에 대한 수정 요청이 오면")
+    @DisplayName("updateTask 메소드는")
     class UpdateTask {
+
+        Task newTask;
+        Long newId;
+
+        @BeforeEach
+        void updateSetUp() {
+            newId = 1L;
+            newTask = new Task(newId, "New Title");
+            given(taskService.updateTask(newId, newTask)).willReturn(newTask);
+        }
 
         @Test
         @DisplayName("할 일(id)을 수정한다.")
         void updateTask() throws Exception {
-
-            Task newTask = new Task(1L, "New Title");
-            given(taskService.updateTask(1L, newTask)).willReturn(newTask);
-
-            mockMvc.perform(put("/tasks/{id}", 1L)
+            mockMvc.perform(put("/tasks/{id}", newId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(newTask)))
                     .andExpect(status().isOk())
@@ -173,7 +183,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("할 일(id)에 대한 완료 요청이 오면")
+    @DisplayName("completeTask 메소드는")
     class CompleteTask {
 
         @Test
