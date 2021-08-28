@@ -113,7 +113,7 @@ class TaskControllerTest {
       @DisplayName("주어진 객체의 title로 생성한 task객체를 return")
       void It_ReturnNewTaskByValidTaskTitle() {
         Task createdTask = taskController.create(validTask);
-        assertThat(validTask.getTitle()).isEqualTo(createdTask.getTitle())
+        assertThat(createdTask.getTitle()).isEqualTo(validTask.getTitle())
             .withFailMessage("주어진 task의 title을 바탕으로 생성한 task를 return해야합니다.");
 
       }
