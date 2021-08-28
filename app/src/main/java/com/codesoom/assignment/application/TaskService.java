@@ -27,8 +27,7 @@ public class TaskService {
 
     public Task createTask(Task source) {
         if(source.getTitle() == null){
-            Optional<Task> task = Optional.empty();
-            return task.orElseThrow(() -> new TaskNotCreateException(source.getId()));
+            throw new TaskNotCreateException(source.getId());
         }
 
         source.setId(generateId());

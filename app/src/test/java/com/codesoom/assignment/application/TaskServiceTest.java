@@ -125,7 +125,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("할 일을 생성 할 수 없다는 예외를 던집니다")
-            void createTask() {
+            void it_throw_Exception() {
                 assertThatThrownBy(() -> taskService.createTask(task))
                         .isInstanceOf(TaskNotCreateException.class);
             }
@@ -144,7 +144,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("할 일을 생성하여 리턴합니다")
-            void createTask() {
+            void it_returns_created_Task() {
                 Task createdTask = taskService.createTask(task);
 
                 Task foundItem = taskService.getTask(createdTask.getId());
@@ -176,7 +176,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
-            void updateTask() {
+            void it_returns_updated_Task() {
                 taskService.updateTask(itemId, updateTask);
 
                 Task foundItem = taskService.getTask(itemId);
@@ -202,7 +202,7 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("할 일을 삭제합니다")
-            void deleteTask() {
+            void it_delete_Task() {
                 taskService.deleteTask(createdTask.getId());
 
                 final List<Task> tasks = taskService.getTasks();

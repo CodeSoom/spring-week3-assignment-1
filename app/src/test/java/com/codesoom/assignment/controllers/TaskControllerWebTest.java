@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -187,8 +187,8 @@ public class TaskControllerWebTest {
                 }
 
                 @Test
-                @DisplayName("생성한 할 일과 OK(200)을 응답합니다")
-                void It_respond_createdTask_and_200_OK() throws Exception {
+                @DisplayName("생성한 할 일과 OK(201)을 응답합니다")
+                void It_respond_createdTask_and_201_OK() throws Exception {
                     mockMvc.perform(post("/tasks"))
                             .andExpect(status().isCreated())
                             .andExpect(content().string(containsString(taskToJSON)));
@@ -197,6 +197,96 @@ public class TaskControllerWebTest {
         }
     }
 
+    @Nested
+    @DisplayName("update 메소드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("request = put, path = /tasks{id} 일 때")
+        class Context_request_isPUT_and_path_isTasksId {
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
+            class Context_matchId_exist {
+                final Long ID = 1L;
+                Long itemId;
+                String taskToJSON;
+
+                @BeforeEach
+                void prepareTask() throws IOException {
+                    Task task = new Task();
+                    task.setTitle("test");
+
+                    given(taskService.updateTask(itemId, task)).willReturn(task);
+
+                    taskToJSON = taskToJSON(task);
+                    System.out.println("taskToJSON = " + taskToJSON);
+                }
+
+                @Test
+                @DisplayName("입력받은 제목으로 수정된 할 일을 리턴 합니다")
+                void it_returns_updated_Task() throws Exception {
+                    mockMvc.perform(put("/tasks/"+ID))
+                            .andExpect(status().isOk())
+                            .andExpect(content().string(containsString(taskToJSON)));
+                }
+            }
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
+            class Context_matchId_not_exist {
+                @Test
+                @DisplayName("할 일을 찾을 수 없다는 예외를 던집니다")
+                void it_throw_Exception() {
+
+                }
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("patch 메소드는")
+    class Describe_patch {
+        @Nested
+        @DisplayName("request = patch, path = /tasks{id} 일 때")
+        class Context_request_isPATCH_and_path_isTasksId {
+
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
+            class Context_matchId_exist {
+
+            }
+
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
+            class Context_matchId_not_exist {
+
+            }
+
+        }
+
+    }
+
+
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("request = delete, path = /tasks{id} 일 때")
+        class Context_request_isDELETE_and_path_isTasksId {
+
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 있다면")
+            class Context_matchId_exist {
+
+            }
+
+            @Nested
+            @DisplayName("입력받은 id와 일치하는 등록된 할 일이 없다면")
+            class Context_matchId_not_exist {
+
+            }
+
+        }
+
+    }
 
     private String tasksToJSON(List<Task> tasks) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

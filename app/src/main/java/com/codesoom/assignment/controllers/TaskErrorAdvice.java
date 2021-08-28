@@ -22,6 +22,6 @@ public class TaskErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(TaskNotCreateException.class)
     public ErrorResponse handleBadRequest() {
-        return new ErrorResponse("Title is not created.");
+        return new ErrorResponse("제목이 입력되지 않아 할 일을 생성하지 못했습니다");
     }
 }
