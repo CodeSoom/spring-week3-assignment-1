@@ -36,17 +36,16 @@ class TaskServiceTest {
             }
         }
 
+        @Nested
+        @DisplayName("식별자를 인자로 전달 받는다면")
         class getWithId {
             @Test
+            @DisplayName("식별자에 해당하는 할 일을 반환한다")
             void getTaskById() {
                 Assertions.assertEquals(TEST_TITLE, taskService.getTaskById(1L).get().getTitle());
             }
         }
     }
-
-
-
-
 
     @Test
     void addTask() {
