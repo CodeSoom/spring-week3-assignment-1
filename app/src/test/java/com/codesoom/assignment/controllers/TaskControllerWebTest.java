@@ -1,10 +1,12 @@
 package com.codesoom.assignment.controllers;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +48,7 @@ public class TaskControllerWebTest {
 
   private TaskController taskController;
   private Long NotFoundId = 0L;
+  private Long ValidId;
 
   @BeforeEach
   void setUp() {
@@ -101,9 +104,53 @@ public class TaskControllerWebTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(objectMapper.writeValueAsString(taskList)));
       }
+    }
+  }
 
+  @Nested
+  @DisplayName("GET tasks/{id} request는")
+  class Describe_GetById {
+
+    @Nested
+    @DisplayName("invalid한 id로 reuqest를 할때")
+    class Context_InvalidTaskId {
+
+      @BeforeEach
+      void setUp() {
+        given(taskService.getTask(NotFoundId)).willThrow(new TaskNotFoundException(NotFoundId));
+      }
+
+      @Test
+      @DisplayName("404 상태코드를 return")
+      void It_Return404() throws Exception {
+        mockMvc.perform(get("/tasks/" + NotFoundId))
+            .andExpect(status().isNotFound());
+      }
+    }
+
+    @Nested
+    @DisplayName("valid한 id로 request를 할 때")
+    class Context_ValidTaskId {
+
+      @BeforeEach
+      void setUp() {
+        Task taskWithValidId = taskController.create(task);
+        ValidId = taskWithValidId.getId();
+        given(taskService.getTask(ValidId)).willReturn(taskWithValidId);
+
+      }
+
+      @Test
+      @DisplayName("200 상태코드와 조회된 task를 return")
+      void It_Return200AndTask() throws Exception {
+        mockMvc.perform(get("/tasks/" + ValidId))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(TASK_TITLE)));
+      }
 
     }
+
   }
 
 
