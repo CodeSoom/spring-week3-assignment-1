@@ -1,8 +1,8 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskNotFoundException;
-import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,18 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,28 +34,65 @@ class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private TaskService taskService;
-
-    private static final Long VALID_ID = 1L;
     private static final Long INVALID_ID = 100L;
     private static final String TASK_TITLE = "my first task";
-
-    private final Task taskFixture = new Task(VALID_ID, TASK_TITLE);
-    private final TaskNotFoundException taskNotFoundException = new TaskNotFoundException(INVALID_ID);
+    private final Task taskFixture = new Task(1L, TASK_TITLE);
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private <T> T getResponseContent(ResultActions actions, TypeReference<T> type)
+            throws UnsupportedEncodingException, JsonProcessingException {
+        MvcResult mvcResult = actions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        return objectMapper.readValue(contentAsString, type);
+    }
+
+    @Nested
+    @DisplayName("Post Request")
+    class PostRequest {
+        @Test
+        @DisplayName("returns a created task with HTTP status code 201")
+        void returnsNewTask() throws Exception {
+            mockMvc.perform(post("/tasks")
+                            .content(objectMapper.writeValueAsString(taskFixture))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andExpect(content().string(containsString(TASK_TITLE)));
+        }
+
+        @Test
+        @DisplayName("increases the number of task by 1")
+        void increasesNumberOfTask() throws Exception {
+            Collection<Task> tasksBeforePost = getResponseContent(
+                    mockMvc.perform(get("/tasks")),
+                    new TypeReference<Collection<Task>>() {}
+            );
+
+            mockMvc.perform(post("/tasks")
+                    .content(objectMapper.writeValueAsString(taskFixture))
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            Collection<Task> tasksAfterPost = getResponseContent(
+                    mockMvc.perform(get("/tasks")),
+                    new TypeReference<Collection<Task>>() {}
+            );
+
+            assertThat(tasksAfterPost).hasSize(tasksBeforePost.size() + 1);
+        }
+    }
 
     @Nested
     @DisplayName("Get Request")
-    class GetRequestTest {
-        @BeforeEach
-        void setup() {
-            List<Task> tasks = new ArrayList<>();
-            tasks.add(taskFixture);
+    class GetRequest {
+        Task taskInService;
 
-            given(taskService.getTasks()).willReturn(tasks);
-            given(taskService.getTask(VALID_ID)).willReturn(taskFixture);
-            given(taskService.getTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
+        @BeforeEach
+        void setup() throws Exception {
+            ResultActions resultActions = mockMvc.perform(post("/tasks")
+                    .content(objectMapper.writeValueAsString(taskFixture))
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            taskInService = getResponseContent(resultActions, new TypeReference<Task>() {});
         }
 
         @Nested
@@ -61,7 +100,7 @@ class TaskControllerWebTest {
         class WithoutPathVariables {
             @Test
             @DisplayName("returns a task list with http status code 200")
-            void list() throws Exception {
+            void returnsTasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(TASK_TITLE)));
@@ -73,8 +112,8 @@ class TaskControllerWebTest {
         class WithValidId {
             @Test
             @DisplayName("returns the task with http status code 200")
-            void detail() throws Exception {
-                mockMvc.perform(get("/tasks/" + VALID_ID))
+            void returnsTask() throws Exception {
+                mockMvc.perform(get("/tasks/" + taskInService.getId()))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(TASK_TITLE)));
             }
@@ -85,43 +124,25 @@ class TaskControllerWebTest {
         class WithInvalidId {
             @Test
             @DisplayName("returns a 404 error")
-            void detail() throws Exception {
+            void returnsError() throws Exception {
                 mockMvc.perform(get("/tasks/" + INVALID_ID))
                         .andExpect(status().isNotFound());
             }
         }
     }
 
-
-    @Nested
-    @DisplayName("Post Request")
-    class PostRequestTest {
-        @BeforeEach
-        void setup() {
-            given(taskService.createTask(any(Task.class))).willReturn(taskFixture);
-        }
-
-        @Test
-        @DisplayName("returns a created task with HTTP status code 201")
-        void create() throws Exception {
-            String content = objectMapper.writeValueAsString(taskFixture);
-
-            mockMvc.perform(post("/tasks")
-                            .content(content)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isCreated())
-                    .andExpect(content().string(containsString(TASK_TITLE)))
-                    .andExpect(content().string(containsString(VALID_ID.toString())));
-        }
-    }
-
     @Nested
     @DisplayName("Put Request")
-    class PutRequestTest {
+    class PutRequest {
+        Task taskInService;
+
         @BeforeEach
-        void setup() {
-            given(taskService.updateTask(eq(VALID_ID), any(Task.class))).willReturn(taskFixture);
-            given(taskService.updateTask(eq(INVALID_ID), any(Task.class))).willThrow(taskNotFoundException);
+        void setup() throws Exception {
+            ResultActions resultActions = mockMvc.perform(post("/tasks")
+                    .content(objectMapper.writeValueAsString(taskFixture))
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            taskInService = getResponseContent(resultActions, new TypeReference<Task>() {});
         }
 
         @Nested
@@ -129,14 +150,12 @@ class TaskControllerWebTest {
         class WithValidId {
             @Test
             @DisplayName("returns an updated task with HTTP status code 200")
-            void update() throws Exception {
-                String content = objectMapper.writeValueAsString(taskFixture);
-
-                mockMvc.perform(put("/tasks/" + VALID_ID)
-                                .content(content)
+            void returnsUpdatedTask() throws Exception {
+                mockMvc.perform(put("/tasks/" + taskInService.getId())
+                                .content(objectMapper.writeValueAsString(taskFixture))
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
-                        .andExpect(content().string(containsString(VALID_ID.toString())));
+                        .andExpect(content().string(containsString(taskFixture.getTitle())));
             }
         }
 
@@ -145,11 +164,9 @@ class TaskControllerWebTest {
         class WithInvalidId {
             @Test
             @DisplayName("returns a 404 error")
-            void update() throws Exception {
-                String content = objectMapper.writeValueAsString(taskFixture);
-
+            void returnsError() throws Exception {
                 mockMvc.perform(put("/tasks/" + INVALID_ID)
-                                .content(content)
+                                .content(objectMapper.writeValueAsString(taskFixture))
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound());
             }
@@ -158,11 +175,15 @@ class TaskControllerWebTest {
 
     @Nested
     @DisplayName("Delete Request")
-    class DeleteRequestTest {
+    class DeleteRequest {
+        Task taskInService;
         @BeforeEach
-        void setup() {
-            given(taskService.deleteTask(VALID_ID)).willReturn(taskFixture);
-            given(taskService.deleteTask(eq(INVALID_ID))).willThrow(taskNotFoundException);
+        void setup() throws Exception {
+            ResultActions resultActions = mockMvc.perform(post("/tasks")
+                    .content(objectMapper.writeValueAsString(taskFixture))
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            taskInService = getResponseContent(resultActions, new TypeReference<Task>() {});
         }
 
         @Nested
@@ -170,9 +191,28 @@ class TaskControllerWebTest {
         class WithValidId {
             @Test
             @DisplayName("returns a deleted task with HTTP status code 204")
-            void remove() throws Exception {
-                mockMvc.perform(delete("/tasks/" + VALID_ID))
+            void returnsDeletedTask() throws Exception {
+                // TODO: fix delete controller
+                mockMvc.perform(delete("/tasks/" + taskInService.getId()))
                         .andExpect(status().isNoContent());
+            }
+
+            @Test
+            @DisplayName("reduces the number of tasks by one")
+            void reducesNumberOfTasks() throws Exception {
+                Collection<Task> tasksBeforeDelete = getResponseContent(
+                        mockMvc.perform(get("/tasks")),
+                        new TypeReference<Collection<Task>>() {}
+                );
+
+                mockMvc.perform(delete("/tasks/" + taskInService.getId()));
+
+                Collection<Task> tasksAfterDelete = getResponseContent(
+                        mockMvc.perform(get("/tasks")),
+                        new TypeReference<Collection<Task>>() {}
+                );
+
+                assertThat(tasksAfterDelete).hasSize(tasksBeforeDelete.size() - 1);
             }
         }
 
@@ -181,7 +221,7 @@ class TaskControllerWebTest {
         class WithInvalidId {
             @Test
             @DisplayName("returns a 404 error")
-            void remove() throws Exception {
+            void returnsError() throws Exception {
                 mockMvc.perform(delete("/tasks/" + INVALID_ID))
                         .andExpect(status().isNotFound());
             }

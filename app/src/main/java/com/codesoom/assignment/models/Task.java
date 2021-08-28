@@ -4,9 +4,11 @@ package com.codesoom.assignment.models;
  * 할 일 정보를 저장하고 처리합니다.
  */
 public class Task {
-    private final Long id;
+    private Long id;
 
-    private final String title;
+    private String title;
+
+    public Task() {}
 
     public Task(Long id, String title) {
         this.id = id;
