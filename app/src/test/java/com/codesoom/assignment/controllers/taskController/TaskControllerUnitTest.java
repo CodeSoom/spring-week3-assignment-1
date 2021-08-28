@@ -1,4 +1,4 @@
-package com.codesoom.assignment.controllers;
+package com.codesoom.assignment.controllers.taskController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,11 +11,9 @@ import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.controllers.TaskController;
 import com.codesoom.assignment.models.Task;
 
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("TaskController 클래스")
-public class TaskControllerTest {
+public final class TaskControllerUnitTest extends TaskControllerTest {
     @Mock
     private TaskService taskServiceMock;
 
@@ -42,26 +40,23 @@ public class TaskControllerTest {
         @Nested
         @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
         class Context_taskService_null {
-            private final Long id;
-            private final Task task;
             public Context_taskService_null() {
-                id = 1L;
-                task = new Task();
+                taskController = new TaskController(null);
             }
             @Test
             @DisplayName("NullPointerException을 던진다.")
             void it_throw_a_nullPointException() {
                 assertThatThrownBy(() -> taskController.list())
                     .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.detail(id))
+                assertThatThrownBy(() -> taskController.detail(validId))
                     .isInstanceOf(NullPointerException.class);
                 assertThatThrownBy(() -> taskController.create(task))
                     .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.update(id, task))
+                assertThatThrownBy(() -> taskController.update(validId, task))
                     .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.patch(id, task))
+                assertThatThrownBy(() -> taskController.patch(validId, task))
                     .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.delete(id))
+                assertThatThrownBy(() -> taskController.delete(validId))
                     .isInstanceOf(NullPointerException.class);
             }
         }
@@ -77,7 +72,7 @@ public class TaskControllerTest {
             @Test
             @DisplayName("비어있는 리스트를 리턴한다.")
             void it_returns_a_empty_list() {
-                when(taskServiceMock.getTasks()).thenReturn(new ArrayList<Task>());
+                when(taskServiceMock.getTasks()).thenReturn(tasks);
                 assertThat(taskController.list()).isEmpty();
             }
         }
@@ -85,23 +80,20 @@ public class TaskControllerTest {
         @Nested
         @DisplayName("저장된 Task가 있다면")
         class Context_task_exist {
-            Task generateTask(final Long id, final String title) {
-                Task task = new Task();
-                task.setId(id);
-                task.setTitle(title);
-                return task;
+
+            @BeforeEach
+            void setUp() {
+                tasks.add(task);
+                when(taskServiceMock.getTasks()).thenReturn(tasks);
             }
 
             @Test
             @DisplayName("저장된 Task가 포함된 리스트를 리턴한다.")
             void it_returns_a_list_with_tasks() {
-                final List<Task> tasks = new ArrayList<Task>();
-                tasks.add(generateTask(1L, "title"));
-                when(taskServiceMock.getTasks()).thenReturn(tasks);
                 assertThat(taskController.list())
-                    .hasSize(1)
+                    .hasSize(tasks.size())
                     .extracting(Task::getId, Task::getTitle)
-                    .containsExactly(tuple(1L, "title"));
+                    .containsExactly(tuple(validId, taskTitle));
             }
         }
 
@@ -139,10 +131,6 @@ public class TaskControllerTest {
         @Nested
         @DisplayName("저장된 Task가 없다면")
         class Context_task_empty {
-            private final Long id;
-            public Context_task_empty() {
-                id = 1L;
-            }
             @BeforeEach
             void setUp() {
                 when(taskServiceMock.getTask(anyLong()))
@@ -151,31 +139,18 @@ public class TaskControllerTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다.")
             void it_throw_a_taskNotFoundException() {
-                assertThatThrownBy(() -> taskController.detail(id))
+                assertThatThrownBy(() -> taskController.detail(validId))
                     .isInstanceOf(TaskNotFoundException.class);
             }
             @AfterEach
             void tearDown() {
                 verify(taskServiceMock, atLeastOnce())
-                    .getTask(argThat((final Long argument) -> argument == id));
+                    .getTask(argThat((final Long argument) -> argument == validId));
             }
         }
         @Nested
         @DisplayName("Task가 저장되어 있고")
         class Context_task_exist {
-            private final Long validId;
-            private final Long invalidId;
-            private final Task task;
-            private final String title;
-            public Context_task_exist() {
-                validId = 1L;
-                invalidId = 2L;
-                title = "title";
-                task = new Task();
-                task.setId(validId);
-                task.setTitle(title);
-            }
-            
             @Nested
             @DisplayName("id를 통해 Task를 찾을 수 있다면")
             class Context_find_task {

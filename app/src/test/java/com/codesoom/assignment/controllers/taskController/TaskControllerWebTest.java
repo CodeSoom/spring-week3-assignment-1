@@ -1,4 +1,4 @@
-package com.codesoom.assignment.controllers;
+package com.codesoom.assignment.controllers.taskController;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
@@ -6,12 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.models.Task;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest
-public final class TaskControllerWebTest {
+public final class TaskControllerWebTest extends TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -30,23 +26,19 @@ public final class TaskControllerWebTest {
 
     @BeforeEach
     void setUp() {
-        List<Task> tasks = new ArrayList<>();
-
-        Task task = new Task();
-        task.setTitle("Test Task");
         tasks.add(task);
 
         given(taskService.getTasks()).willReturn(tasks);
-        given(taskService.getTask(1L)).willReturn(task);
-        given(taskService.getTask(100L))
-                .willThrow(new TaskNotFoundException(100L));
+        given(taskService.getTask(validId)).willReturn(task);
+        given(taskService.getTask(invalidId))
+                .willThrow(new TaskNotFoundException(invalidId));
     }
 
     @Test
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test Task")));
+                .andExpect(content().string(containsString(taskTitle)));
     }
 
     @Test
@@ -57,7 +49,7 @@ public final class TaskControllerWebTest {
 
     @Test
     void detailWithInValidId() throws Exception {
-        mockMvc.perform(get("/tasks/100"))
+        mockMvc.perform(get("/tasks/2"))
                 .andExpect(status().isNotFound());
     }
     

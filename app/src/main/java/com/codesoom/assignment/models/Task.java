@@ -5,6 +5,11 @@ public class Task {
 
     private String title;
 
+    public Task(final Long id, final String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
