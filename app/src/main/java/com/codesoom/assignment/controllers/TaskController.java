@@ -58,15 +58,13 @@ public class TaskController {
     }
 
     /**
-     * 저장되어 있는 Task의 수정을 요청하는 경우,
-     * id에 해당하는 Task를 업데이트하고,
-     * 업데이트한 Task를 리턴한다.
+     * id에 해당하는 Task를 업데이트하고, 업데이트한 Task를 리턴한다.
      *
      * @param id 업데이트할 Task의 id
      * @param task 업데이트할 Task의 데이터
      * @return 업데이트한 Task
-     * @throws TaskNotFoundException id에 해당하는 Task가 없는경우
-     * @see TaskErrorAdvice#handleNotFound() TaskNotFoundException 예외처리 수행
+     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
+     * @see TaskErrorAdvice#handleNotFound()
      */
     @PutMapping("{id}")
     public Task update(@PathVariable Long id, @RequestBody Task task) {
@@ -74,15 +72,13 @@ public class TaskController {
     }
 
     /**
-     * 저장되어 있는 Task의 수정을 요청하는 경우,
-     * id에 해당하는 Task를 업데이트하고,
-     * 업데이트한 Task를 리턴한다.
+     * id에 해당하는 Task를 업데이트하고 리턴한다.
      *
      * @param id 업데이트할 Task의 id
      * @param task 업데이트할 Task의 데이터
      * @return 업데이트한 Task
-     * @throws TaskNotFoundException id에 해당하는 Task가 없는경우
-     * @see TaskErrorAdvice#handleNotFound() TaskNotFoundException 예외처리 수행
+     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
+     * @see TaskErrorAdvice#handleNotFound()
      */
     @PatchMapping("{id}")
     public Task patch(@PathVariable Long id, @RequestBody Task task) {
@@ -90,12 +86,11 @@ public class TaskController {
     }
 
     /**
-     * 저장되어 있는 Task의 삭제를 요청하는 경우,
      * id에 해당하는 Task를 삭제한다.
      *
      * @param id 삭제할 Task의 id
-     * @throws TaskNotFoundException id에 해당하는 Task가 없는경우
-     * @see TaskErrorAdvice#handleNotFound() TaskNotFoundException 예외처리 수행
+     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
+     * @see TaskErrorAdvice#handleNotFound()
      */
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
