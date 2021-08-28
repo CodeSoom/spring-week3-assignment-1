@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.repository.TaskRepository;
 import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -139,11 +142,16 @@ public class TaskControllerWebTest {
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
         Task newTask;
+        Long newId;
+        String newTitle;
 
         @BeforeEach
         void CreateTaskSetUp() {
-            newTask = new Task(2L, "title2");
-            given(taskService.createTask(newTask)).willReturn(newTask);
+            newId = 2L;
+            newTitle = "title2";
+            newTask = new Task(newId, newTitle);
+            given(taskService.createTask(any(Task.class))).willReturn(newTask);
+//            given(taskService.createTask(newTask)).willReturn(newTask);
         }
 
         @Test
@@ -153,6 +161,7 @@ public class TaskControllerWebTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(newTask)))
                     .andExpect(status().isCreated())
+                    .andExpect(content().string(containsString(newTitle)))
                     .andDo(print());
         }
     }
@@ -163,12 +172,15 @@ public class TaskControllerWebTest {
 
         Task newTask;
         Long newId;
+        String newTitle;
 
         @BeforeEach
         void updateSetUp() {
             newId = 1L;
-            newTask = new Task(newId, "New Title");
-            given(taskService.updateTask(newId, newTask)).willReturn(newTask);
+            newTitle = "New Title";
+            newTask = new Task(newId, newTitle);
+//            given(taskService.updateTask(newId, newTask)).willReturn(newTask);
+            given(taskService.updateTask(any(Long.class), any(Task.class))).willReturn(newTask);
         }
 
         @Test
@@ -178,6 +190,7 @@ public class TaskControllerWebTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(newTask)))
                     .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(newTitle)))
                     .andDo(print());
         }
     }
