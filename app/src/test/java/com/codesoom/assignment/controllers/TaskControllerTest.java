@@ -140,5 +140,4 @@ class TaskControllerTest {
         Task task = controller.getTask(findId);
         Assertions.assertThat(task.toString()).isEqualTo("Task{id=1, title=title}");
     }
-
 }

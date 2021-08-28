@@ -62,7 +62,7 @@ public class TaskRepository {
     }
 
     /**
-     * 새로 발급된 Id에 대한 getter입니다.
+     * 새 id를 리턴합니다.
      * @return 새로운 Id
      */
     public Long getNewId() {
@@ -70,7 +70,7 @@ public class TaskRepository {
     }
 
     /**
-     * 할 일 리스트에 대한 getter입니다.
+     * 할 일 리스트를 리턴합니다.
      * @return 전체 할 일 리스트
      */
     public List<Task> getTasks() {
