@@ -20,12 +20,10 @@ public final class HelloControllerWebTest {
 
     @MockBean
     private TaskService taskService;
-
     @Test
     void sayHello() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo("Hello, world!")));
     }
-
 }
