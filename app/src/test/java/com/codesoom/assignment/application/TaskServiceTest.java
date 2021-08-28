@@ -5,8 +5,11 @@ import com.codesoom.assignment.models.IdGeneratorImpl;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("TaskService 클래스")
 class TaskServiceTest {
     private static final String TEST_TITLE = "Test Title";
     private final Task task = new Task(1L, TEST_TITLE);
@@ -19,15 +22,31 @@ class TaskServiceTest {
         taskService = new TaskService(taskRepository);
     }
 
-    @Test
-    void getTaskList() {
-        Assert.assertEquals(taskService.getTaskList().size(), 1);
+    @Nested
+    @DisplayName("get 메서드들은")
+    class testGet {
+
+        @Nested
+        @DisplayName("식별자 없이 전체 목록을 요청하면")
+        class getWithoutId {
+            @Test
+            @DisplayName("할 일 목록 전체를 반환한다")
+            void getTaskList() {
+                Assert.assertEquals(taskService.getTaskList().size(), 1);
+            }
+        }
+
+        class getWithId {
+            @Test
+            void getTaskById() {
+                Assertions.assertEquals(TEST_TITLE, taskService.getTaskById(1L).get().getTitle());
+            }
+        }
     }
 
-    @Test
-    void getTaskById() {
-        Assertions.assertEquals(TEST_TITLE, taskService.getTaskById(1L).get().getTitle());
-    }
+
+
+
 
     @Test
     void addTask() {

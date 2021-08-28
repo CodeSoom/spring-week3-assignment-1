@@ -26,6 +26,7 @@ class TaskControllerWebTest {
 
     @MockBean
     private TaskService taskService;
+
     private static final String TEST_TITLE = "Test Title";
     private final Task task = new Task(1L, TEST_TITLE);
 
@@ -57,6 +58,7 @@ class TaskControllerWebTest {
     void addTask() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(task);
+        System.out.println(content);
     }
 
     @Test
