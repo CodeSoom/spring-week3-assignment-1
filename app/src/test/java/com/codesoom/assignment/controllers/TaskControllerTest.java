@@ -222,6 +222,8 @@ class TaskControllerTest {
         @DisplayName("삭제할 id가 존재하면")
         class Context_exist_delete_id {
 
+            Long deleteId= VALID_ID;
+
             @BeforeEach
             @DisplayName("삭제할 값을 세팅합니다")
             void delete_setUp() {
@@ -238,7 +240,7 @@ class TaskControllerTest {
             @DisplayName("list에서 해당 id의 Task 객체를 삭제한다")
             void It_delete_id() {
 
-                taskController.delete(VALID_ID);
+                taskController.delete(deleteId);
                 assertThat(taskController.list()).hasSize(4);
 
             }

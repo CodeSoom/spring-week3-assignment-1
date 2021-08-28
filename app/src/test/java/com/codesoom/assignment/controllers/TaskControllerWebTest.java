@@ -19,7 +19,11 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Nested
@@ -178,7 +182,7 @@ public class TaskControllerWebTest {
                 taskService.createTask(task);
 
                 updateTask.setTitle(TASK_TITLE[0] + TASK_UPDATE);
-                given(taskService.updateTask(INVALID_ID, updateTask)).willReturn(updateTask);
+                given(taskService.updateTask(VALID_ID, updateTask)).willReturn(updateTask);
 
             }
 
@@ -213,6 +217,7 @@ public class TaskControllerWebTest {
         class Context_exist_delete_id {
 
             Task deleteTask = new Task();
+            Long deleteId = VALID_ID;
 
             @BeforeEach
             @DisplayName("Task 객체를 세팅합니다")
@@ -224,14 +229,14 @@ public class TaskControllerWebTest {
                     taskService.createTask(task);
                 }
 
-                given(taskService.deleteTask(VALID_ID)).willReturn(deleteTask);
+                given(taskService.deleteTask(deleteId)).willReturn(deleteTask);
             }
 
             @Test
             @DisplayName("list에서 id를 찾아 Task 객체를 삭제하고 204 상태코드를 내려준다")
             void It_delete_task_status_204() throws Exception {
 
-                mockMvc.perform(delete("/tasks/"+VALID_ID)).andExpect(status().isNoContent());
+                mockMvc.perform(delete("/tasks/"+deleteId)).andExpect(status().isNoContent());
 
             }
 

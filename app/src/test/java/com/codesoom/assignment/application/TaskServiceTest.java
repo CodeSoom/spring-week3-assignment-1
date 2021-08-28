@@ -9,35 +9,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
-    private final String[] TASK_TITLE= {"","test1", "test2", "test3", "test4", "test5"};
+    private final String[] TASK_TITLE = {"test1", "test2", "test3", "test4", "test5"};
     private final String TASK_UPDATE = "update";
+    private final Long VALID_ID = 1L;
+    private final Long INVALID_ID = 100L;
 
     TaskService taskService = new TaskService();
-
-
-    @BeforeEach
-    @DisplayName("Task 객체 초기화")
-    void setUp() {
-
-        Task task1 = new Task();
-        task1.setTitle(TASK_TITLE[1]);
-
-        Task task2 = new Task();
-        task2.setTitle(TASK_TITLE[2]);
-
-        Task task3 = new Task();
-        task2.setTitle(TASK_TITLE[3]);
-
-        taskService.createTask(task1);
-        taskService.createTask(task2);
-        taskService.createTask(task3);
-
-    }
 
 
     @Nested
@@ -48,11 +30,23 @@ class TaskServiceTest {
         @DisplayName("리스트에 값이 들어있다면")
         class Context_exist_task_list {
 
+            @BeforeEach
+            @DisplayName("tasks 리스트를 초기화합니다")
+            void tasks_setUp() {
+
+                for (int i = 0; i < TASK_TITLE.length; i++) {
+                    Task task = new Task();
+                    task.setTitle(TASK_TITLE[i]);
+                    taskService.createTask(task);
+                }
+
+            }
+
             @Test
             @DisplayName("Task 객체들을 리턴한다")
             void It_return_task_list() {
 
-                Assertions.assertThat(taskService.getTasks()).hasSize(3);
+                Assertions.assertThat(taskService.getTasks()).hasSize(5);
 
             }
 
@@ -69,11 +63,22 @@ class TaskServiceTest {
         @DisplayName("검색한 아이디가 존재하면")
         class Context_exist_id {
 
+            @BeforeEach
+            @DisplayName("검색할 Task 객체를 세팅합니다")
+            void task_setUp() {
+
+                Task task = new Task();
+                task.setTitle(TASK_TITLE[0]);
+                taskService.createTask(task);
+
+            }
+
             @Test
             @DisplayName("Task 객체를 리턴한다")
             void It_return_task_detail() {
 
-                assertEquals(TASK_TITLE[1], taskService.getTask(1L).getTitle());
+                assertEquals(VALID_ID, taskService.getTask(VALID_ID).getId());
+                assertEquals(TASK_TITLE[0], taskService.getTask(VALID_ID).getTitle());
 
             }
 
@@ -88,7 +93,7 @@ class TaskServiceTest {
             void It_return_task_throw() {
 
                 assertThatThrownBy(() -> {
-                    taskService.getTask(100L);})
+                    taskService.getTask(INVALID_ID);})
                         .isInstanceOf(TaskNotFoundException.class);
 
             }
@@ -106,16 +111,24 @@ class TaskServiceTest {
         @DisplayName("Task 객체를 생성하여 create 메소드를 호출해주면")
         class Context_create_task {
 
+            Task task = new Task();
+
+            @BeforeEach
+            @DisplayName("추가할 Task 객체를 세팅합니다")
+            void create_setUp() {
+
+                task.setTitle(TASK_TITLE[0]);
+
+            }
+
             @Test
             @DisplayName("아이디를 자동으로 생성하고 List에 넣어준다")
             void It_task_create() {
 
-                Task task4 = new Task();
-                task4.setTitle(TASK_TITLE[4]);
-                taskService.createTask(task4);
+                taskService.createTask(task);
 
-                assertEquals(4L, taskService.getTask(4L).getId());
-                assertEquals(TASK_TITLE[4], taskService.getTask(4L).getTitle());
+                assertEquals(VALID_ID, taskService.getTask(VALID_ID).getId());
+                assertEquals(TASK_TITLE[0], taskService.getTask(VALID_ID).getTitle());
 
             }
 
@@ -128,19 +141,30 @@ class TaskServiceTest {
     class Describe_update {
 
         @Nested
-        @DisplayName("수정할 객체의 아이디와 수정할 값을 입력해주면")
+        @DisplayName("수정할 객체의 아이디와 수정할 값이 주어지면")
         class Context_task_update {
+
+            Task updateTask = new Task();
+
+            @BeforeEach
+            @DisplayName("수정할 Task 객체를 세팅합니다.")
+            void update_setUp() {
+
+                Task task = new Task();
+                task.setTitle(TASK_TITLE[0]);
+                taskService.createTask(task);
+
+                updateTask.setTitle(TASK_TITLE[0] + TASK_UPDATE);
+
+            }
 
             @Test
             @DisplayName("Task 객체를 찾아서 값을 수정해준다")
             void It_task_update() {
 
-                Task updateTask = new Task();
-                updateTask.setTitle(TASK_TITLE[1]+TASK_UPDATE);
+                taskService.updateTask(VALID_ID, updateTask);
 
-                taskService.updateTask(1L, updateTask);
-
-                assertEquals(TASK_TITLE[1]+TASK_UPDATE, taskService.getTask(1L).getTitle());
+                assertEquals(TASK_TITLE[0]+TASK_UPDATE, taskService.getTask(VALID_ID).getTitle());
 
             }
 
@@ -153,15 +177,33 @@ class TaskServiceTest {
     class Describe_delete {
 
         @Nested
-        @DisplayName("삭제하고 싶은 아이디를 입력해주면")
+        @DisplayName("삭제하고 싶은 아이디가 주어지면")
         class Context_delete_id {
+
+            Long deleteId = VALID_ID;
+
+            @BeforeEach
+            @DisplayName("삭제할 Task 객체를 세팅합니다")
+            void delete_setUp() {
+
+                Task task = new Task();
+                task.setTitle(TASK_TITLE[0]);
+                taskService.createTask(task);
+
+            }
+
 
             @Test
             @DisplayName("Task 객체를 찾아 List에서 삭제한다")
             void It_task_delete() {
 
-                taskService.deleteTask(1L);
-                Assertions.assertThat(taskService.getTasks()).hasSize(2);
+                taskService.deleteTask(deleteId);
+
+                assertThatThrownBy(() -> {
+                    taskService.getTask(deleteId);
+                }).isInstanceOf(TaskNotFoundException.class);
+
+                Assertions.assertThat(taskService.getTasks()).isEmpty();
 
             }
 
