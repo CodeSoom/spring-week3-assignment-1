@@ -192,9 +192,9 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("returns a deleted task with HTTP status code 204")
             void returnsDeletedTask() throws Exception {
-                // TODO: fix delete controller
                 mockMvc.perform(delete("/tasks/" + taskInService.getId()))
-                        .andExpect(status().isNoContent());
+                        .andExpect(status().isNoContent())
+                        .andExpect(content().string(containsString(TASK_TITLE)));
             }
 
             @Test
