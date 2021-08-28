@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("TaskController 클래스")
+@ExtendWith(MockitoExtension.class)
 public final class TaskControllerUnitTest extends TaskControllerTest {
     @Mock
     private TaskService taskServiceMock;
@@ -35,36 +36,7 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
     private TaskController taskController;
 
     @Nested
-    @DisplayName("모든 메소드는")
-    class Describe_all_method {
-        @Nested
-        @DisplayName("'멤버변수 TaskService는 null이 될 수 없다.'를 위반한 경우")
-        class Context_taskService_null {
-            public Context_taskService_null() {
-                taskController = new TaskController(null);
-            }
-            @Test
-            @DisplayName("NullPointerException을 던진다.")
-            void it_throw_a_nullPointException() {
-                assertThatThrownBy(() -> taskController.list())
-                    .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.detail(validId))
-                    .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.create(task))
-                    .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.update(validId, task))
-                    .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.patch(validId, task))
-                    .isInstanceOf(NullPointerException.class);
-                assertThatThrownBy(() -> taskController.delete(validId))
-                    .isInstanceOf(NullPointerException.class);
-            }
-        }
-    }
-
-    @Nested
     @DisplayName("list 메소드는")
-    @ExtendWith(MockitoExtension.class)
     class Describe_list {
         @Nested
         @DisplayName("저장된 Task가 없다면")
@@ -105,7 +77,6 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
 
     @Nested
     @DisplayName("detail 메소드는")
-    @ExtendWith(MockitoExtension.class)
     class Describe_detail {
         @Nested
         @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
@@ -191,7 +162,6 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
 
     @Nested
     @DisplayName("create 메소드는")
-    @ExtendWith(MockitoExtension.class)
     class Describe_create {
         @Nested
         @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
@@ -238,4 +208,13 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("update 메서드는")
+    class Describe_update {
+
+
+    }
+
+
 }
