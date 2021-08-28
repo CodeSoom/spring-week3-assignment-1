@@ -48,12 +48,20 @@ class TaskControllerTest {
         @Nested
         @DisplayName("할 일이 있으면")
         class Context_with_tasks {
+
+            Task task;
+            Task task2;
+
+            @BeforeEach
+            void getTasksSetUp() {
+                task = controller.getTask(findId);
+                controller.createTask(new Task(2L, "title2"));
+                task2 = controller.getTask(2L);
+            }
+
             @Test
             @DisplayName("할 일 리스트를 리턴한다.")
             void getTasks() {
-                Task task = controller.getTask(findId);
-                controller.createTask(new Task(2L, "title2"));
-                Task task2 = controller.getTask(2L);
                 List<Task> taskList = controller.getTaskList();
 
                 assertThat(taskList.size()).isEqualTo(2);
@@ -93,26 +101,46 @@ class TaskControllerTest {
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
 
+        Task newTask;
+        int oldSize;
+
+        @BeforeEach
+        void createSetUp() {
+            newTask = new Task(2L, "book");
+            oldSize = controller.getTaskList().size();
+        }
+
         @Test
         @DisplayName("새로운 할 일을 등록한다.")
         void createNewTask() {
 
-            int oldSize = controller.getTaskList().size();
-            controller.createTask(new Task(2L, "book"));
+            controller.createTask(newTask);
+            Task findNewTask = controller.getTask(2L);
 
             assertThat(controller.getTaskList()).isNotEmpty();
             assertThat(controller.getTaskList().size() - oldSize).isEqualTo(1);
+            assertThat(findNewTask).isNotNull();
+            assertThat(findNewTask.getId()).isEqualTo(newTask.getId());
+            assertThat(findNewTask.getTitle()).isEqualTo(newTask.getTitle());
         }
     }
 
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
+
+        String newTitle;
+        Task newTask;
+
+        @BeforeEach
+        void updateSetUp() {
+            newTitle = "New Title";
+            newTask = new Task(findId, newTitle);
+        }
+
         @Test
         @DisplayName("할 일을 수정한다.")
         void updateTask() {
-            String newTitle = "New Title";
-            Task newTask = new Task(findId, newTitle);
             controller.updateTask(findId, newTask);
 
             assertThat(controller.getTask(findId).getTitle()).isEqualTo(newTitle);
@@ -132,7 +160,6 @@ class TaskControllerTest {
             }).isInstanceOf(TaskNotFoundException.class);
         }
     }
-
 
     @Test
     @DisplayName("toString 메소드는 task를 출력한다.")
