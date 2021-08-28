@@ -1,9 +1,7 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.application.TaskRepository;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.models.TaskIdGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +57,6 @@ class TaskControllerWebTest {
     void addTask() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String content = objectMapper.writeValueAsString(task);
-    }
-
-    private RequestBuilder post(String s) {
     }
 
     @Test

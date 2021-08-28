@@ -3,7 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.application.TaskRepository;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.models.TaskIdGeneratorImpl;
+import com.codesoom.assignment.models.IdGeneratorImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class TaskControllerTest {
 
     @BeforeEach
     public void setUp() {
-        TaskRepository taskRepository = new TaskRepository(new TaskIdGeneratorImpl());
+        TaskRepository taskRepository = new TaskRepository(new IdGeneratorImpl());
         taskRepository.addTask(task);
         TaskService taskService = new TaskService(taskRepository);
         taskController = new TaskController(taskService);

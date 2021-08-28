@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.exception.DataNotFoundException;
+import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +40,7 @@ public class TaskController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id).orElseThrow(() -> new DataNotFoundException(id));
+        return taskService.getTaskById(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /**
@@ -63,7 +63,7 @@ public class TaskController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task replaceTask(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.replaceTask(id, task).orElseThrow(() -> new DataNotFoundException(id));
+        return taskService.replaceTask(id, task).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /**
@@ -75,7 +75,7 @@ public class TaskController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task).orElseThrow(() -> new DataNotFoundException(id));
+        return taskService.updateTask(id, task).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /**
@@ -85,6 +85,6 @@ public class TaskController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id).orElseThrow(() -> new DataNotFoundException(id));
+        taskService.deleteTask(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
 }

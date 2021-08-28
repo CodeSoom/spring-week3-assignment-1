@@ -1,14 +1,10 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.models.TaskIdGenerator;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class TaskService {

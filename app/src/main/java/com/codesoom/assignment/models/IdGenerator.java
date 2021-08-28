@@ -1,5 +1,5 @@
 package com.codesoom.assignment.models;
 
-public interface TaskIdGenerator {
+public interface IdGenerator {
     Long nextSequence();
 }

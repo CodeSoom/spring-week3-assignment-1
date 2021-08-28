@@ -1,7 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.models.TaskIdGeneratorImpl;
+import com.codesoom.assignment.models.IdGeneratorImpl;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,7 @@ class TaskServiceTest {
 
     @BeforeEach
     public void setUp() {
-        TaskRepository taskRepository = new TaskRepository(new TaskIdGeneratorImpl());
+        TaskRepository taskRepository = new TaskRepository(new IdGeneratorImpl());
         taskRepository.addTask(task);
         taskService = new TaskService(taskRepository);
     }
