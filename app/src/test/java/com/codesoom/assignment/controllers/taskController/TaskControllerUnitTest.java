@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.verify;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -78,27 +78,6 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
     @Nested
     @DisplayName("detail 메소드는")
     class Describe_detail {
-        @Nested
-        @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
-        class Context_argument_null {
-            @BeforeEach
-            void setUp() {
-                when(taskServiceMock.getTask(isNull()))
-                            .thenThrow(TaskNotFoundException.class);
-            }
-            @Test
-            @DisplayName("TaskNotFoundException을 던진다.")
-            void it_throw_a_taskNotFoundException() {
-                assertThatThrownBy(() -> taskController.detail(null))
-                            .isInstanceOf(TaskNotFoundException.class);
-            }
-            @AfterEach
-            void tearDown() {
-                verify(taskServiceMock, atLeastOnce())
-                    .getTask(argThat(input -> input == null));
-            }
-        }
-
         @Nested
         @DisplayName("저장된 Task가 없다면")
         class Context_task_empty {
@@ -163,58 +142,26 @@ public final class TaskControllerUnitTest extends TaskControllerTest {
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
-        @Nested
-        @DisplayName("'인자로 null이 들어올 수 없다.'를 위반한 경우")
-        class Context_argument_null {
-            @BeforeEach
-            void setUp() {
-                when(taskServiceMock.createTask(isNull()))
-                    .thenThrow(NullPointerException.class);
-            }
-
-            @Test
-            @DisplayName("NullPointerException을 던진다.")
-            void it_throw_a_nullPointException() {
-                assertThatThrownBy(() -> taskController.create(null))
-                    .isInstanceOf(NullPointerException.class);
-            }
-
-            @AfterEach
-            void tearDown() {
-                verify(taskServiceMock, atLeastOnce())
-                    .createTask(argThat(input -> input == null));
-            }
+        @BeforeEach
+        void setUp() {
+            when(taskServiceMock.createTask(task)).thenReturn(task);
         }
 
-        @Nested
-        @DisplayName("인자로 null이 아닌 값이 들어온 경우")
-        class Context_argument_not_null {
-            @BeforeEach
-            void setUp() {
-                when(taskServiceMock.createTask(task)).thenReturn(task);
-            }
+        @Test
+        @DisplayName("새로운 Task를 생성하고 리턴한다.")
+        void it_returns_a_task() {
+            assertThat(taskController.create(task))
+            .matches(output -> output.getId() == validId && taskTitle.equals(output.getTitle()));
+        }
 
-            @Test
-            @DisplayName("새로운 Task를 생성하고 리턴한다.")
-            void it_returns_a_task() {
-                assertThat(taskController.create(task))
-                .matches(output -> output.getId() == validId && taskTitle.equals(output.getTitle()));
-            }
-
-            @AfterEach
-            void testDown() {
-                verify(taskServiceMock, atMostOnce())
-                    .createTask(argThat(input -> input == task));
-            }
+        @AfterEach
+        void tearDown() {
+            verify(taskServiceMock, atMostOnce())
+                .createTask(argThat(input -> input == task));
         }
     }
 
-    @Nested
-    @DisplayName("update 메서드는")
-    class Describe_update {
 
-
-    }
 
 
 }
