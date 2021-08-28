@@ -125,7 +125,7 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("비정상적인 PathVariable을 요청하면")
+        @DisplayName("PathVariable로 문자가 넘어오면")
         class Context_with_bad_request {
             @Test
             @DisplayName("Not Found를 응답한다.")
