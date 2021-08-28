@@ -19,23 +19,15 @@ public class TaskTest {
     }
 
     @Test
-    void getId() {
+    @DisplayName("객체 사용 테스트")
+    void usage() {
         assertThat(task.getId()).isEqualTo(ID);
-    }
-
-    @Test
-    void getTitle() {
-        assertThat(task.getTitle()).isEqualTo(TITLE);
-    }
-
-    @Test
-    void setTitle() {
         assertThat(task.getTitle()).isEqualTo(TITLE);
 
-        String expectTitle = "NEW";
-        task.setTitle(expectTitle);
+        String newTitle = "New Title";
+        task.setTitle(newTitle);
 
-        assertThat(task.getTitle()).isEqualTo(expectTitle);
+        assertThat(task.getTitle()).isEqualTo(newTitle);
     }
 
     @Test
