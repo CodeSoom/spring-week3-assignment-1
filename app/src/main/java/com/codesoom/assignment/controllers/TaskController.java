@@ -27,7 +27,7 @@ public class TaskController {
      */
     @GetMapping
     public Collection<Task> list() {
-        return taskService.getTasks();
+        return taskService.read().all();
     }
 
     /**
@@ -37,7 +37,7 @@ public class TaskController {
      */
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
-        return taskService.getTask(id);
+        return taskService.read().details(id);
     }
 
     /**
@@ -48,7 +48,7 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
-        return taskService.createTask(task);
+        return taskService.create(task);
     }
 
     /**
@@ -59,7 +59,7 @@ public class TaskController {
      */
     @PutMapping("{id}")
     public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+        return taskService.update(id, task);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TaskController {
      */
     @PatchMapping("{id}")
     public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+        return taskService.update(id, task);
     }
 
     /**
@@ -80,6 +80,6 @@ public class TaskController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Task delete(@PathVariable Long id) {
-        return taskService.deleteTask(id);
+        return taskService.delete(id);
     }
 }

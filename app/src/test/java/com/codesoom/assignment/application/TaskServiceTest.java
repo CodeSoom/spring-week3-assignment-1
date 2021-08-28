@@ -33,14 +33,14 @@ class TaskServiceTest {
 
         @Test
         void getTasks() {
-            Collection<Task> result = service.getTasks();
+            Collection<Task> result = service.read().all();
 
             assertThat(result).hasSize(1);
         }
 
         @Test
         void getTaskWithValidId() {
-            Task result = service.getTask(VALID_ID);
+            Task result = service.read().details(VALID_ID);
 
             assertThat(result.getId())
                     .isEqualTo(VALID_ID);
@@ -50,7 +50,7 @@ class TaskServiceTest {
 
         @Test
         void getTaskWithInvalidId() {
-            assertThatThrownBy(() -> service.getTask(INVALID_ID))
+            assertThatThrownBy(() -> service.read().details(INVALID_ID))
                     .isInstanceOf(TaskNotFoundException.class);
         }
     }
@@ -64,7 +64,7 @@ class TaskServiceTest {
 
         @Test
         void createTask() {
-            service.createTask(new Task(VALID_ID, TASK_TITLE));
+            service.create(new Task(VALID_ID, TASK_TITLE));
         }
     }
 
@@ -79,7 +79,7 @@ class TaskServiceTest {
 
         @Test
         void updateTaskWithValidId() {
-            Task result = service.updateTask(VALID_ID, newTask);
+            Task result = service.update(VALID_ID, newTask);
 
             assertThat(result.getId())
                     .isEqualTo(VALID_ID);
@@ -89,7 +89,7 @@ class TaskServiceTest {
 
         @Test
         void updateTaskWithInvalidId() {
-            assertThatThrownBy(() -> service.updateTask(INVALID_ID, newTask))
+            assertThatThrownBy(() -> service.update(INVALID_ID, newTask))
                     .isInstanceOf(TaskNotFoundException.class);
         }
     }
@@ -105,10 +105,10 @@ class TaskServiceTest {
 
         @Test
         void deleteTaskWithValidId() {
-            Task result = service.deleteTask(VALID_ID);
+            Task result = service.delete(VALID_ID);
 
-            assertThat(service.getTasks()).isEmpty();
-            assertThatThrownBy(() -> service.getTask(VALID_ID))
+            assertThat(service.read().all()).isEmpty();
+            assertThatThrownBy(() -> service.read().details(VALID_ID))
                     .isInstanceOf(TaskNotFoundException.class);
 
             assertThat(result.getId()).isEqualTo(VALID_ID);
@@ -117,7 +117,7 @@ class TaskServiceTest {
 
         @Test
         void deleteTaskWithInvalidId() {
-            assertThatThrownBy(() ->  service.deleteTask(INVALID_ID))
+            assertThatThrownBy(() ->  service.delete(INVALID_ID))
                     .isInstanceOf(TaskNotFoundException.class);
         }
     }
