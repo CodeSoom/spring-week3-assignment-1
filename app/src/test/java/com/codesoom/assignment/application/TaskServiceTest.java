@@ -24,7 +24,7 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("get 메서드들은")
-    class testGet {
+    class testGetAll {
 
         @Nested
         @DisplayName("식별자 없이 전체 목록을 요청하면")
@@ -35,6 +35,11 @@ class TaskServiceTest {
                 Assert.assertEquals(taskService.getTaskList().size(), 1);
             }
         }
+    }
+
+    @Nested
+    @DisplayName("get 메서드들은")
+    class testGetOne {
 
         @Nested
         @DisplayName("식별자를 인자로 전달 받는다면")
@@ -52,12 +57,14 @@ class TaskServiceTest {
     class testAdd {
 
         @Nested
-        @DisplayName("할 일을 인자로 받는다면")
+        @DisplayName("할 일이 주어지면")
         class addWithParameter {
+            final Task givenTask = new Task(2L, "Test title2");
+
             @Test
             @DisplayName("할 일을 추가하고 추가된 할 일을 반환한다")
             void addTask() {
-                taskService.addTask(new Task(2L, "Test title2"));
+                taskService.addTask(givenTask);
                 Assertions.assertEquals(taskService.getTaskList().size(), 2);
             }
         }
@@ -67,13 +74,15 @@ class TaskServiceTest {
     @DisplayName("replace 메서드는")
     class testReplace {
         @Nested
-        @DisplayName("교체할 할 일을 인자로 받는다면")
+        @DisplayName("교체할 할 일이 주어지면")
         class replaceWithParameter {
+            final Task newTask = new Task(1L, "New Title");
+
             @Test
             @DisplayName("할 일을 교체하고, 교체된 할 일을 반환한다.")
             void replaceTask() {
-                Task newTask = new Task(1L, "New Title");
-                Assertions.assertEquals("New Title", taskService.replaceTask(1L, newTask).get().getTitle());
+                String getTitle = taskService.replaceTask(1L, newTask).get().getTitle();
+                Assertions.assertEquals("New Title", getTitle);
             }
         }
     }

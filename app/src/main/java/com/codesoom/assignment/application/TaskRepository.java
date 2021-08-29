@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 할 일을 저장하고, 조회, 수정, 삭제 기능을 제공하는 클래스입니다.
+ * 할 일을 저장하고, 조회, 수정, 삭제 기능을 제공합니다.
  */
 @Repository
 public class TaskRepository {
@@ -39,7 +39,7 @@ public class TaskRepository {
     }
 
     /**
-     * 주어진 할 일을 추가합니다.
+     * 주어진 할 일을 추가하고 반환합니다.
      * @param task 할 일
      * @return 추가된 할 일
      */
@@ -51,10 +51,10 @@ public class TaskRepository {
     }
 
     /**
-     * 식별자와, 할 일을 받아서 기존의 할 일을 대체합니다.
-     * @param id 할 일 식별자
-     * @param task 교체할 새로운 할 일
-     * @return 교체한 할 일
+     * 교체 식별자와, 새로운 할 일을 받아서 기존의 할 일을 대체하고, 새로운 할 일을 반환합니다.
+     * @param id 교체 식별자
+     * @param task 새로운 할 일
+     * @return 새로운 할 일
      */
     public Optional<Task> replaceTask(Long id, Task task) {
         Optional<Task> oldTask = Optional.ofNullable(taskMap.get(id));
@@ -66,7 +66,7 @@ public class TaskRepository {
     }
 
     /**
-     * 식별자와, 할 일을 받아서 기존의 할 일을 수정합니다.
+     * 식별자와, 할 일을 받아서 기존의 할 일을 수정하고 반환합니다.
      * @param id 할 일 식별자
      * @param task 수정할 새로운 할 일
      * @return 수정한 할 일
@@ -81,7 +81,7 @@ public class TaskRepository {
     }
 
     /**
-     * 식별자로 할 일을 찾아서, 삭제합니다.
+     * 식별자로 할 일을 찾아서, 삭제하고 반환합니다.
      * @param id 할 일 식별자
      * @return 삭제된 할 일
      */
