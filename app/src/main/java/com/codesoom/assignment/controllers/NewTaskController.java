@@ -1,7 +1,8 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.service.TaskCommandService;
+import com.codesoom.assignment.service.TaskQueryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,14 +12,17 @@ import java.util.List;
  * 할 일에 대한 생성, 조회, 수정, 삭제 요청을 처리합니다.
  */
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/newtasks")
 @CrossOrigin
-public class TaskController {
+public class NewTaskController {
 
-    private final TaskService taskService;
+    private final TaskQueryService taskQueryService;
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
+    private final TaskCommandService taskCommandService;
+
+    public NewTaskController(TaskQueryService taskQueryService, TaskCommandService taskCommandService) {
+        this.taskQueryService = taskQueryService;
+        this.taskCommandService = taskCommandService;
     }
 
     /**
@@ -28,7 +32,7 @@ public class TaskController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Task> getTaskList() {
-        return taskService.getTaskList();
+        return taskQueryService.getTaskList();
     }
 
     /**
@@ -40,7 +44,7 @@ public class TaskController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Task getTask(@PathVariable Long id) {
-        return taskService.getTask(id);
+        return taskQueryService.getTask(id);
     }
 
     /**
@@ -52,7 +56,7 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+        return taskCommandService.createTask(task);
     }
 
     /**
@@ -65,7 +69,7 @@ public class TaskController {
     @RequestMapping(value = "{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.OK)
     public Task updateTask(@PathVariable Long id, @RequestBody Task requestTask) {
-        return taskService.updateTask(id, requestTask);
+        return taskCommandService.updateTask(id, requestTask);
     }
 
     /**
@@ -76,7 +80,7 @@ public class TaskController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void completeTask(@PathVariable Long id) {
-        taskService.completeTask(id);
+        taskCommandService.completeTask(id);
     }
 
 }
