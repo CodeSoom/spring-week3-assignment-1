@@ -1,6 +1,9 @@
 package com.codesoom.assignment.controllers.web;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -71,6 +74,8 @@ public class TaskControllerWebTest {
         void it_response_200() throws Exception {
             mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
+
+            verify(taskService).getTasks();
         }
     }
 
@@ -82,9 +87,11 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
+            private Long id;
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.FIRST.getId();
+                id = TaskList.FIRST.getId();
                 Task task = TaskList.FIRST.toTask();
 
                 given(taskService.getTask(id))
@@ -96,6 +103,8 @@ public class TaskControllerWebTest {
             void it_response_200() throws Exception {
                 mockMvc.perform(get("/tasks/1"))
                     .andExpect(status().isOk());
+
+                verify(taskService).getTask(id);
             }
         }
 
@@ -103,9 +112,11 @@ public class TaskControllerWebTest {
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
+            private Long id;
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.SECOND.getId();
+                id = TaskList.SECOND.getId();
 
                 given(taskService.getTask(id))
                     .willThrow(new TaskNotFoundException(id));
@@ -116,6 +127,8 @@ public class TaskControllerWebTest {
             void it_response_404() throws Exception {
                 mockMvc.perform(get("/tasks/2"))
                     .andExpect(status().isNotFound());
+
+                verify(taskService).getTask(id);
             }
         }
     }
@@ -141,6 +154,8 @@ public class TaskControllerWebTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(task.stringify()))
                 .andExpect(status().isCreated());
+
+            verify(taskService).createTask(any(Task.class));
         }
     }
 
@@ -148,15 +163,16 @@ public class TaskControllerWebTest {
     @DisplayName("PUT, PATCH /tasks/{id} 요청은")
     class Describe_updateTask {
 
-        private Task task;
-
         @Nested
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
+            private Long id;
+            private Task task;
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.FIRST.getId();
+                id = TaskList.FIRST.getId();
                 task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
@@ -175,6 +191,8 @@ public class TaskControllerWebTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
                     .andExpect(status().isOk());
+
+                verify(taskService, times(2)).updateTask(id, task);
             }
         }
 
@@ -182,9 +200,12 @@ public class TaskControllerWebTest {
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
+            private Long id;
+            private Task task;
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.SECOND.getId();
+                id = TaskList.SECOND.getId();
                 task = TaskList.SECOND.toTask();
 
                 given(taskService.updateTask(id, task))
@@ -199,10 +220,14 @@ public class TaskControllerWebTest {
                     .content(task.stringify()))
                     .andExpect(status().isNotFound());
 
+                verify(taskService).updateTask(id, task);
+
                 mockMvc.perform(patch("/tasks/2")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(task.stringify()))
                     .andExpect(status().isNotFound());
+
+                verify(taskService, times(2)).updateTask(id, task);
             }
         }
     }
@@ -215,9 +240,10 @@ public class TaskControllerWebTest {
         @DisplayName("존재하는 할 일 일경우")
         class Context_existTask {
 
+            private final Long id = TaskList.FIRST.getId();
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.FIRST.getId();
                 Task task = TaskList.FIRST.toTask();
 
                 given(taskService.deleteTask(id))
@@ -229,6 +255,8 @@ public class TaskControllerWebTest {
             void it_response_204() throws Exception {
                 mockMvc.perform(delete("/tasks/1"))
                     .andExpect(status().isNoContent());
+
+                verify(taskService).deleteTask(id);
             }
         }
 
@@ -236,10 +264,10 @@ public class TaskControllerWebTest {
         @DisplayName("존재하지 않는 할 일 일경우")
         class Context_notExistTask {
 
+            private final Long id = TaskList.SECOND.getId();
+
             @BeforeEach
             void setUp() {
-                Long id = TaskList.SECOND.getId();
-
                 given(taskService.deleteTask(id))
                     .willThrow(new TaskNotFoundException(id));
             }
@@ -249,6 +277,8 @@ public class TaskControllerWebTest {
             void it_response_404() throws Exception {
                 mockMvc.perform(delete("/tasks/2"))
                     .andExpect(status().isNotFound());
+
+                verify(taskService).deleteTask(id);
             }
         }
     }
