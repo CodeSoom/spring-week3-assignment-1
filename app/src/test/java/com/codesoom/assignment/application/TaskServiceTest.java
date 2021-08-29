@@ -8,6 +8,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TaskServiceTest {
@@ -27,6 +28,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("할 일 전체를 조회한다")
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
 
@@ -34,6 +36,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("단일 조회 시 존재하는 할 일 이라면 찾은 할 일을 반환한다")
     void getTaskWithValidId() {
         Task found = taskService.getTask(1L);
 
@@ -41,12 +44,14 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("단일 조회 시 할 일을 찾을 수 없다면 에러를 던진다")
     void getTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.getTask(2L))
             .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
+    @DisplayName("할 일을 생성한다")
     void createTask() {
         int oldSize = taskService.getTasks().size();
 
@@ -62,7 +67,8 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateTask() {
+    @DisplayName("수정 시 할 일을 찾았다면 수정한다")
+    void updateTaskWithExistTask() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + POSTFIX_TITLE);
 
@@ -73,12 +79,33 @@ class TaskServiceTest {
     }
 
     @Test
-    void deleteTask() {
+    @DisplayName("수정 시 할 일을 찾을 수 없다면 에러를 던진다")
+    void updateTaskWithNotExistTask() {
+        Task source = new Task();
+        source.setTitle(TASK_TITLE + POSTFIX_TITLE);
+
+        assertThatThrownBy(() -> taskService.updateTask(2L, source))
+            .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("삭제시 할 일을 찾았다면 삭제한다")
+    void deleteTaskWithExistTask() {
         int oldSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
 
         int newSize = taskService.getTasks().size();
         assertThat(oldSize - newSize).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("삭제시 할 일을 찾을 수 없다면 에러를 던진다")
+    void deleteTaskWithNotExistTask() {
+        Task source = new Task();
+        source.setTitle(TASK_TITLE + POSTFIX_TITLE);
+
+        assertThatThrownBy(() -> taskService.deleteTask(2L))
+            .isInstanceOf(TaskNotFoundException.class);
     }
 }
