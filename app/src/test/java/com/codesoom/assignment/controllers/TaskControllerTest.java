@@ -1,13 +1,13 @@
 package com.codesoom.assignment.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import com.codesoom.assignment.TaskIdGenerator;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,12 +19,12 @@ class TaskControllerTest {
     private static final String NEW_TASK_TITLE = "new";
 
     private TaskController controller;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
         // subject
-        TaskIdGenerator taskIdGenerator = new TaskIdGenerator();
-        TaskService taskService = new TaskService(taskIdGenerator);
+        taskService = spy(new TaskService(new TaskIdGenerator()));
         controller = new TaskController(taskService);
 
         // fixtures
@@ -34,19 +34,19 @@ class TaskControllerTest {
     @Test
     @DisplayName("할 일 목록을 조회한다")
     void getTasks() {
-        List<Task> list = controller.list();
+        controller.list();
 
-        assertThat(list).hasSize(1);
+        verify(taskService).getTasks();
     }
 
     @Test
     @DisplayName("할 일을 생성한다")
     void createNewTask() {
-        controller.create(new Task());
+        Task source = new Task();
 
-        List<Task> tasks = controller.list();
+        controller.create(source);
 
-        assertThat(tasks).hasSize(2);
+        verify(taskService).createTask(source);
     }
 
     @Nested
@@ -60,10 +60,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 반환한다")
             void it_detail() {
-                Task task = controller.detail(1L);
+                long id = 1L;
 
-                assertThat(task.getId()).isEqualTo(1L);
-                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+                controller.detail(id);
+
+                verify(taskService).getTask(id);
             }
         }
 
@@ -74,8 +75,12 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 던진다")
             void it_throws() {
-                assertThatThrownBy(() -> controller.detail(2L))
+                long id = 2L;
+
+                assertThatThrownBy(() -> controller.detail(id))
                     .isInstanceOf(TaskNotFoundException.class);
+
+                verify(taskService).getTask(id);
             }
         }
     }
@@ -94,9 +99,9 @@ class TaskControllerTest {
                 Task newTask = new Task();
                 newTask.setTitle(NEW_TASK_TITLE);
 
-                Task updatedTask = controller.update(1L, newTask);
+                controller.update(1L, newTask);
 
-                assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
+                verify(taskService).updateTask(1L, newTask);
             }
         }
 
@@ -107,8 +112,13 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 던진다")
             void it_throws() {
-                assertThatThrownBy(() -> controller.update(2L, new Task()))
+                long id = 2L;
+                Task source = new Task();
+
+                assertThatThrownBy(() -> controller.update(id, source))
                     .isInstanceOf(TaskNotFoundException.class);
+
+                verify(taskService).updateTask(id, source);
             }
         }
     }
@@ -124,11 +134,10 @@ class TaskControllerTest {
             @Test
             @DisplayName("삭제한다")
             void it_delete() {
-                controller.delete(1L);
+                long id = 1L;
+                controller.delete(id);
 
-                int size = controller.list().size();
-
-                assertThat(size).isZero();
+                verify(taskService).deleteTask(id);
             }
         }
 
@@ -139,8 +148,12 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 던진다")
             void it_throws() {
-                assertThatThrownBy(() -> controller.delete(2L))
+                long id = 2L;
+
+                assertThatThrownBy(() -> controller.delete(id))
                     .isInstanceOf(TaskNotFoundException.class);
+
+                verify(taskService).deleteTask(id);
             }
         }
     }
