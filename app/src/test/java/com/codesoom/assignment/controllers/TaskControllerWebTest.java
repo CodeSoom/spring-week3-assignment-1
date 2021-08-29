@@ -11,6 +11,8 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -56,6 +58,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("할 일 목록을 표시한다.")
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
@@ -65,6 +68,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("ID에 해당하는 할 일을 가져온다.")
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
@@ -74,6 +78,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 ID에 해당하는 할 일을 가져온다.")
     void detailWithInValidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
@@ -82,6 +87,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("할 일을 생성한다.")
     void createTask() throws Exception {
         mockMvc.perform(
                 post("/tasks")
@@ -94,6 +100,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("기존에 존재하는 할 일을 수정한다.")
     void updateExistedTask() throws Exception {
         mockMvc.perform(
                 patch("/tasks/1")
@@ -106,6 +113,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("기존에 존재하지 않는 할 일을 수정한다.")
     void updateNotExistedTask() throws Exception {
         mockMvc.perform(
                 patch("/tasks/100")
@@ -118,6 +126,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("기존에 존재하는 할 일을 삭제한다.")
     void deleteExistedTask() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
@@ -126,6 +135,7 @@ public class TaskControllerWebTest {
     }
 
     @Test
+    @DisplayName("기존에 존재하지 않는 할 일을 삭제한다.")
     void deleteWithNotExistedTask() throws Exception {
         mockMvc.perform(delete("/tasks/100"))
                 .andExpect(status().isNotFound());
