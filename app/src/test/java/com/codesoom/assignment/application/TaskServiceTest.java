@@ -15,6 +15,10 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("Task 관리 서비스 테스트")
 class TaskServiceTest {
@@ -24,10 +28,11 @@ class TaskServiceTest {
     public static final long ID_TWO = 2L;
     public static final String UPDATE_TITLE = "updateTitle";
     private TaskService taskService;
-    private final IdGenerator<Long> idGenerator = new TaskIdGenerator();
+    private IdGenerator<Long> idGenerator;
 
     @BeforeEach
     void setUp() {
+        idGenerator = spy(new TaskIdGenerator());
         taskService = new TaskService(idGenerator);
         TaskService.clear();
     }
@@ -70,17 +75,14 @@ class TaskServiceTest {
     @DisplayName("할 일을 저장하면 새로운 아이디가 발급되어 저장됩니다.")
     @Test
     void createTask() {
-        final Task savedTask1 = taskService.createTask(Task.from(TEST_ONE_TITLE));
-        final Task savedTask2 = taskService.createTask(Task.from(TEST_TWO_TITLE));
+        final Task savedTask = taskService.createTask(Task.from(TEST_ONE_TITLE));
+        final Task foundTask = taskService.getTask(ID_ONE);
 
-        final Task findTask1 = taskService.getTask(ID_ONE);
-        final Task findTask2 = taskService.getTask(ID_TWO);
+        assertThat(foundTask).isEqualTo(savedTask);
 
-        assertThat(findTask1).isEqualTo(savedTask1);
-        assertThat(findTask2).isEqualTo(savedTask2);
+        assertThat(foundTask.getTitle()).isEqualTo(TEST_ONE_TITLE);
 
-        assertThat(findTask1.getTitle()).isEqualTo(TEST_ONE_TITLE);
-        assertThat(findTask2.getTitle()).isEqualTo(TEST_TWO_TITLE);
+        verify(idGenerator).generate(any());
     }
 
 
