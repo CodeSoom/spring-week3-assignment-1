@@ -4,10 +4,8 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerWebTest {
 
     private final String[] TASK_TITLE = {"test1", "test2", "test3", "test4", "test5"};
+    private final int TASKS_SIZE = TASK_TITLE.length;
     private final String TASK_UPDATE = "update";
     private final Long VALID_ID = 1L;
     private final Long INVALID_ID = 100L;
@@ -47,18 +47,24 @@ public class TaskControllerWebTest {
 
 
     @Nested
-    @DisplayName("list 메소드는")
+    @DisplayName("getTasks 메소드는")
     class Describe_list {
 
         @Nested
-        @DisplayName("tasks 리스트에 값이 존재하면")
+        @DisplayName("등록된 일들이 1개 이상 있다면")
         class Context_exist_tasks {
 
+            List<Task> tasks = new ArrayList<>();
+
             @BeforeEach
-            @DisplayName("tasks 리스트를 초기화합니다")
             void list_setUp() {
 
-                List<Task> tasks = new ArrayList<>();
+                for (String taskTitle : TASK_TITLE) {
+                    Task task = new Task();
+                    task.setTitle(taskTitle);
+                    tasks.add(task);
+                }
+
                 given(taskService.getTasks()).willReturn(tasks);
 
             }
@@ -67,6 +73,7 @@ public class TaskControllerWebTest {
             @DisplayName("task 객체들을 리턴하고 200 상태코드를 내려준다")
             void It_return_tasks_status_200() throws Exception {
 
+                Assertions.assertThat(taskService.getTasks()).hasSize(TASKS_SIZE);
                 mockMvc.perform(get("/tasks")).andExpect(status().isOk());
 
             }
@@ -76,26 +83,26 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("detail 메소드는")
+    @DisplayName("getTask 메소드는")
     class Describe_detail {
 
         @Nested
-        @DisplayName("list에 id가 존재하면")
+        @DisplayName("리스트에 아이디가 존재하면")
         class Context_exist_id {
 
+
             @BeforeEach
-            @DisplayName("Task 객체를 세팅합니다")
             void task_setUp() {
 
                 taskService.createTask(new Task());
 
                 Task foundTask = new Task();
                 given(taskService.getTask(VALID_ID)).willReturn(foundTask);
-
+                
             }
 
             @Test
-            @DisplayName("Task 객체를 리턴해주고 200 상태코드를 내려준다")
+            @DisplayName("할 일을 리턴해주고 200 상태코드를 내려준다")
             void It_return_task_status_200() throws Exception {
 
                 mockMvc.perform(get("/tasks/"+VALID_ID)).andExpect(status().isOk());
@@ -105,14 +112,20 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("list에 id가 존재하지 않는다면")
+        @DisplayName("리스트에 아이디가 존재하지 않는다면")
         class Context_exist_not_id {
 
             @BeforeEach
-            @DisplayName("Invalid Task 객체를 세팅합니다")
             void invalid_task_setUp() {
 
+
                 given(taskService.getTask(INVALID_ID)).willThrow(TaskNotFoundException.class);
+
+                /* 이런식으로 수정을 하면 될 줄 알았는데 컴파일 에러가 나오는군요..
+                given(Assertions.assertThatThrownBy(() -> {
+                    taskService.getTask(INVALID_ID);
+                }).isInstanceOf(TaskNotFoundException.class)).willReturn(true);
+                */
 
             }
 
@@ -129,17 +142,16 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("create 메소드는")
+    @DisplayName("createTask 메소드는")
     class Describe_create {
 
         @Nested
-        @DisplayName("추가할 Task 객체가 존재한다면")
+        @DisplayName("추가할 할 일이 있다면")
         class Context_exist_task {
 
             Task task = new Task();
 
             @BeforeEach
-            @DisplayName("Task 객체를 세팅합니다")
             void task_setUp() {
 
                 task.setTitle(TASK_TITLE[0]);
@@ -148,7 +160,7 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("tasks 리스트에 추가하고 201 상태코드를 내려준다")
+            @DisplayName("리스트에 할 일을 추가하고 201 상태코드를 내려준다")
             void It_add_tasks_status_201() throws Exception {
 
                 mockMvc.perform(post("/tasks")
@@ -164,17 +176,16 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("update 메소드는")
+    @DisplayName("updateTask 메소드는")
     class Describe_update {
 
         @Nested
-        @DisplayName("수정하고 싶은 id가 존재하면")
+        @DisplayName("수정하고 싶은 할 일이 있다면")
         class Context_exist_update_id {
 
             Task updateTask = new Task();
 
             @BeforeEach
-            @DisplayName("수정할 Task 객체를 세팅합니다")
             void update_setUp() {
 
                 Task task = new Task();
@@ -187,7 +198,7 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("list에서 id를 찾아 값을 수정한다")
+            @DisplayName("리스트에서 아이디를 찾아 값을 수정한다")
             void It_update() throws Exception {
 
                 mockMvc.perform(put("/tasks/"+VALID_ID)
@@ -209,23 +220,22 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("delete 메소드는")
+    @DisplayName("deleteTask 메소드는")
     class Describe_delete {
 
         @Nested
-        @DisplayName("삭제하고 싶은 id가 존재하면")
+        @DisplayName("삭제할 아이디가 존재하면")
         class Context_exist_delete_id {
 
             Task deleteTask = new Task();
             Long deleteId = VALID_ID;
 
             @BeforeEach
-            @DisplayName("Task 객체를 세팅합니다")
             void delete_setUp() {
 
-                for (int i = 0; i < TASK_TITLE.length; i++) {
+                for (String taskTitle : TASK_TITLE) {
                     Task task = new Task();
-                    task.setTitle(TASK_TITLE[i]);
+                    task.setTitle(taskTitle);
                     taskService.createTask(task);
                 }
 
@@ -233,7 +243,7 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("list에서 id를 찾아 Task 객체를 삭제하고 204 상태코드를 내려준다")
+            @DisplayName("리스트에서 아이디를 찾아 할 일을 삭제하고 204 상태코드를 내려준다")
             void It_delete_task_status_204() throws Exception {
 
                 mockMvc.perform(delete("/tasks/"+deleteId)).andExpect(status().isNoContent());

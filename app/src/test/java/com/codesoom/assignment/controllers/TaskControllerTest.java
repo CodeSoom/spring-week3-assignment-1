@@ -21,46 +21,46 @@ class TaskControllerTest {
     private TaskController taskController = new TaskController(taskService);
 
     private final String[] TASK_TITLE = {"test1", "test2", "test3", "test4", "test5"};
+    private final int TASKS_SIZE = TASK_TITLE.length;
     private final String TASK_UPDATE = "update";
     private final Long VALID_ID = 1L;
     private final Long INVALID_ID = 100L;
+
 
     @Nested
     @DisplayName("list 메소드는")
     class Describe_list {
 
         @Nested
-        @DisplayName("tasks 리스트에 값이 존재하면")
+        @DisplayName("등록된 일들이 1개 이상 있다면")
         class Context_exist_tasks {
 
             @BeforeEach
-            @DisplayName("list에 값을 세팅해줍니다")
             void tasks_setUp() {
 
-                for (int i = 0; i < TASK_TITLE.length; i++) {
+                for (String taskTitle : TASK_TITLE) {
                     Task task = new Task();
-                    task.setTitle(TASK_TITLE[i]);
+                    task.setTitle(taskTitle);
                     taskController.create(task);
                 }
 
             }
 
             @Test
-            @DisplayName("task 객체들을 리턴한다")
+            @DisplayName("할 일들의 리스트를 리턴한다")
             void It_return_tasks() throws Exception {
 
-                Assertions.assertThat(taskController.list()).hasSize(5);
+                Assertions.assertThat(taskController.list()).hasSize(TASKS_SIZE);
 
             }
 
         }
 
         @Nested
-        @DisplayName("tasks 리스트에 값이 존재하지 않는다면")
+        @DisplayName("등록된 할 일들이 한개도 없다면")
         class Context_exist_not_tasks {
 
             @BeforeEach
-            @DisplayName("리스트의 값을 비워줍니다")
             void tasks_empty_setUp() {
 
                 taskController.list().clear();
@@ -68,7 +68,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("비어있는 list를 리턴한다")
+            @DisplayName("비어있는 리스트를 리턴한다")
             void It_return_tasks() throws Exception {
 
                 Assertions.assertThat(taskController.list()).isEmpty();
@@ -84,13 +84,12 @@ class TaskControllerTest {
     class Describe_create {
 
         @Nested
-        @DisplayName("list에 추가할 Task 객체가 있다면")
+        @DisplayName("추가할 할 일이 잇다면")
         class Context_add_task {
 
             Task task = new Task();
 
             @BeforeEach
-            @DisplayName("Task 객체를 세팅합니다")
             void create_setUo() {
 
                 task.setTitle(TASK_TITLE[0]);
@@ -98,7 +97,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("list에 Task 객체를 추가한다")
+            @DisplayName("리스트에 할 일을 추가한다")
             void It_add_list() {
 
                 taskController.create(task);
@@ -117,13 +116,12 @@ class TaskControllerTest {
     class Describe_detail {
 
         @Nested
-        @DisplayName("list에 id가 존재하면")
+        @DisplayName("리스트에 아이디가 존재하면")
         class Context_exist_id {
 
             Task foundTask = new Task();
 
             @BeforeEach
-            @DisplayName("찾을 Task 객체를 세팅합니다")
             void detail_setUp() {
 
                 Task task = new Task();
@@ -133,7 +131,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Task 객체를 리턴한다")
+            @DisplayName("할 일을 리턴한다")
             void It_return_task() throws Exception {
 
                 foundTask = taskController.detail(VALID_ID);
@@ -146,7 +144,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("list에 id가 존재하지 않는다면")
+        @DisplayName("리스트에 아이디가 존재하지 않는다면")
         class Context_exist_not_id {
 
             @Test
@@ -166,13 +164,12 @@ class TaskControllerTest {
     class Describe_update {
 
         @Nested
-        @DisplayName("수정하고 싶은 id가 존재하면")
+        @DisplayName("수정하고 싶은 할 일이 있다면")
         class Context_exist_update_id {
 
             Task updateTask = new Task();
 
             @BeforeEach
-            @DisplayName("수정할 Task 객체를 세팅합니다")
             void update_setUp() {
 
                 Task task = new Task();
@@ -182,7 +179,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("list에서 id를 찾아 값을 수정한다")
+            @DisplayName("리스트에서 아이디를 찾아 값을 수정한다")
             void It_update() {
 
                 updateTask.setTitle(TASK_TITLE[0] + TASK_UPDATE);
@@ -195,7 +192,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("수정하고 싶은 id가 존재하지 않는다면")
+        @DisplayName("수정해야할 아이디가 존재하지 않는다면")
         class Context_exist_update_not_id {
 
             Task updateTask = new Task();
@@ -219,13 +216,12 @@ class TaskControllerTest {
     class Describe_delete {
 
         @Nested
-        @DisplayName("삭제할 id가 존재하면")
+        @DisplayName("삭제할 아이디가 존재하면")
         class Context_exist_delete_id {
 
             Long deleteId= VALID_ID;
 
             @BeforeEach
-            @DisplayName("삭제할 값을 세팅합니다")
             void delete_setUp() {
 
                 for (int i = 0; i < TASK_TITLE.length; i++) {
@@ -237,17 +233,17 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("list에서 해당 id의 Task 객체를 삭제한다")
+            @DisplayName("리스트에서 해당 할 일을 삭제한다")
             void It_delete_id() {
 
                 taskController.delete(deleteId);
-                assertThat(taskController.list()).hasSize(4);
+                assertThat(taskController.list()).hasSize(TASKS_SIZE-1);
 
             }
         }
 
         @Nested
-        @DisplayName("삭제할 id가 존재하지 않는다면")
+        @DisplayName("삭제할 아이디가 존재하지 않는다면")
         class Context_exist_delete_not_id {
 
             @Test

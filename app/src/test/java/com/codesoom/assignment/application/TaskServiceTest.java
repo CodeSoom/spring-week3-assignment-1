@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TaskServiceTest {
 
     private final String[] TASK_TITLE = {"test1", "test2", "test3", "test4", "test5"};
+    private final int TASKS_SIZE = TASK_TITLE.length;
     private final String TASK_UPDATE = "update";
     private final Long VALID_ID = 1L;
     private final Long INVALID_ID = 100L;
@@ -31,12 +32,11 @@ class TaskServiceTest {
         class Context_exist_task_list {
 
             @BeforeEach
-            @DisplayName("tasks 리스트를 초기화합니다")
             void tasks_setUp() {
 
-                for (int i = 0; i < TASK_TITLE.length; i++) {
+                for (String taskTitle : TASK_TITLE) {
                     Task task = new Task();
-                    task.setTitle(TASK_TITLE[i]);
+                    task.setTitle(taskTitle);
                     taskService.createTask(task);
                 }
 
@@ -46,7 +46,7 @@ class TaskServiceTest {
             @DisplayName("Task 객체들을 리턴한다")
             void It_return_task_list() {
 
-                Assertions.assertThat(taskService.getTasks()).hasSize(5);
+                Assertions.assertThat(taskService.getTasks()).hasSize(TASKS_SIZE);
 
             }
 
@@ -64,7 +64,6 @@ class TaskServiceTest {
         class Context_exist_id {
 
             @BeforeEach
-            @DisplayName("검색할 Task 객체를 세팅합니다")
             void task_setUp() {
 
                 Task task = new Task();
@@ -114,7 +113,6 @@ class TaskServiceTest {
             Task task = new Task();
 
             @BeforeEach
-            @DisplayName("추가할 Task 객체를 세팅합니다")
             void create_setUp() {
 
                 task.setTitle(TASK_TITLE[0]);
@@ -147,7 +145,6 @@ class TaskServiceTest {
             Task updateTask = new Task();
 
             @BeforeEach
-            @DisplayName("수정할 Task 객체를 세팅합니다.")
             void update_setUp() {
 
                 Task task = new Task();
@@ -183,7 +180,6 @@ class TaskServiceTest {
             Long deleteId = VALID_ID;
 
             @BeforeEach
-            @DisplayName("삭제할 Task 객체를 세팅합니다")
             void delete_setUp() {
 
                 Task task = new Task();
