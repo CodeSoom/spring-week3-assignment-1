@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.controllers.TaskController;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,36 +12,39 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 public class TaskServiceTest {
-
-    @Autowired
-    TaskService taskService;
     private String TITLE = "Test1";
     private String UPDATED_TITLE = "Test1_updated";
 
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    TaskController controller;
+
     @Nested
-    @DisplayName("TEST A : 할일 목록이 비었을 경우")
+    @DisplayName("할일 목록이 비었을 경우")
     class testA{
         @BeforeEach
-        @DisplayName("TEST A Setting")
+        @DisplayName("Setting")
         void setUp(){
             //Autowird된 taskService를 초기화할 방법을 찾는 중..
             //아래 코드는 초기화가 아닌 별도의 초기화된 인스턴스로 대체하고 있다.
             taskService = new TaskService();
         }
+
         @Test
-        @DisplayName("할일 목록 가져오기")
+        @DisplayName("getTasks 현재 저장된 목록 불러오기")
         void getTasks(){
             assertThat(taskService.getTasks()).isEmpty();
         }
 
         @Test
-        @DisplayName("1번 할일 가져오기")
+        @DisplayName("getTask 1번 할일 불러오기 Validation : Not Found")
         void getTask(){
             assertThatThrownBy(() -> taskService.getTask(1L)).isInstanceOf(TaskNotFoundException.class);
         }
 
         @Test
-        @DisplayName("할일 생성하기")
+        @DisplayName("createTask 할일 1개 생성하기 Validation : 생성 후 객체 반환 Not Null Check, 생성 후 객체 조회 Not Empty, contains")
         void createTask(){
             Task source = new Task();
             source.setTitle(TITLE);
@@ -56,7 +60,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 수정하기")
+        @DisplayName("updateTask 할일 수정하기 Validation : 수정할 객체 Not Found")
         void updateTask(){
             Task source = new Task();
             source.setTitle(UPDATED_TITLE);
@@ -64,7 +68,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 삭제하기")
+        @DisplayName("deleteTask 할일 삭제하기 validation : 삭제할 객체 Not found")
         void deleteTask(){
             assertThatThrownBy(() -> taskService.deleteTask(1L)).isInstanceOf(TaskNotFoundException.class);
         }
@@ -73,12 +77,11 @@ public class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("TEST B : 할일 목록이 존재할 경우")
+    @DisplayName("할일 목록이 존재할 경우")
     class testB{
         Task source = new Task();
 
         @BeforeEach
-        @DisplayName("TEST B Setting")
         void setUp(){
             taskService = new TaskService();
             source.setTitle(TITLE);
@@ -86,7 +89,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 목록 가져오기")
+        @DisplayName("getTasks 현재 저장된 목록 불러오기")
         void getTasks(){
             assertThat(taskService.getTasks()).isNotEmpty()
                                                 .hasSizeGreaterThan(0);
@@ -95,7 +98,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("1번 할일 가져오기")
+        @DisplayName("getTask 1번 할일 불러오기 Validation : Not Found")
         void getTask(){
             assertThat(taskService.getTask(1L)).isNotNull();
             assertThat(taskService.getTask(1l).getId()).isEqualTo(1L);
@@ -103,7 +106,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 생성하기")
+        @DisplayName("createTask 할일 1개 생성하기 Validation : 생성 후 객체 반환 Not Null Check, 생성 후 객체 조회 Not Empty, contains")
         void createTask(){
             Task source2 = new Task();
             source2.setTitle(TITLE);
@@ -113,7 +116,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 수정하기")
+        @DisplayName("updateTask 할일 수정하기 Validation : 수정할 객체 Not Found, 업데이트 Title isEqualsTo")
         void updateTask(){
             Task source = new Task();
             source.setTitle(UPDATED_TITLE);
@@ -122,7 +125,7 @@ public class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("할일 삭제하기")
+        @DisplayName("deleteTask 할일 삭제하기 validation : 삭제할 객체 Not found, 삭제 후 목록 isEmpty")
         void deleteTask(){
             assertThat(taskService.deleteTask(1L)).isNotNull();
             assertThat(taskService.getTasks()).isEmpty();

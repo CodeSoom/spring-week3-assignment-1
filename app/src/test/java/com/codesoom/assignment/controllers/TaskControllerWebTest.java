@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,17 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TaskControllerWebTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private TaskService taskService;
-
     private String TITLE = "Test1";
     private String NEW_TITLE = "Test2";
     private String UPDATED_TITLE = "Test1_updated";
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private TaskService taskService;
 
     @BeforeEach
     void setUp(){
@@ -47,18 +47,18 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @Order(1)
+    //@Order(3)
     @DisplayName("할일 목록 가져오기")
     void list() throws Exception{
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(greaterThan(0))))
                 .andDo(print());
     }
 
     @Test
-    @Order(2)
-    @DisplayName("1번 할일 가져오기")
+    //@Order(2)
+    @DisplayName("1번 할일 가져오기 Validation : isOk, expect TITLE")
     void getTask() throws Exception{
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
@@ -66,8 +66,8 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @Order(3)
-    @DisplayName("할일 생성하기")
+    //@Order(1)
+    @DisplayName("할일 생성하기  Validation : isCreated, expect NEW_TITLE")
     void createTask() throws Exception{
         Task newTask = new Task();
         newTask.setTitle(NEW_TITLE);
@@ -80,8 +80,8 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @Order(4)
-    @DisplayName("할일 수정하기")
+    //@Order(4)
+    @DisplayName("할일 수정하기 Validation : isOk, expect UPDATED_TITLE")
     void updateTask() throws Exception{
         Task newTask = new Task();
         newTask.setTitle(UPDATED_TITLE);
@@ -95,8 +95,8 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    @Order(5)
-    @DisplayName("할일 삭제하기")
+    //@Order(5)
+    @DisplayName("할일 삭제하기 Validation : isNoContent")
     void deleteTask() throws Exception{
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
