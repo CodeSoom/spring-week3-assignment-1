@@ -58,7 +58,7 @@ public class TaskService {
 
     /**
      * 할 일을 삭제하고, 삭제된 할 일을 리턴합니다.
-     * @param id 삭제ㄷ할 할 일의 아이디
+     * @param id 삭제될 할 일의 아이디
      * @return 삭제된 할 일
      */
     public Task deleteTask(Long id) {
