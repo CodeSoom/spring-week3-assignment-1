@@ -66,22 +66,11 @@ public class TaskController {
      * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
      * @see TaskErrorAdvice#handleNotFound()
      */
-    @PutMapping("{id}")
+    @RequestMapping(
+        value = "{id}", method = { RequestMethod.PUT, RequestMethod.PATCH }
+        )
+    @ResponseStatus(HttpStatus.OK)
     public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
-    }
-
-    /**
-     * id에 해당하는 Task를 업데이트하고 리턴한다.
-     *
-     * @param id 업데이트할 Task의 id
-     * @param task 업데이트할 Task의 데이터
-     * @return 업데이트한 Task
-     * @throws TaskNotFoundException id에 해당하는 Task를 찾지 못한 경우
-     * @see TaskErrorAdvice#handleNotFound()
-     */
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
         return taskService.updateTask(id, task);
     }
 
