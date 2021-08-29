@@ -19,6 +19,11 @@ build
 # macOS
 .DS_Store
 
+bin
+.classpath
+.project
+.settings
+
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
