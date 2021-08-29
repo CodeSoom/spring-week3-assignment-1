@@ -69,8 +69,8 @@ public class TaskService {
     }
 
     /**
-     * 아이디 값을 증가시킵니다.
-     * @return 증가된 아이디 값
+     * 아이디 값을 생성해 리턴합니다.
+     * @return 새로운 아이디 값
      */
     private Long generateId() {
         newId += 1;
