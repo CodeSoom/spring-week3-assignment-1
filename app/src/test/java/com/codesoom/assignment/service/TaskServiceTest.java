@@ -24,24 +24,23 @@ class TaskServiceTest {
         taskService = new TaskService();
         source = new Task(TaskConstant.TITLE);
         updateSource = new Task(TaskConstant.UPDATE_TITLE);
+        taskService.createTask(source);
     }
 
     @Test
-    @DisplayName("할 일 생성")
+    @DisplayName("할 일 생성 및 반환")
     void createTask() {
         // when
         Task task = taskService.createTask(source);
 
         // then
-        assertThat(task).isEqualTo(new Task(TaskConstant.ID, TaskConstant.TITLE));
+        assertThat(task.getTitle()).isEqualTo(TaskConstant.TITLE);
+        assertThat(task.getId()).isNotNull();
     }
 
     @Test
     @DisplayName("할 일 가져오기")
     void getTask() {
-        // given
-        taskService.createTask(source);
-
         // when
         Task task = taskService.getTask(TaskConstant.ID);
 
@@ -52,9 +51,6 @@ class TaskServiceTest {
     @Test
     @DisplayName("할 일 가져오기 - 존재하지 않을 경우")
     void getNotExistsTask() {
-        // given
-        taskService.createTask(source);
-
         // when
         // then
         assertThatThrownBy(() -> taskService.getTask(TaskConstant.NOT_EXISTS_ID))
@@ -64,9 +60,6 @@ class TaskServiceTest {
     @Test
     @DisplayName("할 일 항목 가져오기")
     void getTaskList() {
-        // given
-        taskService.createTask(source);
-
         // when
         List<Task> tasks = taskService.getTasks();
 
@@ -76,11 +69,8 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("할 일 수정하기")
+    @DisplayName("할 일 수정 및 반환")
     void updateTask() {
-        // given
-        taskService.createTask(source);
-
         // when
         Task task = taskService.updateTask(TaskConstant.ID, updateSource);
 
@@ -91,9 +81,6 @@ class TaskServiceTest {
     @Test
     @DisplayName("할 일 삭제하기")
     void deleteTask() {
-        // given
-        taskService.createTask(source);
-
         // when
         Task task = taskService.deleteTask(TaskConstant.ID);
 

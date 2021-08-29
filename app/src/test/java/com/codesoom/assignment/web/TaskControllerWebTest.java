@@ -34,9 +34,10 @@ class TaskControllerWebTest {
     private Task updateSource;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
         source = new Task(TaskConstant.TITLE);
         updateSource = new Task(TaskConstant.UPDATE_TITLE);
+        createTasks();
     }
 
     @Test
@@ -50,7 +51,7 @@ class TaskControllerWebTest {
     }
 
     @Test
-    @DisplayName("할 일 생성")
+    @DisplayName("할 일 생성 및 반환")
     void createTask() throws Exception {
         // when
         mockMvc.perform(post("/tasks")
@@ -65,11 +66,6 @@ class TaskControllerWebTest {
     @Test
     @DisplayName("할 일 가져오기")
     void getTask() throws Exception {
-        // given
-        mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(source)));
-
         // when
         mockMvc.perform(get("/tasks/" + TaskConstant.ID))
 
@@ -82,11 +78,6 @@ class TaskControllerWebTest {
     @Test
     @DisplayName("할 일 가져오기 - 존재하지 않을 경우")
     void getNotExistsTask() throws Exception {
-        // given
-        mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(source)));
-
         // when
         mockMvc.perform(get("/tasks/" + TaskConstant.NOT_EXISTS_ID))
 
@@ -137,11 +128,6 @@ class TaskControllerWebTest {
     @Test
     @DisplayName("할 일 삭제")
     void deleteTask() throws Exception {
-        // given
-        mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(source)));
-
         // when
         mockMvc.perform(delete("/tasks/" + TaskConstant.ID))
 
@@ -151,5 +137,11 @@ class TaskControllerWebTest {
 
     private String taskId(MvcResult mvcResult) throws UnsupportedEncodingException {
         return Integer.toString(JsonPath.parse(mvcResult.getResponse().getContentAsString()).read("id"));
+    }
+
+    private void createTasks() throws Exception {
+        mockMvc.perform(post("/tasks")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(source)));
     }
 }

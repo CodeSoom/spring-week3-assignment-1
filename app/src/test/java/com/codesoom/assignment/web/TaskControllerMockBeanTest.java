@@ -40,6 +40,12 @@ class TaskControllerMockBeanTest {
     void setup() {
         source = new Task(TaskConstant.TITLE);
         updateSource = new Task(TaskConstant.UPDATE_TITLE);
+        Task task = new Task(TaskConstant.ID, TaskConstant.TITLE);
+        given(taskService.createTask(source)).willReturn(task);
+        given(taskService.getTask(TaskConstant.ID)).willReturn(task);
+        given(taskService.getTask(TaskConstant.NOT_EXISTS_ID)).willThrow(TaskNotFoundException.class);
+        given(taskService.updateTask(TaskConstant.ID, updateSource)).willReturn(updateSource);
+        given(taskService.deleteTask(TaskConstant.ID)).willReturn(source);
     }
 
     @Test
@@ -53,12 +59,8 @@ class TaskControllerMockBeanTest {
     }
 
     @Test
-    @DisplayName("할 일 생성")
+    @DisplayName("할 일 생성 및 반환")
     void createTask() throws Exception {
-        // given
-        Task task = new Task(TaskConstant.ID, TaskConstant.TITLE);
-        given(taskService.createTask(source)).willReturn(task);
-
         // when
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -72,10 +74,6 @@ class TaskControllerMockBeanTest {
     @Test
     @DisplayName("할 일 가져오기")
     void getTask() throws Exception {
-        // given
-        Task task = new Task(TaskConstant.ID, TaskConstant.TITLE);
-        given(taskService.getTask(TaskConstant.ID)).willReturn(task);
-
         // when
         mockMvc.perform(get("/tasks/" + TaskConstant.ID))
 
@@ -88,9 +86,6 @@ class TaskControllerMockBeanTest {
     @Test
     @DisplayName("할 일 가져오기 - 존재하지 않을 경우")
     void getNotExistsTask() throws Exception {
-        // given
-        given(taskService.getTask(TaskConstant.NOT_EXISTS_ID)).willThrow(TaskNotFoundException.class);
-
         // when
         mockMvc.perform(get("/tasks/" + TaskConstant.NOT_EXISTS_ID))
 
@@ -99,11 +94,8 @@ class TaskControllerMockBeanTest {
     }
 
     @Test
-    @DisplayName("할 일 수정")
+    @DisplayName("할 일 수정 및 반환")
     void modifyTask() throws Exception {
-        // given
-        given(taskService.updateTask(TaskConstant.ID, updateSource)).willReturn(updateSource);
-
         // when
         mockMvc.perform(put("/tasks/" + TaskConstant.ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -117,9 +109,6 @@ class TaskControllerMockBeanTest {
     @Test
     @DisplayName("할 일 삭제")
     void deleteTask() throws Exception {
-        // given
-        given(taskService.deleteTask(TaskConstant.ID)).willReturn(source);
-
         // when
         mockMvc.perform(delete("/tasks/" + TaskConstant.ID))
 
