@@ -1,54 +1,69 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+
+/**
+ * 할 일을 반환하고 생성,수정,삭제하는 일을 처리합니다.
+ */
 
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
-    private Long newId = 0L;
+    private final HashMap<Long, Task> tasks;
 
-    public List<Task> getTasks() {
-        return tasks;
+    public TaskService(HashMap<Long, Task> tasks) {
+        this.tasks = tasks;
     }
 
-    public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+    public TaskService() {
+        this(new HashMap<>());
     }
 
-    public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
-
-        tasks.add(task);
-
-        return task;
+    /**
+     * 할 일을 조회하는 쿼리를 리턴합니다.
+     * @return 할 일 조회 쿼리
+     */
+    public TaskServiceQueries read() {
+        return new TaskServiceQueries(tasks);
     }
 
-    public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
+    /**
+     * 새로운 할 일을 저장하고 리턴합니다.
+     * @param source 새로운 할 일
+     * @return 새로 등록된 할 일
+     */
+    public Task create(Task source) {
+        Long id = (long) source.hashCode();
 
-        return task;
+        tasks.put(id, new Task(id, source.getTitle()));
+
+        return new TaskServiceQueries(tasks).details(id);
     }
 
-    public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
+    /**
+     * id에 해당되는 할 일을 수정하고 리턴합니다.
+     * @param id 할 일의 식별자
+     * @param source 수정된 할 일
+     * @return 수정 된 할 일
+     */
+    public Task update(Long id, Task source) {
+        tasks.replace(id, new Task(id, source.getTitle()));
 
-        return task;
+        return new TaskServiceQueries(tasks).details(id);
     }
 
-    private Long generateId() {
-        newId += 1;
-        return newId;
+    /**
+     * id에 해당되는 할 일을 삭제하고 리턴합니다.
+     * @param id 할 일의 식별자
+     * @return 삭제 된 할 일
+     */
+    public Task delete(Long id) {
+        Task deletedTask = new TaskServiceQueries(tasks).details(id);
+
+        tasks.remove(id);
+
+        return deletedTask;
     }
 }
