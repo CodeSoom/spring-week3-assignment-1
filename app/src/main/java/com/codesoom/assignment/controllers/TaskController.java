@@ -1,3 +1,9 @@
+// 1. Read Collection - GET /tasks => 완료
+// 2. Read Item - GET /tasks/{id} => 완료
+// 3. Create - POST /tasks => 완료
+// 4. Update - PUT/PATCH /tasks/{id} => 완료
+// 5. Delete - DELETE /tasks/{id} => 완료
+
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
