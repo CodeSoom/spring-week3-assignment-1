@@ -29,27 +29,30 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTasksList(){
+    void getTasksList() {
         List<Task> tasks = taskService.getTasks();
+        Task task = tasks.get(0);
+
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
-    void getTaskWithValidId(){
-        Task found = taskService.getTask(1L);
+    void getTaskWithValidId() {
+        Task task = taskService.getTask(1L);
 
-        assertThat(found.getTitle()).isEqualTo(TASK_TITLE);
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
+
     @Test
-    void getTaskWithInvalidId(){
-        assertThatThrownBy(()->taskService.getTask(2L))
+    void getTaskWithInvalidId() {
+        assertThatThrownBy(() -> taskService.getTask(2L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
+
     @Test
-    void createTask(){
+    void createTask() {
         int oldSize = taskService.getTasks().size();
 
         Task task = new Task();
@@ -61,8 +64,9 @@ class TaskServiceTest {
 
         assertThat(newSize - oldSize).isEqualTo(1);
     }
+
     @Test
-    void deleteTask(){
+    void deleteTask() {
         int oldSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
@@ -73,10 +77,10 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateTask(){
+    void updateTask() {
         Task source = new Task();
         source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
-        taskService.updateTask(1L,source);
+        taskService.updateTask(1L, source);
 
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + TASK_TITLE);
