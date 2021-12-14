@@ -17,8 +17,10 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
+        // subject
         taskService = new TaskService();
 
+        //fixture
         Task task = new Task();
         task.setTitle(TASK_TITLE);
 
@@ -35,11 +37,13 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTask(){
+    void getTaskWithValidId(){
         Task found = taskService.getTask(1L);
 
         assertThat(found.getTitle()).isEqualTo(TASK_TITLE);
-
+    }
+    @Test
+    void getTaskWithInvalidId(){
         assertThatThrownBy(()->taskService.getTask(2L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
