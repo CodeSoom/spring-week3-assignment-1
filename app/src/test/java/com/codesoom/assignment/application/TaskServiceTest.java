@@ -47,4 +47,17 @@ class TaskServiceTest {
         assertThatThrownBy(()->taskService.getTask(2L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
+    @Test
+    void createTask(){
+        int oldSize = taskService.getTasks().size();
+
+        Task task = new Task();
+        task.setTitle(TASK_TITLE);
+
+        taskService.createTask(task);
+
+        int newSize = taskService.getTasks().size();
+
+        assertThat(newSize - oldSize).isEqualTo(1);
+    }
 }
