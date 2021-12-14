@@ -22,7 +22,7 @@ class TaskTest {
     void nullPointException() {
         Task task = null;
 
-        assertThatThrownBy(task::getId)
+        assertThatThrownBy(() -> task.getId())
                 .isInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(() -> task.setId(1L))
