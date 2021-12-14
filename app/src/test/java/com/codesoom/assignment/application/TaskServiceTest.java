@@ -34,7 +34,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메소드는")
+    @DisplayName("getTask 메소드")
     class Describe_getTask {
         @Nested
         @DisplayName("만약 id 값이 없다면")
@@ -73,7 +73,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 id 값이 유효하지 않다면")
+        @DisplayName("만약 id 값이 존재하지 않다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("TaskNotFoundException 이 발생한다.")
@@ -88,7 +88,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask 메소드는")
+    @DisplayName("createTask 메소드")
     class Describe_createTask {
         @Nested
         @DisplayName("만약 task 가 있다면")
@@ -120,13 +120,13 @@ class TaskServiceTest {
                 Task task = null;
 
                 // when & then
-                assertThatThrownBy(() -> taskService.createTask(task)).isInstanceOf(Exception.class);
+                assertThatThrownBy(() -> taskService.createTask(task)).isInstanceOf(NullPointerException.class);
             }
         }
     }
 
     @Nested
-    @DisplayName("updateTask 메소드는")
+    @DisplayName("updateTask 메소드")
     class Describe_updateTask {
         @Nested
         @DisplayName("만약 id 와 task 가 있다면")
@@ -179,7 +179,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않는 id와 task가 있다면 ")
+        @DisplayName("만약 존재하지 않는 id와 task가 있다면 ")
         class Context_with_invalid_id_and_task {
             @Test
             @DisplayName("TaskNotFoundException 가 반환된다.")
@@ -196,7 +196,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask 메소드는")
+    @DisplayName("deleteTask 메소드")
     class Describe_deleteTask {
         @Nested
         @DisplayName("만약 id가 있다면")
@@ -217,7 +217,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 유효하지 않는 id가 있다면")
+        @DisplayName("만약 존재하지 않는 id가 있다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("TaskNotFoundException 이 발생한다.")
