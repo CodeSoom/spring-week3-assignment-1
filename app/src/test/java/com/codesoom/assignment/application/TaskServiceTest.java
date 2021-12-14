@@ -14,6 +14,7 @@ class TaskServiceTest {
 
     private TaskService taskService;
     private static final String TASK_TITLE = "test";
+    private static final String UPDATE_POSTFIX = "New";
 
     @BeforeEach
     void setUp() {
@@ -69,5 +70,15 @@ class TaskServiceTest {
         int newSize = taskService.getTasks().size();
 
         assertThat(newSize - oldSize).isEqualTo(0);
+    }
+
+    @Test
+    void updateTask(){
+        Task source = new Task();
+        source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        taskService.updateTask(1L,source);
+
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + TASK_TITLE);
     }
 }
