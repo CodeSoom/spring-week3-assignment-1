@@ -23,7 +23,6 @@ class TaskServiceTest {
         taskService = new TaskService();
 
         Task source = new Task();
-        source.setId(1L);
         source.setTitle(NEW_TITLE);
         Task task = taskService.createTask(source);
     }
@@ -43,7 +42,6 @@ class TaskServiceTest {
     @Test
     void createTask() {
         Task source = new Task();
-        source.setId(2L);
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
         Task task = taskService.createTask(source);
 
