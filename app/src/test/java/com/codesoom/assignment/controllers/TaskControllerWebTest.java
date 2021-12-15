@@ -18,14 +18,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutput;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
