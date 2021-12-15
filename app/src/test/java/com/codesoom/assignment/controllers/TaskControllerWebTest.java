@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -79,6 +80,7 @@ public class TaskControllerWebTest {
         Task source = new Task();
         source.setTitle(NEW_TITLE);
         String content = objectMapper.writeValueAsString(source);
+
         given(taskService.createTask(any(Task.class))).willReturn(source);
 
         mockMvc.perform(post("/tasks")
@@ -94,6 +96,7 @@ public class TaskControllerWebTest {
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
         String content = objectMapper.writeValueAsString(source);
+
         given(taskService.updateTask(eq(1L), any(Task.class))).willReturn(source);
 
         mockMvc.perform(patch("/tasks/1")
