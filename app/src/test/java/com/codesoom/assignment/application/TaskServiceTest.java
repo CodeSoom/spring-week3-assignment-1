@@ -3,6 +3,7 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("TaskService")
 class TaskServiceTest {
 
     private TaskService taskService;
@@ -31,11 +33,9 @@ class TaskServiceTest {
     @Test
     void getTasksList() {
         List<Task> tasks = taskService.getTasks();
-        Task task = tasks.get(0);
 
         assertThat(tasks).hasSize(1);
-
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
