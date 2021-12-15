@@ -13,7 +13,7 @@ import java.util.List;
 public class TaskController {
     private TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController() {
         this.taskService = taskService;
     }
 
