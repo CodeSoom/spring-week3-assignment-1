@@ -90,12 +90,8 @@ class TaskControllerTest {
     @Test
     @DisplayName("delete 메소드는 해당 id의 task를 삭제한다. ")
     void delete() {
-        int originSize = controller.list().size();
-
         controller.delete(1L);
 
-        int newSize = controller.list().size();
-
-        assertThat(newSize - originSize).isEqualTo(0);
+        assertThat(controller.list().size()).isEqualTo(0);
     }
 }
