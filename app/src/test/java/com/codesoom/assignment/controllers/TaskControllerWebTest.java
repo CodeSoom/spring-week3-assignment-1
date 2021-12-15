@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 import java.io.ByteArrayOutputStream;
@@ -46,7 +46,6 @@ public class TaskControllerWebTest {
     private final static String NEW_TITLE = "new task";
     private final static String TITLE_POSTFIX = " spring";
 
-
     @BeforeEach
     void setUp() {
         List<Task> tasks = new ArrayList<>();
@@ -58,8 +57,6 @@ public class TaskControllerWebTest {
         given(taskService.getTasks()).willReturn(tasks);
         given(taskService.getTask(1L)).willReturn(task);
         given(taskService.getTask(100L)).willThrow(TaskNotFoundException.class);
-
-//        given(taskService.createTask(task)).willReturn(task);
     }
 
     @Test
@@ -81,8 +78,8 @@ public class TaskControllerWebTest {
     void create() throws Exception {
         Task source = new Task();
         source.setTitle(NEW_TITLE);
-
         String content = objectMapper.writeValueAsString(source);
+        given(taskService.createTask(any(Task.class))).willReturn(source);
 
         mockMvc.perform(post("/tasks")
                         .content(content)
@@ -96,8 +93,8 @@ public class TaskControllerWebTest {
     void update() throws Exception {
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
-
         String content = objectMapper.writeValueAsString(source);
+        given(taskService.updateTask(eq(1L), any(Task.class))).willReturn(source);
 
         mockMvc.perform(patch("/tasks/1")
                         .content(content)
