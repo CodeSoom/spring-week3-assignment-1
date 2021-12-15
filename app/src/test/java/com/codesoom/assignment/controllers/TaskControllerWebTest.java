@@ -3,12 +3,14 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -30,6 +32,9 @@ class TaskControllerWebTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private TaskService taskService;
@@ -72,10 +77,13 @@ class TaskControllerWebTest {
     @Test
     void create() throws Exception {
         Task task = new Task();
-        task.setTitle(NEW_TITLE + TASK_TITLE);
+        task.setTitle(NEW_TITLE);
 
-        mockMvc.perform(post("/tasks").content(task.getTitle()))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(containsString(NEW_TITLE + TASK_TITLE)));
+        mockMvc.perform(post("/tasks")
+                        .content(objectMapper.writeValueAsString(task))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+                //.andExpect(content().string(containsString(NEW_TITLE)));
+
     }
 }
