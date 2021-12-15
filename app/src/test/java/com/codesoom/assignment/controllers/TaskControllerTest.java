@@ -32,26 +32,26 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("list 메소드는 Task 목록을 리턴한다.")
+    @DisplayName("list Task 목록을 리턴한다.")
     void list() {
         assertThat(controller.list()).isNotEmpty();
     }
 
     @Test
-    @DisplayName("detail 메소드는 id에 해당하는 Task를 리턴한다.")
+    @DisplayName("detail id에 해당하는 Task를 리턴한다.")
     void detailWithValidId() {
         assertThat(controller.detail(1L).getId()).isEqualTo(1L);
         assertThat(controller.detail(1L).getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
-    @DisplayName("detail 메소드는 id가 없다면 예외를 던진다.")
+    @DisplayName("detail id가 없다면 예외를 던진다.")
     void detailWithInvalidId() {
         assertThatThrownBy(() -> controller.detail(0L)).isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("create 메소드는 새로운 task를 생성하고 task를 리턴한다.")
+    @DisplayName("create task를 생성하고 리턴한다.")
     void create() {
         int originSize = controller.list().size();
 
@@ -66,7 +66,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("update 메소드는 기존 id의 task의 title을 수정하고 task를 리턴한다.")
+    @DisplayName("update 메소드는 해당 id의 task의 title을 수정하고 task를 리턴한다.")
     void updateWithValidId() {
         Task source = new Task();
         source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
@@ -77,7 +77,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("patch 메소드는 기존 id의 task의 title을 수정하고 task를 리턴한다.")
+    @DisplayName("patch 메소드는 해당 id의 task의 title을 수정하고 task를 리턴한다.")
     void patchWithValidId() {
         Task source = new Task();
         source.setTitle(UPDATE_POSTFIX + NEW_TITLE);
