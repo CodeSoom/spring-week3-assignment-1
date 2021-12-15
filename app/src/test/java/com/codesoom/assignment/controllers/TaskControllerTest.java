@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
 
-    private static final String FIRST_TASK_TITLE = "test";
-    private static final String SECOND_TASK_TITLE = "test";
+    private static final String FIRST_TASK_TITLE = "test1";
+    private static final String SECOND_TASK_TITLE = "test2";
     private static final String UPDATE_POSTFIX = "!!!";
 
     private TaskController taskController;
