@@ -67,13 +67,9 @@ class TaskServiceTest {
 
     @Test
     void deleteTask() {
-        int oldSize = taskService.getTasks().size();
-
         taskService.deleteTask(1L);
 
-        int newSize = taskService.getTasks().size();
-
-        assertThat(newSize - oldSize).isEqualTo(0);
+        assertThat(taskService.getTasks().size()).isEqualTo(0);
     }
 
     @Test
