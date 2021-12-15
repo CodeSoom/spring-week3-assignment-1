@@ -13,8 +13,8 @@ import java.util.List;
 public class TaskController {
     private TaskService taskService;
 
-    public TaskController() {
-        this.taskService = taskService;
+    public TaskController(TaskService taskService) {
+        this.taskService = this.taskService;
     }
 
     @GetMapping

@@ -3,7 +3,8 @@ package com.codesoom.assignment.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 class HelloControllerTest {
 
@@ -16,8 +17,7 @@ class HelloControllerTest {
 
     @Test
     void sayHello() {
-        //assertEquals(helloController.sayHello(),"hello, world!");
-        assertEquals(helloController.sayHello(),"Hello, world!");
-
+        assertThat(helloController.sayHello()).isEqualTo("Hello, world!");
     }
+
 }
