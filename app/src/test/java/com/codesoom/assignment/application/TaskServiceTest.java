@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,13 +19,13 @@ class TaskServiceTest {
 
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "!!!";
+    private static final Long VALID_ID = 1L;
+    private static final Long INVALID_ID = 0L;
 
     @BeforeEach
     void setUp() {
-        // subject
         taskService = new TaskService();
 
-        // fixtures
         Task task = new Task();
         task.setTitle(TASK_TITLE);
 
@@ -34,163 +33,120 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메소드")
+    @DisplayName("getTask 메소드는")
     class Describe_getTask {
+        @Test
+        @DisplayName("등록된 Task 전체 리스트를 리턴한다.")
+        void it_return_tasks() {
+            List<Task> tasks = taskService.getTasks();
+            Task foundTask = tasks.get(0);
+
+            assertThat(tasks).hasSize(1);
+            assertThat(foundTask.getTitle()).isEqualTo(TASK_TITLE);
+        }
+
         @Nested
-        @DisplayName("만약 id 값이 없다면")
-        class Context_without_id {
+        @DisplayName("만약 등록된 Task의 id 값이 주어진다면")
+        class Context_with_id {
             @Test
-            @DisplayName("Task 전체 리스트를 가져온다.")
-            void it_return_tasks() {
-                // given
-                List<Task> tasks = new ArrayList<>();
+            @DisplayName("등록된 task 정보를 리턴한다.")
+            void it_return_task() {
+                Task foundTask = taskService.getTask(VALID_ID);
 
-                // when
-                tasks = taskService.getTasks();
-                Task foundTask = tasks.get(0);
-
-                // then
-                assertThat(tasks).hasSize(1);
                 assertThat(foundTask.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
 
         @Nested
-        @DisplayName("만약 id 값이 있다면")
-        class Context_with_id {
-            @Test
-            @DisplayName("task 정보를 가져온다.")
-            void it_return_task() {
-                // given
-                Long validId = 1L;
-
-                // when
-                Task found = taskService.getTask(validId);
-
-                // then
-                assertThat(found.getTitle()).isEqualTo(TASK_TITLE);
-            }
-        }
-
-        @Nested
-        @DisplayName("만약 id 값이 존재하지 않다면")
+        @DisplayName("만약 등록되지 않은 Task의 id 값이 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 이 발생한다.")
+            @DisplayName("TaskNotFoundException 을 리턴한다.")
             void it_return_taskNotFoundException() {
-                // given
-                Long invalidId = 10L;
-
-                // when & then
-                assertThatThrownBy(() -> taskService.getTask(invalidId)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.getTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
 
     @Nested
-    @DisplayName("createTask 메소드")
+    @DisplayName("createTask 메소드는")
     class Describe_createTask {
         @Nested
-        @DisplayName("만약 task 가 있다면")
+        @DisplayName("만약 등록할 Task가 주어진다면")
         class Context_with_task {
             @Test
-            @DisplayName("task 가 생성되고, 반환된다.")
+            @DisplayName("Task를 생성하고, 리턴한다.")
             void it_create_task_return_task() {
-                // given
-                int oldSize = taskService.getTasks().size();
-                Task task = new Task();
-                task.setTitle(TASK_TITLE);
+                int sizeBeforeCreation = getTasksSize();
+                Task task = getTask();
 
-                // when
-                taskService.createTask(task);
-                int newSize = taskService.getTasks().size();
+                Task createdTask = taskService.createTask(task);
+                int sizeAfterCreation = getTasksSize();
 
-                // then
-                assertThat(newSize - oldSize).isEqualTo(1);
+                assertThat(createdTask.getTitle()).isEqualTo(task.getTitle());
+                assertThat(sizeAfterCreation - sizeBeforeCreation).isEqualTo(1);
             }
         }
 
         @Nested
-        @DisplayName("만약 task 가 없다면")
+        @DisplayName("만약 등록할 Task가 주어진다면")
         class Context_without_task {
             @Test
-            @DisplayName("exception 이 발생한다.")
+            @DisplayName("NullPointerException 을 리턴한다.")
             void it_return_exception() {
-                // given
-                Task task = null;
-
-                // when & then
-                assertThatThrownBy(() -> taskService.createTask(task)).isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskService.createTask(null)).isInstanceOf(NullPointerException.class);
             }
         }
     }
 
     @Nested
-    @DisplayName("updateTask 메소드")
+    @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         @Nested
-        @DisplayName("만약 id 와 task 가 있다면")
+        @DisplayName("만약 등록된 Task의 id 와 수정할 Task 가 주어진다면")
         class Context_with_id_and_task {
             @Test
-            @DisplayName("해당 id의 task가 수정되고, 반환된다.")
+            @DisplayName("해당 id의 Task를 수정하고, 리턴한다.")
             void it_update_task_return_task() {
-                // given
-                Task source = new Task();
-                source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                Task source = getTaskWithPostfix();
 
-                // when
-                taskService.updateTask(1L, source);
-                Task found = taskService.getTask(1L);
+                Task updatedTask = taskService.updateTask(VALID_ID, source);
 
-                // then
-                assertThat(found.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
+                assertThat(updatedTask.getTitle()).isEqualTo(source.getTitle());
             }
         }
 
         @Nested
-        @DisplayName("만약 id 만 있다면")
+        @DisplayName("만약 등록된 Task의 id 만 주어진다면")
         class Context_with_id {
             @Test
-            @DisplayName("NullPointerException 이 반환된다.")
+            @DisplayName("NullPointerException 이 리턴한다.")
             void it_update_task_return_task() {
-                // given
-                Long id = 1L;
-                Task source = null;
-
-                // when & then
-                assertThatThrownBy(() -> taskService.updateTask(id, source)).isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskService.updateTask(VALID_ID, null)).isInstanceOf(NullPointerException.class);
             }
         }
 
         @Nested
-        @DisplayName("만약 task 만 있다면")
+        @DisplayName("만약 등록된 Task 만 주어진다면")
         class Context_with_task {
             @Test
-            @DisplayName("TaskNotFoundException 가 반환된다.")
+            @DisplayName("TaskNotFoundException 가 리턴한다.")
             void it_return_taskNotFoundException() {
-                // given
-                Long id = null;
-                Task source = new Task();
-                source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                Task source = getTaskWithPostfix();
 
-                // when & then
-                assertThatThrownBy(() -> taskService.updateTask(id, source)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.updateTask(null, source)).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
         @Nested
-        @DisplayName("만약 존재하지 않는 id와 task가 있다면 ")
+        @DisplayName("만약 등록되지 않은 Task의 id 와 Task가 있다면 ")
         class Context_with_invalid_id_and_task {
             @Test
-            @DisplayName("TaskNotFoundException 가 반환된다.")
+            @DisplayName("TaskNotFoundException 가 리턴한다.")
             void it_return_taskNotFoundException() {
-                // given
-                Long id = 100L;
-                Task source = new Task();
-                source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                Task source = getTask();
 
-                // when & then
-                assertThatThrownBy(() -> taskService.updateTask(id, source)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.updateTask(INVALID_ID, source)).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
@@ -199,35 +155,46 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드")
     class Describe_deleteTask {
         @Nested
-        @DisplayName("만약 id가 있다면")
+        @DisplayName("만약 등록된 Task의 id가 주어진다면")
         class Context_with_id {
             @Test
-            @DisplayName("존재하는 Task ID로 Task 삭제하기")
+            @DisplayName("등록된 Task를 삭제하고, 빈값이 리턴한다.")
             void it_delete_task_return() {
-                // given
-                int oldSize = taskService.getTasks().size();
+                int sizeBeforeDeletion = getTasksSize();
 
-                // when
-                taskService.deleteTask(1L);
-                int newSize = taskService.getTasks().size();
+                taskService.deleteTask(VALID_ID);
+                int sizeAfterDeletion = getTasksSize();
 
-                // then
-                assertThat(oldSize - newSize).isEqualTo(1);
+                assertThat(sizeBeforeDeletion - sizeAfterDeletion).isEqualTo(1);
             }
         }
 
         @Nested
-        @DisplayName("만약 존재하지 않는 id가 있다면")
+        @DisplayName("만약 등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 이 발생한다.")
+            @DisplayName("TaskNotFoundException 을 리턴한다.")
             void it_return_taskNotFoundException() {
-                // given
-                Long id = 10L;
-
-                // when & then
-                assertThatThrownBy(() -> taskService.deleteTask(id)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.deleteTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
         }
+    }
+
+    private int getTasksSize() {
+        return taskService.getTasks().size();
+    }
+
+    private Task getTask() {
+        Task task = new Task();
+        task.setTitle(TASK_TITLE);
+
+        return task;
+    }
+
+    private Task getTaskWithPostfix() {
+        Task task = new Task();
+        task.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+
+        return task;
     }
 }
