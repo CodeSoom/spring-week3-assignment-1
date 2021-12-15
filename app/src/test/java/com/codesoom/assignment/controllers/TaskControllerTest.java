@@ -15,6 +15,7 @@ class TaskControllerTest {
     private TaskService taskService;
 
     private static final String TASK_TITLE = "test";
+    private static final String NEW_TITLE = "new test";
     private static final String UPDATE_POSTFIX = "New";
 
     @BeforeEach
@@ -42,5 +43,50 @@ class TaskControllerTest {
     @Test
     void detailWithInvalidId() {
         assertThatThrownBy(() -> controller.detail(0L)).isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    void create() {
+        int originSize = controller.list().size();
+
+        Task task = new Task();
+        task.setTitle(NEW_TITLE);
+
+        controller.create(task);
+
+        int newSize = controller.list().size();
+
+        assertThat(newSize - originSize).isEqualTo(1);
+    }
+
+    @Test
+    void updateWithValidId() {
+        Task source = new Task();
+        source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        taskService.updateTask(1L, source);
+
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + TASK_TITLE);
+    }
+
+    @Test
+    void patchWithValidId() {
+        Task source = new Task();
+        source.setTitle(UPDATE_POSTFIX + NEW_TITLE);
+        taskService.updateTask(1L, source);
+
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + NEW_TITLE);
+    }
+
+    @Test
+    void delete() {
+        int originSize = controller.list().size();
+
+        controller.delete(1L);
+
+        int newSize = controller.list().size();
+
+        assertThat(newSize - originSize).isEqualTo(0);
     }
 }
