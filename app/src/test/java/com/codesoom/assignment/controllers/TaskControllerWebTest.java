@@ -17,12 +17,17 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class TaskControllerWebTest {
+    private static final String TASK_TITLE = "test";
+    private static final String NEW_TITLE = "new test";
+    private static final String UPDATE_POSTFIX = "New";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -62,5 +67,15 @@ class TaskControllerWebTest {
     void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void create() throws Exception {
+        Task task = new Task();
+        task.setTitle(NEW_TITLE + TASK_TITLE);
+
+        mockMvc.perform(post("/tasks").content(task.getTitle()))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(containsString(NEW_TITLE + TASK_TITLE)));
     }
 }
