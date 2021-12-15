@@ -69,10 +69,16 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    void detail() throws Exception {
+    void detail_ok() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(NEW_TITLE)));
+    }
+
+    @Test
+    void detail_fail() throws Exception {
+        mockMvc.perform(get("/tasks/100"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
