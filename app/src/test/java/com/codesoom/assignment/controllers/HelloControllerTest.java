@@ -11,6 +11,6 @@ class HelloControllerTest {
         HelloController controller = new HelloController();
         String content = controller.sayHello();
 
-        assertThat(content).isEqualTo("hello");
+        assertThat(content).isEqualTo("Hello, world!");
     }
 }
