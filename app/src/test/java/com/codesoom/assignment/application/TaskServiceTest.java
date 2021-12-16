@@ -78,9 +78,10 @@ class TaskServiceTest {
             @DisplayName("Task를 생성하고, 리턴한다.")
             void it_create_task_return_task() {
                 int sizeBeforeCreation = getTasksSize();
-                Task task = getTask();
 
+                Task task = getTask();
                 Task createdTask = taskService.createTask(task);
+
                 int sizeAfterCreation = getTasksSize();
 
                 assertThat(createdTask.getTitle()).isEqualTo(task.getTitle());

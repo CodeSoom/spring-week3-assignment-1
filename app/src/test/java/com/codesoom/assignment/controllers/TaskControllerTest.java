@@ -78,9 +78,7 @@ class TaskControllerTest {
         class Context_with_id {
             @BeforeEach
             void setGiven() {
-                Task task = getTask();
-
-                given(taskService.getTask(VALID_ID)).willReturn(task);
+                given(taskService.getTask(VALID_ID)).willReturn(getTask());
             }
 
             @Test
@@ -135,11 +133,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("201(Created) 과 Task 를 응답합니다.")
             void it_create_task_return_created_and_task() throws Exception {
-                String sourceTaskContent = getSourceTaskContent();
-
                 mockMvc.perform(post("/tasks")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(sourceTaskContent))
+                                .content(getSourceTaskContent()))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.title").value(TEST_TITLE + TEST_POSTFIX))
                         .andDo(print());
@@ -187,11 +183,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("200(Ok) 과 Task 를 응답합니다.")
             void it_update_task_return_ok_and_task() throws Exception {
-                String sourceTaskContent = getSourceTaskContent();
-
                 mockMvc.perform(put("/tasks/" + VALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(sourceTaskContent))
+                                .content(getSourceTaskContent()))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(VALID_ID))
                         .andExpect(jsonPath("$.title").value(TEST_TITLE + TEST_POSTFIX))
@@ -205,11 +199,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("200(Ok) 과 Task 를 응답합니다.")
             void it_update_task_return_ok_and_task() throws Exception {
-                String sourceTaskContent = getSourceTaskContent();
-
                 mockMvc.perform(patch("/tasks/" + VALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(sourceTaskContent))
+                                .content(getSourceTaskContent()))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(VALID_ID))
                         .andExpect(jsonPath("$.title").value(TEST_TITLE + TEST_POSTFIX));
@@ -235,11 +227,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("405(Method Not Allowed) 를 응답합니다.")
             void it_return_methodNotAllowed() throws Exception {
-                String sourceTaskContent = getSourceTaskContent();
-
                 mockMvc.perform(put("/tasks/")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(sourceTaskContent))
+                                .content(getSourceTaskContent()))
                         .andExpect(status().isMethodNotAllowed())
                         .andDo(print());
             }
@@ -251,11 +241,9 @@ class TaskControllerTest {
             @Test
             @DisplayName("404(NOT_FOUND) 를 응답합니다.")
             void it_return_notFound() throws Exception {
-                String sourceTaskContent = getSourceTaskContent();
-
                 mockMvc.perform(put("/tasks/" + INVALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(sourceTaskContent))
+                                .content(getSourceTaskContent()))
                         .andExpect(status().isNotFound())
                         .andDo(print());
             }
