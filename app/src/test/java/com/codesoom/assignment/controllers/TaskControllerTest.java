@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -26,9 +27,11 @@ class TaskControllerTest {
 
         Task source = new Task();
         source.setTitle(NEW_TITLE);
+
         taskService.createTask(source);
     }
 
+    @DisplayName("할일 목록을 조회하면 가지고 있는 할일 목록을 반환한다")
     @Test
     void list() {
         List<Task> tasks = controller.list();
@@ -36,45 +39,60 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(1);
     }
 
+    @DisplayName("할일을 조회하면 해당 대상의 할일을 반환한다")
     @Test
     void detail_ok() {
-        Task task = controller.detail(1L);
+        Long taskId = 1L;
+        Task task = controller.detail(taskId);
 
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo(NEW_TITLE);
+        assertThat(task).isNotNull();
     }
 
+    @DisplayName("잘못된 할일을 조회하면 예외가 터진다")
     @Test
     void detail_fail() {
-        assertThatThrownBy(() -> controller.detail(100L))
+        Long taskId = 100L;
+        assertThatThrownBy(() -> controller.detail(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
+    @DisplayName("할일을 생성하면 할일 목록이 증가한다")
     @Test
     void create() {
+        int oldSize = controller.list().size();
+
         Task source = new Task();
-        source.setTitle(NEW_TITLE + TITLE_POSTFIX);
         Task task = controller.create(source);
 
-        assertThat(task.getId()).isEqualTo(2L);
+        int newSize = controller.list().size();
+
+        assertThat(newSize - oldSize).isEqualTo(1);
+    }
+
+    @DisplayName("할일을 수정하면 데이터가 수정된다")
+    @Test
+    void update() {
+        Long taskId = 1L;
+        Task source = new Task();
+        source.setTitle(NEW_TITLE + TITLE_POSTFIX);
+
+        controller.update(taskId, source);
+        Task task = controller.detail(taskId);
+
+        assertThat(task.getId()).isEqualTo(taskId);
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
-    @Test
-    void update() {
-        Task source = controller.detail(1L);
-        source.setTitle(NEW_TITLE + TITLE_POSTFIX);
-        Task update = controller.update(1L, source);
-
-        assertThat(update.getId()).isEqualTo(1L);
-        assertThat(update.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
-    }
-
+    @DisplayName("할일을 삭제하면 할일 목록의 크기가 줄어든다")
     @Test
     void delete() {
-        controller.delete(1L);
-        List<Task> tasks = controller.list();
+        int oldSize = controller.list().size();
 
-        assertThat(tasks).hasSize(0);
+        Long taskId = 1L;
+        controller.delete(taskId);
+
+        int newSize = controller.list().size();
+
+        assertThat(oldSize - newSize).isEqualTo(1);
     }
 }
