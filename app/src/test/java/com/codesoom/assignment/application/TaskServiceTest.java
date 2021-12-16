@@ -36,6 +36,16 @@ class TaskServiceTest {
         assertThat(tasks).hasSize(1);
     }
 
+    @DisplayName("할일을 조회하면 할일이 반환된다")
+    @Test
+    void getTask_ok() {
+        Long taskId = 1L;
+        Task task = taskService.getTask(taskId);
+
+        assertThat(task).isNotNull();
+        assertThat(task.getId()).isEqualTo(taskId);
+    }
+
     @DisplayName("잘못된 식별값으로 할일을 조회하면 예외가 터진다")
     @Test
     void getTask_error() {
