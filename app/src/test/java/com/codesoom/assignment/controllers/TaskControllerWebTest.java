@@ -18,8 +18,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,8 +44,10 @@ class TaskControllerWebTest {
         List<Task> tasks = new ArrayList<>();
 
         Task task = new Task();
-        task.setTitle("Test Task");
+        task.setTitle(TASK_TITLE);
         tasks.add(task);
+
+        taskService.createTask(task);
 
         given(taskService.getTasks()).willReturn(tasks);
         given(taskService.getTask(1L)).willReturn(task);
@@ -58,14 +60,14 @@ class TaskControllerWebTest {
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test Task")));
+                .andExpect(content().string(containsString(TASK_TITLE)));
     }
 
     @Test
     void detailWithValidId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Test Task")));
+                .andExpect(content().string(containsString(TASK_TITLE)));
     }
 
     @Test
@@ -78,12 +80,82 @@ class TaskControllerWebTest {
     void create() throws Exception {
         Task task = new Task();
         task.setTitle(NEW_TITLE);
+        String content = objectMapper.writeValueAsString(task);
 
         mockMvc.perform(post("/tasks")
-                        .content(objectMapper.writeValueAsString(task))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
                 .andExpect(status().isCreated());
-                //.andExpect(content().string(containsString(NEW_TITLE)));
+        //.andExpect(content().string(containsString(NEW_TITLE)));
+        // 동작이 되지 않는 이유?
+        // Response content
+        //Expected: "new test"
+        //     but: was ""
+        //java.lang.AssertionError: Response content
+    }
 
+    @Test
+    void updateWithValidId() throws Exception {
+        Task task = new Task();
+        task.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        String content = objectMapper.writeValueAsString(task);
+
+        mockMvc.perform(put("/tasks/1")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        //.andExpect(content().string(containsString(UPDATE_POSTFIX + TASK_TITLE)));
+    }
+
+    @Test
+    void updateWithInvalidId() throws Exception {
+        Task task = new Task();
+        task.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        String content = objectMapper.writeValueAsString(task);
+
+        mockMvc.perform(put("/tasks/0")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void patchWithValidId() throws Exception {
+        Task task = new Task();
+        task.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        String content = objectMapper.writeValueAsString(task);
+
+        mockMvc.perform(patch("/tasks/1")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        //.andExpect(content().string(containsString(UPDATE_POSTFIX + TASK_TITLE)));
+    }
+
+    @Test
+    void patchWithInvalidId() throws Exception {
+        Task task = new Task();
+        task.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+        String content = objectMapper.writeValueAsString(task);
+
+        mockMvc.perform(patch("/tasks/0")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteWithValidId() throws Exception {
+        mockMvc.perform(delete("/tasks/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteWithInvalidId() throws Exception {
+        mockMvc.perform(delete("/tasks/0"))
+                .andExpect(status().isNotFound());
     }
 }
