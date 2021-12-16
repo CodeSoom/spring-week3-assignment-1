@@ -61,7 +61,7 @@ class TaskServiceTest {
         @DisplayName("만약 등록되지 않은 Task의 id 값이 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 을 리턴한다.")
+            @DisplayName("TaskNotFoundException를 던진다")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
@@ -92,7 +92,7 @@ class TaskServiceTest {
         @DisplayName("만약 등록할 Task가 주어진다면")
         class Context_without_task {
             @Test
-            @DisplayName("NullPointerException 을 리턴한다.")
+            @DisplayName("NullPointerException를 던진다")
             void it_return_exception() {
                 assertThatThrownBy(() -> taskService.createTask(null)).isInstanceOf(NullPointerException.class);
             }
@@ -120,7 +120,7 @@ class TaskServiceTest {
         @DisplayName("만약 등록된 Task의 id 만 주어진다면")
         class Context_with_id {
             @Test
-            @DisplayName("NullPointerException 이 리턴한다.")
+            @DisplayName("NullPointerException를 던진다.")
             void it_update_task_return_task() {
                 assertThatThrownBy(() -> taskService.updateTask(VALID_ID, null)).isInstanceOf(NullPointerException.class);
             }
@@ -130,11 +130,9 @@ class TaskServiceTest {
         @DisplayName("만약 등록된 Task 만 주어진다면")
         class Context_with_task {
             @Test
-            @DisplayName("TaskNotFoundException 가 리턴한다.")
+            @DisplayName("TaskNotFoundException를 던진다.")
             void it_return_taskNotFoundException() {
-                Task source = getTaskWithPostfix();
-
-                assertThatThrownBy(() -> taskService.updateTask(null, source)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.updateTask(null, getTaskWithPostfix())).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
@@ -142,11 +140,9 @@ class TaskServiceTest {
         @DisplayName("만약 등록되지 않은 Task의 id 와 Task가 있다면 ")
         class Context_with_invalid_id_and_task {
             @Test
-            @DisplayName("TaskNotFoundException 가 리턴한다.")
+            @DisplayName("TaskNotFoundException를 던진다.")
             void it_return_taskNotFoundException() {
-                Task source = getTask();
-
-                assertThatThrownBy(() -> taskService.updateTask(INVALID_ID, source)).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.updateTask(INVALID_ID, getTask())).isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
@@ -163,6 +159,7 @@ class TaskServiceTest {
                 int sizeBeforeDeletion = getTasksSize();
 
                 taskService.deleteTask(VALID_ID);
+
                 int sizeAfterDeletion = getTasksSize();
 
                 assertThat(sizeBeforeDeletion - sizeAfterDeletion).isEqualTo(1);
@@ -173,7 +170,7 @@ class TaskServiceTest {
         @DisplayName("만약 등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 을 리턴한다.")
+            @DisplayName("TaskNotFoundException를 던진다.")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.deleteTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
