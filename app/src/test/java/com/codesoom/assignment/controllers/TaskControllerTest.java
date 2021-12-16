@@ -50,7 +50,7 @@ class TaskControllerTest {
 
     @DisplayName("잘못된 할일을 조회하면 예외가 터진다")
     @Test
-    void detail_fail() {
+    void detail_error() {
         Long taskId = 100L;
         assertThatThrownBy(() -> controller.detail(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
