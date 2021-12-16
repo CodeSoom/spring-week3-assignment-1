@@ -38,7 +38,7 @@ class TaskServiceTest {
 
     @DisplayName("잘못된 식별값으로 할일을 조회하면 예외가 터진다")
     @Test
-    void getTask_fail() {
+    void getTask_error() {
         Long taskId = 100L;
         assertThatThrownBy(() -> taskService.getTask(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
@@ -77,7 +77,7 @@ class TaskServiceTest {
         Long taskId = 1L;
         int oldSize = taskService.getTasks().size();
 
-        Task task = taskService.deleteTask(taskId);
+        taskService.deleteTask(taskId);
 
         int newSize = taskService.getTasks().size();
 
