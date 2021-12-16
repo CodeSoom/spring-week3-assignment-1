@@ -44,15 +44,19 @@ public class TaskControllerWebTest {
 
     @BeforeEach
     void setUp() {
-        List<Task> tasks = new ArrayList<>();
+        Long taskId = 1L;
+        Long wrongId = 100L;
+
         Task task = new Task();
-        task.setId(1L);
+        task.setId(taskId);
         task.setTitle(NEW_TITLE);
+
+        List<Task> tasks = new ArrayList<>();
         tasks.add(task);
 
         given(taskService.getTasks()).willReturn(tasks);
-        given(taskService.getTask(1L)).willReturn(task);
-        given(taskService.getTask(100L)).willThrow(TaskNotFoundException.class);
+        given(taskService.getTask(taskId)).willReturn(task);
+        given(taskService.getTask(wrongId)).willThrow(TaskNotFoundException.class);
     }
 
     @Test
@@ -88,17 +92,19 @@ public class TaskControllerWebTest {
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
                         )
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
     @Test
     void update() throws Exception {
+        Long taskId = 1L;
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
         String content = objectMapper.writeValueAsString(source);
 
-        given(taskService.updateTask(eq(1L), any(Task.class))).willReturn(source);
+        given(taskService.updateTask(eq(taskId), any(Task.class))).willReturn(source);
 
         mockMvc.perform(patch("/tasks/1")
                         .content(content)
