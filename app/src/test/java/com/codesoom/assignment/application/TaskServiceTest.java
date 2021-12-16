@@ -39,7 +39,8 @@ class TaskServiceTest {
     @DisplayName("잘못된 식별값으로 할일을 조회하면 예외가 터진다")
     @Test
     void getTask_fail() {
-        assertThatThrownBy(() -> taskService.getTask(100L))
+        Long taskId = 100L;
+        assertThatThrownBy(() -> taskService.getTask(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
