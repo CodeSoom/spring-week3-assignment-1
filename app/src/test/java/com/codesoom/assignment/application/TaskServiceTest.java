@@ -9,7 +9,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
 
@@ -62,7 +61,6 @@ class TaskServiceTest {
         taskService.createTask(task);
 
         int newSize = taskService.getTasks().size();
-
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
@@ -74,8 +72,12 @@ class TaskServiceTest {
 
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
+    }
 
-
+    @Test
+    void deleteTask() {
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
 
     }
 }
