@@ -3,6 +3,7 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -23,48 +24,62 @@ class TaskServiceTest {
 
         Task source = new Task();
         source.setTitle(NEW_TITLE);
+
         Task task = taskService.createTask(source);
     }
 
+    @DisplayName("할일 목록을 조회하면 저장하고 있는 할일 컬렉션을 조회한다.")
     @Test
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
+
         assertThat(tasks).hasSize(1);
     }
 
+    @DisplayName("잘못된 식별값으로 할일을 조회하면 예외가 터진다")
     @Test
-    void getTask() {
+    void getTask_fail() {
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
+    @DisplayName("할일을 추가하면 할일 목록의 크기가 커진다")
     @Test
     void createTask() {
-        Task source = new Task();
-        source.setTitle(NEW_TITLE + TITLE_POSTFIX);
-        Task task = taskService.createTask(source);
+        int oldSize = taskService.getTasks().size();
 
-        assertThat(task.getId()).isEqualTo(2L);
-        assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
+        Task source = new Task();
+        taskService.createTask(source);
+
+        int newSize = taskService.getTasks().size();
+
+        assertThat(newSize - oldSize).isEqualTo(1);
     }
 
+    @DisplayName("할일을 수정하면 데이터가 수정된다")
     @Test
     void updateTask() {
+        Long taskId = 1L;
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
-        Task task = taskService.updateTask(1L, source);
 
-        assertThat(task.getId()).isEqualTo(1L);
+        taskService.updateTask(taskId, source);
+        Task task = taskService.getTask(taskId);
+
+        assertThat(task.getId()).isEqualTo(taskId);
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
-
     }
 
+    @DisplayName("할일을 삭제하면 할일 목록에서 크기가 줄어든다")
     @Test
     void deleteTask() {
-        Task task = taskService.deleteTask(1L);
-        List<Task> tasks = taskService.getTasks();
+        Long taskId = 1L;
+        int oldSize = taskService.getTasks().size();
 
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(tasks).hasSize(0);
+        Task task = taskService.deleteTask(taskId);
+
+        int newSize = taskService.getTasks().size();
+
+        assertThat(oldSize - newSize).isEqualTo(1);
     }
 }
