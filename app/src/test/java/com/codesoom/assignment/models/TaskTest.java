@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @DisplayName("TaskTest")
@@ -16,7 +14,7 @@ class TaskTest {
 
     private Task task;
     private static final String TASK_TITLE = "Testing...";
-    private static final Long TASK_ID = 1L;
+    private static final Long TASK_ID = null;
 
     @BeforeEach
     void setUp () {
@@ -29,7 +27,7 @@ class TaskTest {
     void setId() {
         Task task = new Task();
 
-        Assertions.assertEquals(task.getId(1L), TASK_ID, "주어진 객체를 저장하고, Id 값을 반환한다.");
+        Assertions.assertEquals(task.getId(), TASK_ID, "주어진 객체를 저장하고, Id 값을 반환한다.");
     }
 
     @Test @Nested

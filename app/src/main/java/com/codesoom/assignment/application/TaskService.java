@@ -18,7 +18,7 @@ public class TaskService {
 
     public Task getTask(Long id) {
         return tasks.stream()
-                .filter(task -> task.getId(1L).equals(id))
+                .filter(task -> task.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }

@@ -14,7 +14,7 @@ public class TaskController {
     private TaskService taskService;
 
     public TaskController(TaskService taskService) {
-        this.taskService = this.taskService;
+        this.taskService = taskService;
     }
 
     @GetMapping

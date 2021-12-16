@@ -5,7 +5,7 @@ public class Task {
 
     private String title;
 
-    public Long getId(long id) {
+    public Long getId() {
         return id;
     }
 
