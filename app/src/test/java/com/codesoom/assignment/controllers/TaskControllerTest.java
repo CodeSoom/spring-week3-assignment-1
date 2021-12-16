@@ -1,22 +1,27 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.models.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskControllerTest {
+    private TaskController controller;
+
+    @BeforeEach
+    void setUp() {
+        // 테스트가 실행 될 때 마다 실행되는 부분
+        controller = new TaskController();
+    }
+
     @Test
     void list() {
-        TaskController controller = new TaskController();
-
         assertThat(controller.list()).isEmpty();
     }
 
     @Test
     void createNewTask() {
-        TaskController controller = new TaskController();
-
         Task task = new Task();
 
         task.setTitle("Test1");
