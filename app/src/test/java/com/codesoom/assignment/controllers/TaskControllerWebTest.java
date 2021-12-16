@@ -4,7 +4,9 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,14 +61,17 @@ public class TaskControllerWebTest {
         given(taskService.getTask(wrongId)).willThrow(TaskNotFoundException.class);
     }
 
+    @DisplayName("할일 목록을 조회하면 200 코드를 받을 수 있다")
     @Test
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(NEW_TITLE)));
+                .andExpect(content().string(containsString("[")))
+                .andExpect(content().string(containsString("]")));
     }
 
+    @DisplayName("할일을 조회하면 200 코드를 받을 수 있다")
     @Test
     void detail_ok() throws Exception {
         mockMvc.perform(get("/tasks/1"))
@@ -74,12 +79,14 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
+    @DisplayName("잘못된 식별값으로 할일을 조회하면 404 코드를 받을 수 있다")
     @Test
     void detail_fail() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
     }
 
+    @DisplayName("할일을 생성하면 200 코드를 받을 수 있다")
     @Test
     void create() throws Exception {
         Task source = new Task();
@@ -97,6 +104,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
+    @DisplayName("할일을 수정하면 200 코드를 받을 수 있다")
     @Test
     void update() throws Exception {
         Long taskId = 1L;
@@ -114,6 +122,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE + TITLE_POSTFIX)));
     }
 
+    @DisplayName("할일을 삭제하면 204 코드를 받을 수 있다")
     @Test
     void delete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/1"))
