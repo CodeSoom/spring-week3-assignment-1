@@ -62,7 +62,7 @@ class TaskControllerTest {
         int oldSize = controller.list().size();
 
         Task source = new Task();
-        Task task = controller.create(source);
+        controller.create(source);
 
         int newSize = controller.list().size();
 
