@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService")
+@DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
     private TaskService taskService;
@@ -20,65 +21,90 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        // subject
         taskService = new TaskService();
 
-        //fixture
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-
-        taskService.createTask(task);
+        Task first_task = new Task();
+        first_task.setTitle(TASK_TITLE);
+        taskService.createTask(first_task);
     }
 
-    @Test
-    void getTasksList() {
-        List<Task> tasks = taskService.getTasks();
+    @Nested
+    @DisplayName("getTask는 ")
+    class Describe_getTasks {
+        @Test
+        @DisplayName("등록된 전체 리스트를 리턴한다.")
+        void getTasksList() {
+            List<Task> tasks = taskService.getTasks();
 
-        assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(tasks).isNotEmpty();
+        }
     }
 
-    @Test
-    void getTaskWithValidId() {
-        Task task = taskService.getTask(1L);
+    @Nested
+    @DisplayName("getTask는 ")
+    class Describe_getTask {
+        @Test
+        @DisplayName("해당 id가 존재하면 Task를 리턴한다.")
+        void getTaskWithExistId() {
+            Task task = taskService.getTask(1L);
 
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+        }
+
+        @Test
+        @DisplayName("해당 id가 존재하지않으면 Task를 찾을 수 없다는 예외를 던진다.")
+        void getTaskWithNonexistId() {
+            assertThatThrownBy(() -> taskService.getTask(0L))
+                    .isInstanceOf(TaskNotFoundException.class);
+        }
     }
 
-    @Test
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(2L))
-                .isInstanceOf(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("CreateTask는")
+    class Describe_createTask {
+        @Test
+        @DisplayName("Task를 생성하고, 리턴한다.")
+        void createTask() {
+            int oldSize = taskService.getTasks().size();
+
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
+
+            taskService.createTask(task);
+
+            int newSize = taskService.getTasks().size();
+
+            assertThat(newSize - oldSize).isEqualTo(1);
+        }
     }
 
-    @Test
-    void createTask() {
-        int oldSize = taskService.getTasks().size();
+    @Nested
+    @DisplayName("deleteTask는")
+    class Describe_deleteTask {
+        @Test
+        void deleteTask() {
+            int oldSize = taskService.getTasks().size();
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
+            taskService.deleteTask(1L);
 
-        taskService.createTask(task);
+            int newSize = taskService.getTasks().size();
 
-        int newSize = taskService.getTasks().size();
-
-        assertThat(newSize - oldSize).isEqualTo(1);
+            assertThat(oldSize - newSize).isEqualTo(1);
+        }
     }
 
-    @Test
-    void deleteTask() {
-        taskService.deleteTask(1L);
+    @Nested
+    @DisplayName("updateTask는")
+    class Describe_updateTask {
+        @Test
+        @DisplayName("해당 id의 Task를 수정하고 리턴한다.")
+        void updateTask() {
+            Task source = new Task();
+            source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
+            taskService.updateTask(1L, source);
 
-        assertThat(taskService.getTasks().size()).isEqualTo(0);
-    }
-
-    @Test
-    void updateTask() {
-        Task source = new Task();
-        source.setTitle(UPDATE_POSTFIX + TASK_TITLE);
-        taskService.updateTask(1L, source);
-
-        Task task = taskService.getTask(1L);
-        assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + TASK_TITLE);
+            Task task = taskService.getTask(1L);
+            assertThat(task.getTitle()).isEqualTo(UPDATE_POSTFIX + TASK_TITLE);
+        }
     }
 }
