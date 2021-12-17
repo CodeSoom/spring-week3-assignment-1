@@ -30,6 +30,12 @@ class TaskControllerTest {
     }
 
     @Test
+    void detail() {
+        Task task = controller.detail(1L);
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+    }
+
+    @Test
     void createNewTask() {
         Task task = new Task();
 
