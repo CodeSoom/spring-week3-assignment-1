@@ -56,7 +56,7 @@ class TaskControllerTest {
     @DisplayName("GET Mapping - Task 조회 요청은")
     class Describe_get_mapping {
         @BeforeEach
-        void setGiven() {
+        void prepare() {
             List<Task> tasks = new ArrayList<>();
             Task task = getTask();
             tasks.add(task);
@@ -77,7 +77,7 @@ class TaskControllerTest {
         @DisplayName("만약 등록된 Task의 id 가 주어진다면")
         class Context_with_id {
             @BeforeEach
-            void setGiven() {
+            void prepare() {
                 given(taskService.getTask(VALID_ID)).willReturn(getTask());
             }
 
@@ -95,7 +95,7 @@ class TaskControllerTest {
         @DisplayName("만약 등록되지 않는 id 가 주어진다면")
         class Context_with_invalid_id {
             @BeforeEach
-            void setGiven() {
+            void prepare() {
                 given(taskService.getTask(INVALID_ID)).willThrow(new TaskNotFoundException(INVALID_ID));
             }
 
@@ -116,7 +116,7 @@ class TaskControllerTest {
         @DisplayName("만약 등록할 Task 가 주어진다면")
         class Context_with_task {
             @BeforeEach
-            void setGiven() {
+            void prepare() {
                 when(taskService.createTask(any(Task.class)))
                         .then((arg) -> {
                             Optional<Task> source = Optional.of(arg.getArgument(0, Task.class));
@@ -160,7 +160,7 @@ class TaskControllerTest {
     @DisplayName("PUT 또는 PATCH Mapping - Task 업데이트 요청은")
     class Describe_put_or_patch_mapping {
         @BeforeEach
-        void setGiven() {
+        void prepare() {
             when(taskService.updateTask(any(Long.class), any(Task.class)))
                     .then((arg) -> {
                         Long targetId = arg.getArgument(0, Long.class);
@@ -257,7 +257,7 @@ class TaskControllerTest {
         @DisplayName("만약 등록된 Task의 id가 주어진다면")
         class Context_with_id {
             @BeforeEach
-            void setGiven() {
+            void prepare() {
                 given(taskService.deleteTask(VALID_ID)).willReturn(null);
             }
 
@@ -274,7 +274,7 @@ class TaskControllerTest {
         @DisplayName("만약 등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @BeforeEach
-            void setGiven() {
+            void prepare() {
                 given(taskService.deleteTask(INVALID_ID)).willThrow(new TaskNotFoundException(INVALID_ID));
             }
 
