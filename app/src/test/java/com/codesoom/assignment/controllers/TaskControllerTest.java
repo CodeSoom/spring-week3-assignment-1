@@ -64,15 +64,4 @@ class TaskControllerTest {
         assertThat(controller.detail(1L).getTitle())
                 .isEqualTo(UPDATE_PREFIX + TASK_TITLE);
     }
-
-    @Test
-    void patchTask() {
-        Task source = new Task();
-        source.setTitle(UPDATE_PREFIX + TASK_TITLE);
-
-        controller.patch(1L, source);
-
-        assertThat(controller.detail(1L).getTitle())
-                .isEqualTo(UPDATE_PREFIX + TASK_TITLE);
-    }
 }
