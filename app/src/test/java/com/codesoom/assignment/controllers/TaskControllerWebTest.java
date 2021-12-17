@@ -60,4 +60,10 @@ public class TaskControllerWebTest {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void detailWithBadRequestId() throws Exception {
+        mockMvc.perform(get("/tasks/abc"))
+                .andExpect(status().isBadRequest());
+    }
 }
