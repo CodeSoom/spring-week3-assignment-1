@@ -91,7 +91,7 @@ class TaskServiceTest {
         @DisplayName("등록되지 않은 Task의 id 값이 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException를 던진다")
+            @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
@@ -129,7 +129,7 @@ class TaskServiceTest {
         @DisplayName("null 주어진다면")
         class Context_without_task {
             @Test
-            @DisplayName("NullPointerException를 던진다")
+            @DisplayName("아무것도 가리키지 않는 내용의 예외를 던진다.")
             void it_return_exception() {
                 assertThatThrownBy(() -> taskService.createTask(null)).isInstanceOf(NullPointerException.class);
             }
@@ -177,7 +177,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("NullPointerException를 던진다.")
+            @DisplayName("아무것도 가리키지 않는 내용의 예외를 던진다.")
             void it_update_task_return_task() {
                 assertThatThrownBy(() -> taskService.updateTask(givenId(), null)).isInstanceOf(NullPointerException.class);
             }
@@ -187,7 +187,7 @@ class TaskServiceTest {
         @DisplayName("등록된 Task 만 주어진다면")
         class Context_with_task {
             @Test
-            @DisplayName("TaskNotFoundException를 던진다.")
+            @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.updateTask(null, getTaskWithPostfix())).isInstanceOf(TaskNotFoundException.class);
             }
@@ -197,7 +197,7 @@ class TaskServiceTest {
         @DisplayName("등록되지 않은 Task의 id 와 Task가 있다면 ")
         class Context_with_invalid_id_and_task {
             @Test
-            @DisplayName("TaskNotFoundException를 던진다.")
+            @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.updateTask(INVALID_ID, getTask())).isInstanceOf(TaskNotFoundException.class);
             }
@@ -237,7 +237,7 @@ class TaskServiceTest {
         @DisplayName("등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException를 던진다.")
+            @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
             void it_return_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.deleteTask(INVALID_ID)).isInstanceOf(TaskNotFoundException.class);
             }
