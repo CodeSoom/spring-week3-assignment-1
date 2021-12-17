@@ -55,23 +55,43 @@ class TaskControllerTest {
     @Nested
     @DisplayName("GET Mapping - Task 조회 요청은")
     class Describe_get_mapping {
-        @BeforeEach
-        void prepare() {
-            List<Task> tasks = new ArrayList<>();
-            Task task = getTask();
-            tasks.add(task);
+        @Nested
+        @DisplayName("만약 등록된 Task가 있다면")
+        class Context_has_task {
+            final int givenTaskCnt = 5;
 
-            given(taskService.getTasks()).willReturn(tasks);
+            @BeforeEach
+            void prepare() {
+                List<Task> tasks = new ArrayList<>();
+                for (int i = 0; i < givenTaskCnt; i++) {
+                    tasks.add(getTask());
+                }
+
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            @Test
+            @DisplayName("200(Ok)과 등록된 Task 전체 리스트를 응답합니다.")
+            void it_return_ok_and_tasks() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(givenTaskCnt)))
+                        .andDo(print());
+            }
+        }
+        @Nested
+        @DisplayName("만약 등록된 Task가 없다면")
+        class Context_has_not_task {
+            @Test
+            @DisplayName("200(Ok)과 빈 리스트를 응답합니다.")
+            void it_return_ok_and_empty_tasks() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(0)))
+                        .andDo(print());
+            }
         }
 
-        @Test
-        @DisplayName("200(Ok)과 등록된 Task 전체 리스트를 응답합니다.")
-        void it_return_ok_and_task() throws Exception {
-            mockMvc.perform(get("/tasks"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasSize(1)))
-                    .andDo(print());
-        }
 
         @Nested
         @DisplayName("만약 등록된 Task의 id 가 주어진다면")
