@@ -23,9 +23,9 @@ class TaskServiceTest {
     void setUp() {
         taskService = new TaskService();
 
-        Task first_task = new Task();
-        first_task.setTitle(TASK_TITLE);
-        taskService.createTask(first_task);
+        Task task = new Task();
+        task.setTitle(TASK_TITLE);
+        taskService.createTask(task);
     }
 
     @Nested
@@ -44,7 +44,7 @@ class TaskServiceTest {
     @DisplayName("getTask는 ")
     class Describe_getTask {
         @Test
-        @DisplayName("해당 id가 존재하면 Task를 리턴한다.")
+        @DisplayName("id에 해당하는 Task가 존재하면 Task를 리턴한다.")
         void getTaskWithExistId() {
             Task task = taskService.getTask(1L);
 
@@ -52,7 +52,7 @@ class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("해당 id가 존재하지않으면 Task를 찾을 수 없다는 예외를 던진다.")
+        @DisplayName("id에 해당하는 Task가 존재하지않으면 Task를 찾을 수 없다는 예외를 던진다.")
         void getTaskWithNonexistId() {
             assertThatThrownBy(() -> taskService.getTask(0L))
                     .isInstanceOf(TaskNotFoundException.class);
