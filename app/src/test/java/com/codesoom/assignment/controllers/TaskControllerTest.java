@@ -4,121 +4,315 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
+@DisplayName("TaskController 클래스")
 class TaskControllerTest {
 
-    private static final String FIRST_TASK_TITLE = "test1";
-    private static final String SECOND_TASK_TITLE = "test2";
-    private static final String UPDATE_POSTFIX = "!!!";
+    private static final String TEST_TASK_TITLE = "test";
+    private static final Long INVALID_ID = 0L;
+    private static final Long VALID_ID = 1L;
 
-    private TaskController taskController;
-    private TaskService taskService;
+    TaskController taskController;
+    TaskService taskService;
 
-    @BeforeEach
-    void setUp() {
+    void prepareTaskController() {
         taskService = new TaskService();
         taskController = new TaskController(taskService);
+    }
 
-        // Fixtures
+    void prepareTestTask() {
         Task task = new Task();
-        task.setTitle(FIRST_TASK_TITLE);
-        taskController.create(task);
+        task.setTitle(TEST_TASK_TITLE);
+        taskService.createTask(task);
     }
 
-    @Test
-    void list() {
-        List<Task> tasks = new ArrayList<>();
+    @DisplayName("detail 메서드는")
+    @Nested
+    class Describe_detail {
+        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_invalid_id {
 
-        assertThat(taskController.list()).hasSize(1);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo(FIRST_TASK_TITLE);
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+            }
+
+            Task subject() {
+                return taskController.detail(INVALID_ID);
+            }
+
+            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @Test
+            void it_throws_task_not_found_exception() {
+                assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_valid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+            }
+
+            Task subject() {
+                return taskController.detail(VALID_ID);
+            }
+
+            @DisplayName("해당 id의 Task를 반환한다.")
+            @Test
+            void it_returns_task_of_that_id() {
+                Task result = subject();
+                assertThat(result.getTitle()).isEqualTo(TEST_TASK_TITLE);
+                assertThat(result.getId()).isEqualTo(VALID_ID);
+            }
+        }
     }
 
-    @Test
-    void createNewTask() {
-        int oldSize = taskController.list().size();
+    @DisplayName("update 메서드는")
+    @Nested
+    class Describe_update {
 
-        // Create a new task
-        Task task = new Task();
-        task.setTitle(SECOND_TASK_TITLE);
-        Task createdTask = taskController.create(task);
+        private static final String UPDATE_TASK_TITLE = "updated_title";
+        private Task task;
 
-        int newSize = taskController.list().size();
+        void prepareTask() {
+            task = new Task();
+            task.setTitle(UPDATE_TASK_TITLE);
+        }
 
-        assertThat(newSize - oldSize).isEqualTo(1);
-        assertThat(taskController.list().get(1).getId()).isEqualTo(2);
-        assertThat(taskController.list().get(1).getTitle()).isEqualTo(SECOND_TASK_TITLE);
-        assertThat(createdTask.getId()).isEqualTo(2L);
-        assertThat(createdTask.getTitle()).isEqualTo(SECOND_TASK_TITLE);
+        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_invalid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+                prepareTask();
+            }
+
+            Task subject() {
+                return taskController.update(INVALID_ID, task);
+            }
+
+            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @Test
+            void it_throws_task_not_found_exception() {
+                assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_valid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+                prepareTask();
+            }
+
+            Task subject() {
+                return taskController.update(VALID_ID, task);
+            }
+
+            @DisplayName("업데이트한 Task를 반환한다.")
+            @Test
+            void it_returns_task_of_that_id() {
+                Task result = subject();
+                assertThat(result.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+                assertThat(result.getId()).isEqualTo(VALID_ID);
+                assertThat(taskController.list().get(0).getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+                assertThat(taskController.list().get(0).getId()).isEqualTo(VALID_ID);
+            }
+        }
     }
 
-    @Test
-    void detailWithInvalidId() {
-        assertThatThrownBy(() -> taskController.detail(0L)).isInstanceOf(TaskNotFoundException.class);
+    @DisplayName("patch 메서드는")
+    @Nested
+    class Describe_patch {
+
+        private static final String UPDATE_TASK_TITLE = "updated_title";
+        private Task task;
+
+        void prepareTask() {
+            task = new Task();
+            task.setTitle(UPDATE_TASK_TITLE);
+        }
+
+        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_invalid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+                prepareTask();
+            }
+
+            Task subject() {
+                return taskController.patch(INVALID_ID, task);
+            }
+
+            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @Test
+            void it_throws_task_not_found_exception() {
+                assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_valid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+                prepareTask();
+            }
+
+            Task subject() {
+                return taskController.patch(VALID_ID, task);
+            }
+
+            @DisplayName("업데이트한 Task를 반환한다.")
+            @Test
+            void it_returns_task_of_that_id() {
+                Task result = subject();
+                assertThat(result.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+                assertThat(result.getId()).isEqualTo(VALID_ID);
+                assertThat(taskController.list().get(0).getTitle()).isEqualTo(UPDATE_TASK_TITLE);
+                assertThat(taskController.list().get(0).getId()).isEqualTo(VALID_ID);
+            }
+        }
     }
 
-    @Test
-    void detailWithValidId() {
-        assertThat(taskController.detail(1L).getId()).isEqualTo(1L);
-        assertThat(taskController.detail(1L).getTitle()).isEqualTo(FIRST_TASK_TITLE);
+    @DisplayName("delete 메서드는")
+    @Nested
+    class Describe_delete {
+
+        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_invalid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+            }
+
+            void subject() {
+                taskController.delete(INVALID_ID);
+            }
+
+            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @Test
+            void it_throws_task_not_found_exception() {
+                assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @Nested
+        class Context_with_valid_id {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+            }
+
+            void subject() {
+                taskController.delete(VALID_ID);
+            }
+
+            @DisplayName("해당 id의 Task를 삭제하고 아무것도 반환하지 않는다.")
+            @Test
+            void it_returns_nothing() {
+                subject();
+                assertThat(taskController.list()).hasSize(0);
+            }
+        }
     }
 
-    @Test
-    void updateWithValidId() {
-        Task task = new Task();
-        task.setTitle(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-        Task updatedTask = taskController.update(1L, task);
+    @DisplayName("list 메서드는")
+    @Nested
+    class Describe_list {
+        @DisplayName("Task를 하나 가지고있다면")
+        @Nested
+        class Context_has_test_task {
 
-        assertThat(updatedTask.getId()).isEqualTo(1L);
-        assertThat(updatedTask.getTitle()).isEqualTo(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo(FIRST_TASK_TITLE + UPDATE_POSTFIX);
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareTestTask();
+            }
+
+            List<Task> subject() {
+                return taskController.list();
+            }
+
+            @DisplayName("Task를 하나 가진 List를 반환한다.")
+            @Test
+            void it_returns_list_with_test_task() {
+                List<Task> result = subject();
+                assertThat(result).hasSize(1);
+                assertThat(result.get(0).getTitle()).isEqualTo(TEST_TASK_TITLE);
+            }
+        }
     }
 
-    @Test
-    void updateWithInvalidId() {
-        Task task = new Task();
-        task.setTitle(FIRST_TASK_TITLE + UPDATE_POSTFIX);
+    @DisplayName("create 메서드는")
+    @Nested
+    class Describe_create {
+        @DisplayName("'new' Task가 주어진다면")
+        @Nested
+        class Context_with_new_task {
+            private static final String NEW_TASK_TITLE = "new";
 
-        assertThatThrownBy(() -> taskController.update(0L, task)).isInstanceOf(TaskNotFoundException.class);
+            private Task task;
+
+            void prepareNewTask() {
+                task = new Task();
+                task.setTitle(NEW_TASK_TITLE);
+            }
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+                prepareNewTask();
+            }
+
+            Task subject() {
+                return taskController.create(task);
+            }
+
+            @DisplayName("'new' Task를 저장하고 반환한다.")
+            @Test
+            void it_returns_new_task() {
+                Task result = subject();
+                assertThat(result.getTitle()).isEqualTo(NEW_TASK_TITLE);
+                assertThat(result.getId()).isEqualTo(1L);
+                assertThat(taskController.list()).hasSize(1);
+            }
+        }
     }
-
-    @Test
-    void patchWithValidId() {
-        Task task = new Task();
-        task.setTitle(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-        Task patchedTask = taskController.patch(1L, task);
-
-        assertThat(patchedTask.getId()).isEqualTo(1L);
-        assertThat(patchedTask.getTitle()).isEqualTo(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-    }
-
-    @Test
-    void patchWithInvalidId() {
-        Task task = new Task();
-        task.setTitle(FIRST_TASK_TITLE + UPDATE_POSTFIX);
-
-        assertThatThrownBy(() -> taskController.patch(0L, task)).isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
-    void deleteWithValidId() {
-        taskController.delete(1L);
-
-        assertThat(taskController.list()).hasSize(0);
-    }
-
-    @Test
-    void deleteWithInvalidId() {
-        assertThatThrownBy(() -> taskController.delete(0L)).isInstanceOf(TaskNotFoundException.class);
-    }
-
 }
