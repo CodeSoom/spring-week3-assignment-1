@@ -15,31 +15,39 @@ class TaskControllerTest {
     void setUp() {
         taskService = new TaskService();
         controller = new TaskController(taskService);
+
+        Task task = new Task();
+        task.setTitle("Test");
+        controller.create(task);
     }
 
-    @Test
-    void list() {
-        assertThat(controller.list()).isEmpty();
-    }
+//    @Test
+//    void list() {
+//        assertThat(controller.list()).isEmpty();
+//    }
 
     @Test
     void createNewTask() {
         Task task = new Task();
 
-        task.setTitle("Test1");
+        int oldSize = controller.list().size();
+
+        task.setTitle("Test");
         controller.create(task);
 
-        task.setTitle("Test2");
-        controller.create(task);
+        int newSize = controller.list().size();
 
-        assertThat(controller.list()).isNotEmpty();
+        assertThat(newSize - oldSize).isEqualTo(1);
+    }
 
-        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
-        assertThat(controller.list().get(0).getTitle()).isEqualTo("Test1");
+    @Test
+    void deleteTask() {
+        int oldSize = controller.list().size();
 
-        assertThat(controller.list().get(1).getId()).isEqualTo(2L);
-        assertThat(controller.list().get(1).getTitle()).isEqualTo("Test2");
+        controller.delete(1L);
 
-        assertThat(controller.list()).hasSize(2);
+        int newSize = controller.list().size();
+
+        assertThat(oldSize - newSize).isEqualTo(1);
     }
 }
