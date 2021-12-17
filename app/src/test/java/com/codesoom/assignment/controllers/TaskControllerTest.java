@@ -21,10 +21,10 @@ class TaskControllerTest {
         controller.create(task);
     }
 
-//    @Test
-//    void list() {
-//        assertThat(controller.list()).isEmpty();
-//    }
+    @Test
+    void list() {
+        assertThat(controller.list()).isNotEmpty();
+    }
 
     @Test
     void createNewTask() {
@@ -49,5 +49,27 @@ class TaskControllerTest {
         int newSize = controller.list().size();
 
         assertThat(oldSize - newSize).isEqualTo(1);
+    }
+
+    @Test
+    void updateTask() {
+        Task source = new Task();
+        source.setTitle("Update title");
+
+        controller.update(1L, source);
+
+        assertThat(controller.detail(1L).getTitle())
+                .isEqualTo("Update title");
+    }
+
+    @Test
+    void patchTask() {
+        Task source = new Task();
+        source.setTitle("Update title");
+
+        controller.patch(1L, source);
+
+        assertThat(controller.detail(1L).getTitle())
+                .isEqualTo("Update title");
     }
 }
