@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -49,6 +51,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("등록된 Task가 없다면")
         class Context_has_not_task {
+
+            @BeforeEach
+            void prepare() {
+                List<Task> tasks = taskService.getTasks();
+                tasks.forEach(task -> taskService.deleteTask(task.getId()));
+            }
+
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
             void it_return_tasks() {
