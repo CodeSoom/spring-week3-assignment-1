@@ -4,7 +4,6 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -47,31 +46,29 @@ public class TaskControllerWebTest {
     @BeforeEach
     void setUp() {
         Long taskId = 1L;
-        Long wrongId = 100L;
 
         Task task = new Task();
         task.setId(taskId);
         task.setTitle(NEW_TITLE);
 
+        given(taskService.getTask(taskId)).willReturn(task);
+
         List<Task> tasks = new ArrayList<>();
         tasks.add(task);
 
         given(taskService.getTasks()).willReturn(tasks);
-        given(taskService.getTask(taskId)).willReturn(task);
-        given(taskService.getTask(wrongId)).willThrow(TaskNotFoundException.class);
     }
 
-    @DisplayName("할일 목록을 조회하면 200 코드를 받을 수 있다")
+    @DisplayName("GET /tasks 요청은 저장하고 있는 할 일 목록을 반환한다")
     @Test
     void list() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("[")))
-                .andExpect(content().string(containsString("]")));
+                .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("할일을 조회하면 200 코드를 받을 수 있다")
+    @DisplayName("GET /tasks/{id} 요청은 주어진 할 일을 반환한다")
     @Test
     void detail_ok() throws Exception {
         mockMvc.perform(get("/tasks/1"))
@@ -79,14 +76,17 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("잘못된 식별값으로 할일을 조회하면 404 코드를 받을 수 있다")
+    @DisplayName("GET /tasks/{id} 요청에서 할 일 목록에서 주어지지 않는 할 일이면 예외를 던진다")
     @Test
     void detail_fail() throws Exception {
+        Long wrongId = 100L;
+        given(taskService.getTask(wrongId)).willThrow(TaskNotFoundException.class);
+
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
     }
 
-    @DisplayName("할일을 생성하면 200 코드를 받을 수 있다")
+    @DisplayName("POST /tasks 요청은 할 일을 생성하고 할 일 목록에 추가한다")
     @Test
     void create() throws Exception {
         Task source = new Task();
@@ -99,20 +99,20 @@ public class TaskControllerWebTest {
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
                         )
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("할일을 수정하면 200 코드를 받을 수 있다")
+    @DisplayName("PATCH /tasks/{id} 요청은 할 일을 수정한다")
     @Test
     void update() throws Exception {
-        Long taskId = 1L;
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
-        String content = objectMapper.writeValueAsString(source);
 
+        Long taskId = 1L;
         given(taskService.updateTask(eq(taskId), any(Task.class))).willReturn(source);
+
+        String content = objectMapper.writeValueAsString(source);
 
         mockMvc.perform(patch("/tasks/1")
                         .content(content)
@@ -122,7 +122,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE + TITLE_POSTFIX)));
     }
 
-    @DisplayName("할일을 삭제하면 204 코드를 받을 수 있다")
+    @DisplayName("DELETE /tasks/{id} 요청은 할 일 목록에서 주어진 할 일을 삭제한다")
     @Test
     void delete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/1"))
