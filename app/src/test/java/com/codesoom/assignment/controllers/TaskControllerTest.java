@@ -31,7 +31,7 @@ class TaskControllerTest {
         taskService.createTask(source);
     }
 
-    @DisplayName("할일 목록을 조회하면 가지고 있는 할일 목록을 반환한다")
+    @DisplayName("list()는 저장하고 있는 할 일 목록을 반환한다")
     @Test
     void list() {
         List<Task> tasks = controller.list();
@@ -39,7 +39,7 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("할일을 조회하면 해당 대상의 할일을 반환한다")
+    @DisplayName("detail()는")
     @Test
     void detail_ok() {
         Long taskId = 1L;
