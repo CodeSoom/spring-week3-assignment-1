@@ -42,7 +42,6 @@ class TaskServiceTest {
         Long taskId = 1L;
         Task task = taskService.getTask(taskId);
 
-        assertThat(task).isNotNull();
         assertThat(task.getId()).isEqualTo(taskId);
     }
 
@@ -79,7 +78,6 @@ class TaskServiceTest {
 
         Task task = taskService.getTask(taskId);
 
-        assertThat(task.getId()).isEqualTo(taskId);
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
