@@ -28,7 +28,7 @@ class TaskServiceTest {
         Task task = taskService.createTask(source);
     }
 
-    @DisplayName("할일 목록을 조회하면 저장하고 있는 할일 컬렉션을 조회한다.")
+    @DisplayName("getTasks는 저장하고 있는 할 일 목록을 반환한다.")
     @Test
     void getTasks() {
         List<Task> tasks = taskService.getTasks();
@@ -36,7 +36,7 @@ class TaskServiceTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("할일을 조회하면 할일이 반환된다")
+    @DisplayName("getTask는 할 일 목록에 같은 식별값이 있는 할 일을 반환한다")
     @Test
     void getTask_ok() {
         Long taskId = 1L;
@@ -46,7 +46,7 @@ class TaskServiceTest {
         assertThat(task.getId()).isEqualTo(taskId);
     }
 
-    @DisplayName("잘못된 식별값으로 할일을 조회하면 예외가 터진다")
+    @DisplayName("getTask는 할 일 목록에 없는 식별값으로 조회하면 예외를 던진다")
     @Test
     void getTask_error() {
         Long taskId = 100L;
@@ -54,7 +54,7 @@ class TaskServiceTest {
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("할일을 추가하면 할일 목록의 크기가 커진다")
+    @DisplayName("createTask는 할 일을 만들고 목록에 추가한다")
     @Test
     void createTask() {
         int oldSize = taskService.getTasks().size();
@@ -67,7 +67,7 @@ class TaskServiceTest {
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
-    @DisplayName("할일을 수정하면 데이터가 수정된다")
+    @DisplayName("updateTask는 할 일을 수정한다")
     @Test
     void updateTask() {
         Long taskId = 1L;
@@ -81,7 +81,7 @@ class TaskServiceTest {
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
-    @DisplayName("할일을 삭제하면 할일 목록에서 크기가 줄어든다")
+    @DisplayName("deleteTask는 할 일 목록에서 주어진 할 일을 삭제한다")
     @Test
     void deleteTask() {
         Long taskId = 1L;
