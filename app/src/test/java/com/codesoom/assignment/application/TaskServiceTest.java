@@ -28,7 +28,7 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("만약 등록된 Task가 있다면")
+        @DisplayName("등록된 Task가 있다면")
         class Context_has_task {
             final int givenTaskCnt = 5;
 
@@ -47,7 +47,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task가 없다면")
+        @DisplayName("등록된 Task가 없다면")
         class Context_has_not_task {
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -57,7 +57,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task의 id 값이 주어진다면")
+        @DisplayName("등록된 Task의 id 값이 주어진다면")
         class Context_with_id {
             Task givenTask;
             Long givenId() {
@@ -79,7 +79,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않은 Task의 id 값이 주어진다면")
+        @DisplayName("등록되지 않은 Task의 id 값이 주어진다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("TaskNotFoundException를 던진다")
@@ -93,7 +93,7 @@ class TaskServiceTest {
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
         @Nested
-        @DisplayName("만약 등록할 Task가 주어진다면")
+        @DisplayName("등록할 Task가 주어진다면")
         class Context_with_task {
             Task givenTask;
 
@@ -117,7 +117,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록할 Task가 주어진다면")
+        @DisplayName("null 주어진다면")
         class Context_without_task {
             @Test
             @DisplayName("NullPointerException를 던진다")
@@ -143,7 +143,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task의 id 와 수정할 Task 가 주어진다면")
+        @DisplayName("등록된 Task의 id 와 수정할 Task 가 주어진다면")
         class Context_with_id_and_task {
             @Test
             @DisplayName("해당 id의 Task를 수정하고, 리턴한다.")
@@ -155,7 +155,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task의 id 만 주어진다면")
+        @DisplayName("등록된 Task의 id 만 주어진다면")
         class Context_with_id {
             Task givenTask;
             Long givenId() {
@@ -175,7 +175,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task 만 주어진다면")
+        @DisplayName("등록된 Task 만 주어진다면")
         class Context_with_task {
             @Test
             @DisplayName("TaskNotFoundException를 던진다.")
@@ -185,7 +185,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않은 Task의 id 와 Task가 있다면 ")
+        @DisplayName("등록되지 않은 Task의 id 와 Task가 있다면 ")
         class Context_with_invalid_id_and_task {
             @Test
             @DisplayName("TaskNotFoundException를 던진다.")
@@ -199,7 +199,7 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드")
     class Describe_deleteTask {
         @Nested
-        @DisplayName("만약 등록된 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         class Context_with_id {
             Task givenTask;
             Long givenId() {
@@ -225,7 +225,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않은 Task의 id가 주어진다면")
+        @DisplayName("등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @Test
             @DisplayName("TaskNotFoundException를 던진다.")

@@ -56,7 +56,7 @@ class TaskControllerTest {
     @DisplayName("GET Mapping - Task 조회 요청은")
     class Describe_get_mapping {
         @Nested
-        @DisplayName("만약 등록된 Task가 있다면")
+        @DisplayName("등록된 Task가 있다면")
         class Context_has_task {
             final int givenTaskCnt = 5;
 
@@ -80,7 +80,7 @@ class TaskControllerTest {
             }
         }
         @Nested
-        @DisplayName("만약 등록된 Task가 없다면")
+        @DisplayName("등록된 Task가 없다면")
         class Context_has_not_task {
             @Test
             @DisplayName("200(Ok)과 빈 리스트를 응답합니다.")
@@ -94,7 +94,7 @@ class TaskControllerTest {
 
 
         @Nested
-        @DisplayName("만약 등록된 Task의 id 가 주어진다면")
+        @DisplayName("등록된 Task의 id 가 주어진다면")
         class Context_with_id {
             @BeforeEach
             void prepare() {
@@ -112,7 +112,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않는 id 가 주어진다면")
+        @DisplayName("등록되지 않는 id 가 주어진다면")
         class Context_with_invalid_id {
             @BeforeEach
             void prepare() {
@@ -133,7 +133,7 @@ class TaskControllerTest {
     @DisplayName("POST Mapping - Task 생성 요청은")
     class Describe_post_mapping {
         @Nested
-        @DisplayName("만약 등록할 Task 가 주어진다면")
+        @DisplayName("등록할 Task 가 주어진다면")
         class Context_with_task {
             @BeforeEach
             void prepare() {
@@ -163,7 +163,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 등록할 Task 가 없다면")
+        @DisplayName("등록할 Task 가 없다면")
         class Context_without_task {
             @Test
             @DisplayName("400(Bad Request) 를 응답합니다.")
@@ -198,7 +198,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 PUT 요청으로 등록된 Task의 id 와 Task 가 주어진다면")
+        @DisplayName("PUT 요청으로 등록된 Task의 id 와 Task 가 주어진다면")
         class Context_with_id_and_task_in_put_request {
             @Test
             @DisplayName("200(Ok) 과 Task 를 응답합니다.")
@@ -214,7 +214,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 PATCH 요청으로 등록된 Task의 id 와 수정할 Task 가 주어진다면")
+        @DisplayName("PATCH 요청으로 등록된 Task의 id 와 수정할 Task 가 주어진다면")
         class Context_with_id_and_task_in_patch_request {
             @Test
             @DisplayName("200(Ok) 과 Task 를 응답합니다.")
@@ -229,7 +229,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 등록된 Task의 id 만 주어진다면")
+        @DisplayName("등록된 Task의 id 만 주어진다면")
         class Context_with_id {
             @Test
             @DisplayName("400(Bad Request) 를 응답합니다.")
@@ -242,7 +242,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 수정할 Task 만 주어진다면")
+        @DisplayName("수정할 Task 만 주어진다면")
         class Context_with_task {
             @Test
             @DisplayName("405(Method Not Allowed) 를 응답합니다.")
@@ -256,7 +256,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않은 Task의 id와 수정할 Task가 주어진다면 ")
+        @DisplayName("등록되지 않은 Task의 id와 수정할 Task가 주어진다면 ")
         class Context_with_invalid_id_and_task {
             @Test
             @DisplayName("404(NOT_FOUND) 를 응답합니다.")
@@ -274,7 +274,7 @@ class TaskControllerTest {
     @DisplayName("DELETE Mapping - Task 삭제 요청은")
     class Describe_delete_mapping {
         @Nested
-        @DisplayName("만약 등록된 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         class Context_with_id {
             @BeforeEach
             void prepare() {
@@ -291,7 +291,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 등록되지 않은 Task의 id가 주어진다면")
+        @DisplayName("등록되지 않은 Task의 id가 주어진다면")
         class Context_with_invalid_id {
             @BeforeEach
             void prepare() {
