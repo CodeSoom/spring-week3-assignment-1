@@ -25,7 +25,7 @@ class TaskServiceTest {
         Task source = new Task();
         source.setTitle(NEW_TITLE);
 
-        Task task = taskService.createTask(source);
+        taskService.createTask(source);
     }
 
     @DisplayName("getTasks는 저장하고 있는 할 일 목록을 반환한다.")
@@ -50,6 +50,7 @@ class TaskServiceTest {
     @Test
     void getTask_error() {
         Long taskId = 100L;
+
         assertThatThrownBy(() -> taskService.getTask(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
     }
@@ -70,11 +71,12 @@ class TaskServiceTest {
     @DisplayName("updateTask는 할 일을 수정한다")
     @Test
     void updateTask() {
-        Long taskId = 1L;
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
 
+        Long taskId = 1L;
         taskService.updateTask(taskId, source);
+
         Task task = taskService.getTask(taskId);
 
         assertThat(task.getId()).isEqualTo(taskId);
@@ -84,9 +86,9 @@ class TaskServiceTest {
     @DisplayName("deleteTask는 할 일 목록에서 주어진 할 일을 삭제한다")
     @Test
     void deleteTask() {
-        Long taskId = 1L;
         int oldSize = taskService.getTasks().size();
 
+        Long taskId = 1L;
         taskService.deleteTask(taskId);
 
         int newSize = taskService.getTasks().size();
