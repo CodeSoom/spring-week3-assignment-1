@@ -11,13 +11,16 @@ class TaskControllerTest {
     private TaskController controller;
     private TaskService taskService;
 
+    private static final String TASK_TITLE = "Test";
+    private static final String UPDATE_PREFIX = "Update";
+
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
         controller = new TaskController(taskService);
 
         Task task = new Task();
-        task.setTitle("Test");
+        task.setTitle(TASK_TITLE);
         controller.create(task);
     }
 
@@ -32,7 +35,7 @@ class TaskControllerTest {
 
         int oldSize = controller.list().size();
 
-        task.setTitle("Test");
+        task.setTitle(TASK_TITLE);
         controller.create(task);
 
         int newSize = controller.list().size();
@@ -54,22 +57,22 @@ class TaskControllerTest {
     @Test
     void updateTask() {
         Task source = new Task();
-        source.setTitle("Update title");
+        source.setTitle(UPDATE_PREFIX + TASK_TITLE);
 
         controller.update(1L, source);
 
         assertThat(controller.detail(1L).getTitle())
-                .isEqualTo("Update title");
+                .isEqualTo(UPDATE_PREFIX + TASK_TITLE);
     }
 
     @Test
     void patchTask() {
         Task source = new Task();
-        source.setTitle("Update title");
+        source.setTitle(UPDATE_PREFIX + TASK_TITLE);
 
         controller.patch(1L, source);
 
         assertThat(controller.detail(1L).getTitle())
-                .isEqualTo("Update title");
+                .isEqualTo(UPDATE_PREFIX + TASK_TITLE);
     }
 }
