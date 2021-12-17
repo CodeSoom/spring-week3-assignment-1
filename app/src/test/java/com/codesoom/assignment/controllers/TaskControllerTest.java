@@ -31,7 +31,7 @@ class TaskControllerTest {
         taskService.createTask(source);
     }
 
-    @DisplayName("list()는 저장하고 있는 할 일 목록을 반환한다")
+    @DisplayName("list 메소드는 저장하고 있는 할 일 목록을 반환한다")
     @Test
     void list() {
         List<Task> tasks = controller.list();
@@ -39,24 +39,25 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("detail()는")
+    @DisplayName("detail 메소드는 주어진 할 일을 반환한다")
     @Test
     void detail_ok() {
         Long taskId = 1L;
         Task task = controller.detail(taskId);
 
-        assertThat(task).isNotNull();
+        assertThat(task.getId()).isEqualTo(taskId);
     }
 
-    @DisplayName("잘못된 할일을 조회하면 예외가 터진다")
+    @DisplayName("detail 메소드는 주어지지 않는 할 일이면 예외를 던진다")
     @Test
     void detail_error() {
         Long taskId = 100L;
+
         assertThatThrownBy(() -> controller.detail(taskId))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("할일을 생성하면 할일 목록이 증가한다")
+    @DisplayName("create 메소드는 할 일을 생성하고 할 일 목록에 추가한다")
     @Test
     void create() {
         int oldSize = controller.list().size();
@@ -69,21 +70,20 @@ class TaskControllerTest {
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
-    @DisplayName("할일을 수정하면 데이터가 수정된다")
+    @DisplayName("update 메소드는 할 일을 수정한다")
     @Test
     void update() {
-        Long taskId = 1L;
         Task source = new Task();
         source.setTitle(NEW_TITLE + TITLE_POSTFIX);
 
+        Long taskId = 1L;
         controller.update(taskId, source);
         Task task = controller.detail(taskId);
 
-        assertThat(task.getId()).isEqualTo(taskId);
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
-    @DisplayName("할일을 삭제하면 할일 목록의 크기가 줄어든다")
+    @DisplayName("delete 메소드는 할 일 목록에서 주어진 할 일을 삭제한다")
     @Test
     void delete() {
         int oldSize = controller.list().size();
