@@ -56,9 +56,8 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    void detailWithInvalidId() throws Exception {
+    void detailWithNotExistedId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
     }
-
 }
