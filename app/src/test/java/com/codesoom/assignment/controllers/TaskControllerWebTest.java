@@ -21,6 +21,8 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,7 +48,7 @@ class TaskControllerWebTest {
     class Describe_get {
         @Nested
         @DisplayName("등록된 Task가 있다면")
-        class context_has_task {
+        class Context_has_task {
             final int taskCnt = 3;
 
             @BeforeEach
@@ -64,40 +66,61 @@ class TaskControllerWebTest {
                         .andExpect(jsonPath("$.*", hasSize(taskCnt)));
             }
         }
-    }
 
-    @Nested
-    @DisplayName("등록된 Task가 없다면")
-    class context_none_task {
-        final int taskCnt = 3;
+        @Nested
+        @DisplayName("등록된 Task가 없다면")
+        class Context_get_task {
+            final int taskCnt = 3;
 
-        @BeforeEach
-        void setUp() {
-            List<Task> tasks = taskService.getTasks();
-            tasks.forEach(task -> taskService.deleteTask(task.getId()));
+            @BeforeEach
+            void setUp() {
+                List<Task> tasks = taskService.getTasks();
+                tasks.forEach(task -> taskService.deleteTask(task.getId()));
+            }
+
+            @Test
+            @DisplayName("빈 리스트를 리턴한다.")
+            void it_return_list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.*", hasSize(0)));
+            }
         }
 
-        @Test
-        @DisplayName("빈 리스트를 리턴한다.")
-        void it_return_list() throws Exception {
-            mockMvc.perform(get("/tasks"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.*", hasSize(0)));
+        @Nested
+        @DisplayName("등록된 id 값이 주어졌을때")
+        class Context_with_id {
+            Task task;
+
+            Long findId() {
+                return task.getId();
+            }
+
+            @BeforeEach
+            void setUp() {
+                task = taskService.createTask(getTask());
+            }
+
+            @Test
+            @DisplayName("등록된 task 정보를 리턴한다.")
+            void it_return_task() throws Exception {
+                mockMvc.perform(get("/tasks/" + findId()))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.*").exists());
+            }
         }
-    }
 
-
-    @Test
-    void detailWithValidId() throws Exception {
-        mockMvc.perform(get("/tasks/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(TASK_TITLE)));
-    }
-
-    @Test
-    void detailWithInvalidId() throws Exception {
-        mockMvc.perform(get("/tasks/0"))
-                .andExpect(status().isNotFound());
+        @Nested
+        @DisplayName("등록되지않은 id 값이 주어졌을때")
+        class Context_none_id {
+            @Test
+            @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
+            void it_return_taskNotFoundException() throws Exception {
+                mockMvc.perform(get("/tasks/0"))
+                        .andExpect(status().isNotFound())
+                        .andExpect(result -> assertTrue(result.getResolvedException() instanceof TaskNotFoundException));
+            }
+        }
     }
 
     @Test
@@ -111,8 +134,7 @@ class TaskControllerWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$task.title").value(NEW_TITLE));
+                .andExpect(status().isCreated());
         //.andExpect(content().string(containsString(NEW_TITLE)));
         // 동작이 되지 않는 이유?
         // Response content
