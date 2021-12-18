@@ -128,10 +128,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("null 주어진다면")
         class Context_without_task {
+            Task givenNullTask = null;
+
             @Test
             @DisplayName("NullPointerException을 던진다.")
             void it_return_exception() {
-                assertThatThrownBy(() -> taskService.createTask(null)).isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskService.createTask(givenNullTask)).isInstanceOf(NullPointerException.class);
             }
         }
     }
@@ -167,6 +169,7 @@ class TaskServiceTest {
         @DisplayName("등록된 Task의 id 만 주어진다면")
         class Context_with_id {
             Task givenTask;
+            Task givenNullTask = null;
             Long givenId() {
                 return givenTask.getId();
             }
@@ -179,17 +182,19 @@ class TaskServiceTest {
             @Test
             @DisplayName("NullPointerException을 던진다.")
             void it_update_task_return_task() {
-                assertThatThrownBy(() -> taskService.updateTask(givenId(), null)).isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(() -> taskService.updateTask(givenId(), givenNullTask)).isInstanceOf(NullPointerException.class);
             }
         }
 
         @Nested
         @DisplayName("등록된 Task 만 주어진다면")
         class Context_with_task {
+            Long givenNullId = null;
+
             @Test
             @DisplayName("Task를 찾을 수 없다는 내용의 예외를 던진다.")
             void it_return_taskNotFoundException() {
-                assertThatThrownBy(() -> taskService.updateTask(null, getTaskWithPostfix())).isInstanceOf(TaskNotFoundException.class);
+                assertThatThrownBy(() -> taskService.updateTask(givenNullId, getTaskWithPostfix())).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
