@@ -129,7 +129,7 @@ class TaskServiceTest {
         @DisplayName("null 주어진다면")
         class Context_without_task {
             @Test
-            @DisplayName("아무것도 가리키지 않는 내용의 예외를 던진다.")
+            @DisplayName("NullPointerException을 던진다.")
             void it_return_exception() {
                 assertThatThrownBy(() -> taskService.createTask(null)).isInstanceOf(NullPointerException.class);
             }
@@ -177,7 +177,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("아무것도 가리키지 않는 내용의 예외를 던진다.")
+            @DisplayName("NullPointerException을 던진다.")
             void it_update_task_return_task() {
                 assertThatThrownBy(() -> taskService.updateTask(givenId(), null)).isInstanceOf(NullPointerException.class);
             }
