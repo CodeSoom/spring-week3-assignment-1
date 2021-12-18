@@ -21,16 +21,12 @@ public class HelloControllerWebTest {
     @Nested
     class Describe_sayHello {
 
-        @DisplayName("항상")
-        @Nested
-        class Context_always {
-
-            @DisplayName("HTTP status ok를 반환한다.")
-            @Test
-            void it_returns_status_ok() throws Exception {
-                mockMvc.perform(get("/"))
-                        .andExpect(status().isOk());
-            }
+        @DisplayName("HTTP status ok를 반환한다.")
+        @Test
+        void it_returns_status_ok() throws Exception {
+            mockMvc.perform(get("/"))
+                    .andExpect(status().isOk());
         }
+
     }
 }

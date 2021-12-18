@@ -38,7 +38,7 @@ class TaskControllerTest {
     @DisplayName("detail 메서드는")
     @Nested
     class Describe_detail {
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
 
@@ -52,14 +52,14 @@ class TaskControllerTest {
                 return taskController.detail(INVALID_ID);
             }
 
-            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @DisplayName("'Task를 찾을수 없다'는 예외를 던진다.")
             @Test
             void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
 
@@ -73,7 +73,7 @@ class TaskControllerTest {
                 return taskController.detail(VALID_ID);
             }
 
-            @DisplayName("해당 id의 Task를 반환한다.")
+            @DisplayName("해당 id의 Task를 리턴한다.")
             @Test
             void it_returns_task_of_that_id() {
                 Task result = subject();
@@ -95,7 +95,7 @@ class TaskControllerTest {
             task.setTitle(UPDATE_TASK_TITLE);
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
 
@@ -110,14 +110,14 @@ class TaskControllerTest {
                 return taskController.update(INVALID_ID, task);
             }
 
-            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @DisplayName("'Task를 찾을수 없다'는 예외를 던진다.")
             @Test
             void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
 
@@ -132,9 +132,9 @@ class TaskControllerTest {
                 return taskController.update(VALID_ID, task);
             }
 
-            @DisplayName("업데이트한 Task를 반환한다.")
+            @DisplayName("해당 id의 Task를 업데이트하고 업데이트한 Task를 리턴한다.")
             @Test
-            void it_returns_task_of_that_id() {
+            void it_returns_updated_task() {
                 Task result = subject();
                 assertThat(result.getTitle()).isEqualTo(UPDATE_TASK_TITLE);
                 assertThat(result.getId()).isEqualTo(VALID_ID);
@@ -156,7 +156,7 @@ class TaskControllerTest {
             task.setTitle(UPDATE_TASK_TITLE);
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
 
@@ -171,14 +171,14 @@ class TaskControllerTest {
                 return taskController.patch(INVALID_ID, task);
             }
 
-            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @DisplayName("'Task를 찾을수 없다'는 예외를 던진다.")
             @Test
             void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
 
@@ -193,7 +193,7 @@ class TaskControllerTest {
                 return taskController.patch(VALID_ID, task);
             }
 
-            @DisplayName("업데이트한 Task를 반환한다.")
+            @DisplayName("해당 id의 Task를 업데이트하고 업데이트한 Task를 리턴한다.")
             @Test
             void it_returns_task_of_that_id() {
                 Task result = subject();
@@ -209,7 +209,7 @@ class TaskControllerTest {
     @Nested
     class Describe_delete {
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
 
@@ -223,14 +223,14 @@ class TaskControllerTest {
                 taskController.delete(INVALID_ID);
             }
 
-            @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
+            @DisplayName("'Task를 찾을수 없다'는 예외를 던진다.")
             @Test
             void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> subject()).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
 
@@ -256,10 +256,9 @@ class TaskControllerTest {
     @DisplayName("list 메서드는")
     @Nested
     class Describe_list {
-        @DisplayName("Task를 하나 가지고있다면")
+        @DisplayName("등록된 Task가 있다면")
         @Nested
-        class Context_has_test_task {
-
+        class Context_with_task {
             @BeforeEach
             void prepare() {
                 prepareTaskController();
@@ -270,12 +269,32 @@ class TaskControllerTest {
                 return taskController.list();
             }
 
-            @DisplayName("Task를 하나 가진 List를 반환한다.")
+            @DisplayName("등록된 모든 Task의 List를 리턴한다.")
             @Test
-            void it_returns_list_with_test_task() {
+            void it_returns_list_with_task() {
                 List<Task> result = subject();
                 assertThat(result).hasSize(1);
                 assertThat(result.get(0).getTitle()).isEqualTo(TEST_TASK_TITLE);
+            }
+        }
+
+        @DisplayName("등록된 Task가 하나도 없다면")
+        @Nested
+        class Context_without_task {
+            @BeforeEach
+            void prepare() {
+                prepareTaskController();
+            }
+
+            List<Task> subject() {
+                return taskController.list();
+            }
+
+            @DisplayName("비어있는 List를 리턴한다.")
+            @Test
+            void it_returns_empty_list() {
+                List<Task> result = subject();
+                assertThat(result).isEmpty();
             }
         }
     }

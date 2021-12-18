@@ -61,10 +61,10 @@ public class TaskControllerWebTest {
             prepareTestTask();
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
-            @DisplayName("status not found를 반환한다.")
+            @DisplayName("status not found를 리턴한다.")
             @Test
             void it_responses_not_found() throws Exception {
                 mockMvc.perform(get("/tasks/" + INVALID_ID))
@@ -72,10 +72,10 @@ public class TaskControllerWebTest {
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
-            @DisplayName("status ok와 해당 id의 Task를 json 타입으로 반환한다.")
+            @DisplayName("status ok와 해당 id의 Task를 json 타입으로 리턴한다.")
             @Test
             void it_responses_that_task() throws Exception {
                 mockMvc.perform(get("/tasks/" + VALID_ID))
@@ -106,10 +106,10 @@ public class TaskControllerWebTest {
             prepareContent();
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
-            @DisplayName("status not found를 반환한다.")
+            @DisplayName("status not found를 리턴한다.")
             @Test
             void it_responses_not_found() throws Exception {
                 mockMvc.perform(put("/tasks/" + INVALID_ID)
@@ -119,7 +119,7 @@ public class TaskControllerWebTest {
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
             @DisplayName("status ok와 업데이트한 Task를 json 타입으로 반환한다.")
@@ -155,10 +155,10 @@ public class TaskControllerWebTest {
             prepareContent();
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
-            @DisplayName("status not found를 반환한다.")
+            @DisplayName("status not found를 리턴한다.")
             @Test
             void it_responses_not_found() throws Exception {
                 mockMvc.perform(patch("/tasks/" + INVALID_ID)
@@ -168,10 +168,10 @@ public class TaskControllerWebTest {
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
-            @DisplayName("status ok와 업데이트한 Task를 json 타입으로 반환한다.")
+            @DisplayName("해당 id의 Task를 업데이트하고, status ok와 업데이트한 Task를 json 타입으로 리턴한다.")
             @Test
             void it_responses_updated_task() throws Exception {
                 mockMvc.perform(patch("/tasks/" + VALID_ID)
@@ -192,10 +192,10 @@ public class TaskControllerWebTest {
             prepareTestTask();
         }
 
-        @DisplayName("존재하지않는 Task의 id가 주어진다면")
+        @DisplayName("등록되지않은 Task의 id가 주어진다면")
         @Nested
         class Context_with_invalid_id {
-            @DisplayName("status not found를 반환한다.")
+            @DisplayName("status not found를 리턴한다.")
             @Test
             void it_responses_not_found() throws Exception {
                 mockMvc.perform(delete("/tasks/" + INVALID_ID))
@@ -203,10 +203,10 @@ public class TaskControllerWebTest {
             }
         }
 
-        @DisplayName("존재하는 Task의 id가 주어진다면")
+        @DisplayName("등록된 Task의 id가 주어진다면")
         @Nested
         class Context_with_valid_id {
-            @DisplayName("해당 id의 Task를 삭제하고 no content를 반환한다.")
+            @DisplayName("해당 id의 Task를 삭제하고 status no content를 리턴한다.")
             @Test
             void it_responses_no_content() throws Exception {
                 mockMvc.perform(delete("/tasks/" + VALID_ID))
@@ -218,7 +218,7 @@ public class TaskControllerWebTest {
     @DisplayName("POST - '/tasks' 는")
     @Nested
     class Describe_create {
-        @DisplayName("Task가 주어진다면")
+        @DisplayName("생성할 Task가 주어진다면")
         @Nested
         class Context_with_new_task {
             private static final String NEW_TASK_TITLE = "new";
@@ -236,7 +236,7 @@ public class TaskControllerWebTest {
                 prepareContent();
             }
 
-            @DisplayName("해당 Task를 저장하고, status created과 함께 반환한다.")
+            @DisplayName("해당 Task를 생성하고, status created과 함께 리턴한다.")
             @Test
             void it_responses_new_task() throws Exception {
                 mockMvc.perform(post("/tasks")
@@ -252,9 +252,9 @@ public class TaskControllerWebTest {
     @DisplayName("GET - '/tasks' 는")
     @Nested
     class Describe_list {
-        @DisplayName("Task를 하나 가지고있다면")
+        @DisplayName("등록된 Task가 있다면")
         @Nested
-        class Context_has_test_task {
+        class Context_with_task {
 
             @BeforeEach
             void prepare() {
@@ -262,13 +262,32 @@ public class TaskControllerWebTest {
                 prepareTestTask();
             }
 
-            @DisplayName("status ok과 Task 하나를 가진 List를 json타입으로 반환한다.")
+            @DisplayName("status ok과 등록된 모든 Task의 List를 json타입으로 리턴한다.")
             @Test
             void it_responses_list_with_test_task() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(content().string(containsString(TEST_TASK_TITLE)));
+            }
+        }
+
+        @DisplayName("등록된 Task가 없다면")
+        @Nested
+        class Context_without_task {
+
+            @BeforeEach
+            void prepare() {
+                prepareTaskService();
+            }
+
+            @DisplayName("status ok와 비어있는 리스트를 리턴한다.")
+            @Test
+            void it_responses_list_with_test_task() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(content().string(containsString("[]")));
             }
         }
     }

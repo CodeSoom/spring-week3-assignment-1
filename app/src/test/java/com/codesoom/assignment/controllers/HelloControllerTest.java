@@ -12,26 +12,23 @@ class HelloControllerTest {
     @DisplayName("sayHello 메서드는")
     @Nested
     class Describe_sayHello {
-        @DisplayName("항상")
-        @Nested
-        class Context_always {
-            private HelloController helloController;
+        private HelloController helloController;
 
-            @BeforeEach
-            void prepareHelloController() {
-                helloController = new HelloController();
-            }
-
-            String subject() {
-                return helloController.sayHello();
-            }
-
-            @DisplayName("문자열을 반환한다.")
-            @Test
-            void it_returns_string() {
-                final String result = subject();
-                assertThat(result).isInstanceOf(String.class);
-            }
+        @BeforeEach
+        void prepareHelloController() {
+            helloController = new HelloController();
         }
+
+        String subject() {
+            return helloController.sayHello();
+        }
+
+        @DisplayName("서버 생존여부 확인용 문자열을 리턴한다.")
+        @Test
+        void it_returns_string() {
+            final String result = subject();
+            assertThat(result).isInstanceOf(String.class);
+        }
+
     }
 }
