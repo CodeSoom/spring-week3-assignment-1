@@ -36,10 +36,10 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks{
         @Nested
-        @DisplayName("모든")
-        class Context_everything{
+        @DisplayName("Task가 등록되어 있다면")
+        class Context_have_task{
             @Test
-            @DisplayName("Task를 가져온다")
+            @DisplayName("등록된 모든 Task를 리턴한다")
             void It_return_tasks(){
                 List<Task> tasks = taskService.getTasks();
 
@@ -49,16 +49,30 @@ class TaskServiceTest {
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
+        @Nested
+        @DisplayName("Task가 등록되어 있지 않다면")
+        class Context_have_not_task{
+            @Test
+            @DisplayName("비어 있는 리스트를 리턴한다")
+            void it_return_tasks(){
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).hasSize(1);
+
+                Task task = tasks.get(0);
+                assertThat(task.getTitle()).isEmpty();
+            }
+        }
     }
 
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_getTask{
         @Nested
-        @DisplayName("Id가 있으면")
+        @DisplayName("등록된 Task의 id가 주어지면")
         class Context_withValid_id{
             @Test
-            @DisplayName("해당 정보를 가져온다")
+            @DisplayName("해당 Task를 리턴한다")
             void It_return_task(){
                 Task found = taskService.getTask(1L);
                 assertThat(found.getTitle()).isEqualTo(TASK_TITLE);
@@ -66,10 +80,10 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("Id가 없으면")
+        @DisplayName("Task를 찾을 수 없는 id가 주어지면")
         class Context_withInvalid_id{
             @Test
-            @DisplayName("에러가 발상핸다")
+            @DisplayName("테스크를 찾을 수 없다는 내용의 예외를 던진다.")
             void It_return_error(){
                 assertThatThrownBy(()-> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
             }
@@ -77,13 +91,13 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask는")
+    @DisplayName("createTask 메소드는")
     class Describe_createTask{
         @Nested
-        @DisplayName("새로운 Task가 있다면")
+        @DisplayName("등록할 Task가 주어진다면")
         class Context_with_task{
             @Test
-            @DisplayName("Task를 생성한다")
+            @DisplayName("Task를 생성하고 리턴한다.")
             void It_return_task(){
                 int oldSize = taskService.getTasks().size();
                 Task task = new Task();
@@ -96,12 +110,16 @@ class TaskServiceTest {
                 assertThat(newSize - oldSize).isEqualTo(1);
             }
         }
-        @Test
-        @DisplayName("Task가 없다면")
-        void it_return_error(){
-            Task task = null;
+        @Nested
+        @DisplayName("등록할 Task가 주어지지 않는다면")
+        class Context_without_task{
+            @Test
+            @DisplayName("내용이 없다는 예외를 던진다.")
+            void it_return_error(){
+                Task task = null;
 
-            assertThatThrownBy(()-> taskService.createTask(task)).isInstanceOf(NullPointerException.class);
+                assertThatThrownBy(()-> taskService.createTask(task)).isInstanceOf(NullPointerException.class);
+            }
         }
     }
 
@@ -109,10 +127,10 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask{
         @Nested
-        @DisplayName("올바른 id가 주어진다면")
+        @DisplayName("등록된 태스크의 id가 주어진다면")
         class Context_withValid_id{
             @Test
-            @DisplayName("바뀐 값이 리턴한다")
+            @DisplayName("등록되어있는 Task를 바꾸고 리턴한다.")
             void it_return_task(){
                 Task source = new Task();
                 source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
@@ -123,10 +141,10 @@ class TaskServiceTest {
             }
         }
         @Nested
-        @DisplayName("id가 올바르지 않다면")
+        @DisplayName("등록되지 않은 Task의 id가 주어진다면")
         class Context_withInvalid_id{
             @Test
-            @DisplayName("에러가 발상핸다")
+            @DisplayName("Task를 찾을수 없다는 예외를 던진다.")
             void It_return_error(){
                 Task source = new Task();
                 source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
