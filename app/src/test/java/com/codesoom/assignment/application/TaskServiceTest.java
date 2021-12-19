@@ -25,11 +25,6 @@ class TaskServiceTest {
         // subject
         taskService = new TaskService();
 
-        //fixtures
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-
-        taskService.createTask(task);
     }
 
     @Nested
@@ -38,6 +33,16 @@ class TaskServiceTest {
         @Nested
         @DisplayName("Task가 등록되어 있다면")
         class Context_have_task{
+
+            // 설멸문의 Task가 등록되어 있다면과 똑같은 조건이 되도록 여기에 준비한다.
+            @BeforeEach
+            void prepareTask(){
+                Task task = new Task();
+                task.setTitle(TASK_TITLE);
+
+                taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("등록된 모든 Task를 리턴한다")
             void It_return_tasks(){
@@ -52,15 +57,16 @@ class TaskServiceTest {
         @Nested
         @DisplayName("Task가 등록되어 있지 않다면")
         class Context_have_not_task{
+
+            @BeforeEach
+            void prepareTask(){
+                List<Task> tasks = taskService.getTasks();
+                tasks.forEach(task -> taskService.deleteTask(task.getId()));
+            }
             @Test
             @DisplayName("비어 있는 리스트를 리턴한다")
             void it_return_tasks(){
-                List<Task> tasks = taskService.getTasks();
-
-                assertThat(tasks).hasSize(1);
-
-                Task task = tasks.get(0);
-                assertThat(task.getTitle()).isEmpty();
+                assertThat(taskService.getTasks()).isEmpty();
             }
         }
     }
@@ -71,6 +77,14 @@ class TaskServiceTest {
         @Nested
         @DisplayName("등록된 Task의 id가 주어지면")
         class Context_withValid_id{
+
+            @BeforeEach
+            void prepareTask(){
+                Task task = new Task();
+                task.setTitle(TASK_TITLE);
+
+                taskService.createTask(task);
+            }
             @Test
             @DisplayName("해당 Task를 리턴한다")
             void It_return_task(){
@@ -80,7 +94,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("Task를 찾을 수 없는 id가 주어지면")
+        @DisplayName("Task를 찾을 수 없는 id(100L)가 주어지면")
         class Context_withInvalid_id{
             @Test
             @DisplayName("테스크를 찾을 수 없다는 내용의 예외를 던진다.")
@@ -129,6 +143,15 @@ class TaskServiceTest {
         @Nested
         @DisplayName("등록된 태스크의 id가 주어진다면")
         class Context_withValid_id{
+
+            @BeforeEach
+            void prepareTask(){
+                Task task = new Task();
+                task.setTitle(TASK_TITLE);
+
+                taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("등록되어있는 Task를 바꾸고 리턴한다.")
             void it_return_task(){

@@ -23,6 +23,11 @@ class TaskControllerTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+
+        // 가능 한것
+        // 1. Real object
+        // 2. Mock object
+        // 3. Spy -> Proxy
         controller = new TaskController(taskService);
 
         Task task = new Task();
@@ -32,10 +37,24 @@ class TaskControllerTest {
     }
 
     @Test
-    void list() {
-        List<Task> tasks = controller.list();
+    void listWithoutTasks() {
+        // TODO : service -> returns empty list
 
-        assertThat(tasks).hasSize(1);
+        // taskService.getTask
+        //Controller -> Sqy -< Real Object
+
+        assertThat(controller.list()).isEmpty();
+    }
+
+    @Test
+    void listWithSomeTasks() {
+        // TODO : service -> returns list that contains one task.
+
+        Task task = new Task();
+        task.setTitle(TASK_TITLE);
+        controller.create(task);
+
+        assertThat(controller.list()).isNotEmpty();
     }
 
     @Test
