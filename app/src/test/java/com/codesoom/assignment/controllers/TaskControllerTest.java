@@ -81,8 +81,6 @@ class TaskControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(givenTaskCnt)))
                         .andDo(print());
-
-                verify(taskService, atLeast(1)).getTasks();
             }
         }
         @Nested
@@ -95,8 +93,6 @@ class TaskControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(0)))
                         .andDo(print());
-
-                verify(taskService, atLeast(1)).getTasks();
             }
         }
 
@@ -117,8 +113,6 @@ class TaskControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.title").value(TEST_TITLE))
                         .andDo(print());
-
-                verify(taskService).getTask(givenId);
             }
         }
 
@@ -138,8 +132,6 @@ class TaskControllerTest {
                 mockMvc.perform(get("/tasks/" + givenNotExistedId))
                         .andExpect(status().isNotFound())
                         .andDo(print());
-
-                verify(taskService).getTask(givenNotExistedId);
             }
         }
     }
@@ -180,8 +172,6 @@ class TaskControllerTest {
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.title").value(givenTask.getTitle()))
                         .andDo(print());
-
-                verify(taskService).createTask(any(Task.class));
             }
         }
 
@@ -195,8 +185,6 @@ class TaskControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
-
-                verify(taskService, never()).createTask(any(Task.class));
             }
         }
     }
@@ -240,8 +228,6 @@ class TaskControllerTest {
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.title").value(givenTask.getTitle()))
                         .andDo(print());
-
-                verify(taskService, atLeast(1)).updateTask(eq(givenId), any(Task.class));
             }
         }
 
@@ -257,8 +243,6 @@ class TaskControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(givenId))
                         .andExpect(jsonPath("$.title").value(givenTask.getTitle()));
-
-                verify(taskService, atLeast(1)).updateTask(eq(givenId), any(Task.class));
             }
         }
 
@@ -272,8 +256,6 @@ class TaskControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
                         .andDo(print());
-
-//                verify(taskService, never()).updateTask(eq(VALID_ID), any(Task.class));
             }
         }
 
@@ -302,8 +284,6 @@ class TaskControllerTest {
                                 .content(taskToContent(givenTask)))
                         .andExpect(status().isNotFound())
                         .andDo(print());
-
-                verify(taskService, atLeast(1)).updateTask(eq(INVALID_ID), any(Task.class));
             }
         }
     }
@@ -325,8 +305,6 @@ class TaskControllerTest {
                 mockMvc.perform(delete("/tasks/" + VALID_ID))
                         .andExpect(status().isNoContent())
                         .andDo(print());
-
-                verify(taskService).deleteTask(eq(VALID_ID));
             }
         }
 
@@ -344,8 +322,6 @@ class TaskControllerTest {
                 mockMvc.perform(delete("/tasks/" + INVALID_ID))
                         .andExpect(status().isNotFound())
                         .andDo(print());
-
-                verify(taskService).deleteTask(INVALID_ID);
             }
         }
     }
