@@ -36,7 +36,7 @@ class TaskServiceTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("getTask 메소드는 주어진 할 일을 반환한다")
+    @DisplayName("getTask 메소드는 주어진 아이디의 할 일을 반환한다")
     @Test
     void getTask_ok() {
         Long taskId = 1L;
@@ -45,7 +45,7 @@ class TaskServiceTest {
         assertThat(task.getId()).isEqualTo(taskId);
     }
 
-    @DisplayName("getTask 메소드는 주어지지 않는 할 일이면 예외를 던진다")
+    @DisplayName("getTask 메소드는 주어진 아이디의 할 일을 찾을 수 없는 경우 예외를 던진다")
     @Test
     void getTask_error() {
         Long taskId = 100L;
@@ -67,7 +67,7 @@ class TaskServiceTest {
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
-    @DisplayName("updateTask 메소드는 할 일을 수정한다")
+    @DisplayName("updateTask 메소드는 주어진 아이디의 할 일을 수정한다")
     @Test
     void updateTask() {
         Task source = new Task();
@@ -81,7 +81,7 @@ class TaskServiceTest {
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
-    @DisplayName("deleteTask 메소드는 할 일 목록에서 주어진 할 일을 삭제한다")
+    @DisplayName("deleteTask 메소드는 할 일 목록에서 주어진 아이디의 할 일을 삭제한다")
     @Test
     void deleteTask() {
         int oldSize = taskService.getTasks().size();
