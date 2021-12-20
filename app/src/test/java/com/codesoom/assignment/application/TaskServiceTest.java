@@ -78,7 +78,7 @@ class TaskServiceTest {
 
         Task task = taskService.getTask(taskId);
 
-        assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
+        assertThat(task.getTitle()).isEqualTo(source.getTitle());
     }
 
     @DisplayName("deleteTask 메소드는 할 일 목록에서 주어진 아이디의 할 일을 삭제한다")
