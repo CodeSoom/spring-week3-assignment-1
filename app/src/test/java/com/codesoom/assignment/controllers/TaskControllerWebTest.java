@@ -100,7 +100,7 @@ public class TaskControllerWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         )
                 .andExpect(status().isCreated())
-                .andExpect(content().string(containsString(NEW_TITLE)));
+                .andExpect(content().string(containsString(source.getTitle())));
     }
 
     @DisplayName("PATCH /tasks/{id} 요청은 주어진 id의 할 일을 수정한다")
@@ -119,7 +119,7 @@ public class TaskControllerWebTest {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(NEW_TITLE + TITLE_POSTFIX)));
+                .andExpect(content().string(containsString(source.getTitle())));
     }
 
     @DisplayName("DELETE /tasks/{id} 요청은 주어진 id의 할 일을 삭제한다")
