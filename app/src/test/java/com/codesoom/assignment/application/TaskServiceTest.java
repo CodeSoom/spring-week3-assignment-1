@@ -166,7 +166,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("등록된 Task의 id 만 주어진다면")
+        @DisplayName("등록된 Task의 id과 null 주어진다면")
         class Context_with_id {
             Task givenTask;
             Task givenNullTask = null;
@@ -187,7 +187,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("등록된 Task 만 주어진다면")
+        @DisplayName("등록된 Task가 null로 주어진다면")
         class Context_with_task {
             Long givenNullId = null;
 

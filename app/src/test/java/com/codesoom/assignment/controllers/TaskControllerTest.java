@@ -263,7 +263,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("등록된 Task의 id 만 주어진다면")
+        @DisplayName("등록된 Task의 id와 null이 주어진다면")
         class Context_with_id {
             @Test
             @DisplayName("400(Bad Request) 를 응답합니다.")
@@ -278,7 +278,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("수정할 Task 만 주어진다면")
+        @DisplayName("수정할 id가 없고 Task만 주어진다면")
         class Context_with_task {
             @Test
             @DisplayName("405(Method Not Allowed) 를 응답합니다.")
