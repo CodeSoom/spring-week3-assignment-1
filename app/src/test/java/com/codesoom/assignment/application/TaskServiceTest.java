@@ -11,12 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskServiceTest {
-    // 1. list -> getTasks
-    // 2. detail -> getTask (with ID)
-    // 3. create -> createTask (with source)
-    // 4. update -> updateTask (with ID, source)
-    // 5. delete -> deleteTask (with ID)
-
     private TaskService taskService;
 
     private static final String TASK_TITLE = "test";
@@ -43,13 +37,13 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTaskWithValidId() {
+    void getTaskWithExistedId() {
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
-    void getTaskWithInvalideId() {
+    void getTaskWithNotExistedId() {
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
@@ -69,7 +63,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateTask() {
+    void updateTaskWithExistedId() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
 
@@ -80,7 +74,16 @@ class TaskServiceTest {
     }
 
     @Test
-    void deleteTask() {
+    void updateTaskWithNotExistedId() {
+        Task source = new Task();
+        source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+
+        assertThatThrownBy(() -> taskService.updateTask(100L, source))
+                .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    void deleteTaskWithExistedId() {
         int oldSize = taskService.getTasks().size();
 
         taskService.deleteTask(1L);
@@ -88,5 +91,11 @@ class TaskServiceTest {
         int newSize = taskService.getTasks().size();
 
         assertThat(oldSize - newSize).isEqualTo(1);
+    }
+
+    @Test
+    void deleteTaskWithNotExistedId() {
+        assertThatThrownBy(() -> taskService.deleteTask(100L))
+                .isInstanceOf(TaskNotFoundException.class);
     }
 }
