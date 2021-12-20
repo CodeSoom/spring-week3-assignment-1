@@ -18,10 +18,11 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,7 +49,10 @@ public class TaskControllerWebTest {
         given(taskService.getTasks()).willReturn(tasks);
         given(taskService.getTask(1L)).willReturn(task);
         given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
-
+        given(taskService.updateTask(eq(100L), any(Task.class)))
+                .willThrow(new TaskNotFoundException(100L));
+        given(taskService.deleteTask(100L))
+                .willThrow(new TaskNotFoundException(100L));
         given(taskService.createTask(task)).willReturn(task);
     }
 
@@ -57,18 +61,24 @@ public class TaskControllerWebTest {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Test Task")));
+
+        verify(taskService).getTasks();
     }
 
     @Test
-    void detailWithValidId() throws Exception {
+    void detailWithExistedId() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk());
+
+        verify(taskService).getTask(1L);
     }
 
     @Test
     void detailWithNotExistedId() throws Exception {
         mockMvc.perform(get("/tasks/100"))
                 .andExpect(status().isNotFound());
+
+        verify(taskService).getTask(100L);
     }
 
     @Test
@@ -78,18 +88,69 @@ public class TaskControllerWebTest {
     }
 
     @Test
-    void create() throws Exception {
+    void createTask() throws Exception {
         Task source = new Task();
         source.setTitle("Test task");
 
         String content = objectMapper.writeValueAsString(source);
 
-        mockMvc.perform(post("/tasks")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        mockMvc.perform(
+                        post("/tasks")
+                                .content(content)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isCreated());
-        // TODO: 빈 응답값이 온다. 왜 그럴까? 응답값은 어떻게 테스트 하는가?
+
+        verify(taskService).createTask(any(Task.class));
+    }
+
+    @Test
+    void updateWithExistedTask() throws Exception {
+        Task source = new Task();
+        source.setTitle("Update task");
+
+        String content = objectMapper.writeValueAsString(source);
+
+        mockMvc.perform(
+                        patch("/tasks/1")
+                                .content(content)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+
+        verify(taskService).updateTask(eq(1L), any(Task.class));
+    }
+
+    @Test
+    void updateWithNotExistedTask() throws Exception {
+        Task source = new Task();
+        source.setTitle("Update task");
+
+        String content = objectMapper.writeValueAsString(source);
+
+        mockMvc.perform(
+                        patch("/tasks/100")
+                                .content(content)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
+
+        verify(taskService).updateTask(eq(100L), any(Task.class));
+    }
+
+    @Test
+    void deleteWithExistedTask() throws Exception {
+        mockMvc.perform(delete("/tasks/1"))
+                .andExpect(status().isOk());
+
+        verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void deleteWithNotExistedTask() throws Exception {
+        mockMvc.perform(delete("/tasks/100"))
+                .andExpect(status().isNotFound());
+
+        verify(taskService).deleteTask(100L);
     }
 }
