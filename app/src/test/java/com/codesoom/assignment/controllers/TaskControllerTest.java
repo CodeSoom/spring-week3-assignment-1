@@ -39,7 +39,7 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("detail 메소드는 주어진 할 일을 반환한다")
+    @DisplayName("detail 메소드는 주어진 아이디의 할 일을 반환한다")
     @Test
     void detail_ok() {
         Long taskId = 1L;
@@ -48,7 +48,7 @@ class TaskControllerTest {
         assertThat(task.getId()).isEqualTo(taskId);
     }
 
-    @DisplayName("detail 메소드는 주어지지 않는 할 일이면 예외를 던진다")
+    @DisplayName("detail 메소드는 찾을 수 없는 아이디의 할 일이면 예외를 던진다")
     @Test
     void detail_error() {
         Long taskId = 100L;
@@ -70,7 +70,7 @@ class TaskControllerTest {
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
-    @DisplayName("update 메소드는 할 일을 수정한다")
+    @DisplayName("update 메소드는 주어진 아이디의 할 일을 수정한다")
     @Test
     void update() {
         Task source = new Task();
@@ -83,7 +83,7 @@ class TaskControllerTest {
         assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
     }
 
-    @DisplayName("delete 메소드는 할 일 목록에서 주어진 할 일을 삭제한다")
+    @DisplayName("delete 메소드는 주어진 아이디의 할 일을 삭제한다")
     @Test
     void delete() {
         int oldSize = controller.list().size();

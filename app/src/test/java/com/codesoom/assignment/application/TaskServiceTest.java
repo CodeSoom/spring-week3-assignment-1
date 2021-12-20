@@ -36,7 +36,7 @@ class TaskServiceTest {
         assertThat(tasks).hasSize(1);
     }
 
-    @DisplayName("getTask 메소드는 주어진 아이디의 할 일을 반환한다")
+    @DisplayName("getTask 메소드는 주어진 아이디에 할 일을 반환한다")
     @Test
     void getTask_ok() {
         Long taskId = 1L;
