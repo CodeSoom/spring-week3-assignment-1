@@ -68,7 +68,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("GET /tasks/{id} 요청은 주어진 할 일을 반환한다")
+    @DisplayName("GET /tasks/{id} 요청은 주어진 id의 할 일을 반환한다")
     @Test
     void detail_ok() throws Exception {
         mockMvc.perform(get("/tasks/1"))
@@ -76,7 +76,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("GET /tasks/{id} 요청에서 할 일 목록에서 주어지지 않는 할 일이면 예외를 던진다")
+    @DisplayName("GET /tasks/{id} 요청은 찾을 수 없는 id의 할 일이면 예외를 던진다")
     @Test
     void detail_fail() throws Exception {
         Long wrongId = 100L;
@@ -103,7 +103,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE)));
     }
 
-    @DisplayName("PATCH /tasks/{id} 요청은 할 일을 수정한다")
+    @DisplayName("PATCH /tasks/{id} 요청은 주어진 id의 할 일을 수정한다")
     @Test
     void update() throws Exception {
         Task source = new Task();
@@ -122,7 +122,7 @@ public class TaskControllerWebTest {
                 .andExpect(content().string(containsString(NEW_TITLE + TITLE_POSTFIX)));
     }
 
-    @DisplayName("DELETE /tasks/{id} 요청은 할 일 목록에서 주어진 할 일을 삭제한다")
+    @DisplayName("DELETE /tasks/{id} 요청은 주어진 id의 할 일을 삭제한다")
     @Test
     void delete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/1"))
