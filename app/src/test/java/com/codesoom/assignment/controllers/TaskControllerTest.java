@@ -80,7 +80,7 @@ class TaskControllerTest {
         controller.update(taskId, source);
         Task task = controller.detail(taskId);
 
-        assertThat(task.getTitle()).isEqualTo(NEW_TITLE + TITLE_POSTFIX);
+        assertThat(task.getTitle()).isEqualTo(source.getTitle());
     }
 
     @DisplayName("delete 메소드는 주어진 아이디의 할 일을 삭제한다")
