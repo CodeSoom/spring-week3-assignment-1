@@ -19,19 +19,17 @@ public class HelloControllerWebTest {
     private MockMvc mockMvc;
 
     @Nested
-    @DisplayName("sayHello 메소드는")
+    @DisplayName("/로 GET 요청을 보내면")
     class Describe_sayHello {
 
-        @Nested
-        @DisplayName("만약 path = / 일 때")
-        class Context_with_root_path {
-            @Test
-            @DisplayName("OK(200)을 응답한다.")
-            void it_returns_200_OK() throws Exception {
-                mockMvc.perform(get("/"))
-                        .andExpect(status().isOk());
-            }
+
+        @Test
+        @DisplayName("200 OK이 돌아온다.")
+        void it_returns_200_OK() throws Exception {
+            mockMvc.perform(get("/"))
+                    .andExpect(status().isOk());
         }
+
     }
 
 }
