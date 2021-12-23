@@ -12,31 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("TaskTest")
 class TaskTest {
 
-    private Task task;
-    private static final String TASK_TITLE = "Testing...";
-    private static final Long TASK_ID = null;
-
-    @BeforeEach
-    void setUp () {
+    @Test
+    @DisplayName("Task 객체에 Id와 Title 값이 주어지면 두 값 모두 반환한다.")
+    void getTaskWithResultOfIdAndTitle() {
         Task task = new Task();
-        task.setTitle(TASK_TITLE);
+        task.setId(1L);
+        task.setTitle("책 읽기");
+
+        assertThat(task.getId()).isEqualTo(1L);
+        assertThat(task.getTitle()).isEqualTo("책 읽기");
     }
 
-    @Test @Nested
-    @DisplayName("객체에 저장된 Id 값이 주어지면")
-    void setId() {
-        Task task = new Task();
-
-        Assertions.assertEquals(task.getId(), TASK_ID, "주어진 객체를 저장하고, Id 값을 반환한다.");
-    }
-
-    @Test @Nested
-    @DisplayName("객체에 저장된 Title 값이 주어지면")
-    void setTaskTitle() {
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-
-        Assertions.assertEquals(task.getTitle(), TASK_TITLE, "주어진 객체를 저장하고, Title 값을 반환한다.");
-
-    }
 }

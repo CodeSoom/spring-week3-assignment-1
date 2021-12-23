@@ -47,7 +47,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTaskWithInvalidId() {
+    void getTaskWithId() {
         assertThatThrownBy(()-> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 

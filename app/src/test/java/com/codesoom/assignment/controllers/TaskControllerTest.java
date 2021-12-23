@@ -23,14 +23,11 @@ class TaskControllerTest {
 
     @Test
     void list() {
-
         assertThat(controller.list()).isEmpty();
     }
 
     @Test
     void createNewTask() {
-
-
         Task task = new Task();
         task.setTitle("Test1");
         controller.create(task);
@@ -39,10 +36,19 @@ class TaskControllerTest {
         controller.create(task);
 
         assertThat(controller.list()).hasSize(2);
-//        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
         assertThat(controller.list().get(0).getTitle()).isEqualTo("Test1");
         assertThat(controller.list().get(1).getId()).isEqualTo(2L);
         assertThat(controller.list().get(1).getTitle()).isEqualTo("Test2");
+    }
+
+
+    @Test
+    void deleteTask() {
+        Task task = new Task();
+        task.setTitle("Test1");
+        controller.list().remove(task);
+
+        
     }
 
 }
