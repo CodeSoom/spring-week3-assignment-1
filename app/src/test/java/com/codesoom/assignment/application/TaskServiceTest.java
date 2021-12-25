@@ -15,9 +15,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
-    private TaskService taskService;
     private static final String TASK_TITLE = "test";
     private static final String UPDATE_POSTFIX = "New";
+
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
@@ -29,7 +30,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask는 ")
+    @DisplayName("getTasks는")
     class Describe_getTasks {
         @Test
         @DisplayName("등록된 전체 리스트를 리턴한다.")
