@@ -51,4 +51,9 @@ public class TaskService {
         newId += 1;
         return newId;
     }
+
+    public void reset() {
+        tasks.clear();
+        newId = 0L;
+    }
 }
