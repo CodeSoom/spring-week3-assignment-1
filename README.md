@@ -9,8 +9,8 @@
 
 - [x] Task 모델 테스트
 - [x] ErrorResponse 테스트
-- [ ] TaskService 테스트
-- [ ] TaskController 유닛 테스트
+- [x] TaskService 테스트
+- [x] TaskController 유닛 테스트
 - [ ] TaskController MockMVC 테스트
 
 ## 요구 사항

@@ -1,5 +1,6 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.BaseTaskTest;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,12 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TaskServiceTest {
-
-    private static final long TASK_ID_1 = 1L;
-    private static final String TASK_TITLE_1 = "To complete CodeSoom assignment";
-    private static final String TASK_TITLE_2 = "To write test code";
-    private static final String ERROR_MSG_TASK_NOT_FOUND = "Task not found";
+class TaskServiceTest extends BaseTaskTest {
 
     private TaskService taskService;
 
@@ -132,13 +128,6 @@ class TaskServiceTest {
         }).isInstanceOf(TaskNotFoundException.class)
                 .hasMessageContaining(ERROR_MSG_TASK_NOT_FOUND);
 
-    }
-
-    private Task generateNewTask(String taskTitle) {
-        Task newTask = new Task();
-        newTask.setTitle(taskTitle);
-
-        return newTask;
     }
 
 }
