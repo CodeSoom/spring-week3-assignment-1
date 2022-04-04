@@ -5,7 +5,9 @@
 - 우리가 작성한 코드가 올바르게 동작하는지 자동으로 확인해 줄 수 있는 유닛 테스트를 작성
 - controller 는 Spring Mock MVC 테스트 추가로 작성
 
-- [ ] Task 모델 테스트
+## 작업목록
+
+- [x] Task 모델 테스트
 - [ ] TaskService 테스트
 - [ ] TaskController 유닛 테스트
 - [ ] TaskController MockMVC 테스트
