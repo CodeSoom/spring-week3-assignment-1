@@ -8,6 +8,7 @@
 ## 작업목록
 
 - [x] Task 모델 테스트
+- [x] ErrorResponse 테스트
 - [ ] TaskService 테스트
 - [ ] TaskController 유닛 테스트
 - [ ] TaskController MockMVC 테스트
@@ -16,7 +17,6 @@
 
 - [ ] 모든 인수 테스트를 통과해야 합니다.
 - [ ] 테스트 커버리지 100%를 달성해야 합니다.
-
 
 
 ![image](https://user-images.githubusercontent.com/14071105/104756530-45f47f80-579f-11eb-9bbf-d47d065e207b.png)
