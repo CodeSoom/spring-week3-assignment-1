@@ -48,7 +48,9 @@ public class TaskService {
     }
 
     private Long generateId() {
-        newId += 1;
-        return newId;
+        synchronized (this) {
+            newId += 1;
+            return newId;
+        }
     }
 }
