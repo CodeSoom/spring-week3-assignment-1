@@ -106,7 +106,7 @@ class TaskServiceTest {
         @Test
         @DisplayName("id에 해당하는 Task의 title을 변경해줍니다.")
         void updateTask() {
-            Long id = Long.valueOf(taskService.getTasksSize());
+            Long id = taskService.getTasksSize();
             Task task = taskService.getTask(id);
 
             assertThat(task.getTitle()).isEqualTo(TASK_TITLE_ONE);
