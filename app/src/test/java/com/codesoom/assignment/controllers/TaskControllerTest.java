@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -21,8 +22,6 @@ class TaskControllerTest {
     private static final String TEST_TASK_TITLE = "테스트";
     private static final String TEST_TASK_UPDATE_TITLE_POSTFIX = "_수정";
 
-    private static final Long NOT_FOUND_TASK_ID = 9999L;
-
     private TaskController taskController;
 
     @BeforeEach
@@ -31,144 +30,227 @@ class TaskControllerTest {
         taskController = new TaskController(taskService);
     }
 
-    @Test
-    @DisplayName("할 일 목록 조회")
-    void list() {
-        //given
-        int taskCount = 10;
-        IntStream.rangeClosed(1, taskCount)
-                .forEach((index) -> generateTask(String.format("%s_%s", TEST_TASK_TITLE, index)));
+    @Nested
+    @DisplayName("할 일 목록 조회 시")
+    class Describe_list {
 
-        //when
-        List<Task> list = taskController.list();
+        @Nested
+        @DisplayName("할 일 목록 수 만큼")
+        class Context_hasTaskCount {
 
-        //then
-        assertThat(list).hasSize(taskCount);
+            final int givenTaskCount = 10;
+
+            @BeforeEach
+            void given() {
+                IntStream.rangeClosed(1, givenTaskCount)
+                        .forEach((index) -> generateTask(String.format("%s_%s", TEST_TASK_TITLE, index)));
+            }
+
+            List<Task> subject() {
+                return taskController.list();
+            }
+
+            @Test
+            @DisplayName("할 일 목록을 리턴 한다.")
+            void it_return_tasks() {
+                assertThat(subject()).hasSize(givenTaskCount);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 상세 조회")
-    void detail() {
-        //given
-        final Task savedTask = generateTask(TEST_TASK_TITLE);
+    @Nested
+    @DisplayName("할 일 상세 조회 시")
+    class Describe_detail {
 
-        //when
-        Task foundTask = taskController.detail(savedTask.getId());
+        @Nested
+        @DisplayName("일치하는 할일 이 있다면")
+        class Context_existsTask {
+            Task givenTask;
 
-        //then
-        assertThat(foundTask).isEqualTo(savedTask);
+            @BeforeEach
+            void given() {
+                givenTask = generateTask(TEST_TASK_TITLE);
+            }
+
+            Task subject() {
+                return taskController.detail(givenTask.getId());
+            }
+
+            @Test
+            @DisplayName("할 일을 리턴 한다.")
+            void it_return_task() {
+                assertThat(subject()).isEqualTo(givenTask);
+            }
+        }
+
+        @Nested
+        @DisplayName("일치 하는 할일 이 없다면")
+        class Context_notExistsTask {
+
+            final Long notExistsTaskId = 999L;
+
+            @Test
+            @DisplayName("예외를 던진다.")
+            void it_throw_exception() {
+                assertThatThrownBy(
+                        () -> taskController.detail(notExistsTaskId)
+                ).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("존재하지 않는 할 일 상세 조회 시 예외 발생")
-    void detail_fail() {
-        assertThatThrownBy(
-                () -> taskController.detail(NOT_FOUND_TASK_ID)
-        ).isInstanceOf(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("할 일 변경 시")
+    class Describe_patch {
+
+        private final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
+        private final Task source = new Task(title);
+
+        @Nested
+        @DisplayName("일치하는 할일 이 있다면")
+        class Context_existsTask {
+            Task givenTask;
+
+            @BeforeEach
+            void given() {
+                givenTask = generateTask(TEST_TASK_TITLE);
+            }
+
+            Task subject() {
+                return taskController.patch(givenTask.getId(), source);
+            }
+
+            @Test
+            @DisplayName("할 일을 수정 하고 할 일을 리턴 한다.")
+            void it_patch_and_return_task() {
+                assertAll(
+                        () -> assertThat(subject()).isEqualTo(givenTask),
+                        () -> assertThat(subject().getTitle()).isEqualTo(title)
+                );
+            }
+        }
+
+        @Nested
+        @DisplayName("일치하는 할일 이 없다면")
+        class Context_notExistsTask {
+
+            private final Long notExistsTaskId = 999L;
+
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_throw_exception() {
+                assertThatThrownBy(
+                        () -> taskController.patch(notExistsTaskId, source)
+                ).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 변경")
-    void patch() {
-        //given
-        final Task givenTask = generateTask(TEST_TASK_TITLE);
-        final Long taskId = givenTask.getId();
+    @Nested
+    @DisplayName("할 일 대체시")
+    class Describe_update {
 
-        String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
-        Task source = new Task();
-        source.setTitle(title);
+        private final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
+        private final Task source = new Task(title);
 
-        //when
-        Task updatedTask = taskController.patch(taskId, source);
+        @Nested
+        @DisplayName("일치하는 할일 이 있다면")
+        class Context_existsTask {
 
-        //then
-        assertAll(
-                () -> assertThat(updatedTask).isEqualTo(givenTask),
-                () -> assertThat(updatedTask.getTitle()).isEqualTo(title)
-        );
+            Task givenTask;
+
+            @BeforeEach
+            void given() {
+                givenTask = generateTask(TEST_TASK_TITLE);
+            }
+
+            Task subject() {
+                return taskController.update(givenTask.getId(), source);
+            }
+
+            @Test
+            @DisplayName("할 일을 대체하고 대체된 할 일을 리턴한다.")
+            void it_update_and_return_task() {
+                Task task = subject();
+                assertThat(task.getTitle()).isEqualTo(title);
+            }
+        }
+
+        @Nested
+        @DisplayName("일치하는 할일 이 없다면")
+        class Context_notExistsTask {
+
+            final Long notExistsTaskId = 999L;
+
+            @Test
+            @DisplayName("예외를 던진다.")
+            void it_throw_exception() {
+                assertThatThrownBy(
+                        () -> taskController.update(notExistsTaskId, source)
+                ).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("존재하지 않는 할 일 변경 시 예외 발생")
-    void patch_fail() {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
+    @Nested
+    @DisplayName("할 일 등록 시")
+    class Describe_save {
+        @Nested
+        @DisplayName("유효한 할 일 값이 주어진다면")
+        class Context_valid {
 
-        //when
-        //then
-        assertThatThrownBy(
-                () -> taskController.patch(NOT_FOUND_TASK_ID, source)
-        ).isInstanceOf(TaskNotFoundException.class);
+            final Task source = new Task(TEST_TASK_TITLE);
+
+            @Test
+            @DisplayName("할 일을 등록하고 할 일을 리턴 한다.")
+            void it_save_and_return_task() {
+
+                Task savedTask = taskController.create(source);
+
+                assertAll(
+                        () -> assertThat(savedTask.getId()).isNotNull(),
+                        () -> assertThat(savedTask.getTitle()).isEqualTo(TEST_TASK_TITLE)
+                );
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 대체")
-    void update() {
-        //given
-        final Task task = generateTask(TEST_TASK_TITLE);
-        final Long taskId = task.getId();
+    @Nested
+    @DisplayName("할 일 삭제 요청시")
+    class Describe_delete {
 
-        String updateTitle = "TODO!!@@";
-        Task source = new Task();
-        source.setTitle(updateTitle);
+        @Nested
+        @DisplayName("주어진 아이디와 일치하는 할일 이 있다면")
+        class Context_existsTask {
+            Long taskId;
 
-        //when
-        Task updatedTask = taskController.update(taskId, source);
+            @BeforeEach
+            void setUp() {
+                Task savedTask = generateTask(TEST_TASK_TITLE);
+                taskId = savedTask.getId();
+            }
 
-        //then
-        assertThat(updatedTask.getTitle()).isEqualTo(updateTitle);
-    }
+            @Test
+            @DisplayName("할 일을 삭제하고 예외를 던지지 않는다.")
+            void it_deleteTask() {
+                assertDoesNotThrow(
+                        () -> taskController.delete(taskId)
+                );
+            }
+        }
 
-    @Test
-    @DisplayName("존재하지 않는 할 일 대체 시 예외 발생")
-    void update_fail() {
-        //given
-        Task source = new Task();
+        @Nested
+        @DisplayName("주어진 아이디와 일치하는 할일 이 없다면")
+        class Context_notExistsTask {
+            final Long notExistsTaskId = 999L;
 
-        //when
-        //then
-        assertThatThrownBy(
-                () -> taskController.update(NOT_FOUND_TASK_ID, source)
-        ).isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("할 일 등록")
-    void save() {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
-
-        //when
-        Task savedTask = taskController.create(source);
-
-        //then
-        assertAll(
-                () -> assertThat(savedTask.getId()).isNotNull(),
-                () -> assertThat(savedTask.getTitle()).isEqualTo(TEST_TASK_TITLE)
-        );
-    }
-
-    @Test
-    @DisplayName("할 일 삭제")
-    void delete() {
-        //given
-        final Task task = generateTask(TEST_TASK_TITLE);
-        final Long taskId = task.getId();
-
-        //when
-        //then
-        assertDoesNotThrow(
-                () -> taskController.delete(taskId)
-        );
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 할 일 대체 시 예외 발생")
-    void delete_fail() {
-        assertThatThrownBy(() -> taskController.detail(NOT_FOUND_TASK_ID))
-                .isInstanceOf(TaskNotFoundException.class);
+            @Test
+            @DisplayName("예외를 던진다.")
+            void it_throw_exception() {
+                assertThatThrownBy(() -> taskController.detail(notExistsTaskId))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     private Task generateTask(String title) {
