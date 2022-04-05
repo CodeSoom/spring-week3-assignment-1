@@ -4,7 +4,9 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,7 +22,6 @@ import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("할 일에 대한 MockMVC 테스트")
+@DisplayName("할 일에 대한 HTTP 요청")
 @WebMvcTest(controllers = TaskController.class)
 @AutoConfigureMockMvc
 public class WebTaskControllerTest {
@@ -48,210 +49,277 @@ public class WebTaskControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    @Test
-    @DisplayName("할 일 목록 조회")
-    void list_200() throws Exception {
-        //given
-        int givenSize = 10;
-        List<Task> givenTasks = IntStream.rangeClosed(1, givenSize)
-                .mapToObj(index -> {
-                    Task task = new Task();
-                    task.setId((long) index);
-                    task.setTitle(TEST_TASK_TITLE + "_" + index);
-                    return task;
-                })
-                .collect(Collectors.toList());
+    @Nested
+    @DisplayName("GET - /tasks 요청시")
+    class Describe_list {
 
-        given(taskService.getTasks()).willReturn(givenTasks);
+        @Nested
+        @DisplayName("할 일 목록 수 만큼")
+        class Context_test {
+            final int givenSize = 10;
 
-        //when
-        ResultActions resultActions = mockMvc.perform(get("/tasks"));
+            @BeforeEach
+            void setUp() {
+                List<Task> tasks = IntStream.rangeClosed(1, givenSize)
+                        .mapToObj(index -> {
+                            Task task = new Task();
+                            task.setId((long) index);
+                            task.setTitle(TEST_TASK_TITLE + "_" + index);
+                            return task;
+                        })
+                        .collect(Collectors.toList());
 
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(givenSize)))
-                .andDo(print());
+                given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            ResultActions request() throws Exception {
+                return mockMvc.perform(get("/tasks"));
+            }
+
+            @Test
+            @DisplayName("할 일 목록을 응답한다.[http status code:200]")
+            void it_response_tasks_and_http_status_200() throws Exception {
+                request().andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(givenSize)))
+                        .andDo(print());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 등록")
-    void create_201() throws Exception {
-        //given
-        Long taskId = 1L;
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
+    @Nested
+    @DisplayName("POST /tasks 요청시")
+    class Describe_create {
 
-        Task task = new Task();
-        task.setId(taskId);
-        task.setTitle(TEST_TASK_TITLE);
+        @Nested
+        @DisplayName("유효한 할 일 데이터 값이라면")
+        class Context_valid {
 
-        given(taskService.createTask(any())).willReturn(task);
+            final Long taskId = 1L;
+            final Task source = new Task(TEST_TASK_TITLE);
 
-        //when
-        ResultActions resultActions = mockMvc.perform(post("/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(source)));
+            @BeforeEach
+            void setUp() {
+                Task task = new Task();
+                task.setId(taskId);
+                task.setTitle(TEST_TASK_TITLE);
 
-        //then
-        resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(String.valueOf(taskId)))
-                .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+                given(taskService.createTask(any())).willReturn(task);
+            }
+
+            ResultActions request() throws Exception {
+                return mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(source)));
+            }
+
+            @Test
+            @DisplayName("할일 등록 후 할일을 응답한다. [200]")
+            void it_response_201() throws Exception {
+                request().andExpect(status().isCreated())
+                        .andExpect(jsonPath("id").value(String.valueOf(taskId)))
+                        .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 상세 조회")
-    void detail_200() throws Exception {
-        //given
-        Long taskId = 1L;
-        Task task = new Task();
-        task.setId(taskId);
-        task.setTitle(TEST_TASK_TITLE);
+    @Nested
+    @DisplayName("GET /tasks/{taskId} 요청시")
+    class Describe_detail {
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 있다면")
+        class Context_exists {
 
-        given(taskService.getTask(taskId)).willReturn(task);
+            final Long taskId = 1L;
 
-        //when
-        ResultActions resultActions = mockMvc.perform(get("/tasks/{taskId}", taskId)
-                .contentType(MediaType.APPLICATION_JSON));
+            @BeforeEach
+            void setUp() {
+                Task task = new Task();
+                task.setId(taskId);
+                task.setTitle(TEST_TASK_TITLE);
+                given(taskService.getTask(taskId)).willReturn(task);
+            }
 
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(String.valueOf(taskId)))
-                .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+            @Test
+            @DisplayName("HTTP 200 OK")
+            void it_response_task() throws Exception {
+                mockMvc.perform(get("/tasks/{taskId}", taskId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").value(String.valueOf(taskId)))
+                        .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+            }
+        }
+
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 없다면")
+        class Context_notExists {
+
+            final Long notExistsTaskId = 999L;
+
+            @BeforeEach
+            void setUp() {
+                given(taskService.getTask(notExistsTaskId)).willThrow(TaskNotFoundException.class);
+            }
+
+            @Test
+            @DisplayName("HTTP 404 Not Found")
+            void it_response_404() throws Exception {
+                mockMvc.perform(get("/tasks/{taskId}", notExistsTaskId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 상세 조회시 404 응답")
-    void detail_NotFound() throws Exception {
-        //given
-        given(taskService.getTask(anyLong())).willThrow(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("DELETE - /tasks/{taskId} 삭제 요청시")
+    class Describe_delete {
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 있다면")
+        class Context_exists {
 
-        //when
-        ResultActions resultActions = mockMvc.perform(get("/tasks/{taskId}", NOT_FOUND_TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
+            final Long existsTaskId = 1L;
 
-        //then
-        resultActions.andExpect(status().isNotFound())
-                .andExpect(jsonPath("message").exists());
+            @BeforeEach
+            void setUp() {
+                given(taskService.deleteTask(existsTaskId)).willReturn(null);
+            }
+
+            @Test
+            @DisplayName("HTTP 204 No Content")
+            void it_response_204() throws Exception {
+                mockMvc.perform(delete("/tasks/{taskId}", existsTaskId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 없다면")
+        class Context_notExists {
+
+            final Long notExistsTaskId = 999L;
+
+            @BeforeEach
+            void setUp() {
+                given(taskService.deleteTask(notExistsTaskId)).willThrow(TaskNotFoundException.class);
+            }
+
+            @Test
+            @DisplayName("HTTP 404 Not Found")
+            void it_response_404() throws Exception {
+                mockMvc.perform(delete("/tasks/{taskId}", notExistsTaskId)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할일 삭제")
-    void delete_204() throws Exception {
-        //given
-        given(taskService.deleteTask(anyLong())).willReturn(null);
+    @Nested
+    @DisplayName("PUT - /tasks/{taskId} 대체 요청시")
+    class Describe_update {
 
-        //when
-        ResultActions resultActions = mockMvc.perform(delete("/tasks/{taskId}", NOT_FOUND_TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
+        final Task source = new Task(TEST_TASK_TITLE);
+        final Long taskId = 1L;
 
-        //then
-        resultActions.andExpect(status().isNoContent());
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 있다면")
+        class Context_exists {
+
+            @BeforeEach
+            void setUp() {
+                Task task = new Task(TEST_TASK_TITLE);
+                task.setId(taskId);
+                given(taskService.updateTask(taskId, source)).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("HTTP 200 OK")
+            void it_response_200() throws Exception {
+
+                mockMvc.perform(put("/tasks/{taskId}", taskId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(source)))
+                        .andDo(print())
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").value(taskId))
+                        .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+            }
+        }
+
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 없다면")
+        class Context_notExists {
+
+            final Long notExistsTaskId = 998L;
+
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(notExistsTaskId, source)).willThrow(TaskNotFoundException.class);
+            }
+
+            @Test
+            @DisplayName("HTTP 404 Not Found")
+            void it_response_404() throws Exception {
+                mockMvc.perform(put("/tasks/{taskId}", notExistsTaskId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(source)))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("할 일 삭제시 404 응답")
-    void delete_404() throws Exception {
-        //given
-        given(taskService.deleteTask(any())).willThrow(TaskNotFoundException.class);
+    @Nested
+    @DisplayName("PATCH - /tasks/{taskId} 수정 요청시")
+    class Describe_patch {
 
-        //when
-        ResultActions resultActions = mockMvc.perform(delete("/tasks/{taskId}", NOT_FOUND_TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
+        final Task source = new Task(TEST_TASK_TITLE);
+        final Long taskId = 1L;
 
-        //then
-        resultActions.andExpect(status().isNotFound());
-    }
+        @BeforeEach
+        void setUp() {
+            Task task = new Task(TEST_TASK_TITLE);
+            task.setId(taskId);
 
-    @Test
-    @DisplayName("할 일 대체")
-    void update_200() throws Exception {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
+            given(taskService.updateTask(taskId, source)).willReturn(task);
+        }
 
-        Long taskId = 1L;
-        Task task = new Task();
-        task.setId(taskId);
-        task.setTitle(TEST_TASK_TITLE);
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 있다면")
+        class Context_exists {
 
-        given(taskService.updateTask(any(), any())).willReturn(task);
+            @Test
+            @DisplayName("HTTP 200 OK")
+            void it_response_200() throws Exception {
 
-        //when
-        ResultActions resultActions = mockMvc.perform(put("/tasks/{taskId}", taskId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(source))
-        );
+                mockMvc.perform(patch("/tasks/{taskId}", taskId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(source)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("id").exists())
+                        .andExpect(jsonPath("title").exists());
+            }
+        }
 
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").exists());
-    }
+        @Nested
+        @DisplayName("{taskId} 와 일치하는 할 일이 없다면")
+        class Context_notExists {
 
-    @Test
-    @DisplayName("할 일 대체시 404 응답")
-    void update_404() throws Exception {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
+            final Long notExistsTaskId = 999L;
 
-        given(taskService.updateTask(any(), any())).willThrow(TaskNotFoundException.class);
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(notExistsTaskId, source)).willThrow(TaskNotFoundException.class);
+            }
 
-        //when
-        ResultActions resultActions = mockMvc.perform(put("/tasks/{taskId}", NOT_FOUND_TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(source))
-        );
-
-        //then
-        resultActions.andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("할 일 변경")
-    void patch_200() throws Exception {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
-
-        Long taskId = 1L;
-        Task task = new Task();
-        task.setId(taskId);
-        task.setTitle(TEST_TASK_TITLE);
-
-        given(taskService.updateTask(any(), any())).willReturn(task);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(patch("/tasks/{taskId}", taskId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(source))
-        );
-
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("title").exists());
-    }
-
-    @Test
-    @DisplayName("할 일 변경시 404 응답")
-    void patch_404() throws Exception {
-        //given
-        Task source = new Task();
-        source.setTitle(TEST_TASK_TITLE);
-
-        given(taskService.updateTask(any(), any())).willThrow(TaskNotFoundException.class);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(patch("/tasks/{taskId}", NOT_FOUND_TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(source))
-        );
-
-        //then
-        resultActions.andExpect(status().isNotFound());
+            @Test
+            @DisplayName("HTTP 404 Not Found")
+            void it_response_404() throws Exception {
+                mockMvc.perform(patch("/tasks/{taskId}", notExistsTaskId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(source)))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 }
