@@ -8,6 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskDtoTest {
 
+    private static final String TITLE = "title";
+
     @DisplayName("기본 생성자로 TaskDto를 성공적으로 생성한다.")
     @Test
     void createTaskDtoAsNoArgsConstructor() {
@@ -17,44 +19,46 @@ class TaskDtoTest {
     @DisplayName("생성자로 TaskDto를 성공적으로 생성한다.")
     @Test
     void createTaskDtoAsAllArgsConstructor() {
-        final String title = "title";
-
-        final TaskDto taskDto = new TaskDto(title);
+        final TaskDto taskDto = new TaskDto(TITLE);
 
         assertThat(taskDto).isNotNull();
-        assertThat(taskDto.getTitle()).isEqualTo(title);
+        assertThat(taskDto.getTitle()).isEqualTo(TITLE);
     }
 
     @DisplayName("setTitle()은 title에 값을 세팅한다.")
     @Test
     void setTitle() {
         final TaskDto taskDto = new TaskDto();
+        taskDto.setTitle(TITLE);
 
-        final String title = "title";
-        taskDto.setTitle(title);
-
-        assertThat(taskDto.getTitle()).isEqualTo(title);
+        assertThat(taskDto.getTitle()).isEqualTo(TITLE);
     }
 
     @DisplayName("getTitle()은 title을 반환한다.")
     @Test
     void getTitle() {
-        final String title = "title";
-        final TaskDto taskDto = new TaskDto(title);
+        final TaskDto taskDto = new TaskDto(TITLE);
 
-        final String _title = taskDto.getTitle();
-
-        assertThat(_title).isEqualTo(title);
+        assertThat(taskDto.getTitle()).isEqualTo(TITLE);
     }
 
     @DisplayName("toTask()는 Task 객체로 만들어 반환한다.")
     @Test
     void toTask() {
-        final String title = "title";
-        final TaskDto taskDto = new TaskDto(title);
+        final TaskDto taskDto = new TaskDto(TITLE);
 
-        assertThat(taskDto.toTask(1L)).isInstanceOf(Task.class);
-        assertThat(taskDto.toTask(1L).getTitle()).isEqualTo(title);
+        final Task task = taskDto.toTask(1L);
+        assertThat(task).isInstanceOf(Task.class);
+        assertThat(task.getTitle()).isEqualTo(TITLE);
+    }
+
+    @DisplayName("toString()은 TaskDto의 정보를 문자열로 만들어 반환한다.")
+    @Test
+    void toStringTest() {
+        final TaskDto taskDto = new TaskDto(TITLE);
+
+        assertThat(taskDto.toString()).isInstanceOf(String.class);
+        assertThat(taskDto.toString()).contains(TITLE);
     }
 
 }

@@ -9,6 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TaskTest {
 
+    private static final Long ID = 1L;
+    private static final String TITLE = "title";
+    private static final String NEW_TITLE = "new title";
+
     @DisplayName("기본 생성자로 Task 인스턴스를 생성한다.")
     @Test
     void createTaskAsNoArgsConstructor() {
@@ -18,61 +22,51 @@ class TaskTest {
     @DisplayName("생성자로 Task를 성공적으로 생성한다.")
     @Test
     void createTaskAsAllArgsConstructor() {
-        //given
-        final Long id = 1L;
-        final String title = "title";
+        final Task task = new Task(ID, TITLE);
 
-        //when
-        final Task task = new Task(id, title);
-
-        //then
         assertAll(() -> {
             assertThat(task).isNotNull();
-            assertThat(task.getId()).isEqualTo(id);
-            assertThat(task.getTitle()).isEqualTo(title);
+            assertThat(task.getId()).isEqualTo(ID);
+            assertThat(task.getTitle()).isEqualTo(TITLE);
         });
     }
 
     @DisplayName("getId()는 id를 성공적으로 반환한다.")
     @Test
     void getId() {
-        //given
-        final Long id = 1L;
-        final Task task = new Task(id, "title");
+        final Task task = new Task(ID, TITLE);
 
-        //when
-        final Long _id = task.getId();
-
-        //then
-        assertThat(_id).isEqualTo(id);
+        assertThat(task.getId()).isEqualTo(ID);
     }
 
     @DisplayName("getTitle()은 title을 성공적으로 반환한다.")
     @Test
     void getTitle() {
-        //given
-        final String title = "title";
-        final Task task = new Task(1L, title);
+        final Task task = new Task(ID, TITLE);
 
-        //when
-        final String _title = task.getTitle();
-
-        //then
-        assertThat(_title).isEqualTo(title);
+        assertThat(task.getTitle()).isEqualTo(TITLE);
     }
 
     @DisplayName("Task의 title을 성공적으로 변경한다.")
     @Test
     void updateTitle() {
-        //given
-        final Task task = new Task(1L, "title");
-        String newTitle = "new title";
+        final Task task = new Task(ID, TITLE);
+        task.updateTitle(NEW_TITLE);
 
-        //when
-        task.updateTitle(newTitle);
+        assertThat(task.getTitle()).isEqualTo(NEW_TITLE);
+    }
 
-        //then
-        assertThat(task.getTitle()).isEqualTo(newTitle);
+
+    @DisplayName("toString()은 Task의 정보를 문자열로 만들어 반환한다.")
+    @Test
+    void toStringTest() {
+        final Task task = new Task(ID, TITLE);
+
+        assertAll(() -> {
+            assertThat(task.toString()).isInstanceOf(String.class);
+            assertThat(task.toString()).contains(TITLE);
+            assertThat(task.toString()).contains(ID.toString());
+        });
     }
 
 }
