@@ -50,10 +50,12 @@ public class TaskControllerMock_MVC_Test {
 
         given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
 
-//        task = new Task();
-//        task.setTitle(TASK_TITLE_TWO);
-//        tasks.add(task);
-//        given(taskService.getTask(2L)).willReturn(task);
+        task = new Task();
+        task.setTitle(TASK_TITLE_TWO);
+        tasks.add(task);
+
+        given(taskService.getTasks()).willReturn(tasks);
+
     }
 
     @Test
@@ -88,18 +90,22 @@ public class TaskControllerMock_MVC_Test {
 
         //verify(taskService).createTask(task);
 
-        List<Task> tasks = new ArrayList<>();
+//        List<Task> tasks = new ArrayList<>();
+//
+//        Task task = new Task();
+//        task.setTitle(TASK_TITLE_ONE);
+//        tasks.add(task);
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE_ONE);
-        tasks.add(task);
+        //String content = taskService.getTask(2L).toString();
 
-        String content = task.toString();
+//        mockMvc.perform(post("/tasks")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(content))
+//                        .andExpect(status().isCreated())
+//                        .andExpect(content().string(containsString(TASK_TITLE_TWO)));
 
-        mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                        .andExpect(status().isCreated())
-                        .andExpect(content().string(containsString(TASK_TITLE_ONE)));
+        mockMvc.perform(post("/tasks"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(containsString(TASK_TITLE_TWO)));
     }
 }

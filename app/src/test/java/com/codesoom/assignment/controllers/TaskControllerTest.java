@@ -4,11 +4,14 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("TaskController 클래스")
 class TaskControllerTest {
     private static final String TASK_TITLE_ONE = "testOne";
     private static final String TASK_TITLE_TWO = "testTwo";
@@ -28,23 +31,39 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("list 메소드는 모든 Task를 반환한다.")
     void list() {
         assertThat(controller.list()).isNotEmpty();
         assertThat(controller.list()).hasSize(1);
     }
 
-    @Test
-    void detailWithValidId() {
-        assertThat(controller.detail(1L).getTitle()).isEqualTo(TASK_TITLE_ONE);
+    @Nested
+    @DisplayName("detail 메소드는")
+    class Describe_detail {
+        @Nested
+        @DisplayName("매개변수로 입력 받는 id가 있으면")
+        class Context_with_valid_id {
+            @Test
+            @DisplayName("id에 해당하는 Task를 반환한다.")
+            void detailWithValidId() {
+                assertThat(controller.detail(1L).getTitle()).isEqualTo(TASK_TITLE_ONE);
+            }
+        }
+
+        @Nested
+        @DisplayName("매개변수로 입력 받는 id가 없으면")
+        class Context_with_invalid_id {
+            @Test
+            @DisplayName("TaskNotFoundException 예외를 던진다.")
+            void detailWithInvalidId() {
+                assertThatThrownBy(() -> controller.detail(100L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Test
-    void detailWithInvalidId() {
-        assertThatThrownBy(() -> controller.detail(100L))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @Test
+    @DisplayName("create 메소드는 새로운 Task를 추가해줍니다.")
     void create() {
         int oldSize = controller.list().size();
 
@@ -63,6 +82,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("update 메소드는 id에 해당하는 Task의 title을 변경해줍니다.")
     void update() {
         Long id = Long.valueOf(controller.list().size());
         Task task = controller.detail(id);
@@ -77,6 +97,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("patch 메소드는 id에 해당하는 Task의 title을 변경해줍니다.")
     void patch() {
         Long id = Long.valueOf(controller.list().size());
         Task task = controller.detail(id);
@@ -91,6 +112,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("delete 메소드는 id에 해당하는 Task를 지웁니다.")
     void delete() {
         int oldSize = controller.list().size();
 
