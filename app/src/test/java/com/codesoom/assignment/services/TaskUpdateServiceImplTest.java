@@ -3,6 +3,7 @@ package com.codesoom.assignment.services;
 import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.domains.TaskDto;
 import com.codesoom.assignment.exceptions.TaskInvalidFormatException;
+import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class TaskUpdateServiceImplTest {
     private static final Task BEFORE_TASK = new Task(1L, "old title");
     private static final Task AFTER_TASK = BEFORE_TASK.updateTitle("new title");
     private static final String INVALID_TASK_TITLE = "";
+    private static final Long NOT_EXIST_ID = 100L;
 
     @DisplayName("할 일을 성공적으로 수정한다.")
     @Test
@@ -40,6 +42,16 @@ class TaskUpdateServiceImplTest {
 
         //then
         verify(repository).update(1L, AFTER_TASK);
+    }
+
+    @DisplayName("id와 일치하는 할 일이 없으면 예외가 발생한다.")
+    @Test
+    void thrownNotFoundException() {
+        //given
+        given(repository.findById(NOT_EXIST_ID)).willReturn(null);
+
+        //when then
+        assertThrows(TaskNotFoundException.class, () -> service.updateTaskById(NOT_EXIST_ID, new TaskDto("new title")));
     }
 
     @DisplayName("빈 값으로 수정을 시도하면 예외가 발생한다.")
