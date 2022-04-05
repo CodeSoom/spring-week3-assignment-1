@@ -38,9 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class WebTaskControllerTest {
 
     private static final String TEST_TASK_TITLE = "테스트";
-
-    private static final Long NOT_FOUND_TASK_ID = 9999L;
-
+    
     @Autowired
     MockMvc mockMvc;
 
