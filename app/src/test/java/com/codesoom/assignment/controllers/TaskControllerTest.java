@@ -65,6 +65,7 @@ class TaskControllerTest {
         @Nested
         @DisplayName("일치하는 할일 이 있다면")
         class Context_existsTask {
+
             Task givenTask;
 
             @BeforeEach
@@ -103,12 +104,13 @@ class TaskControllerTest {
     @DisplayName("할 일 변경 시")
     class Describe_patch {
 
-        private final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
-        private final Task source = new Task(title);
+        final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
+        final Task source = new Task(title);
 
         @Nested
         @DisplayName("일치하는 할일 이 있다면")
         class Context_existsTask {
+
             Task givenTask;
 
             @BeforeEach
@@ -134,7 +136,7 @@ class TaskControllerTest {
         @DisplayName("일치하는 할일 이 없다면")
         class Context_notExistsTask {
 
-            private final Long notExistsTaskId = 999L;
+            final Long notExistsTaskId = 999L;
 
             @Test
             @DisplayName("예외를 던진다")
@@ -150,8 +152,8 @@ class TaskControllerTest {
     @DisplayName("할 일 대체시")
     class Describe_update {
 
-        private final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
-        private final Task source = new Task(title);
+        final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
+        final Task source = new Task(title);
 
         @Nested
         @DisplayName("일치하는 할일 이 있다면")
@@ -222,6 +224,7 @@ class TaskControllerTest {
         @Nested
         @DisplayName("주어진 아이디와 일치하는 할일 이 있다면")
         class Context_existsTask {
+
             Long taskId;
 
             @BeforeEach
@@ -242,6 +245,7 @@ class TaskControllerTest {
         @Nested
         @DisplayName("주어진 아이디와 일치하는 할일 이 없다면")
         class Context_notExistsTask {
+
             final Long notExistsTaskId = 999L;
 
             @Test

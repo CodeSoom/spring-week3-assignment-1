@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class WebTaskControllerTest {
 
     private static final String TEST_TASK_TITLE = "테스트";
-    
+
     @Autowired
     MockMvc mockMvc;
 
@@ -54,14 +54,15 @@ public class WebTaskControllerTest {
         @Nested
         @DisplayName("할 일 목록 수 만큼")
         class Context_test {
+
             final int givenSize = 10;
 
             @BeforeEach
             void setUp() {
-                List<Task> tasks = IntStream.rangeClosed(1, givenSize)
+                List<Task> tasks = LongStream.rangeClosed(1, givenSize)
                         .mapToObj(index -> {
                             Task task = new Task();
-                            task.setId((long) index);
+                            task.setId(index);
                             task.setTitle(TEST_TASK_TITLE + "_" + index);
                             return task;
                         })
@@ -70,14 +71,12 @@ public class WebTaskControllerTest {
                 given(taskService.getTasks()).willReturn(tasks);
             }
 
-            ResultActions request() throws Exception {
-                return mockMvc.perform(get("/tasks"));
-            }
-
             @Test
             @DisplayName("할 일 목록을 응답한다.[http status code:200]")
             void it_response_tasks_and_http_status_200() throws Exception {
-                request().andExpect(status().isOk())
+
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
                         .andExpect(jsonPath("$", hasSize(givenSize)))
                         .andDo(print());
             }

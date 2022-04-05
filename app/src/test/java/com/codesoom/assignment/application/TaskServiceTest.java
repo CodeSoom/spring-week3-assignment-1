@@ -19,7 +19,7 @@ class TaskServiceTest {
 
     private static final String TEST_TASK_TITLE = "TITLE";
     private static final String TEST_TASK_UPDATE_TITLE = "TITLE_UPDATE";
-    
+
     private TaskService taskService;
 
     @BeforeEach
@@ -34,7 +34,7 @@ class TaskServiceTest {
         @DisplayName("유효한 할 일 데이터가 주어진다면")
         class Context_valid {
 
-            private final Task source = new Task(TEST_TASK_TITLE);
+            final Task source = new Task(TEST_TASK_TITLE);
 
             Task subject() {
                 return taskService.createTask(source);
@@ -59,7 +59,7 @@ class TaskServiceTest {
         @DisplayName("10개의 할 일 목록이 있다면")
         class Context_hasTaskListOf10 {
 
-            int givenTaskCount = 10;
+            final int givenTaskCount = 10;
 
             @BeforeEach
             void given() {
