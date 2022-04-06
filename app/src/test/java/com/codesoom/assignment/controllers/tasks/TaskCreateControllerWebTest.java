@@ -29,7 +29,7 @@ class TaskCreateControllerWebTest {
 
     private static final String TASK_TITLE = "task";
     private static final TaskDto VALID_TASK_DTO = new TaskDto(TASK_TITLE);
-    private static final TaskDto INVALID_TASK_DTO = new TaskDto("");
+    private static final TaskDto EMPTY_TASK_DTO = new TaskDto("");
 
     @DisplayName("할 일을 성공적으로 추가한다.")
     @Test
@@ -44,9 +44,18 @@ class TaskCreateControllerWebTest {
 
     @DisplayName("빈 값의 할 일을 추가하면 400 에러를 응답한다.")
     @Test
-    void validateTask() throws Exception {
+    void emptyTask() throws Exception {
         mockMvc.perform(post("/tasks")
-                .content(objectMapper.writeValueAsString(INVALID_TASK_DTO))
+                .content(objectMapper.writeValueAsString(EMPTY_TASK_DTO))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @DisplayName("request body가 없으면 400 에러를 응답한다.")
+    @Test
+    void nullRequestBody() throws Exception {
+        mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
