@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import com.codesoom.assignment.NotProperTaskFormatException;
+
 public class Task {
 
     private Long id;
@@ -22,4 +24,9 @@ public class Task {
         this.title = title;
     }
 
+    public void validation() {
+        if (this.title == null || this.title.trim().isEmpty()) {
+            throw new NotProperTaskFormatException(title);
+        }
+    }
 }
