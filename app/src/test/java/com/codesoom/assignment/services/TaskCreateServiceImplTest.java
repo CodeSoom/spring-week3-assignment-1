@@ -4,7 +4,6 @@ import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.domains.TaskDto;
 import com.codesoom.assignment.exceptions.TaskInvalidFormatException;
 import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +36,9 @@ class TaskCreateServiceImplTest {
     void createTask() {
         //given
         final TaskDto taskDto = new TaskDto(TASK_TITLE);
+        given(repository.generateId()).willReturn(FIRST_ID);
 
         //when
-        given(repository.generateId()).willReturn(FIRST_ID);
         final Task createdTask = service.addTask(taskDto);
 
         //then

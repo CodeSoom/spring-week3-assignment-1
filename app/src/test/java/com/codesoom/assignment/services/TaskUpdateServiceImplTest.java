@@ -28,7 +28,7 @@ class TaskUpdateServiceImplTest {
 
     private static final Task BEFORE_TASK = new Task(1L, "old title");
     private static final Task AFTER_TASK = BEFORE_TASK.updateTitle("new title");
-    private static final String INVALID_TASK_TITLE = "";
+    private static final String EMPTY_TASK_TITLE = "";
     private static final Long NOT_EXIST_ID = 100L;
 
     @DisplayName("할 일을 성공적으로 수정한다.")
@@ -58,7 +58,7 @@ class TaskUpdateServiceImplTest {
     @Test
     void thrownTaskInvalidException() {
         //given
-        final TaskDto invalidTaskDto = new TaskDto(INVALID_TASK_TITLE);
+        final TaskDto invalidTaskDto = new TaskDto(EMPTY_TASK_TITLE);
 
         //when
         //then
