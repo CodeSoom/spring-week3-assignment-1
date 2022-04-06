@@ -14,6 +14,7 @@ class TaskServiceTest {
 
     private TaskService taskService;
     private final static String TASK_TITLE = "Task title";
+    private final static String TASK_NOT_FOUND_MESSAGE = "Task not found: %d";
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,10 @@ class TaskServiceTest {
     void getTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
+
+        assertThatExceptionOfType(TaskNotFoundException.class)
+                .isThrownBy(() -> taskService.getTask(100L))
+                .withMessage(String.format(TASK_NOT_FOUND_MESSAGE, 100L));
     }
 
     @Test
