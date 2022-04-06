@@ -31,7 +31,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("list 메소드는 모든 Task를 반환한다.")
+    @DisplayName("list 메소드는 Tasks에 있는 모든 Task를 반환합니다.")
     void list() {
         assertThat(controller.list()).isNotEmpty();
         assertThat(controller.list()).hasSize(1);
@@ -41,20 +41,20 @@ class TaskControllerTest {
     @DisplayName("detail 메소드는")
     class Describe_detail {
         @Nested
-        @DisplayName("매개변수로 입력 받는 id가 있으면")
+        @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 있으면")
         class Context_with_valid_id {
             @Test
-            @DisplayName("id에 해당하는 Task를 반환한다.")
+            @DisplayName("id에 해당하는 Task를 반환합니다.")
             void detailWithValidId() {
                 assertThat(controller.detail(1L).getTitle()).isEqualTo(TASK_TITLE_ONE);
             }
         }
 
         @Nested
-        @DisplayName("매개변수로 입력 받는 id가 없으면")
+        @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 없으면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 예외를 던진다.")
+            @DisplayName("TaskNotFoundException 예외를 던집니다.")
             void detailWithInvalidId() {
                 assertThatThrownBy(() -> controller.detail(100L))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -63,7 +63,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("create 메소드는 새로운 Task를 추가해줍니다.")
+    @DisplayName("create 메소드는 클라이언트가 요청한 새로운 Task를 Tasks에 추가해줍니다.")
     void create() {
         int oldSize = controller.list().size();
 
@@ -82,7 +82,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("update 메소드는 id에 해당하는 Task의 title을 변경해줍니다.")
+    @DisplayName("update 메소드는 Tasks에서 클라이언트가 요청한 id에 해당하는 Task의 title을 변경해줍니다.")
     void update() {
         Long id = Long.valueOf(controller.list().size());
         Task task = controller.detail(id);
@@ -97,7 +97,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("patch 메소드는 id에 해당하는 Task의 title을 변경해줍니다.")
+    @DisplayName("patch 메소드는 Tasks에서 클라이언트가 요청한 id에 해당하는 Task의 title을 변경해줍니다.")
     void patch() {
         Long id = Long.valueOf(controller.list().size());
         Task task = controller.detail(id);
@@ -112,7 +112,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("delete 메소드는 id에 해당하는 Task를 지웁니다.")
+    @DisplayName("delete 메소드는 Tasks에서 클라이언트가 요청한 id에 해당하는 Task를 지웁니다.")
     void delete() {
         int oldSize = controller.list().size();
 

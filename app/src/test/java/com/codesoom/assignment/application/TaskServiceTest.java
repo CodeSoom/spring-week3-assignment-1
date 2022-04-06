@@ -34,7 +34,7 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Test
-        @DisplayName("모든 Tasks를 반환한다.")
+        @DisplayName("Tasks에 있는 모든 Task를 반환합니다.")
         void getTasks() {
             assertThat(taskService.getTasks()).isNotEmpty();
             assertThat(taskService.getTasks()).hasSize(1);
@@ -45,20 +45,20 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("매개변수로 입력 받는 id가 있으면")
+        @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 있으면")
         class Context_with_valid_id {
             @Test
-            @DisplayName("id에 해당하는 Task를 반환한다.")
+            @DisplayName("id에 해당하는 Task를 반환합니다.")
             void getTask() {
                 assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TASK_TITLE_ONE);
             }
         }
 
         @Nested
-        @DisplayName("매개변수로 입력 받는 id가 없으면")
+        @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 없으면")
         class Context_with_invalid_id {
             @Test
-            @DisplayName("TaskNotFoundException 예외를 던진다.")
+            @DisplayName("TaskNotFoundException 예외를 던집니다.")
             void throwTaskNotFoundException() {
                 assertThatThrownBy(() -> taskService.getTask(100L))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -83,7 +83,7 @@ class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("새로운 Task를 추가해줍니다.")
+        @DisplayName("클라이언트가 요청한 새로운 Task를 Tasks에 추가해줍니다.")
         void CreateTask() {
             Long oldSize = taskService.getTasksSize();
 
@@ -104,7 +104,7 @@ class TaskServiceTest {
     class Describe_updateTask {
         private static final String UPDATE_TITLE = "other";
         @Test
-        @DisplayName("id에 해당하는 Task의 title을 변경해줍니다.")
+        @DisplayName("Tasks에서 클라이언트가 요청한 id에 해당하는 Task의 title을 변경해줍니다.")
         void updateTask() {
             Long id = taskService.getTasksSize();
             Task task = taskService.getTask(id);
@@ -123,7 +123,7 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         @Test
-        @DisplayName("id에 해당하는 Task를 지웁니다.")
+        @DisplayName("Tasks에서 클라이언트가 요청한 id에 해당하는 Task를 지웁니다.")
         void deleteTask() {
             Long oldSize = taskService.getTasksSize();
 
