@@ -13,6 +13,10 @@
 - [x] TaskController 유닛 테스트
 - [ ] TaskController MockMVC 테스트
 
+## 추가작업목록
+- [ ] 모든 테스트 케이스에서 given() 제외하고 테스트코드 작성
+- [ ] given 의 영향범위 조사하기
+
 ## 요구 사항
 
 - [ ] 모든 인수 테스트를 통과해야 합니다.
