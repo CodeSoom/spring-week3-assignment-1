@@ -10,12 +10,6 @@ class TaskDtoTest {
 
     private static final String TITLE = "title";
 
-    @DisplayName("기본 생성자로 TaskDto를 성공적으로 생성한다.")
-    @Test
-    void createTaskDtoAsNoArgsConstructor() {
-        assertThat(new TaskDto()).isNotNull();
-    }
-
     @DisplayName("생성자로 TaskDto를 성공적으로 생성한다.")
     @Test
     void createTaskDtoAsAllArgsConstructor() {
@@ -25,29 +19,16 @@ class TaskDtoTest {
         assertThat(taskDto.getTitle()).isEqualTo(TITLE);
     }
 
-    @DisplayName("setTitle()은 title에 값을 세팅한다.")
+    @DisplayName("TaskDto를 테스트 한다.")
     @Test
-    void setTitle() {
-        final TaskDto taskDto = new TaskDto();
+    void taskDtoTest() {
+        TaskDto taskDto = new TaskDto();
         taskDto.setTitle(TITLE);
 
         assertThat(taskDto.getTitle()).isEqualTo(TITLE);
-    }
 
-    @DisplayName("getTitle()은 title을 반환한다.")
-    @Test
-    void getTitle() {
-        final TaskDto taskDto = new TaskDto(TITLE);
+        Task task = taskDto.toTask(1L);
 
-        assertThat(taskDto.getTitle()).isEqualTo(TITLE);
-    }
-
-    @DisplayName("toTask()는 Task 객체로 만들어 반환한다.")
-    @Test
-    void toTask() {
-        final TaskDto taskDto = new TaskDto(TITLE);
-
-        final Task task = taskDto.toTask(1L);
         assertThat(task).isInstanceOf(Task.class);
         assertThat(task.getTitle()).isEqualTo(TITLE);
     }
