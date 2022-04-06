@@ -37,7 +37,7 @@ public class BaseTaskTest {
     }
 
     protected String getTaskJsonString(Long taskId, String taskTitle) {
-        return String.format("\"id\":%d, \"title\":\"%s\"", taskId, taskId);
+        return String.format("{\"id\":%d,\"title\":\"%s\"}", taskId, taskTitle);
     }
 
 }

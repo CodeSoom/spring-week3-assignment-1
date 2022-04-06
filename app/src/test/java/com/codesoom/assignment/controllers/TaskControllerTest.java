@@ -86,24 +86,6 @@ class TaskControllerTest extends BaseTaskTest {
                 .hasMessageContaining(ERROR_MSG_TASK_NOT_FOUND);
     }
 
-    @Test
-    @DisplayName("존재하는 할일의 제목을 수정 > patch")
-    void patchExistTaskTitle() {
-        taskController.create(generateNewTask(TASK_TITLE_1));
-        Task updatedTask = taskController.patch(TASK_ID_1, generateNewTask(TASK_TITLE_2));
-
-        assertThat(updatedTask.getTitle()).isNotEqualTo(TASK_TITLE_1);
-        assertThat(updatedTask.getTitle()).isEqualTo(TASK_TITLE_2);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 할일의 제목을 수정 > patch")
-    void patchNotExistTaskTitle() {
-        assertThatThrownBy(() -> {
-            taskController.patch(TASK_ID_1, generateNewTask(TASK_TITLE_2));
-        }).isInstanceOf(TaskNotFoundException.class)
-                .hasMessageContaining(ERROR_MSG_TASK_NOT_FOUND);
-    }
 
     @Test
     @DisplayName("존재하는 할일을 삭제")
