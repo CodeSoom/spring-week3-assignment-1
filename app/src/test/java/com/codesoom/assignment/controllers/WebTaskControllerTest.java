@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +93,7 @@ public class WebTaskControllerTest {
         class Context_valid {
 
             final Long taskId = 1L;
-            final Task source = new Task(TEST_TASK_TITLE);
+            final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
 
             @BeforeEach
             void setUp() {

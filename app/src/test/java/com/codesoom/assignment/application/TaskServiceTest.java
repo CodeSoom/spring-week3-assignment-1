@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,7 @@ class TaskServiceTest {
         @DisplayName("유효한 할 일 데이터가 주어진다면")
         class Context_valid {
 
-            final Task source = new Task(TEST_TASK_TITLE);
+            final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
 
             Task subject() {
                 return taskService.createTask(source);
@@ -215,8 +216,8 @@ class TaskServiceTest {
     }
 
     private Task generateTask() {
-        Task givenSource = new Task();
-        givenSource.setTitle(TEST_TASK_TITLE);
-        return taskService.createTask(givenSource);
+        TaskSaveDto source = new TaskSaveDto();
+        source.setTitle(TEST_TASK_TITLE);
+        return taskService.createTask(source);
     }
 }

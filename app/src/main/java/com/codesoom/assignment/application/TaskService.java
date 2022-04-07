@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,10 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    public Task createTask(Task source) {
-        Task task = new Task();
+    public Task createTask(TaskSaveDto source) {
+        Task task = source.toEntity();
         task.setId(generateId());
-        task.setTitle(source.getTitle());
-
         tasks.add(task);
-
         return task;
     }
 

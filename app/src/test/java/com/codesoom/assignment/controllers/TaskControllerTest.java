@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -201,7 +202,7 @@ class TaskControllerTest {
         @DisplayName("유효한 할 일 값이 주어진다면")
         class Context_valid {
 
-            final Task source = new Task(TEST_TASK_TITLE);
+            final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
 
             @Test
             @DisplayName("할 일을 등록하고 할 일을 리턴 한다.")
@@ -258,7 +259,7 @@ class TaskControllerTest {
     }
 
     private Task generateTask(String title) {
-        Task source = new Task();
+        TaskSaveDto source = new TaskSaveDto();
         source.setTitle(title);
         return taskController.create(source);
     }
