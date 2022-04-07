@@ -18,12 +18,6 @@ class TaskTest {
     }
 
     @Test
-    @DisplayName("기본생성자로 task 객체 생성")
-    void createTaskWithNoConstructor() {
-        assertThat(task).isNotNull();
-    }
-
-    @Test
     @DisplayName("task 번호 세팅하고 조회하기")
     void taskIdTest() {
         task.setId(1L);
