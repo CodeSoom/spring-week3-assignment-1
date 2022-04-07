@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers.tasks;
 
+import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.domains.TaskDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,17 +30,19 @@ class TaskReadControllerWebTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final Long EXIST_ID = 1L;
+    private Long EXIST_ID;
     private static final Long NOT_EXIST_ID = 100L;
     private static final String EXIST_TITLE = "title";
 
     @BeforeEach
     void setup() throws Exception {
-        mockMvc.perform(post("/tasks")
+        final ResultActions actions = mockMvc.perform(post("/tasks")
                 .content(objectMapper.writeValueAsString(new TaskDto(EXIST_TITLE)))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(containsString(EXIST_TITLE)));
+                .andExpect(status().isCreated());
+
+        final Task task = objectMapper.readValue(actions.andReturn().getResponse().getContentAsString().getBytes(), Task.class);
+        this.EXIST_ID = task.getId();
     }
 
     @DisplayName("모든 할 일을 성공적으로 조회한다.")

@@ -1,7 +1,9 @@
 package com.codesoom.assignment.controllers.tasks;
 
 
+import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.domains.TaskDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -28,19 +32,21 @@ public class TaskUpdateControllerWebTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final Long EXIST_ID = 1L;
-    private static final Long NOT_EXIST_ID = 100L;
+    private Long EXIST_ID;
+    private static final Long NOT_EXIST_ID = 0L;
 
     private static final TaskDto EMPTY_TASK_DTO = new TaskDto("");
     private static final TaskDto BLANK_TASK_DTO = new TaskDto("");
 
     @BeforeEach
     void setup() throws Exception {
-        mockMvc.perform(post("/tasks")
+        final ResultActions actions = mockMvc.perform(post("/tasks")
                 .content(objectMapper.writeValueAsString(new TaskDto("title")))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("title")));
+                .andExpect(status().isCreated());
+
+        final Task task = objectMapper.readValue(actions.andReturn().getResponse().getContentAsString().getBytes(), Task.class);
+        this.EXIST_ID = task.getId();
     }
 
     @DisplayName("성공적으로 할 일을 변경한다.")
