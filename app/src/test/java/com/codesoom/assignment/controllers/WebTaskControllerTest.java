@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.in;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -62,12 +63,8 @@ public class WebTaskControllerTest {
             @BeforeEach
             void setUp() {
                 List<Task> tasks = LongStream.rangeClosed(1, givenSize)
-                        .mapToObj(index -> {
-                            Task task = new Task();
-                            task.setId(index);
-                            task.setTitle(TEST_TASK_TITLE + "_" + index);
-                            return task;
-                        })
+                        .mapToObj(index ->
+                                new Task(index, TEST_TASK_TITLE + "_" + index))
                         .collect(Collectors.toList());
 
                 given(taskService.getTasks()).willReturn(tasks);
@@ -98,9 +95,8 @@ public class WebTaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task = new Task();
-                task.setId(taskId);
-                task.setTitle(TEST_TASK_TITLE);
+
+                Task task = new Task(taskId, TEST_TASK_TITLE);
 
                 given(taskService.createTask(any())).willReturn(task);
             }
@@ -132,9 +128,8 @@ public class WebTaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task = new Task();
-                task.setId(taskId);
-                task.setTitle(TEST_TASK_TITLE);
+                Task task = new Task(taskId, TEST_TASK_TITLE);
+
                 given(taskService.getTask(taskId)).willReturn(task);
             }
 

@@ -3,12 +3,10 @@ package com.codesoom.assignment.models;
 import java.util.Objects;
 
 public class Task {
+
     private Long id;
 
     private String title;
-
-    public Task() {
-    }
 
     public Task(String title) {
         this.title = title;
