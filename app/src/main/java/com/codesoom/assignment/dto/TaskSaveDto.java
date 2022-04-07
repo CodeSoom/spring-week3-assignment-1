@@ -2,32 +2,48 @@ package com.codesoom.assignment.dto;
 
 import com.codesoom.assignment.models.Task;
 
+import java.util.Objects;
+
 /**
  * 할 일 등록에 필요한 데이터를 정의합니다.
  */
-public class TaskSaveDto {
+public final class TaskSaveDto {
 
-    private String title;
+    private final TaskDto taskDto;
 
     public TaskSaveDto() {
+        this(null);
     }
 
     public TaskSaveDto(String title) {
-        this.title = title;
+        this.taskDto = new TaskDto(title);
     }
 
     public String getTitle() {
-        return title;
+        return taskDto.getTitle();
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        taskDto.setTitle(title);
     }
 
     /**
      * 할 일 엔티티로 변환해 리턴합니다.
      */
     public Task toEntity() {
-        return new Task(title);
+        return new Task(getTitle());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskSaveDto that = (TaskSaveDto) o;
+        return Objects.equals(taskDto, that.taskDto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskDto);
     }
 }

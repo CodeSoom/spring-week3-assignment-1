@@ -273,7 +273,7 @@ public class WebTaskControllerTest {
     class Describe_patch {
 
         final TaskEditDto source = new TaskEditDto(TEST_TASK_TITLE);
-        final Long taskId = 1L;
+        final Long taskId = 2L;
 
         @BeforeEach
         void setUp() {
@@ -294,6 +294,7 @@ public class WebTaskControllerTest {
                 mockMvc.perform(patch("/tasks/{taskId}", taskId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(source)))
+                        .andDo(print())
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("id").exists())
                         .andExpect(jsonPath("title").exists());
