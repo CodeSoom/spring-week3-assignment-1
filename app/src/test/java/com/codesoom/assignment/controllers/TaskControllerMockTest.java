@@ -178,7 +178,7 @@ class TaskControllerMockTest extends BaseTaskTest {
     class Describe_editTask {
 
         @Nested
-        @DisplayName("path id가 0이상 이라면")
+        @DisplayName("path id가 1이상 이라면")
         class Context_normal_path_id {
 
             @Nested
@@ -186,7 +186,7 @@ class TaskControllerMockTest extends BaseTaskTest {
             class Context_normal_task {
 
                 @Test
-                @DisplayName("path id 와 일치하는 task 를 조회해서 > 제목을 수정한 후 > 수정된 task 를 반환한다.")
+                @DisplayName("path id 와 일치하는 task 가 존재하면 > 제목을 수정한 후 > 수정된 task 를 반환한다.")
                 void it_returns_edited_task() throws Exception {
 
                     taskService.createTask(generateNewTask(TASK_TITLE_1));
@@ -196,6 +196,18 @@ class TaskControllerMockTest extends BaseTaskTest {
                                     .content(getTaskJsonString(0L, TASK_TITLE_2)))
                             .andExpect(status().isOk())
                             .andExpect(content().string(containsString(getTaskJsonString(TASK_ID_1, TASK_TITLE_2))));
+                }
+
+                @Test
+                @DisplayName("path id 와 일치하는 task 가 존재하지 않으면 > 오류를 반환한다.")
+                void it_throws_exception() throws Exception {
+
+                    taskService.createTask(generateNewTask(TASK_TITLE_1));
+
+                    mockMvc.perform(put("/tasks/123")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(getTaskJsonString(0L, TASK_TITLE_1)))
+                            .andExpect(status().isNotFound());
                 }
             }
 
@@ -240,7 +252,7 @@ class TaskControllerMockTest extends BaseTaskTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("path id가 0이하 라면")
+        @DisplayName("path id가 1이상 이라면")
         class Context_valid_path_id {
 
             @Nested

@@ -15,14 +15,6 @@ public class BaseTaskTest {
     protected static final String ERROR_MSG_TASK_NOT_FOUND = "Task not found";
     protected static final String ERROR_MSG_TASK_FORMAT_BAD = "Task format is poor";
 
-    protected List<Task> generateEmptyTaskList() {
-        return new ArrayList<>();
-    }
-
-    protected List<Task> generateFilledTaskList() {
-        return Lists.newArrayList(generateNewTask(TASK_ID_1, TASK_TITLE_1), generateNewTask(TASK_ID_2, TASK_TITLE_2));
-    }
-
     protected Task generateNewTask(String taskTitle) {
         return this.generateNewTask(null, taskTitle);
     }
