@@ -54,10 +54,10 @@ class TaskReadServiceImplTest {
         given(repository.findById(FIRST_TASK.getId())).willReturn(FIRST_TASK);
 
         //when
-        final Task findTask = service.findTaskById(FIRST_TASK.getId());
+        final Task task = service.findTaskById(FIRST_TASK.getId());
 
         //then
-        assertThat(findTask).isEqualTo(FIRST_TASK);
+        assertThat(task).isEqualTo(FIRST_TASK);
     }
 
     @DisplayName("id와 일치하는 할 일이 없으면 예외가 발생한다.")
