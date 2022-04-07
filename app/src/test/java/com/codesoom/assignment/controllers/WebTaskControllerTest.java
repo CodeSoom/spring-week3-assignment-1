@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -217,7 +218,7 @@ public class WebTaskControllerTest {
     @DisplayName("PUT - /tasks/{taskId} 대체 요청시")
     class Describe_update {
 
-        final Task source = new Task(TEST_TASK_TITLE);
+        final TaskEditDto source = new TaskEditDto(TEST_TASK_TITLE);
         final Long taskId = 1L;
 
         @Nested
@@ -271,7 +272,7 @@ public class WebTaskControllerTest {
     @DisplayName("PATCH - /tasks/{taskId} 수정 요청시")
     class Describe_patch {
 
-        final Task source = new Task(TEST_TASK_TITLE);
+        final TaskEditDto source = new TaskEditDto(TEST_TASK_TITLE);
         final Long taskId = 1L;
 
         @BeforeEach

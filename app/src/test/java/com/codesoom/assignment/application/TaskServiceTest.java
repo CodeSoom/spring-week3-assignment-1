@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -127,7 +128,7 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
 
-        final Task validSource = new Task(TEST_TASK_UPDATE_TITLE);
+        final TaskEditDto source = new TaskEditDto(TEST_TASK_UPDATE_TITLE);
 
         @Nested
         @DisplayName("주어진 아이디와 일치하는 할 일이 있고, 유효한 데이터가 주어진다면")
@@ -141,7 +142,7 @@ class TaskServiceTest {
             }
 
             Task subject() {
-                return taskService.updateTask(givenTask.getId(), validSource);
+                return taskService.updateTask(givenTask.getId(), source);
             }
 
             @Test
@@ -161,7 +162,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 던진다.")
             void it_throw_exception() {
-                assertThatThrownBy(() -> taskService.updateTask(notExistsTaskId, validSource))
+                assertThatThrownBy(() -> taskService.updateTask(notExistsTaskId, source))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }

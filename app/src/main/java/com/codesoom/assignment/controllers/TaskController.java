@@ -1,6 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
@@ -35,13 +36,13 @@ public class TaskController {
     }
 
     @PutMapping("{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    public Task update(@PathVariable Long id, @RequestBody TaskEditDto source) {
+        return taskService.updateTask(id, source);
     }
 
     @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    public Task patch(@PathVariable Long id, @RequestBody TaskEditDto source) {
+        return taskService.updateTask(id, source);
     }
 
     @DeleteMapping("{id}")

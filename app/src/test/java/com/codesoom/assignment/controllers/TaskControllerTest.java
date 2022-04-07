@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,7 +107,7 @@ class TaskControllerTest {
     class Describe_patch {
 
         final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
-        final Task source = new Task(title);
+        final TaskEditDto source = new TaskEditDto(title);
 
         @Nested
         @DisplayName("일치하는 할일 이 있다면")
@@ -154,7 +155,7 @@ class TaskControllerTest {
     class Describe_update {
 
         final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
-        final Task source = new Task(title);
+        final TaskEditDto source = new TaskEditDto(title);
 
         @Nested
         @DisplayName("일치하는 할일 이 있다면")

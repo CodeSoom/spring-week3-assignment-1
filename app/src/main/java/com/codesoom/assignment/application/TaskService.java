@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,9 @@ public class TaskService {
         return task;
     }
 
-    public Task updateTask(Long id, Task source) {
+    public Task updateTask(Long id, TaskEditDto source) {
         Task task = getTask(id);
         task.setTitle(source.getTitle());
-
         return task;
     }
 
