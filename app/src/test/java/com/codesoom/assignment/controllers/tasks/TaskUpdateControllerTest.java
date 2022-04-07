@@ -9,9 +9,11 @@ import com.codesoom.assignment.services.TaskUpdateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -52,16 +54,12 @@ public class TaskUpdateControllerTest {
     }
 
     @DisplayName("빈 제목으로 할 일을 수정하려고 하면 예외가 발생한다.")
-    @Test
-    void thrownInvalidFormatException() {
-        assertAll(() -> {
-            assertThrows(TaskInvalidFormatException.class,
-                    () -> controller.updateTask(NOT_EXIST_ID, new TaskDto(EMPTY_TASK_TITLE)));
-            assertThrows(TaskInvalidFormatException.class,
-                    () -> controller.updateTask(NOT_EXIST_ID, new TaskDto(BLANK_TASK_TITLE)));
-            assertThrows(TaskInvalidFormatException.class,
-                    () -> controller.updateTask(NOT_EXIST_ID, new TaskDto(null)));
-        });
+    @NullSource
+    @ValueSource(strings = {EMPTY_TASK_TITLE, BLANK_TASK_TITLE})
+    @ParameterizedTest(name = "{displayName} - {index} \"{0}\"")
+    void thrownInvalidFormatException(String requestTitle) {
+        assertThrows(TaskInvalidFormatException.class,
+                () -> controller.updateTask(NOT_EXIST_ID, new TaskDto(requestTitle)));
     }
 
 }
