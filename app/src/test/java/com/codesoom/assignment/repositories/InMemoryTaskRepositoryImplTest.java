@@ -1,13 +1,13 @@
 package com.codesoom.assignment.repositories;
 
 import com.codesoom.assignment.domains.Task;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
 
 class InMemoryTaskRepositoryImplTest {
 
@@ -20,17 +20,6 @@ class InMemoryTaskRepositoryImplTest {
     @BeforeEach
     void setup() {
         repository = new InMemoryTaskRepositoryImpl();
-    }
-
-    @AfterEach
-    void cleanup() {
-        repository.remove(TASK_ID);
-    }
-
-    @DisplayName("저장된 할 일이 없으면 빈 값을 반환한다.")
-    @Test
-    void getTasksTest() {
-        assertThat(repository.getTasks()).isEmpty();
     }
 
     @DisplayName("할 일을 성공적으로 저장한다.")
@@ -84,4 +73,5 @@ class InMemoryTaskRepositoryImplTest {
             assertThat(id2 - id1).isEqualTo(1L);
         });
     }
+
 }
