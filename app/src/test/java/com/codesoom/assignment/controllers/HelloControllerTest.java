@@ -20,7 +20,7 @@ class HelloControllerTest {
     @DisplayName("sayHello 메서드는")
     class Describe_sayHello {
         @Nested
-        @DisplayName("path가 '/'로 들어오면")
+        @DisplayName("path가 기본 경로로 들어오면")
         class Context_with_default_path {
             @Test
             @DisplayName("환영 메세지를 반환합니다")
