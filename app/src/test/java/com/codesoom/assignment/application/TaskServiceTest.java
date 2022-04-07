@@ -47,20 +47,24 @@ class TaskServiceTest {
         @Nested
         @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 있으면")
         class Context_with_valid_id {
+            final long VALID_REQUEST_TASK_ID = 1L;
             @Test
             @DisplayName("id에 해당하는 Task를 반환합니다.")
             void getTask() {
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TASK_TITLE_ONE);
+                assertThat(taskService.getTask(VALID_REQUEST_TASK_ID)
+                        .getTitle()).isEqualTo(TASK_TITLE_ONE);
             }
         }
 
         @Nested
         @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 없으면")
         class Context_with_invalid_id {
+            final long INVALID_REQUEST_TASK_ID = 100L;
+
             @Test
             @DisplayName("TaskNotFoundException 예외를 던집니다.")
             void throwTaskNotFoundException() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+                assertThatThrownBy(() -> taskService.getTask(INVALID_REQUEST_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }

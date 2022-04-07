@@ -4,9 +4,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 콘솔창에서 클라이언트가 서버에 메세지를 보낼 때<br>
- * 아무 메세지도 보내지 않고, 주소(localhost:8080)만 보내는 경우에<br>
- * 클라이언트에 대한 서버의 응답을 처리해주는 클래스입니다.
+ * HelloController 클래스는 클라이언트와 서버가 제대로 연결되었는지 확인하기 위한 테스트 컨트롤러의 역할을 합니다.<br>
+ *
+ * 간단하고 빠르게 테스트하기 위해서 Hello, world!가 화면에 잘출력되는지 확인합니다.<br>
+ *
+ * 잘출력된다면 서버와 클라이언트가 서로 제대로 연결이 되었다는 것을 의미합니다.<br>
+ *
+ * 제대로 출력이 되지 않는다면 서버 또는 연결에 문제가 있다는 것을 의미합니다.<br>
  */
 
 @RestController
