@@ -4,15 +4,18 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("TaskService 클래스")
 class TaskServiceTest {
 
     private TaskService taskService;
+    private Long TASK_VALID_ID = 0L;
+    private final static Long TASK_INVALID_ID = 100L;
     private final static String TASK_TITLE = "Task title";
     private final static String TASK_NOT_FOUND_MESSAGE = "Task not found: %d";
 
@@ -23,7 +26,8 @@ class TaskServiceTest {
         // given
         Task resource = new Task();
         resource.setTitle(TASK_TITLE);
-        taskService.createTask(resource);
+        resource = taskService.createTask(resource);
+        TASK_VALID_ID = resource.getId();
     }
 
     @Test
@@ -34,25 +38,43 @@ class TaskServiceTest {
     }
 
 
-    @Test
-    @DisplayName("getTask는 아이디가 할 일 목록에 존재한다면 할 일을 찾아서 반환한다.")
-    void getTaskWithValidId() {
-        // when
-        Task task = taskService.getTask(1L);
+    @Nested
+    @DisplayName("getTask 메소드는")
+    class Describe_getTask {
 
-        // then
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
-    }
+        private Task task;
 
-    @Test
-    @DisplayName("getTask는 존재하지 않는 할 일을 찾을 때 예외를 발생한다.")
-    void getTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.getTask(100L))
-                .isInstanceOf(TaskNotFoundException.class);
+        @BeforeEach
+        void prepare() {
+            task = taskService.getTask(TASK_VALID_ID);
+        }
 
-        assertThatExceptionOfType(TaskNotFoundException.class)
-                .isThrownBy(() -> taskService.getTask(100L))
-                .withMessage(String.format(TASK_NOT_FOUND_MESSAGE, 100L));
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재한다면")
+        class Context_with_a_valid_id {
+
+            @Test
+            @DisplayName("할 일을 찾아서 반환한다.")
+            void it_returns_a_task() {
+                assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
+            }
+        }
+
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재하지 않는다면")
+        class Context_with_a_invalid_id {
+
+            @Test
+            @DisplayName("예외를 발생한다.")
+            void it_returns_exception() {
+                assertThatThrownBy(() -> taskService.getTask(TASK_INVALID_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+
+                assertThatExceptionOfType(TaskNotFoundException.class)
+                        .isThrownBy(() -> taskService.getTask(TASK_INVALID_ID))
+                        .withMessage(String.format(TASK_NOT_FOUND_MESSAGE, TASK_INVALID_ID));
+            }
+        }
     }
 
     @Test
@@ -75,55 +97,78 @@ class TaskServiceTest {
         assertThat(newSize).isEqualTo(oldSize + 1);
     }
 
-    @Test
-    @DisplayName("updateTask는 아이디가 할 일 목록에 존재한다면 할 일을 수정하여 반환한다.")
-    void updateTaskWithValidId() {
-        // given
-        String updatedTitle = "Updated " +TASK_TITLE;
-        Task resource = new Task();
-        resource.setTitle(updatedTitle);
+    @Nested
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTask {
 
-        // when
-        Task task = taskService.updateTask(1L, resource);
+        private Task resource;
+        private final static String updatedTitle = "Updated " +TASK_TITLE;
 
-        // then
-        assertThat(task.getTitle()).isEqualTo(updatedTitle);
+        @BeforeEach
+        void prepare() {
+            resource = new Task();
+            resource.setTitle(updatedTitle);
+        }
+
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재한다면")
+        class Context_with_a_valid_id {
+            @Test
+            @DisplayName("할 일을 수정하여 반환한다.")
+            void it_returns_a_updated_task() {
+                Task task = taskService.updateTask(TASK_VALID_ID, resource);
+                assertThat(task.getTitle()).isEqualTo(updatedTitle);
+            }
+        }
+
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재하지 않는다면")
+        class Context_with_a_invalid_id {
+            @Test
+            @DisplayName("예외를 발생한다.")
+            void it_returns_exception() {
+                assertThatThrownBy(() -> taskService.updateTask(TASK_INVALID_ID, resource))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
-    @Test
-    @DisplayName("updateTask는 존재하지 않는 할 일을 수정할 때 예외를 발생한다.")
-    void updateTaskWithInvalidId() {
-        // given
-        String updatedTitle = "Updated " +TASK_TITLE;
-        Task resource = new Task();
-        resource.setTitle(updatedTitle);
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
 
-        // then
-        assertThatThrownBy(() -> taskService.updateTask(100L, resource))
-                .isInstanceOf(TaskNotFoundException.class);
-    }
+        private int oldSize = 0;
 
-    @Test
-    @DisplayName("deleteTask는 아이디가 할 일 목록에 존재한다면 할 일을 삭제한다.")
-    void deleteTaskWithValidId() {
-        // given
-        int oldSize = taskService.getTasks().size();
+        @BeforeEach
+        void prepare() {
+            oldSize = taskService.getTasks().size();
+        }
 
-        // when
-        taskService.deleteTask(1L);
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재한다면")
+        class Context_with_a_valid_id {
+            @Test
+            @DisplayName("할 일을 삭제한다.")
+            void it_returns_a_deleted_task() {
+                taskService.deleteTask(TASK_VALID_ID);
 
-        // then
-        int newSize = taskService.getTasks().size();
+                int newSize = taskService.getTasks().size();
 
-        assertThatThrownBy(() -> taskService.getTask(1L))
-                .isInstanceOf(TaskNotFoundException.class);
-        assertThat(newSize).isEqualTo(oldSize - 1);
-    }
+                assertThatThrownBy(() -> taskService.getTask(TASK_VALID_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+                assertThat(newSize).isEqualTo(oldSize - 1);
+            }
+        }
 
-    @Test
-    @DisplayName("deleteTask는 존재하지 않는 할 일을 삭제할 때 예외를 발생한다.")
-    void deleteTaskWithInvalidId() {
-        assertThatThrownBy(() -> taskService.deleteTask(100L))
-                .isInstanceOf(TaskNotFoundException.class);
+        @Nested
+        @DisplayName("아이디가 할 일 목록에 존재하지 않는다면")
+        class Context_with_a_invalid_id {
+            @Test
+            @DisplayName("예외를 발생한다.")
+            void it_returns_exception() {
+                assertThatThrownBy(() -> taskService.deleteTask(TASK_INVALID_ID))
+                    .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }
