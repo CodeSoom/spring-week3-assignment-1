@@ -20,7 +20,7 @@ class HelloControllerTest {
         @DisplayName("GET 요청을 했다면")
         class Context_with_real {
             @Test
-            @DisplayName("상태코드(200) 과 함께 문자열을 리턴한다.")
+            @DisplayName("문자열을 반환한다.")
             void it_returns_string_with_statusCode() {
                 assertThat(result).isNotNull();
                 assertThat(result).isNotEmpty();
