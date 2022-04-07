@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.dto.TaskEditDto;
 import com.codesoom.assignment.dto.TaskSaveDto;
+import com.codesoom.assignment.dto.TaskViewDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,7 @@ class TaskControllerTest {
                         .forEach((index) -> generateTask(String.format("%s_%s", TEST_TASK_TITLE, index)));
             }
 
-            List<Task> subject() {
+            List<TaskViewDto> subject() {
                 return taskController.list();
             }
 
@@ -75,14 +76,17 @@ class TaskControllerTest {
                 givenTask = generateTask(TEST_TASK_TITLE);
             }
 
-            Task subject() {
+            TaskViewDto subject() {
                 return taskController.detail(givenTask.getId());
             }
 
             @Test
             @DisplayName("할 일을 리턴 한다.")
             void it_return_task() {
-                assertThat(subject()).isEqualTo(givenTask);
+                assertAll(
+                        () -> assertThat(subject().getId()).isEqualTo(givenTask.getId()),
+                        () -> assertThat(subject().getTitle()).isEqualTo(givenTask.getTitle())
+                );
             }
         }
 
@@ -120,7 +124,7 @@ class TaskControllerTest {
                 givenTask = generateTask(TEST_TASK_TITLE);
             }
 
-            Task subject() {
+            TaskViewDto subject() {
                 return taskController.patch(givenTask.getId(), source);
             }
 
@@ -128,7 +132,7 @@ class TaskControllerTest {
             @DisplayName("할 일을 수정 하고 할 일을 리턴 한다.")
             void it_patch_and_return_task() {
                 assertAll(
-                        () -> assertThat(subject()).isEqualTo(givenTask),
+                        () -> assertThat(subject().getId()).isEqualTo(givenTask.getId()),
                         () -> assertThat(subject().getTitle()).isEqualTo(title)
                 );
             }
@@ -168,15 +172,15 @@ class TaskControllerTest {
                 givenTask = generateTask(TEST_TASK_TITLE);
             }
 
-            Task subject() {
+            TaskViewDto subject() {
                 return taskController.update(givenTask.getId(), source);
             }
 
             @Test
             @DisplayName("할 일을 대체하고 대체된 할 일을 리턴한다.")
             void it_update_and_return_task() {
-                Task task = subject();
-                assertThat(task.getTitle()).isEqualTo(title);
+                TaskViewDto taskViewDto = subject();
+                assertThat(taskViewDto.getTitle()).isEqualTo(title);
             }
         }
 
@@ -209,11 +213,11 @@ class TaskControllerTest {
             @DisplayName("할 일을 등록하고 할 일을 리턴 한다.")
             void it_save_and_return_task() {
 
-                Task savedTask = taskController.create(source);
+                TaskViewDto taskViewDto = taskController.create(source);
 
                 assertAll(
-                        () -> assertThat(savedTask.getId()).isNotNull(),
-                        () -> assertThat(savedTask.getTitle()).isEqualTo(TEST_TASK_TITLE)
+                        () -> assertThat(taskViewDto.getId()).isNotNull(),
+                        () -> assertThat(taskViewDto.getTitle()).isEqualTo(TEST_TASK_TITLE)
                 );
             }
         }
@@ -262,6 +266,7 @@ class TaskControllerTest {
     private Task generateTask(String title) {
         TaskSaveDto source = new TaskSaveDto();
         source.setTitle(title);
-        return taskController.create(source);
+        TaskViewDto taskViewDto = taskController.create(source);
+        return new Task(taskViewDto.getId(), taskViewDto.getTitle());
     }
 }
