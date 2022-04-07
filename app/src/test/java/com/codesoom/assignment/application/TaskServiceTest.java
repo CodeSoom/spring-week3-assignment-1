@@ -27,7 +27,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("모든 Task 찾기")
+    @DisplayName("getTasks는 모든 할 일 목록을 반환한다.")
     void getTasks() {
         assertThat(taskService.getTasks()).hasSize(1);
         assertThat(taskService.getTasks()).isInstanceOf(List.class);
@@ -35,7 +35,7 @@ class TaskServiceTest {
 
 
     @Test
-    @DisplayName("id로 Task 찾기")
+    @DisplayName("getTask는 아이디가 할 일 목록에 존재한다면 할 일을 찾아서 반환한다.")
     void getTaskWithValidId() {
         // when
         Task task = taskService.getTask(1L);
@@ -45,7 +45,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 id로 Task 찾기")
+    @DisplayName("getTask는 존재하지 않는 할 일을 찾을 때 예외를 발생한다.")
     void getTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
@@ -56,7 +56,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("새로운 Task 저장하기")
+    @DisplayName("createTask는 새로운 할 일을 저장하여 반환한다.")
     void createTask() {
         // given
         String newTitle = "New " +TASK_TITLE;
@@ -76,7 +76,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Task 수정하기")
+    @DisplayName("updateTask는 아이디가 할 일 목록에 존재한다면 할 일을 수정하여 반환한다.")
     void updateTaskWithValidId() {
         // given
         String updatedTitle = "Updated " +TASK_TITLE;
@@ -91,7 +91,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 Task 수정하기")
+    @DisplayName("updateTask는 존재하지 않는 할 일을 수정할 때 예외를 발생한다.")
     void updateTaskWithInvalidId() {
         // given
         String updatedTitle = "Updated " +TASK_TITLE;
@@ -104,7 +104,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Task 삭제하기")
+    @DisplayName("deleteTask는 아이디가 할 일 목록에 존재한다면 할 일을 삭제한다.")
     void deleteTaskWithValidId() {
         // given
         int oldSize = taskService.getTasks().size();
@@ -121,7 +121,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 Task 삭제하기")
+    @DisplayName("deleteTask는 존재하지 않는 할 일을 삭제할 때 예외를 발생한다.")
     void deleteTaskWithInvalidId() {
         assertThatThrownBy(() -> taskService.deleteTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
