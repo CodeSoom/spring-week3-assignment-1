@@ -11,11 +11,13 @@
 - [x] ErrorResponse 테스트
 - [x] TaskService 테스트
 - [x] TaskController 유닛 테스트
-- [ ] TaskController MockMVC 테스트
+- [x] TaskController MockMVC 테스트
 
 ## 추가작업목록
-- [ ] 모든 테스트 케이스에서 given() 제외하고 테스트코드 작성
-- [ ] given 의 영향범위 조사하기
+- [x] 모든 테스트 케이스에서 given() 제외하고 테스트코드 작성
+- [x] given 조사하기
+  - [x] 이해안되는 부분 질문
+  - [ ] 새롭게 알게된 내용 정리하기
 
 ## 요구 사항
 

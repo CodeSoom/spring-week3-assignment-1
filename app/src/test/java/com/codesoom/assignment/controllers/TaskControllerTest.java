@@ -105,6 +105,5 @@ class TaskControllerTest extends BaseTaskTest {
             taskController.delete(TASK_ID_1);
         }).isInstanceOf(TaskNotFoundException.class)
                 .hasMessageContaining(ERROR_MSG_TASK_NOT_FOUND);
-
     }
 }
