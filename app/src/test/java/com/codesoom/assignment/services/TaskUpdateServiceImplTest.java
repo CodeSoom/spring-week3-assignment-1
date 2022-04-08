@@ -4,7 +4,7 @@ import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.domains.TaskDto;
 import com.codesoom.assignment.exceptions.TaskInvalidFormatException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
-import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
+import com.codesoom.assignment.repositories.InMemoryTaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ class TaskUpdateServiceImplTest {
     private TaskUpdateServiceImpl service;
 
     @Mock
-    private InMemoryTaskRepositoryImpl repository;
+    private InMemoryTaskRepository repository;
 
     private static final Task BEFORE_TASK = new Task(1L, "old title");
     private static final TaskDto UPDATE_TASK_DTO = new TaskDto("new title");

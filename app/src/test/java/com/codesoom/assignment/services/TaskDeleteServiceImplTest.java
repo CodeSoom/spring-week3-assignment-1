@@ -2,7 +2,7 @@ package com.codesoom.assignment.services;
 
 import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
-import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
+import com.codesoom.assignment.repositories.InMemoryTaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ class TaskDeleteServiceImplTest {
     private TaskDeleteServiceImpl service;
 
     @Mock
-    private InMemoryTaskRepositoryImpl repository;
+    private InMemoryTaskRepository repository;
 
     private static final Long DELETE_TASK_ID = 1L;
     private static final Task TASK = new Task(DELETE_TASK_ID, "first title");

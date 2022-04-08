@@ -3,7 +3,7 @@ package com.codesoom.assignment.services;
 
 import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
-import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
+import com.codesoom.assignment.repositories.InMemoryTaskRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class TaskReadServiceImplTest {
     private TaskReadServiceImpl service;
 
     @Mock
-    private InMemoryTaskRepositoryImpl repository;
+    private InMemoryTaskRepository repository;
 
     private static final Task FIRST_TASK = new Task(1L, "first title");
     private static final Task SECOND_TASK = new Task(2L, "second title");
