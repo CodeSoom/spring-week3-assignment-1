@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,9 +36,6 @@ public class TaskUpdateControllerWebTest {
 
     private Long EXIST_ID;
     private static final Long NOT_EXIST_ID = 0L;
-
-    private static final TaskDto EMPTY_TASK_DTO = new TaskDto("");
-    private static final TaskDto BLANK_TASK_DTO = new TaskDto("");
 
     @BeforeEach
     void setup() throws Exception {
@@ -68,22 +67,15 @@ public class TaskUpdateControllerWebTest {
                 .andExpect(status().isNotFound());
     }
 
-    @DisplayName("빈 값으로 할 일을 수정하려고 하면 400을 반환한다.")
+    @DisplayName("빈 값으로 할 일을 수정할 경우 예외가 발생한다.")
     @Test
     void emptyTask() throws Exception {
-        mockMvc.perform(patch("/tasks/" + NOT_EXIST_ID)
-                .content(objectMapper.writeValueAsString(EMPTY_TASK_DTO))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(patch("/tasks/" + NOT_EXIST_ID)
-                .content(objectMapper.writeValueAsString(BLANK_TASK_DTO))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(patch("/tasks/" + NOT_EXIST_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+        for (String title : Arrays.asList("", " ", null)) {
+            mockMvc.perform(patch("/tasks/" + EXIST_ID)
+                    .content(objectMapper.writeValueAsString(new TaskDto(title)))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
 }
