@@ -27,7 +27,7 @@ class TaskDtoTest {
 
         assertThat(taskDto.getTitle()).isEqualTo(TITLE);
 
-        Task task = taskDto.toTask(1L);
+        Task task = taskDto.toTask();
 
         assertThat(task).isInstanceOf(Task.class);
         assertThat(task.getTitle()).isEqualTo(TITLE);
