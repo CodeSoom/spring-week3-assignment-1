@@ -21,9 +21,7 @@ public class TaskCreateServiceImpl implements TaskCreateService{
     public Task addTask(TaskDto taskDto) {
         validateTaskDto(taskDto);
 
-        Task newTask = taskDto.toTask(repository.generateId());
-        repository.save(newTask);
-        return newTask;
+        return repository.save(taskDto.toTask());
     }
 
     /**

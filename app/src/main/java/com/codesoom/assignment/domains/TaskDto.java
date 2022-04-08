@@ -19,8 +19,8 @@ public class TaskDto {
         this.title = title;
     }
 
-    public Task toTask(Long id) {
-        return new Task(id, title);
+    public Task toTask() {
+        return new Task(title);
     }
 
     @Override
