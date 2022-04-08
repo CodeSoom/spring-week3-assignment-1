@@ -17,8 +17,8 @@ class TaskControllerTest {
 
     private TaskController taskController;
     private TaskService taskService;
-    private final static Long TASK_TEST_ID1 = 1L;
-    private final static Long TASK_TEST_ID2 = 100L;
+    private final static Long TASK_TEST_ID = 1L;
+    private final static Long NOT_SAVED_TASK_ID = 100L;
     private final static String TASK_TITLE = "Task title";
 
     @BeforeEach
@@ -51,7 +51,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 찾아서 반환한다.")
             void it_returns_a_task() {
-                Task task = taskController.detail(TASK_TEST_ID1);
+                Task task = taskController.detail(TASK_TEST_ID);
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
             }
         }
@@ -63,7 +63,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskController.detail(TASK_TEST_ID2))
+                assertThatThrownBy(() -> taskController.detail(NOT_SAVED_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -108,7 +108,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 수정하여 반환한다.")
             void it_returns_a_updated_task() {
-                Task task = taskController.update(TASK_TEST_ID1, resource);
+                Task task = taskController.update(TASK_TEST_ID, resource);
                 assertThat(task.getTitle()).isEqualTo(updatedTitle);
             }
         }
@@ -119,7 +119,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskController.update(TASK_TEST_ID2, resource))
+                assertThatThrownBy(() -> taskController.update(NOT_SAVED_TASK_ID, resource))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -144,7 +144,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 수정하여 반환한다.")
             void it_returns_a_updated_task() {
-                Task task = taskController.patch(TASK_TEST_ID1, resource);
+                Task task = taskController.patch(TASK_TEST_ID, resource);
                 assertThat(task.getTitle()).isEqualTo(updatedTitle);
             }
         }
@@ -155,7 +155,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskController.patch(TASK_TEST_ID2, resource))
+                assertThatThrownBy(() -> taskController.patch(NOT_SAVED_TASK_ID, resource))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -178,11 +178,11 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 삭제한다.")
             void it_returns_a_deleted_task() {
-                taskController.delete(TASK_TEST_ID1);
+                taskController.delete(TASK_TEST_ID);
 
                 int newSize = taskController.list().size();
 
-                assertThatThrownBy(() -> taskController.detail(TASK_TEST_ID1))
+                assertThatThrownBy(() -> taskController.detail(TASK_TEST_ID))
                         .isInstanceOf(TaskNotFoundException.class);
                 assertThat(newSize).isEqualTo(oldSize - 1);
             }
@@ -194,7 +194,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskController.delete(TASK_TEST_ID2))
+                assertThatThrownBy(() -> taskController.delete(NOT_SAVED_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
