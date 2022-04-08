@@ -48,7 +48,7 @@ public class InMemoryTaskRepository implements TaskRepository {
     @Override
     public Task update(Long id, Task updatedTask) {
         tasks.replace(id, updatedTask);
-        return updatedTask;
+        return tasks.replace(id, updatedTask) == null ? null : updatedTask;
     }
 
     /** id와 매핑된 할 일을 삭제합니다. */
