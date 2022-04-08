@@ -10,7 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,7 +32,6 @@ class TaskCreateControllerWebTest {
 
     private static final String TASK_TITLE = "task";
     private static final TaskDto VALID_TASK_DTO = new TaskDto(TASK_TITLE);
-    private static final TaskDto EMPTY_TASK_DTO = new TaskDto("");
 
     @DisplayName("할 일을 성공적으로 추가한다.")
     @Test
@@ -45,11 +47,12 @@ class TaskCreateControllerWebTest {
     @DisplayName("빈 값의 할 일을 추가하면 400 에러를 응답한다.")
     @Test
     void emptyTask() throws Exception {
-        mockMvc.perform(post("/tasks")
-                .content(objectMapper.writeValueAsString(EMPTY_TASK_DTO))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        for (String title : Arrays.asList("", " ", null)) {
+            mockMvc.perform(post("/tasks")
+                    .content(objectMapper.writeValueAsString(new TaskDto(title)))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     @DisplayName("request body가 없으면 400 에러를 응답한다.")

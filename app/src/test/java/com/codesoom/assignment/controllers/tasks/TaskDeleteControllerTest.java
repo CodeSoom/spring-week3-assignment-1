@@ -2,7 +2,7 @@ package com.codesoom.assignment.controllers.tasks;
 
 import com.codesoom.assignment.domains.Task;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
-import com.codesoom.assignment.repositories.InMemoryTaskRepositoryImpl;
+import com.codesoom.assignment.repositories.InMemoryTaskRepository;
 import com.codesoom.assignment.services.TaskDeleteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,14 +14,14 @@ public class TaskDeleteControllerTest {
 
     private TaskDeleteController controller;
 
-    private static final Long EXIST_ID = 1L;
-    private static final Task SAVED_TASK = new Task(EXIST_ID, "title");
+    private Long EXIST_ID;
     private static final Long NOT_EXIST_ID = 100L;
 
     @BeforeEach
     void setup() {
-        final InMemoryTaskRepositoryImpl repository = new InMemoryTaskRepositoryImpl();
-        repository.save(SAVED_TASK);
+        final InMemoryTaskRepository repository = new InMemoryTaskRepository();
+        Task task = new Task("title");
+        this.EXIST_ID = repository.save(task).getId();
 
         final TaskDeleteServiceImpl service = new TaskDeleteServiceImpl(repository);
         this.controller = new TaskDeleteController(service);
