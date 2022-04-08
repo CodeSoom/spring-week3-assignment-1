@@ -1,5 +1,7 @@
 package com.codesoom.assignment.models;
 
+import org.springframework.util.StringUtils;
+
 import java.util.Objects;
 
 public class Task {
@@ -9,12 +11,19 @@ public class Task {
     private String title;
 
     public Task(String title) {
-        this.title = title;
+        this(null, title);
     }
 
     public Task(Long id, String title) {
         this.id = id;
         this.title = title;
+        validate();
+    }
+
+    private void validate() {
+        if (!StringUtils.hasText(title)) {
+            throw new IllegalArgumentException("할 일을 입력해 주세요.");
+        }
     }
 
     public Long getId() {

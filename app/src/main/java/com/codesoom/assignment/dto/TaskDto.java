@@ -9,9 +9,6 @@ public class TaskDto {
 
     private String title;
 
-    protected TaskDto() {
-    }
-
     public TaskDto(String title) {
         this.title = title;
     }
