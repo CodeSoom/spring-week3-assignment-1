@@ -9,63 +9,74 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
-class InMemoryTaskRepositoryImplTest {
+class InMemoryTaskRepositoryTest {
 
     private TaskRepository repository;
 
-    private static final Long TASK_ID = 1L;
+    private static Long SAVED_TASK_ID;
     private static final Long NOT_EXIST_ID = 100L;
-    private static final Task TASK = new Task(TASK_ID, "title");
 
     @BeforeEach
     void setup() {
-        repository = new InMemoryTaskRepositoryImpl();
+        this.repository = new InMemoryTaskRepository();
+
+        Task task = new Task("title");
+        final Task savedTask = this.repository.save(task);
+        this.SAVED_TASK_ID = savedTask.getId();
+    }
+
+    @DisplayName("getTask()는 저장된 할 일을 모두 반환한다.")
+    @Test
+    void getTaskTest() {
+        assertThat(repository.getTasks()).isNotEmpty();
     }
 
     @DisplayName("할 일을 성공적으로 저장한다.")
     @Test
     void saveTaskTest() {
-        repository.save(TASK);
+        final int beforeSize = repository.getTasks().size();
 
-        assertThat(repository.getTasks()).isNotEmpty();
+        final Task savedTask = repository.save(new Task("hello"));
+
+        final int afterSize = repository.getTasks().size();
+
+        assertThat(afterSize - beforeSize).isEqualTo(1);
+        assertThat(savedTask).isNotNull();
+        assertThat(savedTask.getTitle()).isEqualTo("hello");
     }
 
     @DisplayName("id와 매칭되는 할 일이 있으면 해당 할 일을, 없으면 null을 반환한다.")
     @Test
     void findByIdTest() {
-        repository.save(TASK);
-
-        assertThat(repository.findById(TASK_ID)).isNotNull();
+        assertThat(repository.findById(SAVED_TASK_ID)).isNotNull();
         assertThat(repository.findById(NOT_EXIST_ID)).isNull();
     }
 
     @DisplayName("할 일을 성공적으로 수정한다.")
     @Test
     void updateTaskTest() {
-        repository.save(TASK);
-        final Task task = repository.findById(TASK_ID);
+        final Task task = repository.findById(SAVED_TASK_ID);
 
-        repository.update(TASK_ID, task.updateTitle("new title"));
+        final Task updatedTask = repository.update(SAVED_TASK_ID, task.updateTitle("new title"));
 
-        assertThat(repository.findById(TASK_ID).getTitle()).isEqualTo("new title");
+        assertThat(repository.findById(SAVED_TASK_ID).getTitle()).isEqualTo("new title");
+        assertThat(updatedTask.getTitle()).isEqualTo("new title");
     }
 
     @DisplayName("할 일을 성공적으로 삭제한다.")
     @Test
     void removeTest() {
-        repository.save(TASK);
+        repository.remove(SAVED_TASK_ID);
 
-        repository.remove(TASK_ID);
-
-        assertThat(repository.findById(TASK_ID)).isNull();
+        assertThat(repository.findById(SAVED_TASK_ID)).isNull();
     }
 
 
-    @DisplayName("generatedId()는 1씩 증가하는 id를 생성해 반환한다.")
+    @DisplayName("할 일이 새롭게 추가될 때 마다 id는 1씩 증가한다.")
     @Test
     void generateIdTest() {
-        final Long id1 = repository.generateId();
-        final Long id2 = repository.generateId();
+        final Long id1 = repository.save(new Task("hello")).getId();
+        final Long id2 = repository.save(new Task("hello")).getId();
 
         assertAll(() -> {
             assertThat(id1).isNotEqualTo(id2);
