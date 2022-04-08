@@ -64,7 +64,7 @@ class TaskControllerTest {
     void patch() {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
-        taskController.update(1L, source);
+        taskController.patch(1L, source);
         Task task = taskController.detail(1L);
 
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
