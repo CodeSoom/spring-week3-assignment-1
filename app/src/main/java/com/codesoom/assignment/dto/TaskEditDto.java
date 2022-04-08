@@ -1,5 +1,6 @@
 package com.codesoom.assignment.dto;
 
+import java.beans.ConstructorProperties;
 import java.util.Objects;
 
 /**
@@ -9,20 +10,13 @@ public final class TaskEditDto {
 
     private final TaskDto taskDto;
 
-    public TaskEditDto() {
-        this(null);
-    }
-
+    @ConstructorProperties({"title"})
     public TaskEditDto(final String title) {
         this.taskDto = new TaskDto(title);
     }
 
     public String getTitle() {
         return taskDto.getTitle();
-    }
-
-    public void setTitle(String title) {
-        taskDto.setTitle(title);
     }
 
     @Override

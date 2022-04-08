@@ -217,8 +217,7 @@ class TaskServiceTest {
     }
 
     private Task generateTask() {
-        TaskSaveDto source = new TaskSaveDto();
-        source.setTitle(TEST_TASK_TITLE);
+        TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
         return taskService.createTask(source);
     }
 }

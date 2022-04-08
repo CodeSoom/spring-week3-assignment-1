@@ -264,8 +264,7 @@ class TaskControllerTest {
     }
 
     private Task generateTask(String title) {
-        TaskSaveDto source = new TaskSaveDto();
-        source.setTitle(title);
+        TaskSaveDto source = new TaskSaveDto(title);
         TaskViewDto taskViewDto = taskController.create(source);
         return new Task(taskViewDto.getId(), taskViewDto.getTitle());
     }

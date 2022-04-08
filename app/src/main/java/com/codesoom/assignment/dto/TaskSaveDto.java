@@ -2,6 +2,7 @@ package com.codesoom.assignment.dto;
 
 import com.codesoom.assignment.models.Task;
 
+import java.beans.ConstructorProperties;
 import java.util.Objects;
 
 /**
@@ -11,20 +12,13 @@ public final class TaskSaveDto {
 
     private final TaskDto taskDto;
 
-    public TaskSaveDto() {
-        this(null);
-    }
-
+    @ConstructorProperties({"title"})
     public TaskSaveDto(String title) {
         this.taskDto = new TaskDto(title);
     }
 
     public String getTitle() {
         return taskDto.getTitle();
-    }
-
-    public void setTitle(String title) {
-        taskDto.setTitle(title);
     }
 
     /**

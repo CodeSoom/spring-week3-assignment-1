@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 public class TaskDto {
 
-    private String title;
+    private final String title;
 
     public TaskDto(String title) {
         this.title = title;
@@ -15,10 +15,6 @@ public class TaskDto {
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override
