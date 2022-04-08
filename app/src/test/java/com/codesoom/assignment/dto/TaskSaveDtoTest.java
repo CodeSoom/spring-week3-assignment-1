@@ -17,7 +17,7 @@ class TaskSaveDtoTest {
     class Describe_toEntity {
 
         @Nested
-        @DisplayName("현재 데이터로")
+        @DisplayName("할 일 등록에 필요한 데이터로")
         class Context_this {
 
             final TaskSaveDto taskSaveDto = new TaskSaveDto(TASK_TITLE);
