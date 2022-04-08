@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.*;
 class TaskServiceTest {
 
     private TaskService taskService;
-    private Long TASK_VALID_ID = 0L;
-    private final static Long TASK_INVALID_ID = 100L;
+    private Long TASK_TEST_ID = 0L;
+    private final static Long NOT_SAVED_TASK_ID = 100L;
     private final static String TASK_TITLE = "Task title";
     private final static String TASK_NOT_FOUND_MESSAGE = "Task not found: %d";
 
@@ -27,7 +27,7 @@ class TaskServiceTest {
         Task resource = new Task();
         resource.setTitle(TASK_TITLE);
         resource = taskService.createTask(resource);
-        TASK_VALID_ID = resource.getId();
+        TASK_TEST_ID = resource.getId();
     }
 
     @Test
@@ -46,7 +46,7 @@ class TaskServiceTest {
 
         @BeforeEach
         void prepare() {
-            task = taskService.getTask(TASK_VALID_ID);
+            task = taskService.getTask(TASK_TEST_ID);
         }
 
         @Nested
@@ -67,12 +67,12 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskService.getTask(TASK_INVALID_ID))
+                assertThatThrownBy(() -> taskService.getTask(NOT_SAVED_TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
 
                 assertThatExceptionOfType(TaskNotFoundException.class)
-                        .isThrownBy(() -> taskService.getTask(TASK_INVALID_ID))
-                        .withMessage(String.format(TASK_NOT_FOUND_MESSAGE, TASK_INVALID_ID));
+                        .isThrownBy(() -> taskService.getTask(NOT_SAVED_TASK_ID))
+                        .withMessage(String.format(TASK_NOT_FOUND_MESSAGE, NOT_SAVED_TASK_ID));
             }
         }
     }
@@ -116,7 +116,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 수정하여 반환한다.")
             void it_returns_a_updated_task() {
-                Task task = taskService.updateTask(TASK_VALID_ID, resource);
+                Task task = taskService.updateTask(TASK_TEST_ID, resource);
                 assertThat(task.getTitle()).isEqualTo(updatedTitle);
             }
         }
@@ -127,7 +127,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskService.updateTask(TASK_INVALID_ID, resource))
+                assertThatThrownBy(() -> taskService.updateTask(NOT_SAVED_TASK_ID, resource))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -150,11 +150,11 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 삭제한다.")
             void it_returns_a_deleted_task() {
-                taskService.deleteTask(TASK_VALID_ID);
+                taskService.deleteTask(TASK_TEST_ID);
 
                 int newSize = taskService.getTasks().size();
 
-                assertThatThrownBy(() -> taskService.getTask(TASK_VALID_ID))
+                assertThatThrownBy(() -> taskService.getTask(TASK_TEST_ID))
                         .isInstanceOf(TaskNotFoundException.class);
                 assertThat(newSize).isEqualTo(oldSize - 1);
             }
@@ -166,7 +166,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생한다.")
             void it_returns_exception() {
-                assertThatThrownBy(() -> taskService.deleteTask(TASK_INVALID_ID))
+                assertThatThrownBy(() -> taskService.deleteTask(NOT_SAVED_TASK_ID))
                     .isInstanceOf(TaskNotFoundException.class);
             }
         }
