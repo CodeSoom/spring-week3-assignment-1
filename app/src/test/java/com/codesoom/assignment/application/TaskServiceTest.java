@@ -22,7 +22,7 @@ class TaskServiceTest {
         @DisplayName("Task 가 없다면")
         class Context_without_task {
             @Test
-            @DisplayName("빈 리스트를 반환한다.")
+            @DisplayName("빈 리스트를 리턴한다.")
             void it_returns_empty_list() {
                 assertThat(taskService.getTasks()).isEmpty();
             }

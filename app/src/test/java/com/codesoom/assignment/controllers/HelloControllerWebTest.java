@@ -28,11 +28,11 @@ public class HelloControllerWebTest {
 
         @Nested
         @DisplayName("GET 요청을 받는다면")
-        class Context_get_request {
+        class Context_with_get_request {
             private final ResultActions getRequest;
             private final String helloWorld = "Hello, world!";
 
-            Context_get_request() throws Exception {
+            Context_with_get_request() throws Exception {
                 this.getRequest = mockMvc.perform(get(helloControllerPath + rootPath));
             }
 
