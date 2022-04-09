@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskTest {
 
     @Nested
-    @DisplayName("생성시")
+    @DisplayName("생성자는")
     class Describe_constructor {
 
         @Nested

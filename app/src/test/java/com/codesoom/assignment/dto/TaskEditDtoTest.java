@@ -18,7 +18,7 @@ class TaskEditDtoTest {
     class Describe_validate {
 
         @Nested
-        @DisplayName("할 일 내용의 값이 존재한다면")
+        @DisplayName("할 일 제목의 값이 존재한다면")
         class Context_valid {
 
             final String validTitle = "TITLE";
@@ -39,7 +39,7 @@ class TaskEditDtoTest {
         }
 
         @Nested
-        @DisplayName("할 일 내용 값이 ")
+        @DisplayName("할 일 제목이 ")
         class Context_invalid {
 
             @ParameterizedTest(name = "\"{0}\" 이라면 예외를 던진다.")

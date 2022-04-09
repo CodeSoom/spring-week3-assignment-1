@@ -115,7 +115,7 @@ public class WebTaskControllerTest {
         }
 
         @Nested
-        @DisplayName("잘못된 요청으로 할 일이 등록이 되지 않는다면")
+        @DisplayName("할 일 제목을 빈값 (\"\")으로 요청해서 할 일이 등록이 되지 않는다면")
         class Context_invalid {
 
             final TaskSaveDto invalidSource = new TaskSaveDto("");
@@ -336,10 +336,9 @@ public class WebTaskControllerTest {
             }
         }
 
-
         @Nested
-        @DisplayName("잘못된 요청으로 할 일을 수정할 수 없다면")
-        class Context__invalid {
+        @DisplayName("할 일 제목을 빈값 (\" \")으로 요청해서 할 일을 수정할 수 없다면")
+        class Context_invalid {
             final Long taskId = 2L;
 
             final TaskEditDto invalidSource = new TaskEditDto(" ");

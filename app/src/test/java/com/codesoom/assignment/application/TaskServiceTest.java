@@ -188,7 +188,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("할 일을 삭제하고 삭제된 할 일을 리턴한다.")
+            @DisplayName("할 일을 삭제하고 리턴한다.")
             void it_delete_and_return_deleted_task() {
                 Task deletedTask = subject();
                 assertAll(
