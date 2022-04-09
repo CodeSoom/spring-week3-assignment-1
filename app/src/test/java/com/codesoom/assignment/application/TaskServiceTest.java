@@ -24,20 +24,44 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
-
-        Task task = new Task();
-        task.setTitle(TASK_TITLE_ONE);
-        taskService.createTask(task);
     }
 
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
-        @Test
-        @DisplayName("Tasks에 있는 모든 Task를 반환합니다.")
-        void getTasks() {
-            assertThat(taskService.getTasks()).isNotEmpty();
-            assertThat(taskService.getTasks()).hasSize(1);
+        final static int ZERO = 0;
+        @Nested
+        @DisplayName("Task를 추가하기 전에는")
+        class Context_beforeAddingTask {
+            @Test
+            @DisplayName("비어있고, 개수가 0입니다..")
+            void getTasksWithEmpty() {
+                assertThat(taskService.getTasks()).isEmpty();
+                assertThat(taskService.getTasks()).hasSize(ZERO);
+            }
+        }
+
+        @Nested
+        @DisplayName("Task를 5개 추가한 후에는")
+        class Context_afterAddingTask {
+            final static int TASKS_SIZE = 5;
+            final static String TASK_TITLE = "test";
+
+            @BeforeEach
+            void setUp() {
+                Task task = new Task(TASK_TITLE);
+                for (int i = 0; i < TASKS_SIZE; i++) {
+                    task.setTitle(TASK_TITLE + (i + 1));
+                    taskService.createTask(task);
+                }
+            }
+
+            @Test
+            @DisplayName("비어있지 않고, 개수가 5입니다.")
+            void getTasksWithNotEmpty() {
+                    assertThat(taskService.getTasks()).isNotEmpty();
+                    assertThat(taskService.getTasks()).hasSize(TASKS_SIZE);
+            }
         }
     }
 
@@ -48,6 +72,14 @@ class TaskServiceTest {
         @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 있으면")
         class Context_with_valid_id {
             final long VALID_REQUEST_TASK_ID = 1L;
+
+            @BeforeEach
+            void setUp() {
+                Task task = new Task(TASK_TITLE_ONE);
+
+                taskService.createTask(task);
+            }
+
             @Test
             @DisplayName("id에 해당하는 Task를 반환합니다.")
             void getTask() {
@@ -59,7 +91,18 @@ class TaskServiceTest {
         @Nested
         @DisplayName("클라이언트가 요청한 Task의 id가 Tasks에 없으면")
         class Context_with_invalid_id {
-            final long INVALID_REQUEST_TASK_ID = 100L;
+            final long INVALID_REQUEST_TASK_ID = 6L;
+            final static int TASKS_MAX_SIZE = 5;
+            final static String TASK_DEFAULT_TITLE = "test";
+
+            @BeforeEach
+            void setUp() {
+                Task task = new Task(TASK_DEFAULT_TITLE);
+                for (int i = 0; i < TASKS_MAX_SIZE; i++) {
+                    task.setTitle(TASK_DEFAULT_TITLE + (i + 1));
+                    taskService.createTask(task);
+                }
+            }
 
             @Test
             @DisplayName("TaskNotFoundException 예외를 던집니다.")
@@ -74,6 +117,15 @@ class TaskServiceTest {
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
         private static final String TASK_TITLE_TWO = "testTwo";
+        private final Long NEW_ID = 2L;
+
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE_ONE);
+            taskService.createTask(task);
+        }
+
         @Test
         @DisplayName("새로운 Task에 id를 생성해줍니다.")
         void CreateTaskWithGenerateId() {
@@ -83,7 +135,7 @@ class TaskServiceTest {
             taskService.createTask(task);
 
             assertThat(taskService.getTask(taskService.getTasksSize())
-                    .getId()).isEqualTo(2L);
+                    .getId()).isEqualTo(NEW_ID);
         }
 
         @Test
@@ -99,7 +151,7 @@ class TaskServiceTest {
             Long newSize = taskService.getTasksSize();
 
             assertThat(newSize - oldSize).isEqualTo(1);
-            assertThat(taskService.getTasks()).hasSize(2);
+            assertThat(taskService.getTasks()).hasSize(NEW_ID.intValue());
         }
     }
 
@@ -107,6 +159,13 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         private static final String UPDATE_TITLE = "other";
+
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE_ONE);
+            taskService.createTask(task);
+        }
         @Test
         @DisplayName("Tasks에서 클라이언트가 요청한 id에 해당하는 Task의 title을 변경해줍니다.")
         void updateTask() {
@@ -126,6 +185,13 @@ class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
+        @BeforeEach
+        void setUp() {
+            Task task = new Task();
+            task.setTitle(TASK_TITLE_ONE);
+            taskService.createTask(task);
+        }
+
         @Test
         @DisplayName("Tasks에서 클라이언트가 요청한 id에 해당하는 Task를 지웁니다.")
         void deleteTask() {

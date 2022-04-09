@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -77,11 +78,11 @@ public class TaskControllerMock_MVC_Test {
         @DisplayName("list 메소드는")
         class Describe_list {
             @Nested
-            @DisplayName("처음에는")
-            class Context_at_first {
+            @DisplayName("Tasks에 할 일 목록이 하나도 없으면")
+            class Context_without_any_tasks {
                 final static String EMPTY_LIST = "[]";
                 @Test
-                @DisplayName("비어있는 Task 목록을 가지고 있습니다.")
+                @DisplayName("비어있는 Tasks 목록을 반환합니다.")
                 void list_with_empty () throws Exception {
                     mockMvc.perform(get("/tasks"))
                             .andExpect(status().isOk())
@@ -108,16 +109,7 @@ public class TaskControllerMock_MVC_Test {
                 void list() throws Exception {
                     mockMvc.perform(get("/tasks"))
                             .andExpect(status().isOk())
-                            .andExpect(content().string(containsString(TASK_TITLE + 1)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 2)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 3)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 4)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 5)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 6)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 7)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 8)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 9)))
-                            .andExpect(content().string(containsString(TASK_TITLE + 10)));
+                            .andExpect(content().string(equalTo(taskService.tasksToJson())));
                 }
             }
         }
