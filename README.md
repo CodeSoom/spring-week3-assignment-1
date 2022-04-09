@@ -10,7 +10,7 @@
 
 * [x] HelloController 유닛 테스트
 * [x] HelloController MockMvc 테스트
-* [ ] Task 모델 테스트
+* [x] Task 모델 테스트
 * [ ] TaskService 테스트
 * [ ] TaskController 유닛 테스트
 * [ ] TaskController MockMVC 테스트
