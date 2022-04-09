@@ -27,8 +27,9 @@ public class TaskUpdateServiceImpl implements TaskUpdateService{
 
         final Task task = findTaskById(id);
         task.updateTitle(taskDto.getTitle());
+        repository.update(task.getId(), task);
 
-        return repository.update(task.getId(), task);
+        return task;
     }
 
     /**

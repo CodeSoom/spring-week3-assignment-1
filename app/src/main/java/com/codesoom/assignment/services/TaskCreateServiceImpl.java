@@ -26,6 +26,7 @@ public class TaskCreateServiceImpl implements TaskCreateService{
 
     /**
      * 사용자가 입력한 데이터의 유효성을 검증합니다.
+     * 만약 검증에 실패한다면 예외를 던집니다.
      *
      * @param taskDto 사용자가 입력한 데이터
      * @throws TaskInvalidFormatException

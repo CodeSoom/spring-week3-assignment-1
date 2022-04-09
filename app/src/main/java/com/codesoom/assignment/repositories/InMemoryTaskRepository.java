@@ -4,6 +4,7 @@ import com.codesoom.assignment.domains.Task;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,11 +45,10 @@ public class InMemoryTaskRepository implements TaskRepository {
         return tasks.get(id);
     }
 
-    /** id와 매핑되는 할 일을 수정 후 변경 결과를 반환합니다. */
+    /** id와 매핑되는 할 일을 수정합니다. */
     @Override
-    public Task update(Long id, Task updatedTask) {
+    public void update(Long id, Task updatedTask) {
         tasks.replace(id, updatedTask);
-        return tasks.replace(id, updatedTask) == null ? null : updatedTask;
     }
 
     /** id와 매핑된 할 일을 삭제합니다. */
