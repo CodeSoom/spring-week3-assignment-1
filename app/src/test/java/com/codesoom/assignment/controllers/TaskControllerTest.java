@@ -10,6 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -207,7 +211,7 @@ class TaskControllerTest {
         @DisplayName("유효한 할 일 값이 주어진다면")
         class Context_valid {
 
-            final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
+            private final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
 
             @Test
             @DisplayName("할 일을 등록하고 할 일을 리턴 한다.")
@@ -219,6 +223,29 @@ class TaskControllerTest {
                         () -> assertThat(taskViewDto.getId()).isNotNull(),
                         () -> assertThat(taskViewDto.getTitle()).isEqualTo(TEST_TASK_TITLE)
                 );
+            }
+        }
+
+        @Nested
+        @DisplayName("할 일 내용이")
+        class Context_invalid {
+
+            private TaskSaveDto source;
+
+            void setUpSource(String title) {
+                source = new TaskSaveDto(title);
+            }
+
+            @ParameterizedTest(name = "\"{0}\" 이라면 예외를 던진다.")
+            @NullAndEmptySource
+            @ValueSource(strings = {" "})
+            void it_throw_exception(String givenTitle) {
+
+                setUpSource(givenTitle);
+
+                assertThatThrownBy(
+                        () -> taskController.create(source)
+                ).isInstanceOf(IllegalArgumentException.class);
             }
         }
     }

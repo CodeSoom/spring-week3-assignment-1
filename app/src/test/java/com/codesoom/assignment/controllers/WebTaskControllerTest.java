@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.in;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,32 +85,53 @@ public class WebTaskControllerTest {
     class Describe_create {
 
         @Nested
-        @DisplayName("유효한 할 일 데이터 값이라면")
+        @DisplayName("할 일이 정상적으로 등록이 된다면")
         class Context_valid {
 
             final Long taskId = 1L;
-            final TaskSaveDto source = new TaskSaveDto(TEST_TASK_TITLE);
+            final TaskSaveDto validSource = new TaskSaveDto(TEST_TASK_TITLE);
 
             @BeforeEach
             void setUp() {
 
                 Task task = new Task(taskId, TEST_TASK_TITLE);
 
-                given(taskService.createTask(any())).willReturn(task);
+                given(taskService.createTask(validSource)).willReturn(task);
             }
 
             ResultActions request() throws Exception {
                 return mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(source)));
+                        .content(objectMapper.writeValueAsString(validSource)));
             }
 
             @Test
-            @DisplayName("할일 등록 후 할일을 응답한다. [200]")
+            @DisplayName("할 일 데이터를 응답한다. [200]")
             void it_response_201() throws Exception {
                 request().andExpect(status().isCreated())
                         .andExpect(jsonPath("id").value(String.valueOf(taskId)))
                         .andExpect(jsonPath("title").value(TEST_TASK_TITLE));
+            }
+        }
+
+        @Nested
+        @DisplayName("잘못된 요청으로 할 일이 등록이 되지 않는다면")
+        class Context_invalid {
+
+            final TaskSaveDto invalidSource = new TaskSaveDto("");
+
+            @BeforeEach
+            void setUp() {
+                given(taskService.createTask(invalidSource)).willThrow(IllegalArgumentException.class);
+            }
+
+            @Test
+            @DisplayName("BadRequest 를 응답한다. [400]")
+            void it_response_400() throws Exception {
+                mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidSource))
+                ).andExpect(status().isBadRequest());
             }
         }
     }
