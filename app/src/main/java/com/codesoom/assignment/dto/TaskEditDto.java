@@ -10,6 +10,8 @@ import java.util.Objects;
  */
 public final class TaskEditDto {
 
+    public static final String TO_STRING_FORMAT = "TaskEditDto{title=%s}";
+
     private final String title;
 
     @ConstructorProperties({"title"})
@@ -42,6 +44,6 @@ public final class TaskEditDto {
 
     @Override
     public String toString() {
-        return String.format("TaskEditDto{title=%s}", title);
+        return String.format(TO_STRING_FORMAT, title);
     }
 }

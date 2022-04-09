@@ -31,7 +31,10 @@ class TaskEditDtoTest {
             @DisplayName("예외를 던지지 않는다.")
             void it_not_throw_exception() {
                 TaskEditDto taskEditDto = subject();
-                assertThat(taskEditDto.toString()).isEqualTo("TaskEditDto{title=" + taskEditDto.getTitle() + "}");
+
+                String expected = String.format(TaskEditDto.TO_STRING_FORMAT, taskEditDto.getTitle());
+
+                assertThat(taskEditDto.toString()).isEqualTo(expected);
             }
         }
 
