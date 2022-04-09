@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
@@ -16,23 +17,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerAdvice {
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(TaskNotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleNoSuchElementException(TaskNotFoundException e) {
-        final ErrorResponse errorResponse = new ErrorResponse(e.getCode(), e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    protected ErrorResponse handleNoSuchElementException(TaskNotFoundException e) {
+        return new ErrorResponse(e.getCode(), e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        final ErrorResponse errorResponse
-                = new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    protected ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(TaskInvalidFormatException.class)
-    protected ResponseEntity<ErrorResponse> handleTaskInvalidFormatException(TaskInvalidFormatException e) {
-        final ErrorResponse errorResponse = new ErrorResponse(e.getCode(), e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    protected ErrorResponse handleTaskInvalidFormatException(TaskInvalidFormatException e) {
+        return new ErrorResponse(e.getCode(), e.getMessage());
     }
 
 }
