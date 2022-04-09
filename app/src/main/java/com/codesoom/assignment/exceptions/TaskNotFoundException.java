@@ -12,7 +12,7 @@ public class TaskNotFoundException extends RuntimeException{
         super(String.format(MESSAGE_FORMAT, id));
         this.code = code;
     }
-    
+
     public TaskNotFoundException(Long id) {
         this(String.valueOf(HttpStatus.NOT_FOUND.value()), id);
     }

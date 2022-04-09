@@ -27,7 +27,7 @@ class InMemoryTaskRepositoryTest {
     class Describe_getTask {
         @DisplayName("저장된 할 일을 모두 반환한다.")
         @Test
-        void getTaskTest() {
+        void it_will_return_all_tasks() {
             assertThat(repository.getTasks()).isNotEmpty();
         }
     }
@@ -40,7 +40,7 @@ class InMemoryTaskRepositoryTest {
 
         @DisplayName("할 일을 성공적으로 저장한다.")
         @Test
-        void saveTaskTest() {
+        void it_save_task() {
             final int beforeSize = repository.getTasks().size();
 
             final Task savedTask = repository.save(new Task(TITLE));
@@ -105,32 +105,17 @@ class InMemoryTaskRepositoryTest {
             this.SAVED_TASK_ID = savedTask.getId();
         }
 
-        @DisplayName("id와 매칭되는 할 일이 있으면")
-        @Nested
-        class Context_with_exist_id {
+        @DisplayName("할 일을 수정한다.")
+        @Test
+        void it_updated_Task() {
+            final Task task = repository.findById(SAVED_TASK_ID);
+            String oldTitle = task.getTitle();
 
-            @DisplayName("수정된 할 일을 반환한다.")
-            @Test
-            void it_return_updated_Task() {
-                final Task task = repository.findById(SAVED_TASK_ID);
+            repository.update(SAVED_TASK_ID, task.updateTitle(UPDATE_TITLE));
+            String newTitle = task.getTitle();
 
-                final Task updatedTask = repository.update(SAVED_TASK_ID, task.updateTitle(UPDATE_TITLE));
-
-                assertThat(repository.findById(SAVED_TASK_ID).getTitle()).isEqualTo(UPDATE_TITLE);
-                assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
-            }
-        }
-
-        @DisplayName("id와 매칭되는 할 일이 없으면")
-        @Nested
-        class Context_with_not_exist_id {
-            @DisplayName("null을 반환한다.")
-            @Test
-            void it_return_null() {
-                final Task updatedTask = repository.update(NOT_EXIST_ID, new Task(UPDATE_TITLE));
-
-                assertThat(updatedTask).isNull();
-            }
+            assertThat(newTitle).isNotEqualTo(oldTitle);
+            assertThat(task.getTitle()).isEqualTo(UPDATE_TITLE);
         }
     }
 
