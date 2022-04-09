@@ -1,6 +1,6 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
 
     public List<Task> getTasks() {
