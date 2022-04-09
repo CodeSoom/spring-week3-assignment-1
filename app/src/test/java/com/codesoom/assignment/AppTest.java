@@ -9,6 +9,7 @@ class AppTest {
     @Test
     void getGreeting() {
         App app = new App();
+
         assertThat(app.getGreeting()).isEqualTo("Hello, world!");
     }
 
