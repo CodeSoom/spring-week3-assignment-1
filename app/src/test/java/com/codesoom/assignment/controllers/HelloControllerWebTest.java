@@ -30,21 +30,22 @@ public class HelloControllerWebTest {
         @DisplayName("GET 요청을 받는다면")
         class Context_get_request {
             private final ResultActions getRequest;
+            private final String helloWorld = "Hello, world!";
 
             Context_get_request() throws Exception {
                 this.getRequest = mockMvc.perform(get(helloControllerPath + rootPath));
             }
 
             @Test
-            @DisplayName("상태코드 200 OK 로 응답합니다.")
+            @DisplayName("상태코드 200 OK 로 응답한다.")
             void it_responses_200_OK() throws Exception {
                 getRequest.andExpect(status().isOk());
             }
 
             @Test
-            @DisplayName("Hello, world! 문자열을 반환합니다.")
+            @DisplayName(helloWorld + " 문자열을 리턴한다.")
             void it_returns_string() throws Exception {
-                getRequest.andExpect(content().string(containsString("Hello, world!")));
+                getRequest.andExpect(content().string(containsString(helloWorld)));
             }
         }
     }
