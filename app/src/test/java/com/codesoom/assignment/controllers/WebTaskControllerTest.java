@@ -280,6 +280,23 @@ public class WebTaskControllerTest {
                         .andExpect(status().isNotFound());
             }
         }
+
+        @Nested
+        @DisplayName("할 일 제목을 빈값 (\" \")으로 요청해서 할 일을 대체할 수 없다면")
+        class Context_invalid {
+            final Long taskId = 2L;
+
+            final TaskEditDto invalidSource = new TaskEditDto(" ");
+
+            @Test
+            @DisplayName("Bad Request 를 응답한다. [400]")
+            void it_response_400() throws Exception {
+                mockMvc.perform(put("/tasks/{taskId}", taskId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(invalidSource)))
+                        .andExpect(status().isBadRequest());
+            }
+        }
     }
 
     @Nested
