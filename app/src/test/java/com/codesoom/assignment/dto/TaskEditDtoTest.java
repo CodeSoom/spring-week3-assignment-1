@@ -46,7 +46,6 @@ class TaskEditDtoTest {
                 assertThatThrownBy(
                         taskEditDto::validate
                 ).isInstanceOf(IllegalArgumentException.class);
-
             }
         }
     }
