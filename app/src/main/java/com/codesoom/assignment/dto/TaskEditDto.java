@@ -1,5 +1,7 @@
 package com.codesoom.assignment.dto;
 
+import org.springframework.util.StringUtils;
+
 import java.beans.ConstructorProperties;
 import java.util.Objects;
 
@@ -17,6 +19,12 @@ public final class TaskEditDto {
 
     public String getTitle() {
         return taskDto.getTitle();
+    }
+
+    public void validate() {
+        if (!StringUtils.hasText(taskDto.getTitle())) {
+            throw new IllegalArgumentException("할 일을 입력해 주세요.");
+        }
     }
 
     @Override

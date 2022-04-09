@@ -118,7 +118,7 @@ class TaskControllerTest {
         final TaskEditDto source = new TaskEditDto(title);
 
         @Nested
-        @DisplayName("일치하는 할일 이 있다면")
+        @DisplayName("일치하는 할 일이 있다면")
         class Context_existsTask {
 
             Task givenTask;
@@ -143,7 +143,32 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("일치하는 할일 이 없다면")
+        @DisplayName("변경되는 할 일 내용이 ")
+        class Context_invalidData {
+
+            final Long taskId = 2L;
+
+            private TaskEditDto source;
+
+            void setUpSource(String title) {
+                source = new TaskEditDto(title);
+            }
+
+            @ParameterizedTest(name = "\"{0}\" 이라면 예외를 던진다.")
+            @NullAndEmptySource
+            @ValueSource(strings = {" "})
+            void it_throw_exception(String givenTitle) {
+
+                setUpSource(givenTitle);
+
+                assertThatThrownBy(
+                        () -> taskController.patch(taskId, source)
+                ).isInstanceOf(IllegalArgumentException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("일치하는 할 일이 없다면")
         class Context_notExistsTask {
 
             final Long notExistsTaskId = 999L;
@@ -159,7 +184,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("할 일 대체시")
+    @DisplayName("할 일 대체 시")
     class Describe_update {
 
         final String title = TEST_TASK_TITLE + TEST_TASK_UPDATE_TITLE_POSTFIX;
@@ -185,6 +210,31 @@ class TaskControllerTest {
             void it_update_and_return_task() {
                 TaskViewDto taskViewDto = subject();
                 assertThat(taskViewDto.getTitle()).isEqualTo(title);
+            }
+        }
+
+        @Nested
+        @DisplayName("대체되는 할 일 내용이")
+        class Context_invalidData {
+
+            final Long taskId = 2L;
+
+            private TaskEditDto source;
+
+            void setUpSource(String title) {
+                source = new TaskEditDto(title);
+            }
+
+            @ParameterizedTest(name = "\"{0}\" 이라면 예외를 던진다.")
+            @NullAndEmptySource
+            @ValueSource(strings = {" "})
+            void it_throw_exception(String givenTitle) {
+
+                setUpSource(givenTitle);
+
+                assertThatThrownBy(
+                        () -> taskController.update(taskId, source)
+                ).isInstanceOf(IllegalArgumentException.class);
             }
         }
 

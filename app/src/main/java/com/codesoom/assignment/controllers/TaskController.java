@@ -51,6 +51,8 @@ public class TaskController {
     @PutMapping("{id}")
     public TaskViewDto update(@PathVariable Long id, @RequestBody TaskEditDto source) {
 
+        source.validate();
+
         final Task task = taskService.updateTask(id, source);
 
         return TaskViewDto.from(task);
@@ -58,6 +60,8 @@ public class TaskController {
 
     @PatchMapping("{id}")
     public TaskViewDto patch(@PathVariable Long id, @RequestBody TaskEditDto source) {
+
+        source.validate();
 
         final Task task = taskService.updateTask(id, source);
 
