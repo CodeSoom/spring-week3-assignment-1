@@ -1,5 +1,8 @@
 package com.codesoom.assignment.models;
 
+import com.codesoom.assignment.exceptions.EmptyTitleException;
+import org.springframework.util.StringUtils;
+
 public class Task {
     private Long id;
 
@@ -18,6 +21,10 @@ public class Task {
     }
 
     public void setTitle(String title) {
+        if (StringUtils.isEmpty(title)) {
+           throw new EmptyTitleException();
+        }
+
         this.title = title;
     }
 }
