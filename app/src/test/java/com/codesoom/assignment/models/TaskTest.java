@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskTest {
-    private static final String TASK_TITLE = "task test";
+    private static final String TASK_TITLE = "과제하기";
     private static final String UPDATE_POSTFIX = "!";
     private Task task;
 
