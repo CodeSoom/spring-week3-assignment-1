@@ -19,7 +19,7 @@ class HelloControllerTest {
 
         @Test
         @DisplayName(helloWorld + " 문자열을 리턴한다.")
-        void it_returns_say_hello_as_string() {
+        void it_returns_string() {
             Assertions.assertThat(helloController.sayHello()).isEqualTo(helloWorld);
         }
     }
