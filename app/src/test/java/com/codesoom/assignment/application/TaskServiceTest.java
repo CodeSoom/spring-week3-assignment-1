@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskServiceTest {
 
-    private static final String TASK_TITLE = "task test";
+    private static final String TASK_TITLE = "친구 만나기";
     private static final String UPDATE_POSTFIX = "!";
 
     private TaskService taskService;
@@ -37,17 +37,24 @@ class TaskServiceTest {
         Task task = new Task();
         task.setTitle(TASK_TITLE);
         taskService.createTask(task);
+
         assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TASK_TITLE);
+    }
+
+    @Test
+    void throwTaskNotFoundException() {
         assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
     void createTask() {
         int oldSize = taskService.getTasks().size();
+
         Task task = new Task();
         task.setTitle(TASK_TITLE);
         taskService.createTask(task);
         int newSize = taskService.getTasks().size();
+
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
@@ -58,14 +65,17 @@ class TaskServiceTest {
         taskService.updateTask(1L, source);
 
         Task task = taskService.getTask(1L);
+
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
     }
 
     @Test
     void deleteTask() {
         int oldSize = taskService.getTasks().size();
+
         taskService.deleteTask(1L);
         int newSize = taskService.getTasks().size();
+
         assertThat(oldSize - newSize).isEqualTo(1);
     }
 }
