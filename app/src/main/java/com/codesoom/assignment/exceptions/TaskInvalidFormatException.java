@@ -7,14 +7,13 @@ public class TaskInvalidFormatException extends RuntimeException{
 
     private String code;
 
-    public TaskInvalidFormatException(String message) {
-        super(message);
-        this.code = String.valueOf(HttpStatus.BAD_REQUEST.value());
-    }
-
     public TaskInvalidFormatException(String code, String message) {
         super(message);
         this.code = code;
+    }
+
+    public TaskInvalidFormatException(String message) {
+        this(String.valueOf(HttpStatus.BAD_REQUEST.value()), message);
     }
 
     public String getCode() {
