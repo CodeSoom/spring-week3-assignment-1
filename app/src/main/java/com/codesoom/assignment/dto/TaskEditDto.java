@@ -10,19 +10,19 @@ import java.util.Objects;
  */
 public final class TaskEditDto {
 
-    private final TaskDto taskDto;
+    private final String title;
 
     @ConstructorProperties({"title"})
     public TaskEditDto(final String title) {
-        this.taskDto = new TaskDto(title);
+        this.title = title;
     }
 
     public String getTitle() {
-        return taskDto.getTitle();
+        return title;
     }
 
     public void validate() {
-        if (!StringUtils.hasText(taskDto.getTitle())) {
+        if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("할 일을 입력해 주세요.");
         }
     }
@@ -32,16 +32,16 @@ public final class TaskEditDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskEditDto that = (TaskEditDto) o;
-        return Objects.equals(taskDto, that.taskDto);
+        return Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskDto);
+        return Objects.hash(title);
     }
 
     @Override
     public String toString() {
-        return String.format("TaskEditDto{title=%s}", taskDto.getTitle());
+        return String.format("TaskEditDto{title=%s}", title);
     }
 }
