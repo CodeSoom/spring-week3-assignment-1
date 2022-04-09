@@ -1,12 +1,9 @@
-package com.codesoom.assignment;
+package com.codesoom.assignment.contexts;
 
+import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.assertj.core.util.Lists;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BaseTaskTest {
+public abstract class BaseTaskTest {
 
     protected static final long TASK_ID_1 = 1L;
     protected static final long TASK_ID_2 = 2L;
@@ -14,6 +11,7 @@ public class BaseTaskTest {
     protected static final String TASK_TITLE_2 = "To write test code";
     protected static final String ERROR_MSG_TASK_NOT_FOUND = "Task not found";
     protected static final String ERROR_MSG_TASK_FORMAT_BAD = "Task format is poor";
+
 
     protected Task generateNewTask(String taskTitle) {
         return this.generateNewTask(null, taskTitle);
@@ -26,6 +24,10 @@ public class BaseTaskTest {
         newTask.setTitle(taskTitle);
 
         return newTask;
+    }
+
+    protected void addTask(Task task, TaskService taskService) {
+        taskService.createTask(task);
     }
 
     protected String getTaskIdJsonString(Long taskId) {

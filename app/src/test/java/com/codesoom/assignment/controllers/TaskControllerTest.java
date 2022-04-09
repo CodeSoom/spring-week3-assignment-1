@@ -1,6 +1,6 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.BaseTaskTest;
+import com.codesoom.assignment.contexts.BaseTaskTest;
 import com.codesoom.assignment.NotProperTaskFormatException;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
