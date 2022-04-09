@@ -15,7 +15,6 @@ public class TaskReadController {
 
     private final TaskReadService service;
 
-
     public TaskReadController(TaskReadService service) {
         this.service = service;
     }
@@ -26,7 +25,7 @@ public class TaskReadController {
     }
 
     @GetMapping("/{id}")
-    public Task getTask(@PathVariable(name = "id") Long id) {
+    public Task getTask(@PathVariable Long id) {
         return service.findTaskById(id);
     }
 

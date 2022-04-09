@@ -22,7 +22,7 @@ public class TaskUpdateController {
     }
 
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public Task updateTask(@PathVariable(name = "id") Long id,
+    public Task updateTask(@PathVariable Long id,
                            @RequestBody TaskDto taskDto) {
         return service.updateTaskById(id, taskDto);
     }
