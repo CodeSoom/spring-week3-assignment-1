@@ -10,7 +10,6 @@ public class HelloController {
 
     /**
      * @return 문자열을 반환합니다.
-     * @apiNote 문자열을 반환하는 API
      */
     @RequestMapping("/")
     @ResponseStatus(HttpStatus.OK)
