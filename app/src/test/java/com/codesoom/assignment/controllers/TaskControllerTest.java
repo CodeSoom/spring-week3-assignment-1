@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskControllerTest {
 
-    private static final String TASK_TITLE = "task test";
+    private static final String TASK_TITLE = "블로그에 글쓰기";
     private static final String UPDATE_POSTFIX = "!";
     private TaskController taskController;
     private TaskService taskService;
@@ -40,7 +40,7 @@ class TaskControllerTest {
 
     @Test
     void create() {
-        String title = "Test1";
+        String title = "청소";
         Task task = new Task();
         task.setTitle(title);
         taskController.create(task);
@@ -55,6 +55,7 @@ class TaskControllerTest {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
         taskController.update(1L, source);
+
         Task task = taskController.detail(1L);
 
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
@@ -65,6 +66,7 @@ class TaskControllerTest {
         Task source = new Task();
         source.setTitle(TASK_TITLE + UPDATE_POSTFIX);
         taskController.patch(1L, source);
+
         Task task = taskController.detail(1L);
 
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
