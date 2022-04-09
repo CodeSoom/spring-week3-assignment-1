@@ -9,6 +9,7 @@ class TaskErrorAdviceTest {
     @Test
     void handleNotFound() {
         TaskErrorAdvice taskErrorAdvice = new TaskErrorAdvice();
+
         assertThat(taskErrorAdvice.handleNotFound().getMessage()).isEqualTo("Task not found");
     }
 }
