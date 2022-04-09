@@ -39,4 +39,9 @@ public final class TaskEditDto {
     public int hashCode() {
         return Objects.hash(taskDto);
     }
+
+    @Override
+    public String toString() {
+        return String.format("TaskEditDto{title=%s}", taskDto.getTitle());
+    }
 }

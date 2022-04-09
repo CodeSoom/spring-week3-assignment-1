@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskEditDto 클래스")
@@ -23,13 +23,15 @@ class TaskEditDtoTest {
 
             final String validTitle = "TITLE";
 
+            TaskEditDto subject() {
+                return new TaskEditDto(validTitle);
+            }
+
             @Test
             @DisplayName("예외를 던지지 않는다.")
             void it_not_throw_exception() {
-                TaskEditDto taskEditDto = new TaskEditDto(validTitle);
-                assertThatCode(
-                        taskEditDto::validate
-                ).doesNotThrowAnyException();
+                TaskEditDto taskEditDto = subject();
+                assertThat(taskEditDto.toString()).isEqualTo("TaskEditDto{title=" + taskEditDto.getTitle() + "}");
             }
         }
 
