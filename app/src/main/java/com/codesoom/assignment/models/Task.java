@@ -34,5 +34,5 @@ public class Task {
         return String.format("{ id = %s, title = %s }", id, title);
     }
 
-    public String taskToJson() { return String.format("{\"id\":%s,\"title\":\"%s\"}", id, title);}
+
 }

@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.application.PrinterService;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -109,7 +110,8 @@ public class TaskControllerMock_MVC_Test {
                 void list() throws Exception {
                     mockMvc.perform(get("/tasks"))
                             .andExpect(status().isOk())
-                            .andExpect(content().string(equalTo(taskService.tasksToJson())));
+                            .andExpect(content().string(
+                                    equalTo(PrinterService.tasksToJson(taskService))));
                 }
             }
         }

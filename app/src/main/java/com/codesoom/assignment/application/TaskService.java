@@ -56,14 +56,5 @@ public class TaskService {
         return newId;
     }
 
-    public String tasksToJson() {
-        String json = "[";
-        for (Task task : tasks) {
-            json += task.taskToJson() + ",";
-        }
 
-        json = json.substring(0, json.lastIndexOf(","));
-
-        return json + "]";
-    }
 }
