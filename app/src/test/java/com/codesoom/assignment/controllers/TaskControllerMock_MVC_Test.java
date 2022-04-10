@@ -87,7 +87,7 @@ public class TaskControllerMock_MVC_Test {
                 void list_with_empty () throws Exception {
                     mockMvc.perform(get("/tasks"))
                             .andExpect(status().isOk())
-                            .andExpect(content().string(containsString(EMPTY_LIST)));
+                            .andExpect(content().string(equalTo(EMPTY_LIST)));
                 }
             }
             @Nested
