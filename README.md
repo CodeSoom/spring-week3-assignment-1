@@ -2,23 +2,28 @@
 
 ## 과제 목표
 
-![image](https://user-images.githubusercontent.com/14071105/104756530-45f47f80-579f-11eb-9bbf-d47d065e207b.png)
+- 우리가 작성한 코드가 올바르게 동작하는지 자동으로 확인해 줄 수 있는 유닛 테스트를 작성
+- controller 는 Spring Mock MVC 테스트 추가로 작성
 
-우리가 작성한 코드가 올바르게 동작하는지 자동으로 확인해 줄 수 있는 유닛 테스트를 작성해 주세요.  
-컨트롤러는 유닛 테스트뿐만 아니라 실제로 웹에서 동작하는 것처럼 작성하는 Spring Mock MVC 
-테스트를 작성해 주세요.
+## 작업목록
 
-* HelloController 유닛 테스트
-* HelloController MockMVC 테스트
-* Task 모델 테스트
-* TaskService 테스트
-* TaskController 유닛 테스트
-* TaskController MockMVC 테스트
+- [x] Task 모델 테스트
+- [x] ErrorResponse 테스트
+- [x] TaskService 테스트
+- [x] TaskController 유닛 테스트
+- [x] TaskController MockMVC 테스트
+
+## 추가작업목록
+- [x] 모든 테스트 케이스에서 given() 제외하고 테스트코드 작성
+- [x] given 조사하기
+  - [x] 이해안되는 부분 질문
 
 ## 요구 사항
 
-- 모든 인수 테스트를 통과해야 합니다.
-- 테스트 커버리지 100%를 달성해야 합니다.
+- [x] 모든 인수 테스트를 통과해야 합니다.
+- [x] 테스트 커버리지 100%를 달성해야 합니다.
+
+![image](https://user-images.githubusercontent.com/14071105/104756530-45f47f80-579f-11eb-9bbf-d47d065e207b.png)
 
 ## API 실행하기
 

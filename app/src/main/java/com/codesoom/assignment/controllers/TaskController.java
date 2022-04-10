@@ -11,7 +11,8 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
+
+    private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
@@ -30,16 +31,13 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
+        task.validation();
         return taskService.createTask(task);
     }
 
-    @PutMapping("{id}")
+    @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
-    }
-
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
+        task.validation();
         return taskService.updateTask(id, task);
     }
 
