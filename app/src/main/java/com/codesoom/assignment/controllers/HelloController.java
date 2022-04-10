@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     /**
-     * @return 문자열을 반환합니다.
+     * @return 서버 생존 확인용 문자열을 리턴합니다.
      */
     @RequestMapping("/")
     @ResponseStatus(HttpStatus.OK)
