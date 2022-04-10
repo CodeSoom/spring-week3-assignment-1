@@ -47,8 +47,14 @@ public class TaskService {
         return task;
     }
 
+    public Long getTasksSize() {
+        return Long.valueOf(tasks.size());
+    }
+
     private Long generateId() {
         newId += 1;
         return newId;
     }
+
+
 }
