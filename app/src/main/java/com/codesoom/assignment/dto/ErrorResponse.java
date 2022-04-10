@@ -1,13 +1,26 @@
 package com.codesoom.assignment.dto;
 
-public class ErrorResponse {
-    private String message;
 
-    public ErrorResponse(String message) {
+/**
+ *  통일된 에러 응답을 위한 객체입니다.
+ */
+public class ErrorResponse {
+
+    private final String code;
+    private final String message;
+
+    public ErrorResponse(String code, String message) {
+        this.code = code;
         this.message = message;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getMessage() {
         return message;
     }
+
 }
+
