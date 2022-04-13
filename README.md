@@ -8,17 +8,17 @@
 컨트롤러는 유닛 테스트뿐만 아니라 실제로 웹에서 동작하는 것처럼 작성하는 Spring Mock MVC 
 테스트를 작성해 주세요.
 
-* HelloController 유닛 테스트
-* HelloController MockMVC 테스트
-* Task 모델 테스트
-* TaskService 테스트
-* TaskController 유닛 테스트
-* TaskController MockMVC 테스트
+* [x] HelloController 유닛 테스트
+* [x] HelloController MockMvc 테스트
+* [x] Task 모델 테스트
+* [x] TaskService 테스트
+* [ ] TaskController 유닛 테스트
+* [ ] TaskController MockMVC 테스트
 
 ## 요구 사항
 
-- 모든 인수 테스트를 통과해야 합니다.
-- 테스트 커버리지 100%를 달성해야 합니다.
+- [ ] 모든 인수 테스트를 통과해야 합니다.
+- [ ] 테스트 커버리지 100%를 달성해야 합니다.
 
 ## API 실행하기
 
