@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.TitleAlreadyExistException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,13 @@ public class TaskService {
 
     public Task createTask(Task source) {
         Task task = new Task();
+
+        tasks.stream()
+                .filter(task1 -> task1.getTitle().equals(source.getTitle()))
+                .findFirst().ifPresent(m -> {
+                    throw new TitleAlreadyExistException(source.getTitle());
+                });
+
         task.setId(generateId());
         task.setTitle(source.getTitle());
 
