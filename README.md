@@ -23,14 +23,14 @@
 ## 테스트 시나리오
 ### Domain Model (Task)
 - 현재 타이틀 조회
-  - [ ] Task 객체 내 현재 title를 반환.
+  - [x] Task 객체 내 현재 title를 반환.
 - 타이틀 유효성 검증
-  - [ ] title이 존재하는 경우, true 반환
-  - [ ] title이 존재하지 않는 경우, false 반환
+  - [x] title이 존재하는 경우, true 반환
+  - [x] title이 존재하지 않는 경우, false 반환
 - 타이틀 수정
-  - [ ] title을 수정하면 수정 후, 현재의 task 반환.
+  - [x] title을 수정하면 수정 후, 현재의 task 반환.
 - Task 객체 이용한 Task 객체 생성
-  - [ ] id와 Task 객체를 이용하여 동일한 타이틀을 갖는 Task 객체를 생성/반환.
+  - [x] id와 Task 객체를 이용하여 동일한 타이틀을 갖는 Task 객체를 생성/반환.
 ### Service
 - 할일 목록 전체 조회
   - [ ] 목록에 할일이 있는 경우, 목록 반환

@@ -11,23 +11,91 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TaskTest {
 
     private Task task;
+    private Long id = 0L;
+    private final String TITLE_TEST_VALUE = "TEST";
+    private final String MODIFY_POSTFIX = "_MODIFY";
 
-    @DisplayName("타이틀 유효성 검사 테스트")
     @Nested
+    @DisplayName("hasValidTitle 메소드")
     class validate_Title {
 
-        @Test
-        @DisplayName("타이틀이 유효한 경우")
-        void validateTitle() {
-            task = new Task(0L, "helloTest");
-            assertThat(task.hasValidTitle()).isTrue();
+        @Nested
+        @DisplayName("타이틀이 유효하면")
+        class when_title_is_valid {
+
+            @Test
+            @DisplayName("true를 반환합니다.")
+            void valiateTitle() {
+                task = new Task(id, TITLE_TEST_VALUE);
+                assertThat(task.hasValidTitle()).isTrue();
+            }
         }
 
-        @Test
-        @DisplayName("타이틀이 유효하지 않은 경우")
-        void invalidateTitle() {
-            task = new Task();
-            assertThat(task.hasValidTitle()).isFalse();
+        @Nested
+        @DisplayName("타이틀이 유효하지 않으면")
+        class when_title_is_invalid {
+
+            @Test
+            @DisplayName("false를 반환합니다.")
+            void valiateTitle() {
+                task = new Task(null, null);
+                assertThat(task.hasValidTitle()).isFalse();
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("changeTitle & currentTitle 메소드")
+    class change_title_current_title {
+
+        @BeforeEach
+        void setUp() {
+            task = new Task(id, TITLE_TEST_VALUE);
+        }
+
+        @Nested
+        @DisplayName("타이틀이 변경되지 않으면")
+        class when_before_change_title {
+
+            @Test
+            @DisplayName("현 시점의 타이틀을 갖고 있어야 합니다.")
+            void currentTitle() {
+                assertThat(task.currentTitle()).isEqualTo(TITLE_TEST_VALUE);
+            }
+        }
+
+        @Nested
+        @DisplayName("타이틀을 변경하면")
+        class when_change_title {
+
+            @Test
+            @DisplayName("반환된 객체는 변경된 타이틀을 갖고 있어야 합니다.")
+            void changeTitle() {
+                String currentTitle = task.changeTitle(TITLE_TEST_VALUE + MODIFY_POSTFIX).currentTitle();
+                assertThat(currentTitle).isEqualTo(TITLE_TEST_VALUE + MODIFY_POSTFIX);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("createNewTask 메소드")
+    class create_new_task {
+
+        @BeforeEach
+        void setUp() {
+            task = new Task(id, TITLE_TEST_VALUE);
+        }
+
+        @Nested
+        @DisplayName("id와 Task를 입력하여 새로운 객체를 생성하면")
+        class when_create_new_task {
+
+            @Test
+            @DisplayName("title 값이 같은 객체가 생성됩니다.")
+            void createNewTask() {
+                Task newTask = Task.createNewTask(100L, task);
+                assertThat(newTask.currentTitle()).isEqualTo(task.currentTitle());
+            }
         }
     }
 }
