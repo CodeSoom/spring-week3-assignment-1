@@ -1,7 +1,6 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.dto.ErrorResponse;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,6 @@ class TaskControllerTest {
     private TaskController controller;
     private final String TASK_TITLE = "Test Task";
     private final Long TASK_ID = 1L;
-    private final Long TASK_ID_NOT_EXISTING = 0L;
     private final int FIRST = 0;
 
     @BeforeEach
@@ -55,7 +53,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 하나만 존재하고, Task Id로 정상적으로 상세조회 요청 시 반환된 Task id는 기본 생성된 Task의 id와 같아야한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 id는 기본 생성된 Task의 id와 같아야한다")
     void whenDetail_returnEqualId() {
         Long actual = controller.detail(TASK_ID).getId();
 
@@ -63,7 +61,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 하나만 존재하고, Task Id로 정상적으로 상세조회 요청 시 반환된 Task title은 기본 생성된 Task의 title과 같아야한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 title은 기본 생성된 Task의 title과 같아야한다")
     void whenDetail_returnEqualTitle() {
         String actual = controller.detail(TASK_ID).getTitle();
 
