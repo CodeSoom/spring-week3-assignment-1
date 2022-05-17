@@ -41,19 +41,15 @@ public class TaskService {
     }
 
     public TaskResponse addTask(TaskRequest taskRequest) {
-        taskRequest.checkTitle();
-
-        Task task = new Task(generateId(), taskRequest.getTitle());
+        Task task = new Task(taskRequest.getTitle());
+        task.setId(generateId());
         tasks.add(task);
 
         TaskResponse taskResponse = new TaskResponse(task.getId(), task.getTitle());
-
         return taskResponse;
     }
 
     public TaskResponse updateTask(Long id, TaskRequest taskRequest) {
-        taskRequest.checkTitle();
-
         Task task = findTask(id);
         task.updateTitle(taskRequest.getTitle());
 
