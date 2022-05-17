@@ -26,4 +26,26 @@ class TaskControllerTest {
         controller = new TaskController(service);
     }
 
+    @Test
+    void Given_Task가_하나만_존재_When_목록_조회_요청_Then_반환값_내_Task_개수는_Service_반환값_개수와_같다() {
+        List<Task> expected = service.getTasks();
+        List<Task> actual = controller.list();
+
+        assertThat(actual).hasSameSizeAs(expected);
+    }
+
+    @Test
+    void Given_Task가_하나만_존재_When_목록_조회_요청_Then_반환된_Task_id_는_Service_내_Task_id와_같아야한다() {
+        Long actual = controller.list().get(FIRST).getId();
+
+        assertThat(actual).isEqualTo(TASK_ID);
+    }
+
+    @Test
+    void Given_Task가_하나만_존재_When_목록_조회_요청_Then_반환된_Task_title_는_Service_내_Task_title와_같아야한다() {
+        String actual = controller.list().get(FIRST).getTitle();
+
+        assertThat(actual).isEqualTo(TASK_TITLE);
+    }
+
 }
