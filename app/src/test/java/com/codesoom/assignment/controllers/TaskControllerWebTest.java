@@ -28,7 +28,13 @@ public class TaskControllerWebTest {
 	}
 
 	@Test
-	void detail() throws Exception {
+	void detailWithValidId() throws Exception {
+		create();
+		mockMvc.perform(get("/tasks/1")).andExpect(status().isOk());
+	}
+
+	@Test
+	void detailWithInValidId() throws Exception {
 		create();
 		mockMvc.perform(get("/tasks/1")).andExpect(status().isOk());
 	}
@@ -66,6 +72,6 @@ public class TaskControllerWebTest {
 	void deleteTest() throws Exception {
 		create();
 		mockMvc.perform(delete("/tasks/1").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated());
+			.andExpect(status().isNoContent());
 	}
 }
