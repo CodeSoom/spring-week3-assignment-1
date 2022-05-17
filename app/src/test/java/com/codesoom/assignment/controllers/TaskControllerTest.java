@@ -44,7 +44,7 @@ class TaskControllerTest {
 	@Test
 	void list() {
 		create();
-		List<Task> taskList =  taskController.list();
+		List<Task> taskList = taskController.list();
 		assertThat(taskList).hasSize(2);
 	}
 
@@ -55,14 +55,14 @@ class TaskControllerTest {
 		assertThat(task1.getId()).isEqualTo(1L);
 		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
 
-		Task task2= taskController.detail(2L);
+		Task task2 = taskController.detail(2L);
 		assertThat(task2.getId()).isEqualTo(2L);
 		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
 	}
 
 	@Test
 	void detailWithInvalidId() {
-		assertThatThrownBy(()->taskController.detail(1L))
+		assertThatThrownBy(() -> taskController.detail(1L))
 			.isInstanceOf(TaskNotFoundException.class);
 	}
 
@@ -73,7 +73,7 @@ class TaskControllerTest {
 		assertThat(task1.getId()).isEqualTo(1L);
 		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
 
-		Task task2= taskController.detail(2L);
+		Task task2 = taskController.detail(2L);
 		assertThat(task2.getId()).isEqualTo(2L);
 		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
 	}
