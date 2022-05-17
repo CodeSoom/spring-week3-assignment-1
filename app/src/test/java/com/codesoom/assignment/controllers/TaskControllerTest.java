@@ -16,6 +16,9 @@ import com.codesoom.assignment.models.Task;
 @SpringBootTest
 @AutoConfigureMockMvc
 class TaskControllerTest {
+	private static final String TEST_TASK_1_NAME = "test1";
+	private static final String TEST_TASK_2_NAME = "test2";
+	private static final String TEST_TASK_UPDATE_NAME = "update";
 
 	private TaskController taskController;
 	private TaskService taskService;
@@ -29,10 +32,10 @@ class TaskControllerTest {
 	@Test
 	void create() {
 		Task task1 = new Task();
-		task1.setTitle("test1");
+		task1.setTitle(TEST_TASK_1_NAME);
 
 		Task task2 = new Task();
-		task2.setTitle("test2");
+		task2.setTitle(TEST_TASK_2_NAME);
 
 		taskController.create(task1);
 		taskController.create(task2);
@@ -50,42 +53,60 @@ class TaskControllerTest {
 		create();
 		Task task1 = taskController.detail(1L);
 		assertThat(task1.getId()).isEqualTo(1L);
-		assertThat(task1.getTitle()).isEqualTo("test1");
+		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
 
 		Task task2= taskController.detail(2L);
 		assertThat(task2.getId()).isEqualTo(2L);
-		assertThat(task2.getTitle()).isEqualTo("test2");
+		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
+	}
+
+	@Test
+	void detailWithInvalidId() {
+		assertThatThrownBy(()->taskController.detail(1L))
+			.isInstanceOf(TaskNotFoundException.class);
+	}
+
+	@Test
+	void detailWithValidId() {
+		create();
+		Task task1 = taskController.detail(1L);
+		assertThat(task1.getId()).isEqualTo(1L);
+		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
+
+		Task task2= taskController.detail(2L);
+		assertThat(task2.getId()).isEqualTo(2L);
+		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
 	}
 
 	@Test
 	void update() {
 		create();
 		Task source = new Task();
-		source.setTitle("update");
+		source.setTitle(TEST_TASK_UPDATE_NAME);
 
 		taskController.update(1L, source);
 		Task target = taskController.detail(1L);
 
-		assertThat(target.getTitle()).isEqualTo("update");
+		assertThat(target.getTitle()).isEqualTo(TEST_TASK_UPDATE_NAME);
 	}
 
 	@Test
 	void patch() {
 		create();
 		Task source = new Task();
-		source.setTitle("update");
+		source.setTitle(TEST_TASK_UPDATE_NAME);
 
 		taskController.update(1L, source);
 		Task target = taskController.detail(1L);
 
-		assertThat(target.getTitle()).isEqualTo("update");
+		assertThat(target.getTitle()).isEqualTo(TEST_TASK_UPDATE_NAME);
 	}
 
 	@Test
 	void delete() {
 		create();
 		Task source = new Task();
-		source.setTitle("update");
+		source.setTitle(TEST_TASK_1_NAME);
 
 		taskController.delete(1L);
 
