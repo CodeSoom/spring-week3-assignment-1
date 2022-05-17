@@ -1,22 +1,25 @@
 package com.codesoom.assignment.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("HelloControllerTest 클래스")
 class HelloControllerTest {
-    private HelloController helloController;
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class sayHello_메서드는 {
+        private HelloController helloController;
 
-    @BeforeEach
-    void setUp() {
-        helloController = new HelloController();
-    }
+        @BeforeEach
+        void setUp() {
+            helloController = new HelloController();
+        }
 
-    @DisplayName("sayHello 테스트")
-    @Test
-    void sayHello() {
-        assertThat(helloController.sayHello()).isEqualTo("Hello, world!");
+        @Test
+        @DisplayName("Hello, world!라는 문자열을 반환한다")
+        void Hello_world라는_문자열을_반환한다() {
+            assertThat(helloController.sayHello()).isEqualTo("Hello, world!");
+        }
     }
 }
