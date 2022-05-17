@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TaskTest {
 
     private Task task;
-    private Long id = 0L;
+    private Long ID = 0L;
     private final String TITLE_TEST_VALUE = "TEST";
     private final String MODIFY_POSTFIX = "_MODIFY";
 
@@ -26,7 +26,7 @@ class TaskTest {
             @Test
             @DisplayName("true를 반환합니다.")
             void valiateTitle() {
-                task = new Task(id, TITLE_TEST_VALUE);
+                task = new Task(ID, TITLE_TEST_VALUE);
                 assertThat(task.hasValidTitle()).isTrue();
             }
         }
@@ -50,7 +50,7 @@ class TaskTest {
 
         @BeforeEach
         void setUp() {
-            task = new Task(id, TITLE_TEST_VALUE);
+            task = new Task(ID, TITLE_TEST_VALUE);
         }
 
         @Nested
@@ -83,7 +83,7 @@ class TaskTest {
 
         @BeforeEach
         void setUp() {
-            task = new Task(id, TITLE_TEST_VALUE);
+            task = new Task(ID, TITLE_TEST_VALUE);
         }
 
         @Nested
