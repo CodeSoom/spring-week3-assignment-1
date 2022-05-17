@@ -21,7 +21,7 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        Task task = new Task();
+        final Task task = new Task();
         task.setTitle(TASK_TITLE);
 
         service = new TaskService();

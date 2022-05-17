@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
     private TaskService service;
@@ -33,8 +32,8 @@ class TaskControllerTest {
     @Test
     @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환값 내 Task의 개수는 1개여야 한다")
     void whenList_returnEqualSize() {
-        List<Task> expected = service.getTasks();
-        List<Task> actual = controller.list();
+        final List<Task> expected = service.getTasks();
+        final List<Task> actual = controller.list();
 
         assertThat(actual).hasSameSizeAs(expected);
     }
@@ -42,7 +41,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task id는 기본 생성된 Task의 id와 같아야 한다")
     void whenList_returnEqualId() {
-        Long actual = controller.list().get(FIRST).getId();
+        final Long actual = controller.list().get(FIRST).getId();
 
         assertThat(actual).isEqualTo(TASK_ID);
     }
@@ -50,7 +49,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task title은 기본 생성된 Task의 title과 같아야 한다")
     void whenList_returnEqualTitle() {
-        String actual = controller.list().get(FIRST).getTitle();
+        final String actual = controller.list().get(FIRST).getTitle();
 
         assertThat(actual).isEqualTo(TASK_TITLE);
     }
@@ -58,7 +57,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 id는 기본 생성된 Task의 id와 같아야 한다")
     void whenDetail_returnEqualId() {
-        Long actual = controller.detail(TASK_ID).getId();
+        final Long actual = controller.detail(TASK_ID).getId();
 
         assertThat(actual).isEqualTo(TASK_ID);
     }
@@ -66,7 +65,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 title은 기본 생성된 Task의 title과 같아야 한다")
     void whenDetail_returnEqualTitle() {
-        String actual = controller.detail(TASK_ID).getTitle();
+        final String actual = controller.detail(TASK_ID).getTitle();
 
         assertThat(actual).isEqualTo(TASK_TITLE);
     }
@@ -101,12 +100,7 @@ class TaskControllerTest {
         final Task task = new Task();
         task.setTitle(INPUT_TITLE);
 
-        // 첫번째 방식
         final Long actual = controller.create(task).getId();
         assertThat(actual).isNotNull();
-
-        // 두번째 방식
-        assertThatThrownBy(()-> controller.create(task).getId())
-                .isNotInstanceOf(NullPointerException.class);
     }
 }
