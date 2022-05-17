@@ -11,41 +11,41 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
+    private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping
-    public List<Task> list() {
+    public List<Task> getTasks() {
         return taskService.getTasks();
     }
 
     @GetMapping("{id}")
-    public Task detail(@PathVariable Long id) {
+    public Task getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);
     }
 
-    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
     public Task create(@RequestBody Task task) {
-        return taskService.createTask(task);
+        return taskService.addTask(task);
     }
 
-    @PutMapping("{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PutMapping("/{id}")
+    public Task update(@PathVariable("id") Long id, @RequestBody Task source) {
+        return taskService.updateTask(id, source);
     }
 
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PatchMapping("/{id}")
+    public Task patch(@PathVariable("id") Long id, @RequestBody Task source) {
+        return taskService.updateTask(id, source);
     }
 
-    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping(value = {"", "/", "/{id}"})
+    public void delete(@PathVariable(required = false) Long id) {
         taskService.deleteTask(id);
     }
 }
