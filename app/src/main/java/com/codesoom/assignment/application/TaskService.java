@@ -1,5 +1,7 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.dto.TaskRequest;
+import com.codesoom.assignment.dto.TaskResponse;
 import com.codesoom.assignment.exceptions.NotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
@@ -12,36 +14,56 @@ public class TaskService {
     private List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<TaskResponse> getTasks() {
+        List<TaskResponse> taskListResponse = new ArrayList<>();
+
+        for(Task task : tasks) {
+            TaskResponse taskResponse = new TaskResponse(task.getId(), task.getTitle());
+            taskListResponse.add(taskResponse);
+        }
+
+        return taskListResponse;
     }
 
-    public Task getTask(Long id) {
+    public TaskResponse getTask(Long id) {
+        Task task = findTask(id);
+
+        TaskResponse taskResponse = new TaskResponse(task.getId(), task.getTitle());
+
+        return taskResponse;
+    }
+
+    public Task findTask(Long id) {
         return tasks.stream()
-                .filter(task -> task.getId().equals(id))
+                .filter(t -> t.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(id));
     }
 
-    public Task addTask(Task task) {
-        task.checkTitle(task.getTitle());
+    public TaskResponse addTask(TaskRequest taskRequest) {
+        taskRequest.checkTitle();
 
-        task.setId(generateId());
+        Task task = new Task(generateId(), taskRequest.getTitle());
         tasks.add(task);
 
-        return task;
+        TaskResponse taskResponse = new TaskResponse(task.getId(), task.getTitle());
+
+        return taskResponse;
     }
 
-    public Task updateTask(Long id, Task source) {
-        source.checkTitle(source.getTitle());
+    public TaskResponse updateTask(Long id, TaskRequest taskRequest) {
+        taskRequest.checkTitle();
 
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
-        return task;
+        Task task = findTask(id);
+        task.updateTitle(taskRequest.getTitle());
+
+        TaskResponse taskResponse = new TaskResponse(task.getId(), task.getTitle());
+
+        return taskResponse;
     }
 
     public void deleteTask(Long id) {
-        Task task = getTask(id);
+        Task task = findTask(id);
         tasks.remove(task);
     }
 

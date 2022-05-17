@@ -1,7 +1,8 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.dto.TaskRequest;
+import com.codesoom.assignment.dto.TaskResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,29 +19,29 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks() {
+    public List<TaskResponse> getTasks() {
         return taskService.getTasks();
     }
 
     @GetMapping("{id}")
-    public Task getTask(@PathVariable("id") Long id) {
+    public TaskResponse getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Task create(@RequestBody Task task) {
-        return taskService.addTask(task);
+    public TaskResponse create(@RequestBody TaskRequest taskRequest) {
+        return taskService.addTask(taskRequest);
     }
 
     @PutMapping("/{id}")
-    public Task update(@PathVariable("id") Long id, @RequestBody Task source) {
-        return taskService.updateTask(id, source);
+    public TaskResponse update(@PathVariable("id") Long id, @RequestBody TaskRequest taskRequest) {
+        return taskService.updateTask(id, taskRequest);
     }
 
     @PatchMapping("/{id}")
-    public Task patch(@PathVariable("id") Long id, @RequestBody Task source) {
-        return taskService.updateTask(id, source);
+    public TaskResponse patch(@PathVariable("id") Long id, @RequestBody TaskRequest taskRequest) {
+        return taskService.updateTask(id, taskRequest);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
