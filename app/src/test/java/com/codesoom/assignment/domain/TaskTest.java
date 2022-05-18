@@ -90,8 +90,8 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayName("id와 Task를 입력하여 새로운 객체를 생성하면")
-        class when_create_new_task {
+        @DisplayName("task로 새로운 할일을 생성하면")
+        class when_create_new_task_with_other_task {
 
             @Test
             @DisplayName("title 값이 같은 객체가 생성됩니다.")
@@ -102,4 +102,5 @@ class TaskTest {
             }
         }
     }
+
 }
