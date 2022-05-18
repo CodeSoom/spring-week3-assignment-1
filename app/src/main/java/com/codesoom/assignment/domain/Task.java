@@ -10,8 +10,8 @@ public class Task {
         this.title = title;
     }
 
-    public static Task createNewTask(Long generateId, Task task) {
-        return new Task(generateId, task.title);
+    public static Task createNewTask(Long id, Task task) {
+        return new Task(id, task.title);
     }
 
     public boolean hasValidTitle() {
