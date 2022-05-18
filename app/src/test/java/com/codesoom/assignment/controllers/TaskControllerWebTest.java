@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,22 +33,26 @@ public class TaskControllerWebTest {
 	}
 
 	@Test
+	@DisplayName("tasks 목록을 받아온다")
 	void list() throws Exception {
 		mockMvc.perform(get("/tasks")).andExpect(status().isOk());
 	}
 
 	@Test
+	@DisplayName("유효한 ID의 task 를 받아온다")
 	void detailWithValidId() throws Exception {
 		create();
 		mockMvc.perform(get("/tasks/1")).andExpect(status().isOk()).andDo(print());
 	}
 
 	@Test
+	@DisplayName("유효하지 않는 ID의 task 를 받아온다")
 	void detailWithInValidId() throws Exception {
 		mockMvc.perform(get("/tasks/100")).andExpect(status().isNotFound()).andDo(print());
 	}
 
 	@Test
+	@DisplayName("task 를 생성한다")
 	void create() throws Exception {
 		Task task = new Task();
 		task.setTitle("test");
@@ -57,6 +62,7 @@ public class TaskControllerWebTest {
 	}
 
 	@Test
+	@DisplayName("task 를 변경한다")
 	void update() throws Exception {
 		create();
 		Task task = new Task();
@@ -67,6 +73,7 @@ public class TaskControllerWebTest {
 	}
 
 	@Test
+	@DisplayName("task 를 변경한다")
 	void patchTest() throws Exception {
 		create();
 		Task task = new Task();
@@ -77,6 +84,7 @@ public class TaskControllerWebTest {
 	}
 
 	@Test
+	@DisplayName("task 를 제거한다")
 	void deleteTest() throws Exception {
 		create();
 		mockMvc.perform(delete("/tasks/1").contentType(MediaType.APPLICATION_JSON))
