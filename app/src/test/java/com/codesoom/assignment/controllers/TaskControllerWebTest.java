@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -92,7 +92,7 @@ class TaskControllerWebTest {
 
             @Test
             @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
-            void it_responds_with_200_ok() throws Exception {
+            void it_responds_with_404() throws Exception {
                 mockMvc.perform(get(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
                         .andExpect(status().isNotFound());
             }
@@ -100,4 +100,130 @@ class TaskControllerWebTest {
         }
     }
 
+    @Nested
+    @DisplayName("update 메소드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("만약 기본 생성된 Task를 수정한다면")
+        class Context_with_default_task {
+            @BeforeEach
+            void setUp() {
+                final Task task = tasks.get(FIRST);
+                final Task newTask = new Task();
+                newTask.setTitle("(UPDATED)" + TASK_TITLE);
+                task.setTitle("(UPDATED)" + TASK_TITLE);
+
+                given(service.updateTask(TASK_ID, newTask)).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 200 OK 응답한다")
+            void it_responds_with_200_ok() throws Exception {
+                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
+        class Context_without_existing_task {
+            @BeforeEach
+            void setUp() {
+                final Task task = tasks.get(FIRST);
+                given(service.updateTask(TASK_ID, task))
+                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
+            void it_responds_with_404() throws Exception {
+                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                        .andExpect(status().isNotFound());
+            }
+
+        }
+    }
+
+    @Nested
+    @DisplayName("patch 메소드는")
+    class Describe_patch {
+        @Nested
+        @DisplayName("만약 기본 생성된 Task를 부분 수정한다면")
+        class Context_with_default_task {
+            @BeforeEach
+            void setUp() {
+                final Task task = tasks.get(FIRST);
+                final Task newTask = new Task();
+                newTask.setTitle("(UPDATED)" + TASK_TITLE);
+                task.setTitle("(UPDATED)" + TASK_TITLE);
+
+                given(service.updateTask(TASK_ID, newTask)).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 200 OK 응답한다")
+            void it_responds_with_200_ok() throws Exception {
+                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
+        class Context_without_existing_task {
+            @BeforeEach
+            void setUp() {
+                final Task task = tasks.get(FIRST);
+                given(service.updateTask(TASK_ID, task))
+                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
+            void it_responds_with_404() throws Exception {
+                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                        .andExpect(status().isNotFound());
+            }
+
+        }
+    }
+
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("만약 기본 생성된 Task를 삭제한다면")
+        class Context_with_default_task {
+            @BeforeEach
+            void setUp() {
+                final Task task = tasks.get(FIRST);
+                given(service.deleteTask(TASK_ID)).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 204 NO CONTENT 응답한다")
+            void it_responds_with_204() throws Exception {
+                mockMvc.perform(delete(DEFAULT_PATH + "/" + TASK_ID))
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 삭제한다면")
+        class Context_without_existing_task {
+            @BeforeEach
+            void setUp() {
+                given(service.deleteTask(TASK_ID_NOT_EXISTING))
+                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
+            void it_responds_with_404() throws Exception {
+                mockMvc.perform(delete(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                        .andExpect(status().isNotFound());
+            }
+
+        }
+    }
 }
