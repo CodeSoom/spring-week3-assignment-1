@@ -73,7 +73,8 @@ class TaskTest {
             @Test
             @DisplayName("반환된 객체는 변경된 타이틀을 갖고 있어야 합니다.")
             void changeTitle() {
-                String currentTitle = task.changeTitle(TITLE_TEST_VALUE + MODIFY_POSTFIX).currentTitle();
+                Task change = new Task(null, TITLE_TEST_VALUE + MODIFY_POSTFIX);
+                String currentTitle = task.changeTitle(change).currentTitle();
 
                 assertThat(currentTitle).isEqualTo(TITLE_TEST_VALUE + MODIFY_POSTFIX);
             }
