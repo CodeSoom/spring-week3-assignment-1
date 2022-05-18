@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,11 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TaskControllerWebTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private TaskService service;
 
     private final List<Task> tasks = new LinkedList<>();
     private final String TASK_TITLE = "Test Task";
+    private final String TASK_TITLE_UPDATED = "Updated Task";
     private final Long TASK_ID = 1L;
     private final int FIRST = 0;
     private final Long TASK_ID_NOT_EXISTING = 10L;
@@ -110,8 +114,8 @@ class TaskControllerWebTest {
             void setUp() {
                 final Task task = tasks.get(FIRST);
                 final Task newTask = new Task();
-                newTask.setTitle("(UPDATED)" + TASK_TITLE);
-                task.setTitle("(UPDATED)" + TASK_TITLE);
+                newTask.setTitle(TASK_TITLE_UPDATED);
+                task.setTitle(TASK_TITLE_UPDATED);
 
                 given(service.updateTask(TASK_ID, newTask)).willReturn(task);
             }
@@ -119,7 +123,12 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID))
+                Task task = new Task();
+                task.setTitle(TASK_TITLE_UPDATED);
+                String content = objectMapper.writeValueAsString(task);
+
+                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID)
+                                .content(content))
                         .andExpect(status().isOk());
             }
         }
@@ -154,8 +163,8 @@ class TaskControllerWebTest {
             void setUp() {
                 final Task task = tasks.get(FIRST);
                 final Task newTask = new Task();
-                newTask.setTitle("(UPDATED)" + TASK_TITLE);
-                task.setTitle("(UPDATED)" + TASK_TITLE);
+                newTask.setTitle(TASK_TITLE_UPDATED);
+                task.setTitle(TASK_TITLE_UPDATED);
 
                 given(service.updateTask(TASK_ID, newTask)).willReturn(task);
             }
@@ -163,7 +172,12 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID))
+                Task task = new Task();
+                task.setTitle(TASK_TITLE_UPDATED);
+                String content = objectMapper.writeValueAsString(task);
+
+                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID)
+                                .content(content))
                         .andExpect(status().isOk());
             }
         }
