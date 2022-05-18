@@ -36,11 +36,11 @@ public class TaskControllerWebTest {
 
     private Task task;
     private static final String TASK_TITLE = "babo";
-    private static final Long TASK_ID = 1L;
+    private static final Long VALID_TASK_ID = 1L;
     private static final Long INVALID_TASK_ID = 1231231L;
 
     private static final String TASKS_DEFAULT_PATH = "/tasks";
-    private static final String TASKS_VALID_ID_PATH = TASKS_DEFAULT_PATH + "/" + TASK_ID;
+    private static final String TASKS_VALID_ID_PATH = TASKS_DEFAULT_PATH + "/" + VALID_TASK_ID;
     private static final String TASKS_INVALID_ID_PATH = TASKS_DEFAULT_PATH + "/" + INVALID_TASK_ID;
     private static final String TASKS_NON_NUMBER_ID_PATH = TASKS_DEFAULT_PATH + "/" + "sadqlkwd@";
 
@@ -48,9 +48,8 @@ public class TaskControllerWebTest {
     void setUp() {
         task = new Task();
         task.setTitle(TASK_TITLE);
-        task.setId(TASK_ID);
+        task.setId(VALID_TASK_ID);
     }
-
 
     @Nested
     @DisplayName("Get /tasks")
@@ -70,7 +69,7 @@ public class TaskControllerWebTest {
             mockMvc.perform(get(TASKS_DEFAULT_PATH))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(tasks.size()))
-                    .andExpect(jsonPath("$[0].id").value(TASK_ID))
+                    .andExpect(jsonPath("$[0].id").value(VALID_TASK_ID))
                     .andExpect(jsonPath("$[0].title").value(TASK_TITLE));
         }
     }
@@ -90,7 +89,7 @@ public class TaskControllerWebTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskToString(task)))
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.id").value(TASK_ID))
+                    .andExpect(jsonPath("$.id").value(VALID_TASK_ID))
                     .andExpect(jsonPath("$.title").value(TASK_TITLE));
         }
     }
@@ -103,7 +102,7 @@ public class TaskControllerWebTest {
         class Context_when_id_does_exist {
             @BeforeEach
             void setUp() {
-                given(taskService.getTask(TASK_ID)).willReturn(task);
+                given(taskService.getTask(VALID_TASK_ID)).willReturn(task);
             }
 
             @Test
@@ -111,7 +110,7 @@ public class TaskControllerWebTest {
             void it_responses_task() throws Exception {
                 mockMvc.perform(get(TASKS_VALID_ID_PATH))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.id").value(TASK_ID))
+                        .andExpect(jsonPath("$.id").value(VALID_TASK_ID))
                         .andExpect(jsonPath("$.title").value(TASK_TITLE));
             }
         }
@@ -158,7 +157,7 @@ public class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 task.setTitle(TASK_UPDATE_TITLE);
-                given(taskService.updateTask(eq(TASK_ID), any())).willReturn(task);
+                given(taskService.updateTask(eq(VALID_TASK_ID), any())).willReturn(task);
             }
 
             @Test
@@ -169,7 +168,7 @@ public class TaskControllerWebTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.title").value(TASK_UPDATE_TITLE))
-                        .andExpect(jsonPath("$.id").value(TASK_ID));
+                        .andExpect(jsonPath("$.id").value(VALID_TASK_ID));
             }
         }
 
@@ -212,7 +211,7 @@ public class TaskControllerWebTest {
         class Context_when_id_does_exist {
             @BeforeEach
             void setUp() {
-                given(taskService.deleteTask(TASK_ID)).willReturn(task);
+                given(taskService.deleteTask(VALID_TASK_ID)).willReturn(task);
             }
 
             @DisplayName("삭제 후 204 status를 응답한다.")
