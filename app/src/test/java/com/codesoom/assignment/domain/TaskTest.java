@@ -90,7 +90,7 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayName("task로 새로운 할일을 생성하면")
+        @DisplayName("id와 task를 입력하면")
         class when_create_new_task_with_other_task {
 
             @Test
