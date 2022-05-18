@@ -44,6 +44,8 @@
     - [ ] 입력 후 목록의 크기는 이전 목록 크기에서 1 증가된다.
   - 입력 받은 title이 유효하지 않다면,
     - [ ] TaskHasInvalidTitleException 예외를 발생 시킨다.
+  - 이미 존재하는 id 라면
+    - [ ] TaskIdIsExistException 예외를 발생 시킨다.
 - 할일 수정
   - 입력 받은 id와 title이 유효하다면,
     - [ ] 수정하여 목록에 반영하고 해당 Task 객체를 반환한다.
