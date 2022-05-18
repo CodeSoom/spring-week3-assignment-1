@@ -1,5 +1,7 @@
 package com.codesoom.assignment.domain;
 
+import java.util.Objects;
+
 public class Task {
 
     private final Long id;
@@ -18,12 +20,29 @@ public class Task {
         return this.title != null;
     }
 
-    public Task changeTitle(String title) {
-        this.title = title;
+    public Task changeTitle(Task task) {
+        this.title = task.title;
         return this;
     }
 
     public String currentTitle() {
         return this.title;
+    }
+
+    public boolean checkMyId(long id) {
+        return Long.compare(this.id, id) == 0 ? true : false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id.equals(task.id) && title.equals(task.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
     }
 }
