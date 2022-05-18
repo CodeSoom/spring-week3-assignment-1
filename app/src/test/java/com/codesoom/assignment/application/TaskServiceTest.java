@@ -41,10 +41,11 @@ class TaskServiceTest {
         class when_list_is_not_empty {
 
             @Test
-            @DisplayName("목록을 반환합니다.")
+            @DisplayName("할일 목록을 반환합니다.")
             void list() {
                 Task task = new Task(ID, TITLE_TEST_VALUE);
                 taskService.create(task);
+
                 assertThat(taskService.list().size()).isEqualTo(1);
             }
         }

@@ -27,6 +27,7 @@ class TaskTest {
             @DisplayName("true를 반환합니다.")
             void valiateTitle() {
                 task = new Task(ID, TITLE_TEST_VALUE);
+
                 assertThat(task.hasValidTitle()).isTrue();
             }
         }
@@ -39,6 +40,7 @@ class TaskTest {
             @DisplayName("false를 반환합니다.")
             void valiateTitle() {
                 task = new Task(null, null);
+
                 assertThat(task.hasValidTitle()).isFalse();
             }
         }
@@ -72,6 +74,7 @@ class TaskTest {
             @DisplayName("반환된 객체는 변경된 타이틀을 갖고 있어야 합니다.")
             void changeTitle() {
                 String currentTitle = task.changeTitle(TITLE_TEST_VALUE + MODIFY_POSTFIX).currentTitle();
+
                 assertThat(currentTitle).isEqualTo(TITLE_TEST_VALUE + MODIFY_POSTFIX);
             }
         }
@@ -94,6 +97,7 @@ class TaskTest {
             @DisplayName("title 값이 같은 객체가 생성됩니다.")
             void createNewTask() {
                 Task newTask = Task.createNewTask(100L, task);
+
                 assertThat(newTask.currentTitle()).isEqualTo(task.currentTitle());
             }
         }
