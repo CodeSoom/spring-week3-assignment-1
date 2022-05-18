@@ -1,23 +1,28 @@
 package com.codesoom.assignment.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("HelloController 클래스")
 class HelloControllerTest {
 
-    static final String Hello_Friend = "Hello, Friend!";
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class sayHello_메서드는 {
+        static final String Hello_Friend = "Hello, Friend!";
 
-    private HelloController helloController;
+        private HelloController helloController;
 
-    @BeforeEach
-    void setUp() {
-        helloController = new HelloController();
-    }
+        @BeforeEach
+        void setUp() {
+            helloController = new HelloController();
+        }
 
-    @Test
-    void sayHello() {
-        assertThat(helloController.sayHello()).isEqualTo(Hello_Friend);
+        @Test
+        @DisplayName("Hello, Friend! 를 리턴한다.")
+        void Hello_Friend_를_리턴한다() {
+            assertThat(helloController.sayHello()).isEqualTo(Hello_Friend);
+        }
     }
 }
