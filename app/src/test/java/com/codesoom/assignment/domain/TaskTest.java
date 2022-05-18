@@ -47,7 +47,7 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("changeTitle & currentTitle 메소드")
+    @DisplayName("changeTitle 메소드")
     class change_title_current_title {
 
         @BeforeEach
