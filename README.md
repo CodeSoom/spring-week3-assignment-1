@@ -36,27 +36,26 @@
   - [x] 목록에 할일이 있는 경우, 목록을 반환한다.
   - [x] 목록에 할일이 하나도 없는 경우, 빈 목록을 반환한다.
 - 할일 목록 단건 조회
-  - [ ] 일치하는 할일이 있는 경우, 그에 맞는 Task 객체를 반환한다.
-  - [ ] 일치하는 할일이 없는 경우, TaskNotFoundException 발생 시킨다.
+  - [x] 일치하는 할일이 있는 경우, 그에 맞는 Task 객체를 반환한다.
+  - [x] 일치하는 할일이 없는 경우, TaskNotFoundException 발생 시킨다.
 - 할일 등록
   - 입력 받은 title이 유효하다면,
-    - [ ] 입력 받은 title에 대해 신규 객체를 생성하여 목록에 추가하고 이를 반환한다.
-    - [ ] 입력 후 목록의 크기는 이전 목록 크기에서 1 증가된다.
+    - [x] 입력 받은 title에 대해 신규 객체를 생성하여 목록에 추가하고 이를 반환한다.
+    - [x] 입력 후 목록의 크기는 이전 목록 크기에서 1 증가된다.
   - 입력 받은 title이 유효하지 않다면,
-    - [ ] TaskHasInvalidTitleException 예외를 발생 시킨다.
-  - 이미 존재하는 id 라면
-    - [ ] TaskIdIsExistException 예외를 발생 시킨다.
+    - [x] TaskHasInvalidTitleException 예외를 발생 시킨다.
 - 할일 수정
   - 입력 받은 id와 title이 유효하다면,
-    - [ ] 수정하여 목록에 반영하고 해당 Task 객체를 반환한다.
+    - [x] 수정하여 목록에 반영하고 해당 Task 객체를 반환한다.
   - 입력 받은 id와 title이 유효하지 않다면,
-    - [ ] 존재하지 않는 id 라면, TaskNotFoundException 예외를 발생 시킨다.
-    - [ ] title이 유효하지 않다면, TaskNotFoundException 예외를 발생 시킨다.
+    - [x] 존재하지 않는 id 라면, TaskNotFoundException 예외를 발생 시킨다.
+    - [x] title이 유효하지 않다면, TaskNotFoundException 예외를 발생 시킨다.
 - 할일 삭제
   - 입력 받은 id가 유효하다면,
-    - [ ] 이를 목록에서 삭제 한다. 이때의 목록 사이즈는 1 감소한다.
+    - [x] 이를 목록에서 삭제 한다. 이때의 목록 사이즈는 1 감소한다.
+    - [x] 삭제 후 재조회 시, TaskNotFoundException 예외를 발생 시킨다.
   - 입력 받은 id가 유효하지 않다면,
-    - [ ] TaskNotFoundException 예뢰를 발생 시킨다.
+    - [x] TaskNotFoundException 예외를 발생 시킨다.
 ### Controller
 - [ ] GET
 - [ ] POST
