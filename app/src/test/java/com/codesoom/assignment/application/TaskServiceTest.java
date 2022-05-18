@@ -56,14 +56,39 @@ class TaskServiceTest {
     class create {
 
         @Nested
-        @DisplayName("할일을 신규 등록했을 때, 정상적으로 등록이 되었다면")
-        class when_create_new_task {
+        @DisplayName("id와 task를 입력했을 때")
+        class when_create_new_task_with_id_and_task {
 
-            @Test
-            @DisplayName("생성된 Task 객체를 반환합니다.")
-            void create() {
+            @Nested
+            @DisplayName("id가 유효하지 않으면")
+            class has_invalid_id {
+                @Test
+                @DisplayName("TaskHasInvalidIdException 예외가 발생합니다.")
+                void create() {
+                    
+                }
+            }
 
+            @Nested
+            @DisplayName("title이 유효하지 않으면")
+            class has_invalid_title {
+                @Test
+                @DisplayName("TaskHasInvalidTaskException 예외가 발생합니다.")
+                void create() {
+
+                }
+            }
+
+            @Nested
+            @DisplayName("id와 title이 유효하면")
+            class has_valid_input {
+                @Test
+                @DisplayName("title이 동일한 task가 생성됩니다.")
+                void create() {
+
+                }
             }
         }
     }
+
 }
