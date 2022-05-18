@@ -22,17 +22,25 @@ class TaskTest {
         assertThat(task).isNotNull();
     }
 
-    @DisplayName("Task 인스턴스 생성 후 아이디, 제목 설정 테스트")
+    @DisplayName("Task 인스턴스 생성 후 아이디 설정 테스트")
     @Test
-    void generateTaskInstanceWithIdAndTitle() {
+    void generateTaskInstanceWithId() {
 
         long taskId = 1L;
-        String taskTitle = "Hello Task!";
 
         task.setId(taskId);
-        task.setTitle(taskTitle);
 
         assertThat(task.getId()).isEqualTo(taskId);
+    }
+
+    @DisplayName("Task 인스턴스 생성 후 제목 설정 테스트")
+    @Test
+    void generateTaskInstanceWithTitle() {
+
+        String taskTitle = "Hello Task!";
+
+        task.setTitle(taskTitle);
+
         assertThat(task.getTitle()).isEqualTo(taskTitle);
     }
 }
