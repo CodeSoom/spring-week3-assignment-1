@@ -72,14 +72,18 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void setUp() {
-                tasks.add(task);
-                tasks.add(task);
                 given(taskService.getTasks()).willReturn(tasks);
+            }
+
+            boolean subject() {
+                return tasks.add(task);
             }
 
             @Test
             @DisplayName("모든 task들과 상태코드 200을 응답한다")
             void list() throws Exception {
+                subject();
+                subject();
                 mockMvc.perform(get("/tasks")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
