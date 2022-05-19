@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DisplayName("TaskControllerWeb 클래스는")
+@DisplayName("TaskController 클래스는")
 public class TaskControllerWebTest {
 
 	@Nested
