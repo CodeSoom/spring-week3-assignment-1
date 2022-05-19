@@ -1,19 +1,24 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TaskController 클래스")
 class TaskControllerTest {
+    private static final Long Task_Id = 1L;
     private static final String Task_Title_One = "test_One";
+    private static final String Task_Title_Two = "test_Two";
 
     private TaskService taskService;
     private TaskController taskController;
@@ -34,5 +39,32 @@ class TaskControllerTest {
         final List<Task> list = taskController.list();
 
         assertThat(list).hasSize(1);
+    }
+
+    @Nested
+    @DisplayName("Detail 메서드는")
+    class Detail {
+        @Nested
+        @DisplayName("클라이언트가 요청한 Task 의 id 가 존재하면")
+        class valid_id {
+            @Test
+            @DisplayName("id 에 해당하는 Task 를 반환한다.")
+            void detail_valid_id() {
+                final String detail_Title = taskController.detail(1L).getTitle();
+
+                assertThat(detail_Title).isEqualTo(Task_Title_One);
+            }
+        }
+
+        @Nested
+        @DisplayName("클라이언트가 요청한 Task 의 id 가 존재하지 않으면")
+        class invalid_id {
+            @Test
+            @DisplayName("TaskNotFoundException 을 반환한다.")
+            void detail_invalid_id() {
+                assertThatThrownBy(() -> taskController.detail(2L))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }
