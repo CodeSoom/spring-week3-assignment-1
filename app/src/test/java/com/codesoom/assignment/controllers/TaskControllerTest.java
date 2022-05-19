@@ -16,6 +16,7 @@ import com.codesoom.assignment.models.Task;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("ComplexNumber 클래스")
 class TaskControllerTest {
 	private static final String TEST_TASK_1_NAME = "test1";
 	private static final String TEST_TASK_2_NAME = "test2";
@@ -30,8 +31,6 @@ class TaskControllerTest {
 		taskController = new TaskController(taskService);
 	}
 
-	@Test
-	@DisplayName("task 를 생성한다")
 	void create() {
 		Task task1 = new Task();
 		task1.setTitle(TEST_TASK_1_NAME);
@@ -47,14 +46,14 @@ class TaskControllerTest {
 	@DisplayName("task 목록을 받아온다")
 	void list() {
 		create();
-		List<Task> taskList =  taskController.list();
+		List<Task> taskList = taskController.list();
 		assertThat(taskList).hasSize(2);
 	}
 
 	@Test
 	@DisplayName("유효하지 않은 ID의 task 를 받아온다")
 	void detailWithInvalidId() {
-		assertThatThrownBy(()->taskController.detail(1L))
+		assertThatThrownBy(() -> taskController.detail(1L))
 			.isInstanceOf(TaskNotFoundException.class);
 	}
 
@@ -66,7 +65,7 @@ class TaskControllerTest {
 		assertThat(task1.getId()).isEqualTo(1L);
 		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
 
-		Task task2= taskController.detail(2L);
+		Task task2 = taskController.detail(2L);
 		assertThat(task2.getId()).isEqualTo(2L);
 		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
 	}
