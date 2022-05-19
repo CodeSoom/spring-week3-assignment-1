@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -32,55 +34,34 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
-        @Nested
-        @DisplayName("만약 기본 생성된 Task가 1개만 존재한다면")
-        class Context_with_default_task {
-            @Test
-            @DisplayName("사이즈가 1인 콜렉션을 반환한다")
-            void it_returns_1_size_of_Collection() {
-                final int actual = service.getTasks().size();
-                assertThat(actual).isEqualTo(TASKS_SIZE);
-            }
+        @Test
+        @DisplayName("List 타입를 반환한다")
+        void it_returns_list() {
+            final List<Task> actual = service.getTasks();
+            assertThat(actual).isInstanceOf(List.class);
         }
     }
 
     @Nested
     @DisplayName("createTasks 메소드는")
     class Describe_createTasks {
-        @Nested
-        @DisplayName("만약 기본 생성된 Task가 1개만 존재한다면")
-        class Context_with_default_task {
-            @Test
-            @DisplayName("Task를 생성하여 Task의 개수가 총 2개가 된다")
-            void it_makes_2_size_of_Collection() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
+        @Test
+        @DisplayName("Task 타입을 반환한다")
+        void it_returns_id_not_null() {
+            final Task task = new Task();
 
-                service.createTask(task);
-                final int actual = service.getTasks().size();
-                assertThat(actual).isEqualTo(TASKS_SIZE + 1);
-            }
+            final Task actual = service.createTask(task);
+            assertThat(actual).isInstanceOf(Task.class);
+        }
 
-            @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 id는 Null이 아니다")
-            void it_returns_id_not_null() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
+        @Test
+        @DisplayName("반환한 Task의 title과 매개변수로 전달한 Task의 title은 동일하다")
+        void it_returns_task_having_title_equal_to_default_task_title() {
+            final Task task = new Task();
+            task.setTitle(TASK_TITLE_UPDATED);
 
-                final Long actual = service.createTask(task).getId();
-                assertThat(actual).isNotNull();
-            }
-
-            @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 title과 새로 생성한 Task의 title은 동일하다")
-            void it_returns_task_having_title_equal_to_default_task_title() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
-
-                final String actual = service.createTask(task).getTitle();
-                assertThat(actual).isEqualTo(TASK_TITLE_UPDATED);
-            }
-
+            final String actual = service.createTask(task).getTitle();
+            assertThat(actual).isEqualTo(TASK_TITLE_UPDATED);
         }
     }
 
