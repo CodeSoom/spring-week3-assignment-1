@@ -80,4 +80,41 @@ class TaskControllerTest {
         assertThat(new_size).isEqualTo(actual_size);
     }
 
+    @Nested
+    @DisplayName("Update 메서드는")
+    class update {
+        Task task = new Task();
+        @BeforeEach
+        void update_setUp() {
+            task.setTitle("test");
+
+            taskController.create(task);
+        }
+
+        @Nested
+        @DisplayName("클라이언트가 수정한 Task 의 Title 과")
+        class valid_id {
+            @Test
+            @DisplayName("전달한 Task 의 Title 은 같아야 한다.")
+            void update_valid_id() {
+                Task task = new Task();
+                task.setTitle(Task_Title_Two);
+                taskController.update(Task_Id, task);
+
+                Task new_task = taskController.detail(Task_Id);
+                assertThat(new_task.getTitle()).isEqualTo(Task_Title_Two);
+            }
+        }
+
+        @Nested
+        @DisplayName("클라이언트가 수정한 Task 의 id 값이 없으면")
+        class invalid_id {
+            @Test
+            @DisplayName("TaskNotFoundException 을 반환한다.")
+            void update_invalid_id() {
+                assertThatThrownBy(() -> taskController.update(100L, task))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+    }
 }
