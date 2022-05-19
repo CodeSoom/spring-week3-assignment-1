@@ -106,7 +106,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 존재하지 않는 Task를 조회한다면")
+        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
         class Context_with_not_existing_task {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다")
@@ -120,6 +120,33 @@ class TaskServiceTest {
 
         }
     }
-    
+
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
+        @Nested
+        @DisplayName("만약 기본 생성된 Task를 삭제한다면")
+        class Context_with_default_task {
+            @Test
+            @DisplayName("삭제된 기본생성 Task를 조회할 때 Not Found Exception이 발생한다")
+            void it_throws_exception() {
+                service.deleteTask(TASK_ID);
+                assertThatThrownBy(() -> service.getTask(TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 조회한다면")
+        class Context_with_not_existing_task {
+            @Test
+            @DisplayName("TaskNotFoundException을 발생시킨다")
+            void it_throws_exception() {
+                assertThatThrownBy(() -> service.deleteTask(TASK_ID_NOT_EXISTING))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+
+        }
+    }
 
 }
