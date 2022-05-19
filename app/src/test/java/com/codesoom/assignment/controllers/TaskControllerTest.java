@@ -49,7 +49,7 @@ class TaskControllerTest {
         assertThat(taskController.detail(1L).getTitle()).isEqualTo("Task 1");
     }
 
-    @DisplayName("유효하지 않은 `id`로 할일 가져오기 테스트")
+    @DisplayName("유효하지 않은 `id`로 할일 가져오면 TaskNotFoundException 발생 테스트")
     @Test
     void taskWithInValidId() {
         taskService.createTask(task);
