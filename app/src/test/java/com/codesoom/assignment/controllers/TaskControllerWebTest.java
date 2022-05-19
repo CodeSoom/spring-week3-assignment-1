@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TaskControllerWebTest {
 
 	@Nested
-	class task가_주어진다면 {
+	class task가_주어질때 {
 
 		private final ObjectMapper objectMapper = new ObjectMapper();
 
