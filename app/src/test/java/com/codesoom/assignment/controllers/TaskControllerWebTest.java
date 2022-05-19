@@ -38,12 +38,6 @@ public class TaskControllerWebTest {
     private static final String TASK_TITLE = "babo";
     private static final Long VALID_TASK_ID = 1L;
     private static final Long INVALID_TASK_ID = 1231231L;
-
-    private static final String TASKS_DEFAULT_PATH = "/tasks";
-    private static final String TASKS_VALID_ID_PATH = TASKS_DEFAULT_PATH + "/" + VALID_TASK_ID;
-    private static final String TASKS_INVALID_ID_PATH = TASKS_DEFAULT_PATH + "/" + INVALID_TASK_ID;
-    private static final String TASKS_NON_NUMBER_ID_PATH = TASKS_DEFAULT_PATH + "/" + "sadqlkwd@";
-
     @BeforeEach
     void setUp() {
         task = new Task();
@@ -66,7 +60,7 @@ public class TaskControllerWebTest {
         @DisplayName("tasks를 응답한다.")
         @Test
         void it_response_tasks() throws Exception {
-            mockMvc.perform(get(TASKS_DEFAULT_PATH))
+            mockMvc.perform(get("/tasks"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(tasks.size()))
                     .andExpect(jsonPath("$[0].id").value(VALID_TASK_ID))
@@ -85,7 +79,7 @@ public class TaskControllerWebTest {
         @DisplayName("201 status를 응답한다.")
         @Test
         void it_responses_201_status() throws Exception {
-            mockMvc.perform(post(TASKS_DEFAULT_PATH)
+            mockMvc.perform(post("/tasks")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(taskToString(task)))
                     .andExpect(status().isCreated())
@@ -108,7 +102,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("task를 응답한다.")
             void it_responses_task() throws Exception {
-                mockMvc.perform(get(TASKS_VALID_ID_PATH))
+                mockMvc.perform(get("/tasks/{id}", VALID_TASK_ID))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.id").value(VALID_TASK_ID))
                         .andExpect(jsonPath("$.title").value(TASK_TITLE));
@@ -127,7 +121,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404 status를 응답한다.")
             void it_responses_404_status() throws Exception {
-                mockMvc.perform(get(TASKS_INVALID_ID_PATH))
+                mockMvc.perform(get("/tasks/{id}", INVALID_TASK_ID))
                         .andExpect(status().isNotFound());
             }
         }
@@ -138,7 +132,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("400 status를 응답한다.")
             void it_responses_400_status() throws Exception {
-                mockMvc.perform(get(TASKS_NON_NUMBER_ID_PATH))
+                mockMvc.perform(get("/tasks/asd"))
                         .andExpect(status().isBadRequest());
             }
 
@@ -163,7 +157,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("변경된 task를 응답한다.")
             void it_responses_updated_task() throws Exception {
-                mockMvc.perform(put(TASKS_VALID_ID_PATH)
+                mockMvc.perform(put("/tasks/{id}", VALID_TASK_ID)
                                 .content(taskToString(task)) //
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
@@ -184,7 +178,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404 status를 응답한다.")
             void it_responses_404_status() throws Exception {
-                mockMvc.perform(put(TASKS_INVALID_ID_PATH)
+                mockMvc.perform(put("/tasks/{id}", INVALID_TASK_ID)
                                 .content(taskToString(task))
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound());
@@ -197,7 +191,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("400 status를 응답한다.")
             void it_responses_400_status() throws Exception {
-                mockMvc.perform(put(TASKS_NON_NUMBER_ID_PATH))
+                mockMvc.perform(put("/tasks/asd"))
                         .andExpect(status().isBadRequest());
             }
         }
@@ -217,7 +211,7 @@ public class TaskControllerWebTest {
             @DisplayName("삭제 후 204 status를 응답한다.")
             @Test
             void it_responses_204_status() throws Exception {
-                mockMvc.perform(delete(TASKS_VALID_ID_PATH))
+                mockMvc.perform(delete("/tasks/{id}", VALID_TASK_ID))
                         .andExpect(status().isNoContent());
             }
         }
@@ -234,7 +228,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("404 status를 응답한다.")
             void it_responses_404_status() throws Exception {
-                mockMvc.perform(delete(TASKS_INVALID_ID_PATH))
+                mockMvc.perform(delete("/tasks/{id}", INVALID_TASK_ID))
                         .andExpect(status().isNotFound());
             }
         }
@@ -245,7 +239,7 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("400 status를 응답한다.")
             void it_responses_400_status() throws Exception {
-                mockMvc.perform(get(TASKS_NON_NUMBER_ID_PATH))
+                mockMvc.perform(get("/tasks/asd"))
                         .andExpect(status().isBadRequest());
             }
         }
