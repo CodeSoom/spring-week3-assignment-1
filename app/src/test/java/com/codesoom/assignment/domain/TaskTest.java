@@ -12,7 +12,7 @@ class TaskTest {
 
     private Task task;
     private Long ID = 0L;
-    private final String TITLE_TEST_VALUE = "TEST";
+    private final String TITLE = "TEST";
     private final String MODIFY_POSTFIX = "_MODIFY";
 
     @Nested
@@ -26,7 +26,7 @@ class TaskTest {
             @Test
             @DisplayName("true를 반환합니다.")
             void valiateTitle() {
-                task = new Task(ID, TITLE_TEST_VALUE);
+                task = new Task(ID, TITLE);
 
                 assertThat(task.hasValidTitle()).isTrue();
             }
@@ -52,7 +52,7 @@ class TaskTest {
 
         @BeforeEach
         void setUp() {
-            task = new Task(ID, TITLE_TEST_VALUE);
+            task = new Task(ID, TITLE);
         }
 
         @Nested
@@ -62,7 +62,7 @@ class TaskTest {
             @Test
             @DisplayName("현 시점의 타이틀을 갖고 있어야 합니다.")
             void currentTitle() {
-                assertThat(task.currentTitle()).isEqualTo(TITLE_TEST_VALUE);
+                assertThat(task.currentTitle()).isEqualTo(TITLE);
             }
         }
 
@@ -73,10 +73,10 @@ class TaskTest {
             @Test
             @DisplayName("반환된 객체는 변경된 타이틀을 갖고 있어야 합니다.")
             void changeTitle() {
-                Task change = new Task(null, TITLE_TEST_VALUE + MODIFY_POSTFIX);
+                Task change = new Task(null, TITLE + MODIFY_POSTFIX);
                 String currentTitle = task.changeTitle(change).currentTitle();
 
-                assertThat(currentTitle).isEqualTo(TITLE_TEST_VALUE + MODIFY_POSTFIX);
+                assertThat(currentTitle).isEqualTo(TITLE + MODIFY_POSTFIX);
             }
         }
     }
@@ -87,7 +87,7 @@ class TaskTest {
 
         @BeforeEach
         void setUp() {
-            task = new Task(ID, TITLE_TEST_VALUE);
+            task = new Task(ID, TITLE);
         }
 
         @Nested
