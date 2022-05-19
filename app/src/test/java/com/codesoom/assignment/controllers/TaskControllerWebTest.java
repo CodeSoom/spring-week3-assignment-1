@@ -185,7 +185,7 @@ public class TaskControllerWebTest {
             @DisplayName("404 status를 응답한다.")
             void it_responses_404_status() throws Exception {
                 mockMvc.perform(put(TASKS_INVALID_ID_PATH)
-                                .content(taskToString(task)) //
+                                .content(taskToString(task))
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound());
             }
