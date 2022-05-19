@@ -117,4 +117,14 @@ class TaskControllerTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("Delete 메서드는 클라이언트가 요청한 Task 의 id 를 삭제한다.")
+    void delete() {
+        int old_size = taskController.list().size();
+        taskController.delete(Task_Id);
+        int new_size = taskController.list().size();
+
+        assertThat(old_size - new_size).isEqualTo(1);
+    }
 }
