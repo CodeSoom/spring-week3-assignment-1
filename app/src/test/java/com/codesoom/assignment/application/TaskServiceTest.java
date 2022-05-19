@@ -46,12 +46,15 @@ class TaskServiceTest {
         @DisplayName("할일이 존재하면")
         class when_list_is_not_empty {
 
+            @BeforeEach
+            void setUp() {
+                Task task = new Task(ID, TITLE_TEST_VALUE);
+                taskService.create(task);
+            }
+
             @Test
             @DisplayName("할일 목록을 반환합니다.")
             void list() {
-                Task task = new Task(ID, TITLE_TEST_VALUE);
-                taskService.create(task);
-
                 assertThat(taskService.list().size()).isEqualTo(1);
             }
         }
@@ -76,11 +79,18 @@ class TaskServiceTest {
         @DisplayName("id를 찾았다면")
         class when_found_task {
 
+            Task task;
+
+            @BeforeEach
+            void setUp() {
+                task = new Task(ID, TITLE_TEST_VALUE);
+                taskService.create(task);
+            }
+
             @Test
             @DisplayName("할일 목록을 반환합니다.")
             void detail() {
-                Task task = new Task(ID, TITLE_TEST_VALUE);
-                taskService.create(task);
+
                 assertThat(taskService.detail(ID).equals(task)).isTrue();
             }
         }
@@ -136,7 +146,6 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException 예외를 발생시킵니다.")
             void update() {
-
                 assertThatThrownBy(() -> taskService.update(NOT_EXIST_ID, change)).isInstanceOf(TaskNotFoundException.class);
             }
         }
