@@ -29,7 +29,7 @@ public class Task {
         return this.title;
     }
 
-    public boolean checkMyId(long id) {
+    public boolean isMyId(long id) {
         return Long.compare(this.id, id) == 0 ? true : false;
     }
 
