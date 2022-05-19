@@ -34,7 +34,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본적으로 생성된 Task 가 하나만 존재한다면, list 메서드로 조회시 Task 의 갯수는 1개이다.")
+    @DisplayName("만약 Task 가 하나만 존재한다면, list 메서드로 조회시 Task 의 갯수는 1개이다.")
     void list() {
         final List<Task> list = taskController.list();
 
