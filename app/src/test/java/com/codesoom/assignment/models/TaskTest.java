@@ -1,6 +1,8 @@
 package com.codesoom.assignment.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,5 +44,36 @@ class TaskTest {
         task.setTitle(taskTitle);
 
         assertThat(task.getTitle()).isEqualTo(taskTitle);
+    }
+
+    @DisplayName("Task Equals & HashCode 재정의 테스트")
+    @Test
+    void taskEqualsTask() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Task 1");
+
+        Task task2 = new Task();
+        task2.setId(2L);
+        task2.setTitle("Task 1");
+
+        Task task3 = new Task();
+        task3.setId(1L);
+        task3.setTitle("Task 3");
+
+        Task newTask = new Task();
+        newTask.setId(1L);
+        newTask.setTitle("Task 1");
+
+        Task otherTask = new Task();
+        otherTask.setId(2L);
+        otherTask.setTitle("Task 2");
+
+        assertThat(task.equals(newTask)).isTrue();
+        assertThat(task.equals(otherTask)).isFalse();
+        assertThat(task.equals("test")).isFalse();
+        assertThat(task.equals(task2)).isFalse();
+        assertThat(task.equals(task3)).isFalse();
+        assertThat(task.hashCode()).isEqualTo(newTask.hashCode());
     }
 }
