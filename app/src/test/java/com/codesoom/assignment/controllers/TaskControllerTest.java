@@ -71,7 +71,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("만약 Task 가 하나만 존재한다면, create 메서드로 생성시 Task 의 id 값이 1 증가한 상태로 Tasks 에 추가된다.")
     void create() {
-        final Long new_size = Task_Id + 1;
+        final int new_size = taskController.list().size() + 1;
         final Task task = new Task();
         task.setTitle(Task_Title_Two);
 
