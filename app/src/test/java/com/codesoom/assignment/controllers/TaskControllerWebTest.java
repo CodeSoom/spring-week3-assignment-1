@@ -100,13 +100,18 @@ class TaskControllerWebTest {
 
     @Test
     void updateTask() throws Exception {
+        String sourceTaskTitle = "Source Task Title";
         String updatedTaskTitle = "Updated Task Title";
+
+        Task sourceTask = new Task();
+        sourceTask.setId(1L);
+        sourceTask.setTitle(sourceTaskTitle);
 
         Task updatedTask = new Task();
         updatedTask.setId(1L);
         updatedTask.setTitle(updatedTaskTitle);
 
-        given(taskService.updateTask(1L, updatedTask)).willReturn(updatedTask);
+        given(taskService.updateTask(1L, sourceTask)).willReturn(updatedTask);
 
         mockMvc.perform(put("/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)

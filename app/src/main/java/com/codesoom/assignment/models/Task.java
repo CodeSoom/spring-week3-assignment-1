@@ -32,11 +32,11 @@ public class Task {
             return false;
         }
         Task task = (Task) o;
-        return Objects.equal(id, task.id) && Objects.equal(title, task.title);
+        return Objects.equal(id, task.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, title);
+        return Objects.hashCode(id);
     }
 }

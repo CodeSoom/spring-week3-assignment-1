@@ -73,7 +73,6 @@ class TaskTest {
         assertThat(task.equals(otherTask)).isFalse();
         assertThat(task.equals("test")).isFalse();
         assertThat(task.equals(task2)).isFalse();
-        assertThat(task.equals(task3)).isFalse();
         assertThat(task.hashCode()).isEqualTo(newTask.hashCode());
     }
 }
