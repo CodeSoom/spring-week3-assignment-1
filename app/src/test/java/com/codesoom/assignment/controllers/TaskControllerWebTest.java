@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.LinkedList;
@@ -128,6 +129,7 @@ class TaskControllerWebTest {
                 String content = objectMapper.writeValueAsString(task);
 
                 mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
                         .andExpect(status().isOk());
             }
@@ -139,14 +141,24 @@ class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
-                given(service.updateTask(TASK_ID, task))
+                final Task newTask = new Task();
+                newTask.setTitle(TASK_TITLE_UPDATED);
+                task.setTitle(TASK_TITLE_UPDATED);
+
+                given(service.updateTask(TASK_ID_NOT_EXISTING, newTask))
                         .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
             }
 
             @Test
             @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
             void it_responds_with_404() throws Exception {
-                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                Task task = new Task();
+                task.setTitle(TASK_TITLE_UPDATED);
+                String content = objectMapper.writeValueAsString(task);
+
+                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
                         .andExpect(status().isNotFound());
             }
 
@@ -177,6 +189,7 @@ class TaskControllerWebTest {
                 String content = objectMapper.writeValueAsString(task);
 
                 mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
                         .andExpect(status().isOk());
             }
@@ -187,15 +200,23 @@ class TaskControllerWebTest {
         class Context_without_existing_task {
             @BeforeEach
             void setUp() {
-                final Task task = tasks.get(FIRST);
-                given(service.updateTask(TASK_ID, task))
+                final Task newTask = new Task();
+                newTask.setTitle(TASK_TITLE_UPDATED);
+
+                given(service.updateTask(TASK_ID_NOT_EXISTING, newTask))
                         .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
             }
 
             @Test
             @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
             void it_responds_with_404() throws Exception {
-                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                Task task = new Task();
+                task.setTitle(TASK_TITLE_UPDATED);
+                String content = objectMapper.writeValueAsString(task);
+
+                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
                         .andExpect(status().isNotFound());
             }
 
