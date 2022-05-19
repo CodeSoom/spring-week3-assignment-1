@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class TaskControllerTest {
 
+    private static final String title = "Task 1";
+    private Task task;
     private TaskController taskController;
     private TaskService taskService;
 
@@ -19,6 +21,9 @@ class TaskControllerTest {
     void setUp() {
         taskService = new TaskService();
         taskController = new TaskController(taskService);
+
+        task = new Task();
+        task.setTitle(title);
     }
 
     @DisplayName("할일 목록이 비었을 때 빈 리스트 반환 테스트")
@@ -39,9 +44,6 @@ class TaskControllerTest {
     @DisplayName("유효한 `id`로 할일 가져오기 테스트")
     @Test
     void taskWithValidId() {
-        Task task = new Task();
-        task.setTitle("Task 1");
-
         taskService.createTask(task);
 
         assertThat(taskController.detail(1L).getTitle()).isEqualTo("Task 1");
@@ -50,9 +52,6 @@ class TaskControllerTest {
     @DisplayName("유효하지 않은 `id`로 할일 가져오기 테스트")
     @Test
     void taskWithInValidId() {
-        Task task = new Task();
-        task.setTitle("Task 1");
-
         taskService.createTask(task);
 
         assertThatThrownBy(() -> taskController.detail(100L).getTitle()).isInstanceOf(TaskNotFoundException.class);
@@ -61,10 +60,6 @@ class TaskControllerTest {
     @DisplayName("할 일 만든 후 생성된 결과 리턴")
     @Test
     void createTaskReturnResult() {
-        String title = "Task 1";
-        Task task = new Task();
-        task.setTitle(title);
-
         Task resultTask = taskController.create(task);
 
         assertThat(resultTask.getId()).isEqualTo(1L);
@@ -74,12 +69,9 @@ class TaskControllerTest {
     @DisplayName("기존에 생성된 할 일의 제목 수정 후 수정된 결과 리턴 : Update 이용")
     @Test
     void updateTaskReturnResult() {
-        String title = "Task 1";
+
         String newTitle = "New " + title;
-        Task task = new Task();
-        task.setTitle(title);
         Task resultTask = taskService.createTask(task);
-        ;
         resultTask.setTitle(newTitle);
 
         Task updateResultTask = taskController.update(resultTask.getId(), resultTask);
@@ -90,12 +82,8 @@ class TaskControllerTest {
     @DisplayName("기존에 생성된 할 일의 제목 수정 후 수정된 결과 리턴 : Patch 이용")
     @Test
     void patchTaskReturnResult() {
-        String title = "Task 1";
         String newTitle = "New " + title;
-        Task task = new Task();
-        task.setTitle(title);
         Task resultTask = taskService.createTask(task);
-        ;
         resultTask.setTitle(newTitle);
 
         Task updateResultTask = taskController.patch(resultTask.getId(), resultTask);
@@ -106,9 +94,6 @@ class TaskControllerTest {
     @DisplayName("할일 목록에서 `id`로 삭제")
     @Test
     void deleteTask() {
-        String title = "Task 1";
-        Task task = new Task();
-        task.setTitle(title);
         Task resultTask = taskService.createTask(task);
 
         int originalSize = taskService.getTasks().size();
