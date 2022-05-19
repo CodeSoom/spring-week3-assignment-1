@@ -10,7 +10,7 @@ class HelloControllerTest {
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class sayHello_메서드는 {
-        static final String Hello_Friend = "Hello, Friend!";
+        static final String HELLO_FRIEND = "Hello, Friend!";
 
         private HelloController helloController;
 
@@ -22,7 +22,7 @@ class HelloControllerTest {
         @Test
         @DisplayName("Hello, Friend! 를 리턴한다.")
         void Hello_Friend_를_리턴한다() {
-            assertThat(helloController.sayHello()).isEqualTo(Hello_Friend);
+            assertThat(helloController.sayHello()).isEqualTo(HELLO_FRIEND);
         }
     }
 }

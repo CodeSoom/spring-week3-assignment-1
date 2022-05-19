@@ -12,13 +12,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TaskController 클래스")
 class TaskControllerTest {
-    private static final Long Task_Id = 1L;
-    private static final String Task_Title_One = "test_One";
-    private static final String Task_Title_Two = "test_Two";
+    private static final Long TASK_ID = 1L;
+    private static final String TASK_TITLE_ONE = "test_One";
+    private static final String TASK_TITLE_TWO = "test_Two";
 
     private TaskService taskService;
     private TaskController taskController;
@@ -29,7 +28,7 @@ class TaskControllerTest {
         taskController = new TaskController(taskService);
 
         Task task = new Task();
-        task.setTitle(Task_Title_One);
+        task.setTitle(TASK_TITLE_ONE);
         taskController.create(task);
     }
 
@@ -52,7 +51,7 @@ class TaskControllerTest {
             void detail_valid_id() {
                 final String detail_Title = taskController.detail(1L).getTitle();
 
-                assertThat(detail_Title).isEqualTo(Task_Title_One);
+                assertThat(detail_Title).isEqualTo(TASK_TITLE_ONE);
             }
         }
 
@@ -73,7 +72,7 @@ class TaskControllerTest {
     void create() {
         final int new_size = taskController.list().size() + 1;
         final Task task = new Task();
-        task.setTitle(Task_Title_Two);
+        task.setTitle(TASK_TITLE_TWO);
 
         taskController.create(task);
         final int actual_size = taskController.list().size();
@@ -98,11 +97,11 @@ class TaskControllerTest {
             @DisplayName("전달한 Task 의 Title 은 같아야 한다.")
             void update_valid_id() {
                 Task task = new Task();
-                task.setTitle(Task_Title_Two);
-                taskController.update(Task_Id, task);
+                task.setTitle(TASK_TITLE_TWO);
+                taskController.update(TASK_ID, task);
 
-                Task new_task = taskController.detail(Task_Id);
-                assertThat(new_task.getTitle()).isEqualTo(Task_Title_Two);
+                Task new_task = taskController.detail(TASK_ID);
+                assertThat(new_task.getTitle()).isEqualTo(TASK_TITLE_TWO);
             }
         }
 
@@ -122,7 +121,7 @@ class TaskControllerTest {
     @DisplayName("Delete 메서드는 클라이언트가 요청한 Task 의 id 를 삭제한다.")
     void delete() {
         int old_size = taskController.list().size();
-        taskController.delete(Task_Id);
+        taskController.delete(TASK_ID);
         int new_size = taskController.list().size();
 
         assertThat(old_size - new_size).isEqualTo(1);
