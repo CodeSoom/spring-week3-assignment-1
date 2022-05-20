@@ -31,6 +31,10 @@ public class TaskDto {
         this.title = title;
     }
 
+    public static TaskDto fromTask(Task task) {
+        return new TaskDto(task.id(), task.currentTitle());
+    }
+
     public Task toTask() {
         return new Task(this.id, this.title);
     }

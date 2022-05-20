@@ -1,7 +1,5 @@
 package com.codesoom.assignment.domain;
 
-import com.codesoom.assignment.dto.TaskDto;
-
 import java.util.Objects;
 
 public class Task {
@@ -27,16 +25,16 @@ public class Task {
         return this;
     }
 
+    public Long id() {
+        return this.id;
+    }
+
     public String currentTitle() {
         return this.title;
     }
 
     public boolean isMyId(long id) {
         return Long.compare(this.id, id) == 0 ? true : false;
-    }
-
-    public TaskDto toTaskDto() {
-        return new TaskDto(this.id, this.title);
     }
 
     @Override
