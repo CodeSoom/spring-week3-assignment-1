@@ -24,11 +24,8 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        final Task task = new Task();
-        task.setTitle(TASK_TITLE);
-
         service = new TaskService();
-        service.createTask(task);
+        service.createTask(new Task(TASK_TITLE));
     }
 
     @Nested
