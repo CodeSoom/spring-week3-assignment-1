@@ -24,7 +24,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("크기가 0인 TaskResponse 리스트를 반환한다")
             void 크기가_0인_TaskResponse_리스트를_반환한다() {
                 assertThat(taskService().getTasks()).hasSize(0);
             }
@@ -39,7 +38,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("크기가 1인 TaskResponse 리스트를 반환한다")
             void 크기가_1인_TaskResponse_리스트를_반환한다() {
                 assertThat(taskService().getTasks()).hasSize(1);
             }
@@ -60,7 +58,6 @@ class TaskServiceTest {
             Long id = 1L;
 
             @Test
-            @DisplayName("id가 1인 TaskResponse 객체를 반환한다")
             void id가_1인_TaskResponse_객체를_반환한다() {
                 assertThat(taskService.getTask(id).getId()).isEqualTo(1L);
             }
@@ -72,7 +69,6 @@ class TaskServiceTest {
             Long id = 100L;
 
             @Test
-            @DisplayName("NotFoundException 예외를 발생시킨다")
             void NotFoundException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.getTask(id))
                         .isInstanceOf(NotFoundException.class)
@@ -95,7 +91,6 @@ class TaskServiceTest {
             Long id = 1L;
 
             @Test
-            @DisplayName("id가 1인 Task 객체를 반환한다")
             void id가_1인_Task_객체를_반환한다() {
                 assertThat(taskService.findTask(id).getId()).isEqualTo(1L);
             }
@@ -107,7 +102,6 @@ class TaskServiceTest {
             Long id = 100L;
 
             @Test
-            @DisplayName("NotFoundException 예외를 발생시킨다")
             void NotFoundException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.findTask(id))
                         .isInstanceOf(NotFoundException.class)
@@ -130,7 +124,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("BadRequestException 예외를 발생시킨다")
             void BadRequestException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.addTask(taskRequest()))
                         .isInstanceOf(BadRequestException.class)
@@ -146,7 +139,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("title이 과제하기인 TaskResponse를 반환한다")
             void title이_과제하기인_TaskResponse를_반환한다() {
                 assertThat(taskService.addTask(taskRequest()).getTitle()).isEqualTo("과제하기");
             }
@@ -170,7 +162,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("NotFoundException 예외를 발생시킨다")
             void NotFoundException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.updateTask(id, taskRequest()))
                         .isInstanceOf(NotFoundException.class)
@@ -187,7 +178,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("BadRequestException 예외를 발생시킨다")
             void BadRequestException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.updateTask(id, taskRequest()))
                         .isInstanceOf(BadRequestException.class)
@@ -204,7 +194,6 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("해당 Task의 title을 밥먹기로 수정 후 TaskResponse를 반환한다")
             void 해당_Task의_title을_밥먹기로_수정_후_TaskResponse를_반환한다() {
                 assertThat(taskService.findTask(id).getTitle()).as("update 전 Task의 title은 과제하기이다").isEqualTo("과제하기");
                 assertThat(taskService.updateTask(id, taskRequest()).getTitle()).as("반환되는 TaskResponse의 title은 밥먹기이다").isEqualTo("밥먹기");
@@ -227,7 +216,6 @@ class TaskServiceTest {
             Long id = 100L;
 
             @Test
-            @DisplayName("NotFoundException 예외를 발생시킨다")
             void NotFoundException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> taskService.deleteTask(id))
                         .isInstanceOf(NotFoundException.class)
@@ -241,7 +229,6 @@ class TaskServiceTest {
             Long id = 1L;
 
             @Test
-            @DisplayName("해당 Task를 삭제한다")
             void 해당_Task를_삭제한다() {
                 assertThat(taskService.getTasks()).as("delete 전 Task 리스트의 크기는 1이다").hasSize(1);
                 taskService.deleteTask(id);
@@ -253,7 +240,6 @@ class TaskServiceTest {
     @Nested
     class generateId_메서드는 {
         @Test
-        @DisplayName("id의_값을_1_증가시킨다")
         void newId의_값을_1_증가시킨다() throws NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException {
             TaskService taskService = new TaskService();
             Method method = taskService.getClass().getDeclaredMethod("generateId", null);

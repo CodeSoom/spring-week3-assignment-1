@@ -17,7 +17,6 @@ class HelloControllerTest {
         }
 
         @Test
-        @DisplayName("Hello, world!라는 문자열을 반환한다")
         void Hello_world라는_문자열을_반환한다() {
             assertThat(helloController.sayHello()).isEqualTo("Hello, world!");
         }

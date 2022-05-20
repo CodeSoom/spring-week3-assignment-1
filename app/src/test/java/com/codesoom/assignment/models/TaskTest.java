@@ -15,7 +15,6 @@ class TaskTest {
             String title = "";
 
             @Test
-            @DisplayName("BadRequestException 예외를 발생시킨다")
             void BadRequestException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> new Task(title));
             }
@@ -33,7 +32,6 @@ class TaskTest {
             }
 
             @Test
-            @DisplayName("id의 값으로 1을 반환한다")
             void id의_값으로_1을_반환한다() {
                 assertThat(task().getId()).isEqualTo(1L);
             }
@@ -52,7 +50,6 @@ class TaskTest {
             Long id = 2L;
 
             @Test
-            @DisplayName("Task의 id값을 2로 설정한다")
             void Task의_id값을_2로_설정한다() {
                 Task task = task();
                 task.setId(id);
@@ -65,7 +62,6 @@ class TaskTest {
             Long id = 5L;
 
             @Test
-            @DisplayName("Task의 id값을 5로 설정한다")
             void Task의_id값을_5로_설정한다() {
                 Task task = task();
                 task.setId(id);
@@ -84,7 +80,6 @@ class TaskTest {
             }
 
             @Test
-            @DisplayName("title의 값으로 밥먹기를 반환한다")
             void title의_값으로_밥먹기를_반환한다() {
                 assertThat(task().getTitle()).isEqualTo("밥먹기");
             }
@@ -103,7 +98,6 @@ class TaskTest {
             String newTitle = "노래하기";
 
             @Test
-            @DisplayName("기존 Task의 title을 노래하기로 설정한다")
             void 기존_Task의_title을_노래하기로_설정한다() {
                 Task task = task();
                 task.updateTitle(newTitle);
@@ -117,7 +111,6 @@ class TaskTest {
             String newTitle = "밥먹기";
 
             @Test
-            @DisplayName("기존 Task의 title을 밥먹기로 설정한다")
             void 기존_Task의_title을_밥먹기로_설정한다() {
                 Task task = task();
                 task.updateTitle(newTitle);
@@ -137,7 +130,6 @@ class TaskTest {
             }
 
             @Test
-            @DisplayName("BadRequestException 예외를 발생시킨다")
             void BadRequestException_예외를_발생시킨다() {
                 assertThatThrownBy(() -> task().validateTitle(task().getTitle()));
             }
