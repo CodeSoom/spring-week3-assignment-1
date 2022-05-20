@@ -230,4 +230,19 @@ class TaskControllerWebTest {
     private String taskToJson(Task task) throws JsonProcessingException {
         return objectMapper.writeValueAsString(task);
     }
+
+    @Nested
+    @DisplayName("create 메소드는")
+    class Describe_create {
+            @Test
+            @DisplayName("HTTP Status Code 201 CREATED 응답한다")
+            void it_responds_with_201() throws Exception {
+                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
+
+                mockMvc.perform(post("/tasks")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                        .andExpect(status().isCreated());
+            }
+        }
 }
