@@ -222,10 +222,6 @@ class TaskControllerWebTest {
         }
     }
 
-    private String taskToJson(Task task) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(task);
-    }
-
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
@@ -237,5 +233,9 @@ class TaskControllerWebTest {
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated());
         }
+    }
+
+    private String taskToJson(Task task) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(task);
     }
 }
