@@ -17,7 +17,7 @@ class TaskServiceTest {
     private TaskService taskService;
     private final Long ID = 1L;
     private final Long NOT_EXIST_ID = 100L;
-    private final String TITLE_TEST_VALUE = "TEST";
+    private final String TITLE = "TEST";
     private final String MODIFY_POSTFIX = "_MODIFY";
 
     @BeforeEach
@@ -35,7 +35,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task task = new Task(ID, TITLE_TEST_VALUE);
+                Task task = new Task(ID, TITLE);
                 taskService.create(task);
             }
 
@@ -71,7 +71,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task = new Task(ID, TITLE_TEST_VALUE);
+                task = new Task(ID, TITLE);
                 taskService.create(task);
             }
 
@@ -106,7 +106,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("title이 동일한 task가 생성됩니다.")
             void create() {
-                Task task = new Task(ID, TITLE_TEST_VALUE);
+                Task task = new Task(ID, TITLE);
 
                 assertThat(taskService.create(task).currentTitle()).isEqualTo(task.currentTitle());
                 assertThat(taskService.list().size()).isEqualTo(1);
@@ -134,10 +134,10 @@ class TaskServiceTest {
 
         @BeforeEach
         void setUp() {
-            Task task = new Task(ID, TITLE_TEST_VALUE);
+            Task task = new Task(ID, TITLE);
             taskService.create(task);
 
-            change = new Task(null, TITLE_TEST_VALUE + MODIFY_POSTFIX);
+            change = new Task(null, TITLE + MODIFY_POSTFIX);
         }
 
         @Nested
@@ -182,7 +182,7 @@ class TaskServiceTest {
 
         @BeforeEach
         void setUp() {
-            Task task = new Task(ID, TITLE_TEST_VALUE);
+            Task task = new Task(ID, TITLE);
             taskService.create(task);
         }
 
