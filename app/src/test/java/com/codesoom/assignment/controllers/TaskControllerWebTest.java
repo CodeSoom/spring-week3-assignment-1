@@ -245,6 +245,64 @@ public class TaskControllerWebTest {
         }
     }
 
+    @Nested
+    @DisplayName("PATCH /tasks/{id}")
+    class Describe_patch_task_by_id {
+
+        @Nested
+        @DisplayName("id가 존재하면")
+        class Context_when_id_does_exist{
+            private static final String TASK_UPDATE_TITLE = "babo1";
+
+            @BeforeEach
+            void setUp() {
+                task.setTitle(TASK_UPDATE_TITLE);
+                given(taskService.updateTask(eq(VALID_TASK_ID), any())).willReturn(task);
+            }
+
+            @Test
+            @DisplayName("변경된 task를 응답한다.")
+            void it_responses_updated_task() throws Exception {
+                mockMvc.perform(patch("/tasks/{id}", VALID_TASK_ID)
+                                .content(taskToString(task)) //
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.title").value(TASK_UPDATE_TITLE))
+                        .andExpect(jsonPath("$.id").value(VALID_TASK_ID));
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 존재하지 않으면")
+        class Context_when_id_does_not_exist {
+            @BeforeEach
+            void setUp() {
+                given(taskService.updateTask(eq(INVALID_TASK_ID), any()))
+                        .willThrow(new TaskNotFoundException(INVALID_TASK_ID));
+            }
+
+            @Test
+            @DisplayName("404 status를 응답한다.")
+            void it_responses_404_status() throws Exception {
+                mockMvc.perform(patch("/tasks/{id}", INVALID_TASK_ID)
+                                .content(taskToString(task))
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("id가 숫자가 아니면")
+        class Context_when_id_is_not_number {
+            @Test
+            @DisplayName("400 status를 응답한다.")
+            void it_responses_400_status() throws Exception {
+                mockMvc.perform(patch("/tasks/asd"))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+    }
+
     private String taskToString(Task task) throws JsonProcessingException {
         return objectMapper.writeValueAsString(task);
     }
