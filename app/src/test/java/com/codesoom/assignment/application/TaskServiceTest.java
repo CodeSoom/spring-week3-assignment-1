@@ -35,7 +35,7 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Test
-        @DisplayName("Collection 타입의 형태로 값을 반환한다")
+        @DisplayName("Collection 타입으로 값을 반환한다")
         void it_returns_list() {
             final List<Task> actual = service.getTasks();
 
@@ -90,21 +90,24 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 존재하는 Task를 수정한다면")
         class Context_with_existing_task {
+            Task subject() {
+                final Task task = new Task(TASK_TITLE_UPDATED);
+                return service.updateTask(TASK_ID, task);
+            }
+
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                final Task task = new Task(TASK_TITLE_UPDATED);
+                final Task actual = subject();
 
-                final Task actual = service.updateTask(TASK_ID, task);
                 assertThat(actual.getId()).isEqualTo(TASK_ID);
             }
 
             @Test
             @DisplayName("매개변수로 전달한 값이 반영된 Task를 반환한다")
             void it_returns_task_reflecting_params() {
-                final Task task = new Task(TASK_TITLE_UPDATED);
+                final Task actual = subject();
 
-                final Task actual = service.updateTask(TASK_ID, task);
                 assertThat(actual.getTitle()).isEqualTo(TASK_TITLE_UPDATED);
             }
         }
