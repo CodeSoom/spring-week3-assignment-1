@@ -40,9 +40,7 @@ class TaskControllerWebTest {
 
     @BeforeEach
     void setUp() {
-        Task task = new Task();
-        task.setId(TASK_ID);
-        task.setTitle(TASK_TITLE);
+        Task task = new Task(TASK_ID, TASK_TITLE);
         tasks.add(task);
     }
 
@@ -115,19 +113,15 @@ class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
-                final Task newTask = new Task();
-                newTask.setTitle(TASK_TITLE_UPDATED);
                 task.setTitle(TASK_TITLE_UPDATED);
 
-                given(service.updateTask(TASK_ID, newTask)).willReturn(task);
+                given(service.updateTask(TASK_ID, new Task(TASK_TITLE_UPDATED))).willReturn(task);
             }
 
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
-                String content = objectMapper.writeValueAsString(task);
+                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
 
                 mockMvc.perform(put("/tasks/" + TASK_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -174,19 +168,15 @@ class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
-                final Task newTask = new Task();
-                newTask.setTitle(TASK_TITLE_UPDATED);
                 task.setTitle(TASK_TITLE_UPDATED);
 
-                given(service.updateTask(TASK_ID, newTask)).willReturn(task);
+                given(service.updateTask(TASK_ID,  new Task(TASK_TITLE_UPDATED))).willReturn(task);
             }
 
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
-                String content = objectMapper.writeValueAsString(task);
+                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
 
                 mockMvc.perform(patch("/tasks/" + TASK_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -195,31 +185,26 @@ class TaskControllerWebTest {
             }
         }
 
-        @Nested
-        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
-        class Context_without_existing_task {
-            @BeforeEach
-            void setUp() {
-                final Task newTask = new Task();
-                newTask.setTitle(TASK_TITLE_UPDATED);
-
-                given(service.updateTask(TASK_ID_NOT_EXISTING, newTask))
-                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
-            }
-
+//        @Nested
+//        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
+//        class Context_without_existing_task {
+//            @BeforeEach
+//            void setUp() {
+//                given(service.updateTask(TASK_ID_NOT_EXISTING, new Task(TASK_TITLE_UPDATED)))
+//                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+//            }
+//
 //            @Test
 //            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
 //            void it_responds_with_404() throws Exception {
-//                Task task = new Task();
-//                task.setTitle(TASK_TITLE_UPDATED);
-//                String content = objectMapper.writeValueAsString(task);
+//                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
 //
 //                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING)
 //                                .contentType(MediaType.APPLICATION_JSON)
 //                                .content(content))
 //                        .andExpect(status().isNotFound());
 //            }
-        }
+//        }
     }
 
     @Nested
