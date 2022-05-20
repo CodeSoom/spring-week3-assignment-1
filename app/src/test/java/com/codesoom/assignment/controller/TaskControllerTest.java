@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import static org.mockito.BDDMockito.given;
@@ -133,6 +134,15 @@ class TaskControllerTest {
     @DisplayName("PUT /tasks/{id}")
     class update {
 
+        private String createContent(Long id, String title) throws IOException {
+            TaskDto taskDto = new TaskDto(id, title);
+            ObjectMapper objectMapper = new ObjectMapper();
+            OutputStream out = new ByteArrayOutputStream();
+            objectMapper.writeValue(out, taskDto);
+
+            return out.toString();
+        }
+
         @Nested
         @DisplayName("유효한 id와 task를 입력하면")
         class when_update_with_id_and_task {
@@ -146,14 +156,16 @@ class TaskControllerTest {
             @Test
             @DisplayName("200 OK를 반환합니다.")
             void update() throws Exception {
-                TaskDto taskDto = new TaskDto(ID, TITLE);
-                ObjectMapper objectMapper = new ObjectMapper();
-                OutputStream out = new ByteArrayOutputStream();
-                objectMapper.writeValue(out, taskDto);
+                String content = createContent(ID, TITLE);
 
                 mockMvc.perform(put("/tasks/" + ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(out.toString()))
+                        .content(content))
+                        .andExpect(status().isOk());
+
+                mockMvc.perform(patch("/tasks/" + ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
                         .andExpect(status().isOk());
             }
         }
@@ -170,14 +182,16 @@ class TaskControllerTest {
             @Test
             @DisplayName("404 NOT FOUND 를 반환합니다.")
             void update() throws Exception {
-                TaskDto taskDto = new TaskDto(NOT_EXIST_ID, TITLE);
-                ObjectMapper objectMapper = new ObjectMapper();
-                OutputStream out = new ByteArrayOutputStream();
-                objectMapper.writeValue(out, taskDto);
+                String content = createContent(NOT_EXIST_ID, TITLE);
 
                 mockMvc.perform(put("/tasks/" + NOT_EXIST_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(out.toString()))
+                                .content(content))
+                        .andExpect(status().isNotFound());
+
+                mockMvc.perform(patch("/tasks/" + NOT_EXIST_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
                         .andExpect(status().isNotFound());
             }
         }
@@ -194,15 +208,16 @@ class TaskControllerTest {
             @Test
             @DisplayName("400 BAD REQUEST 를 반환합니다.")
             void update() throws Exception {
-
-                TaskDto taskDto = new TaskDto(ID, "");
-                ObjectMapper objectMapper = new ObjectMapper();
-                OutputStream out = new ByteArrayOutputStream();
-                objectMapper.writeValue(out, taskDto);
+                String content = createContent(ID, "");
 
                 mockMvc.perform(put("/tasks/" + ID)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(out.toString()))
+                                .content(content))
+                        .andExpect(status().isBadRequest());
+
+                mockMvc.perform(patch("/tasks/" + ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
                         .andExpect(status().isBadRequest());
             }
         }
