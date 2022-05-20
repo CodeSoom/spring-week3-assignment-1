@@ -62,7 +62,7 @@ class TaskControllerWebTest {
         @Test
         @DisplayName("HTTP Status Code 200 OK 응답한다")
         void it_responds_with_200_ok() throws Exception {
-            mockMvc.perform(get(DEFAULT_PATH))
+            mockMvc.perform(get("/tasks"))
                     .andExpect(status().isOk());
         }
     }
@@ -82,7 +82,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                mockMvc.perform(get(DEFAULT_PATH + "/" + TASK_ID))
+                mockMvc.perform(get("/tasks/" + TASK_ID))
                         .andExpect(status().isOk());
             }
         }
@@ -99,7 +99,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
             void it_responds_with_404() throws Exception {
-                mockMvc.perform(get(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                mockMvc.perform(get("/tasks/" + TASK_ID_NOT_EXISTING))
                         .andExpect(status().isNotFound());
             }
 
@@ -129,7 +129,7 @@ class TaskControllerWebTest {
                 task.setTitle(TASK_TITLE_UPDATED);
                 String content = objectMapper.writeValueAsString(task);
 
-                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID)
+                mockMvc.perform(put("/tasks/" + TASK_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
                         .andExpect(status().isOk());
@@ -188,7 +188,7 @@ class TaskControllerWebTest {
                 task.setTitle(TASK_TITLE_UPDATED);
                 String content = objectMapper.writeValueAsString(task);
 
-                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID)
+                mockMvc.perform(patch("/tasks/" + TASK_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
                         .andExpect(status().isOk());
@@ -237,7 +237,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 204 NO CONTENT 응답한다")
             void it_responds_with_204() throws Exception {
-                mockMvc.perform(delete(DEFAULT_PATH + "/" + TASK_ID))
+                mockMvc.perform(delete("/tasks/" + TASK_ID))
                         .andExpect(status().isNoContent());
             }
         }
@@ -254,7 +254,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
             void it_responds_with_404() throws Exception {
-                mockMvc.perform(delete(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING))
+                mockMvc.perform(delete("/tasks/" + TASK_ID_NOT_EXISTING))
                         .andExpect(status().isNotFound());
             }
 
