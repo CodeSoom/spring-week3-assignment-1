@@ -14,14 +14,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService 클래스")
+@DisplayName("TaskService 클래스의")
 class TaskServiceTest {
     private TaskService service;
     private final String TASK_TITLE = "Test Task";
     private final String TASK_TITLE_UPDATED = "Updated Task";
     private final Long TASK_ID = 1L;
     private final Long TASK_ID_NOT_EXISTING = 0L;
-    private final int TASKS_SIZE = 1;
 
     @BeforeEach
     void setUp() {
