@@ -87,40 +87,38 @@ class TaskServiceTest {
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
-        @Nested
-        @DisplayName("만약 존재하는 Task를 수정한다면")
-        class Context_with_existing_task {
-            Task subject() {
-                final Task task = new Task(TASK_TITLE_UPDATED);
+        abstract class ContextUpdating {
+            final Task task = new Task(TASK_TITLE_UPDATED);
+            Task givenExistingTask(){
                 return service.updateTask(TASK_ID, task);
             }
-
+            void givenNotExistingTask(){
+                service.updateTask(TASK_ID_NOT_EXISTING, task);
+            }
+        }
+        @Nested
+        @DisplayName("만약 존재하는 Task를 수정한다면")
+        class Context_with_existing_task extends ContextUpdating {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                final Task actual = subject();
-
-                assertThat(actual.getId()).isEqualTo(TASK_ID);
+                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
             }
 
             @Test
             @DisplayName("매개변수로 전달한 값이 반영된 Task를 반환한다")
             void it_returns_task_reflecting_params() {
-                final Task actual = subject();
-
-                assertThat(actual.getTitle()).isEqualTo(TASK_TITLE_UPDATED);
+                assertThat(givenExistingTask().getTitle()).isEqualTo(TASK_TITLE_UPDATED);
             }
         }
 
         @Nested
         @DisplayName("만약 존재하지 않는 Task를 수정한다면")
-        class Context_with_not_existing_task {
+        class Context_with_not_existing_task extends ContextUpdating {
             @Test
             @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                final Task task = new Task(TASK_TITLE_UPDATED);
-
-                assertThatThrownBy(() -> service.updateTask(TASK_ID_NOT_EXISTING, task))
+                assertThatThrownBy(this::givenNotExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
