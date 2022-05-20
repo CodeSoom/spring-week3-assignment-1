@@ -47,16 +47,7 @@ class TaskServiceTest {
     @DisplayName("createTasks 메소드는")
     class Describe_createTasks {
         @Test
-        @DisplayName("Task 타입의 형태로 값을 반환한다")
-        void it_returns_id_not_null() {
-            final Task task = new Task();
-
-            final Task actual = service.createTask(task);
-            assertThat(actual).isInstanceOf(Task.class);
-        }
-
-        @Test
-        @DisplayName("매개변수로 전달한 값이 모두 반영되어 생성된 Task를 반환한다")
+        @DisplayName("매개변수로 전달한 값이 반영된 Task를 반환한다")
         void it_returns_task_reflecting_params() {
             final Task task = new Task(TASK_TITLE_UPDATED);
 
@@ -72,17 +63,10 @@ class TaskServiceTest {
         @DisplayName("만약 존재하는 Task를 상세조회한다면")
         class Context_with_existing_task {
             @Test
-            @DisplayName("매개변수로 전달한 id와 동일한 id를 가지고 있는 Task를 반환한다")
+            @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
                 final Task actual = service.getTask(TASK_ID);
                 assertThat(actual.getId()).isEqualTo(TASK_ID);
-            }
-
-            @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 title과 기본 생성된 Task의 title은 동일하다")
-            void it_returns_task_having_title_equal_to_default_task_title() {
-                final String actual = service.getTask(TASK_ID).getTitle();
-                assertThat(actual).isEqualTo(TASK_TITLE);
             }
         }
 
