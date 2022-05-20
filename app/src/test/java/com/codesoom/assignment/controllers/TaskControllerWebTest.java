@@ -206,9 +206,7 @@ public class TaskControllerWebTest {
                         .willReturn(task);
             }
 
-            @Test
-            @DisplayName("업데이트한 task와 상태코드 200을 응답한다")
-            void update() throws Exception {
+            void subject() throws Exception {
                 mockMvc.perform(put("/tasks/{id}", EXISTING_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -216,6 +214,12 @@ public class TaskControllerWebTest {
                         .andExpect(jsonPath("id").exists())
                         .andExpect(jsonPath("title").exists())
                         .andExpect(status().isOk());
+            }
+
+            @Test
+            @DisplayName("업데이트한 task와 상태코드 200을 응답한다")
+            void update() throws Exception {
+                subject();
             }
         }
 
