@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,13 +56,12 @@ class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("반환한 Task의 title과 매개변수로 전달한 Task의 title은 동일하다")
-        void it_returns_task_having_title_equal_to_default_task_title() {
-            final Task task = new Task();
-            task.setTitle(TASK_TITLE_UPDATED);
+        @DisplayName("매개변수로 전달한 값이 모두 반영되어 생성된 Task를 반환한다")
+        void it_returns_task_reflecting_params() {
+            final Task task = new Task(TASK_TITLE_UPDATED);
 
-            final String actual = service.createTask(task).getTitle();
-            assertThat(actual).isEqualTo(TASK_TITLE_UPDATED);
+            final Task actual = service.createTask(task);
+            assertThat(actual.getTitle()).isEqualTo(TASK_TITLE_UPDATED);
         }
     }
 
