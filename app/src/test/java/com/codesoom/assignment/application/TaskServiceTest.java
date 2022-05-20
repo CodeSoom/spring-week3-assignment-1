@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService 클래스의")
+@DisplayName("TaskService 클래스 ")
 class TaskServiceTest {
     private TaskService service;
     private final String TASK_TITLE = "Test Task";
@@ -60,7 +60,7 @@ class TaskServiceTest {
                 return service.getTask(TASK_ID);
             }
 
-            void withoutNotExistingTask() {
+            void withoutExistingTask() {
                 service.getTask(TASK_ID_NOT_EXISTING);
             }
         }
@@ -79,9 +79,9 @@ class TaskServiceTest {
         @DisplayName("만약 존재하지 않는 Task를 조회한다면")
         class Context_with_not_existing_task extends ContextGetting {
             @Test
-            @DisplayName("TaskNotFoundException을 발생시킨다")
+            @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(this::withoutNotExistingTask)
+                assertThatThrownBy(this::withoutExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
@@ -140,7 +140,7 @@ class TaskServiceTest {
                 return service.deleteTask(TASK_ID);
             }
 
-            void withoutNotExistingTask() {
+            void withoutExistingTask() {
                 service.deleteTask(TASK_ID_NOT_EXISTING);
             }
         }
@@ -162,7 +162,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(this::withoutNotExistingTask)
+                assertThatThrownBy(this::withoutExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
