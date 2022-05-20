@@ -1,7 +1,9 @@
 package com.codesoom.assignment.controller;
 
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.domain.Task;
 import com.codesoom.assignment.dto.TaskDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +40,27 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto create(@RequestBody TaskDto taskDto) {
         return TaskDto.fromTask(taskService.create(taskDto.toTask()));
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TaskDto put(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+        return TaskDto.fromTask(update(id, taskDto.toTask()));
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TaskDto patch(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+        return TaskDto.fromTask(update(id, taskDto.toTask()));
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        taskService.delete(id);
+    }
+
+    private Task update(long id, Task task) {
+        return taskService.update(id, task);
     }
 }
