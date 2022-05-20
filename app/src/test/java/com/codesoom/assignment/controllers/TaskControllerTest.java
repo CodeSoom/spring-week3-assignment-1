@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
     private TaskController taskController;
+    private Task source;
 
     private static final String TASK_TITLE = "babo";
     private static final Long TASK_INVALID_ID = 123L;
@@ -23,12 +24,9 @@ class TaskControllerTest {
     void setUp() {
         TaskService taskService = new TaskService();
         taskController = new TaskController(taskService);
-    }
 
-    private Task givenSource(String title) {
-        Task source = new Task();
-        source.setTitle(title);
-        return source;
+        source = new Task();
+        source.setTitle(TASK_TITLE);
     }
 
     @Nested
@@ -42,7 +40,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                task = taskController.create(givenSource(TASK_TITLE));
+                task = taskController.create(source);
             }
 
             @Test
@@ -71,12 +69,6 @@ class TaskControllerTest {
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
-        private Task source;
-
-        @BeforeEach
-        void setUp() {
-            source = givenSource(TASK_TITLE);
-        }
 
         @Test
         @DisplayName("생성된 task를 반환한다")
@@ -100,7 +92,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(givenSource(TASK_TITLE));
+                Task task = taskController.create(source);
                 id = task.getId();
             }
 
@@ -143,7 +135,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(givenSource(TASK_TITLE));
+                Task task = taskController.create(source);
                 id = task.getId();
             }
 
@@ -179,13 +171,13 @@ class TaskControllerTest {
     @DisplayName("update 메소드는")
     class Describe_update {
         private Long id;
-        private Task source;
-
+        private Task sourceForUpdate;
         private static final String TASK_UPDATE_TITLE = "babo1";
 
         @BeforeEach
         void setUp() {
-            source = givenSource(TASK_UPDATE_TITLE);
+            sourceForUpdate = new Task();
+            sourceForUpdate.setTitle(TASK_UPDATE_TITLE);
         }
 
         @Nested
@@ -194,14 +186,14 @@ class TaskControllerTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(givenSource(TASK_TITLE));
+                Task task = taskController.create(source);
                 id = task.getId();
             }
 
             @Test
             @DisplayName("변경된 task를 반환한다.")
             void it_returns_updated_task() {
-                Task task = taskController.update(id, source);
+                Task task = taskController.update(id, sourceForUpdate);
 
                 assertThat(task.getTitle()).isEqualTo(TASK_UPDATE_TITLE);
             }
