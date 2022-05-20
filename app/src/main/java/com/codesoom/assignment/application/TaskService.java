@@ -31,9 +31,9 @@ public class TaskService {
             throw new TaskHasInvalidTitleException();
         }
 
-        Task created = Task.createNewTask(generateId(), task);
-        tasks.add(created);
-        return created;
+        Task createdTask = Task.createNewTask(generateId(), task);
+        tasks.add(createdTask);
+        return createdTask;
     }
 
     public Task update(Long id, Task task) {
@@ -42,10 +42,10 @@ public class TaskService {
             throw new TaskHasInvalidTitleException();
         }
 
-        Task found = findTaskById(id);
-        found.changeTitle(task);
+        Task foundTask = findTaskById(id);
+        foundTask.changeTitle(task);
 
-        return found;
+        return foundTask;
     }
 
     private Long generateId() {
@@ -61,7 +61,7 @@ public class TaskService {
     }
 
     public void delete(Long id) {
-        Task found = findTaskById(id);
-        tasks.remove(found);
+        Task foundTask = findTaskById(id);
+        tasks.remove(foundTask);
     }
 }
