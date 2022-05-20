@@ -59,25 +59,33 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
+        abstract class ContextGetting {
+            Task givenExistingTask() {
+                return service.getTask(TASK_ID);
+            }
+
+            void givenNotExistingTask() {
+                service.getTask(TASK_ID_NOT_EXISTING);
+            }
+        }
+
         @Nested
         @DisplayName("만약 존재하는 Task를 상세조회한다면")
-        class Context_with_existing_task {
+        class Context_with_existing_task extends ContextGetting {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                final Task actual = service.getTask(TASK_ID);
-
-                assertThat(actual.getId()).isEqualTo(TASK_ID);
+                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
             }
         }
 
         @Nested
         @DisplayName("만약 존재하지 않는 Task를 조회한다면")
-        class Context_with_not_existing_task {
+        class Context_with_not_existing_task extends ContextGetting {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(() -> service.getTask(TASK_ID_NOT_EXISTING))
+                assertThatThrownBy(this::givenNotExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
@@ -89,13 +97,16 @@ class TaskServiceTest {
     class Describe_updateTask {
         abstract class ContextUpdating {
             final Task task = new Task(TASK_TITLE_UPDATED);
-            Task givenExistingTask(){
+
+            Task givenExistingTask() {
                 return service.updateTask(TASK_ID, task);
             }
-            void givenNotExistingTask(){
+
+            void givenNotExistingTask() {
                 service.updateTask(TASK_ID_NOT_EXISTING, task);
             }
         }
+
         @Nested
         @DisplayName("만약 존재하는 Task를 수정한다면")
         class Context_with_existing_task extends ContextUpdating {
@@ -128,25 +139,36 @@ class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
+        abstract class ContextDeleting {
+            final Task task = new Task(TASK_TITLE_UPDATED);
+
+            Task givenExistingTask() {
+                return service.deleteTask(TASK_ID);
+            }
+
+            void givenNotExistingTask() {
+                service.deleteTask(TASK_ID_NOT_EXISTING);
+            }
+        }
+
         @Nested
         @DisplayName("만약 존재하는 Task를 삭제한다면")
-        class Context_with_existing_task {
+        class Context_with_existing_task extends ContextDeleting {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                final Task actual = service.deleteTask(TASK_ID);
-
-                assertThat(actual.getId()).isEqualTo(TASK_ID);
+                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
             }
         }
 
         @Nested
         @DisplayName("만약 존재하지 않는 Task를 삭제한다면")
-        class Context_with_not_existing_task {
+        class Context_with_not_existing_task extends ContextDeleting {
+
             @Test
             @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(() -> service.deleteTask(TASK_ID_NOT_EXISTING))
+                assertThatThrownBy(this::givenNotExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
