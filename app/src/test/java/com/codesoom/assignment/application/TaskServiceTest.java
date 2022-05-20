@@ -128,22 +128,22 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 삭제한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 삭제한다면")
+        class Context_with_existing_task {
             @Test
-            @DisplayName("삭제된 기본생성 Task를 조회할 때 Not Found Exception이 발생한다")
+            @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_throws_exception() {
-                service.deleteTask(TASK_ID);
-                assertThatThrownBy(() -> service.getTask(TASK_ID))
-                        .isInstanceOf(TaskNotFoundException.class);
+                final Task actual = service.deleteTask(TASK_ID);
+
+                assertThat(actual.getId()).isEqualTo(TASK_ID);
             }
         }
 
         @Nested
-        @DisplayName("만약 존재하지 않는 Task를 조회한다면")
+        @DisplayName("만약 존재하지 않는 Task를 삭제한다면")
         class Context_with_not_existing_task {
             @Test
-            @DisplayName("TaskNotFoundException을 발생시킨다")
+            @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
                 assertThatThrownBy(() -> service.deleteTask(TASK_ID_NOT_EXISTING))
                         .isInstanceOf(TaskNotFoundException.class);
