@@ -57,11 +57,24 @@
   - 입력 받은 id가 유효하지 않다면,
     - [x] TaskNotFoundException 예외를 발생 시킨다.
 ### Controller
-- [ ] GET
-- [ ] POST
-- [ ] PATCH
-- [ ] PUT
-- [ ] DELETE
+- GET
+  - /tasks/
+    - [x] 할일 목록을 조회하면, 200 OK를 반환한다.
+  - /tasks/{id}
+    - [x] 할일이 존재하면, 200 OK를 반환한다.
+    - [x] 할일이 존재하지 않으면, 404 NOT FOUND를 반환한다.
+- POST
+  - /tasks/
+    - [x] title을 입력하면, 201 CREATED를 반환한다.
+- PUT/PATCH
+  - /tasks/{id}
+    - [x] 유효한 id와 task를 입력하면, 200 OK를 반환한다.
+    - [x] id가 존재하지 않으면, 404 NOT FOUND를 반환한다.
+    - [x] title을 입력하지 않으면, 400 BAD REQUEST를 반환한다.
+- DELETE
+  - /tasks/{id}
+    - [x] id가 존재하면, 204 NO CONTENT를 반환한다.
+    - [x] id가 존재하지 않으면, 404 NOT FOUND를 반환한다.
 
 ## API 실행하기
 
