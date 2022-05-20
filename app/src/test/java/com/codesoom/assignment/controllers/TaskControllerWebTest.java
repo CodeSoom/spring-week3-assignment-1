@@ -63,8 +63,8 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("GET 요청은")
-    class Describe_GET {
+    @DisplayName("GET /tasks 요청은")
+    class Describe_GET_list {
 
         @Nested
         @DisplayName("path에 id가 없고 저장소에 task가 있다면")
@@ -112,6 +112,11 @@ public class TaskControllerWebTest {
                         .andExpect(status().isOk());
             }
         }
+    }
+
+    @Nested
+    @DisplayName("GET /tasks/{id} 요청은")
+    class Describe_GET_detail {
 
         @Nested
         @DisplayName("path에 id가 있고 저장소에 task가 있다면")
@@ -159,7 +164,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("POST 요청은")
+    @DisplayName("POST /tasks 요청은")
     class Describe_POST {
 
         @Nested
@@ -188,7 +193,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PUT 요청은")
+    @DisplayName("PUT /tasks/{id} 요청은")
     class Describe_PUT {
 
         @Nested
@@ -240,7 +245,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PATCH 요청은")
+    @DisplayName("PATCH /tasks/{id} 요청은")
     class Describe_PATCH {
 
         @Nested
@@ -292,7 +297,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("DELETE 요청은")
+    @DisplayName("DELETE /tasks/{id} 요청은")
     class Describe_DELETE {
 
         @Nested
