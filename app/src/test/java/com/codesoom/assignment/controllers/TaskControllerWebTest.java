@@ -16,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -130,33 +132,19 @@ class TaskControllerWebTest {
             }
         }
 
-        @Nested
-        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
-        class Context_without_existing_task {
-            @BeforeEach
-            void setUp() {
-                final Task task = tasks.get(FIRST);
-                final Task newTask = new Task();
-                newTask.setTitle(TASK_TITLE_UPDATED);
-                task.setTitle(TASK_TITLE_UPDATED);
-
-                given(service.updateTask(TASK_ID_NOT_EXISTING, newTask))
-                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
-            }
-
+//        @Nested
+//        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
+//        class Context_without_existing_task {
 //            @Test
 //            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
 //            void it_responds_with_404() throws Exception {
-//                Task task = new Task();
-//                task.setTitle(TASK_TITLE_UPDATED);
-//                String content = objectMapper.writeValueAsString(task);
-//
-//                mockMvc.perform(put(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING)
+//                mockMvc.perform(put("/tasks/" + TASK_ID_NOT_EXISTING)
 //                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(content))
+//                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+//                                .accept(MediaType.APPLICATION_JSON))
 //                        .andExpect(status().isNotFound());
 //            }
-        }
+//        }
     }
 
     @Nested
@@ -170,7 +158,7 @@ class TaskControllerWebTest {
                 final Task task = tasks.get(FIRST);
                 task.setTitle(TASK_TITLE_UPDATED);
 
-                given(service.updateTask(TASK_ID,  new Task(TASK_TITLE_UPDATED))).willReturn(task);
+                given(service.updateTask(TASK_ID, new Task(TASK_TITLE_UPDATED))).willReturn(task);
             }
 
             @Test
@@ -188,20 +176,13 @@ class TaskControllerWebTest {
 //        @Nested
 //        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
 //        class Context_without_existing_task {
-//            @BeforeEach
-//            void setUp() {
-//                given(service.updateTask(TASK_ID_NOT_EXISTING, new Task(TASK_TITLE_UPDATED)))
-//                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
-//            }
-//
 //            @Test
 //            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
 //            void it_responds_with_404() throws Exception {
-//                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
-//
-//                mockMvc.perform(patch(DEFAULT_PATH + "/" + TASK_ID_NOT_EXISTING)
+//                mockMvc.perform(patch("/tasks/" + TASK_ID_NOT_EXISTING)
 //                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(content))
+//                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+//                                .accept(MediaType.APPLICATION_JSON))
 //                        .andExpect(status().isNotFound());
 //            }
 //        }
@@ -244,5 +225,9 @@ class TaskControllerWebTest {
             }
 
         }
+    }
+
+    private String taskToJson(Task task) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(task);
     }
 }
