@@ -69,13 +69,13 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 조회한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 상세조회한다면")
+        class Context_with_existing_task {
             @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 id와 기본 생성된 Task의 id는 동일하다")
-            void it_returns_task_having_id_equal_to_default_task_id() {
-                final Long actual = service.getTask(TASK_ID).getId();
-                assertThat(actual).isEqualTo(TASK_ID);
+            @DisplayName("매개변수로 전달한 id와 동일한 id를 가지고 있는 Task를 반환한다")
+            void it_returns_task_having_id_equal_to_param() {
+                final Task actual = service.getTask(TASK_ID);
+                assertThat(actual.getId()).isEqualTo(TASK_ID);
             }
 
             @Test
