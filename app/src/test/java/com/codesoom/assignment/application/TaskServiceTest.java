@@ -66,6 +66,7 @@ class TaskServiceTest {
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
                 final Task actual = service.getTask(TASK_ID);
+
                 assertThat(actual.getId()).isEqualTo(TASK_ID);
             }
         }
@@ -92,21 +93,19 @@ class TaskServiceTest {
             @Test
             @DisplayName("Task를 반환하는데, 반환한 Task의 id와 기본 생성된 Task의 id는 동일하다")
             void it_returns_task_having_id_equal_to_default_task_id() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
+                final Task task = new Task(TASK_TITLE_UPDATED);
 
-                final Long actual = service.updateTask(TASK_ID, task).getId();
-                assertThat(actual).isEqualTo(TASK_ID);
+                final Task actual = service.updateTask(TASK_ID, task);
+                assertThat(actual.getId()).isEqualTo(TASK_ID);
             }
 
             @Test
             @DisplayName("Task를 반환하는데, 반환한 Task의 title과 요청 시 전달한 Task의 title과 동일한다")
             void it_returns_task_having_title_equal_to_task_title_delivered() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
+                final Task task = new Task(TASK_TITLE_UPDATED);
 
-                final String actual = service.updateTask(TASK_ID, task).getTitle();
-                assertThat(actual).isEqualTo(TASK_TITLE_UPDATED);
+                final Task actual = service.updateTask(TASK_ID, task);
+                assertThat(actual.getTitle()).isEqualTo(TASK_TITLE_UPDATED);
             }
         }
 
@@ -116,8 +115,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다")
             void it_throws_exception() {
-                final Task task = new Task();
-                task.setTitle(TASK_TITLE_UPDATED);
+                final Task task = new Task(TASK_TITLE_UPDATED);
 
                 assertThatThrownBy(() -> service.updateTask(TASK_ID_NOT_EXISTING, task))
                         .isInstanceOf(TaskNotFoundException.class);
