@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskServiceTest {
     private TaskService taskService;
+    private Task source;
 
     private static final String TASK_TITLE = "babo";
     private static final Long TASK_INVALID_ID = 123L;
@@ -21,12 +22,9 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
-    }
 
-    private Task givenSource(String title) {
-        Task source = new Task();
-        source.setTitle(title);
-        return source;
+        source = new Task();
+        source.setTitle(TASK_TITLE);
     }
 
     @Nested
@@ -40,7 +38,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task = taskService.createTask(givenSource(TASK_TITLE));
+                task = taskService.createTask(source);
             }
 
             @Test
@@ -69,12 +67,6 @@ class TaskServiceTest {
     @Nested
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
-        Task source;
-
-        @BeforeEach
-        void setUp() {
-            source = givenSource(TASK_TITLE);
-        }
 
         @Test
         @DisplayName("생성된 task를 반환한다.")
@@ -97,7 +89,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskService.createTask(givenSource(TASK_TITLE));
+                Task task = taskService.createTask(source);
                 id = task.getId();
             }
 
@@ -132,13 +124,14 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         private Long id;
-        private Task source;
+        private Task sourceForUpdate;
 
         private static final String TASK_UPDATE_TITLE = "babo1";
 
         @BeforeEach
         void setUp() {
-            source = givenSource(TASK_UPDATE_TITLE);
+            sourceForUpdate = new Task();
+            sourceForUpdate.setTitle(TASK_UPDATE_TITLE);
         }
 
         @Nested
@@ -147,14 +140,14 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskService.createTask(givenSource(TASK_TITLE));
+                Task task = taskService.createTask(source);
                 id = task.getId();
             }
 
             @Test
             @DisplayName("변경된 task를 반환한다.")
             void it_returns_updated_task() {
-                Task task = taskService.updateTask(id, source);
+                Task task = taskService.updateTask(id, sourceForUpdate);
 
                 assertThat(task.getTitle()).isEqualTo(TASK_UPDATE_TITLE);
             }
@@ -189,7 +182,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                Task task = taskService.createTask(givenSource(TASK_TITLE));
+                Task task = taskService.createTask(source);
                 id = task.getId();
             }
 
