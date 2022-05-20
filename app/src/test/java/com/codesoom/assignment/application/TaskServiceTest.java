@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,11 +56,11 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         abstract class ContextGetting {
-            Task givenExistingTask() {
+            Task withExistingTask() {
                 return service.getTask(TASK_ID);
             }
 
-            void givenNotExistingTask() {
+            void withoutNotExistingTask() {
                 service.getTask(TASK_ID_NOT_EXISTING);
             }
         }
@@ -72,7 +71,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
+                assertThat(withExistingTask().getId()).isEqualTo(TASK_ID);
             }
         }
 
@@ -82,7 +81,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(this::givenNotExistingTask)
+                assertThatThrownBy(this::withoutNotExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
@@ -95,11 +94,11 @@ class TaskServiceTest {
         abstract class ContextUpdating {
             final Task task = new Task(TASK_TITLE_UPDATED);
 
-            Task givenExistingTask() {
+            Task withExistingTask() {
                 return service.updateTask(TASK_ID, task);
             }
 
-            void givenNotExistingTask() {
+            void withoutExistingTask() {
                 service.updateTask(TASK_ID_NOT_EXISTING, task);
             }
         }
@@ -110,13 +109,13 @@ class TaskServiceTest {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
+                assertThat(withExistingTask().getId()).isEqualTo(TASK_ID);
             }
 
             @Test
             @DisplayName("매개변수로 전달한 값이 반영된 Task를 반환한다")
             void it_returns_task_reflecting_params() {
-                assertThat(givenExistingTask().getTitle()).isEqualTo(TASK_TITLE_UPDATED);
+                assertThat(withExistingTask().getTitle()).isEqualTo(TASK_TITLE_UPDATED);
             }
         }
 
@@ -126,7 +125,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(this::givenNotExistingTask)
+                assertThatThrownBy(this::withoutExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
@@ -137,11 +136,11 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         abstract class ContextDeleting {
-            Task givenExistingTask() {
+            Task withExistingTask() {
                 return service.deleteTask(TASK_ID);
             }
 
-            void givenNotExistingTask() {
+            void withoutNotExistingTask() {
                 service.deleteTask(TASK_ID_NOT_EXISTING);
             }
         }
@@ -152,7 +151,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
             void it_returns_task_having_id_equal_to_param() {
-                assertThat(givenExistingTask().getId()).isEqualTo(TASK_ID);
+                assertThat(withExistingTask().getId()).isEqualTo(TASK_ID);
             }
         }
 
@@ -163,7 +162,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
-                assertThatThrownBy(this::givenNotExistingTask)
+                assertThatThrownBy(this::withoutNotExistingTask)
                         .isInstanceOf(TaskNotFoundException.class);
             }
 
