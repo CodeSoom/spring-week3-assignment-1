@@ -14,9 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskControllerTest {
-
     private TaskController taskController;
-    private Task source;
 
     private static final String TASK_TITLE = "babo";
     private static final Long TASK_INVALID_ID = 123L;
@@ -25,27 +23,60 @@ class TaskControllerTest {
     void setUp() {
         TaskService taskService = new TaskService();
         taskController = new TaskController(taskService);
+    }
 
-        source = new Task();
-        source.setTitle(TASK_TITLE);
+    private Task givenSource(String title) {
+        Task source = new Task();
+        source.setTitle(title);
+        return source;
     }
 
     @Nested
     @DisplayName("list 메소드는")
     class Describe_list {
 
-        @Test
-        @DisplayName("tasks를 반환한다.")
-        void it_returns_tasks() {
-            List<Task> tasks = taskController.list();
+        @Nested
+        @DisplayName("저장된 task가 있으면")
+        class Context_when_there_is_saved_task {
+            Task task;
 
-            assertThat(tasks).isEmpty();
+            @BeforeEach
+            void setUp() {
+                task = taskController.create(givenSource(TASK_TITLE));
+            }
+
+            @Test
+            @DisplayName("tasks를 반환한다.")
+            void it_returns_tasks() {
+                List<Task> tasks = taskController.list();
+
+                assertThat(tasks).contains(task);
+            }
+        }
+
+        @Nested
+        @DisplayName("저장된 task가 없으면")
+        class Context_when_there_is_not_saved_task {
+
+            @Test
+            @DisplayName("빈 tasks를 반환한다.")
+            void it_returns_empty_tasks() {
+                List<Task> tasks = taskController.list();
+
+                assertThat(tasks).isEmpty();
+            }
         }
     }
 
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
+        private Task source;
+
+        @BeforeEach
+        void setUp() {
+            source = givenSource(TASK_TITLE);
+        }
 
         @Test
         @DisplayName("생성된 task를 반환한다")
@@ -61,16 +92,15 @@ class TaskControllerTest {
     @Nested
     @DisplayName("detail 메소드는")
     class Describe_detail {
+        private Long id;
 
         @Nested
         @DisplayName("존재하는 id가 주어지면")
         class Context_with_exist_id {
 
-            private Long id;
-
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(source);
+                Task task = taskController.create(givenSource(TASK_TITLE));
                 id = task.getId();
             }
 
@@ -88,10 +118,15 @@ class TaskControllerTest {
         @DisplayName("존재하지 않는 id가 주어지면")
         class Context_with_non_exist_id {
 
+            @BeforeEach
+            void setUp() {
+                id = TASK_INVALID_ID;
+            }
+
             @Test
             @DisplayName("TaskNotFoundException이 발생한다.")
             void it_throws_task_not_found_exception() {
-                assertThatThrownBy(() -> taskController.detail(TASK_INVALID_ID))
+                assertThatThrownBy(() -> taskController.detail(id))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -100,16 +135,15 @@ class TaskControllerTest {
     @Nested
     @DisplayName("delete 메소드는")
     class Describe_delete {
+        private Long id;
 
         @Nested
         @DisplayName("존재하는 id가 주어지면")
         class Context_with_exist_id {
 
-            private Long id;
-
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(source);
+                Task task = taskController.create(givenSource(TASK_TITLE));
                 id = task.getId();
             }
 
@@ -127,6 +161,11 @@ class TaskControllerTest {
         @DisplayName("존재하지 않는 id가 주어지면")
         class Context_with_not_exist_id {
 
+            @BeforeEach
+            void setUp() {
+                id = TASK_INVALID_ID;
+            }
+
             @Test
             @DisplayName("TaskNotFoundException이 발생한다.")
             void it_throws_task_not_found_exception() {
@@ -139,19 +178,23 @@ class TaskControllerTest {
     @Nested
     @DisplayName("update 메소드는")
     class Describe_update {
+        private Long id;
+        private Task source;
+
+        private static final String TASK_UPDATE_TITLE = "babo1";
+
+        @BeforeEach
+        void setUp() {
+            source = givenSource(TASK_UPDATE_TITLE);
+        }
 
         @Nested
         @DisplayName("존재하는 id가 주어지면")
         class Context_with_exist_id {
 
-            private Long id;
-            private static final String TASK_UPDATE_TITLE = "babo1";
-
             @BeforeEach
             void setUp() {
-                Task task = taskController.create(source);
-                source.setTitle(TASK_UPDATE_TITLE);
-
+                Task task = taskController.create(givenSource(TASK_TITLE));
                 id = task.getId();
             }
 
@@ -167,6 +210,11 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하지 않는 id가 주어지면")
         class Context_with_non_exist_id {
+
+            @BeforeEach
+            void setUp() {
+                id = TASK_INVALID_ID;
+            }
 
             @Test
             @DisplayName("TaskNotFoundException이 발생한다.")
