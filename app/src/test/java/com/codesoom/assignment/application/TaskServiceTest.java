@@ -35,10 +35,10 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Test
-        @DisplayName("List 타입를 반환한다")
+        @DisplayName("Collection 타입의 형태로 값을 반환한다")
         void it_returns_list() {
             final List<Task> actual = service.getTasks();
-            assertThat(actual).isInstanceOf(List.class);
+            assertThat(actual).isInstanceOf(Collection.class);
         }
     }
 
@@ -46,7 +46,7 @@ class TaskServiceTest {
     @DisplayName("createTasks 메소드는")
     class Describe_createTasks {
         @Test
-        @DisplayName("Task 타입을 반환한다")
+        @DisplayName("Task 타입의 형태로 값을 반환한다")
         void it_returns_id_not_null() {
             final Task task = new Task();
 
