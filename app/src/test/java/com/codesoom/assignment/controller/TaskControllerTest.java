@@ -24,7 +24,6 @@ class TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final String BASE_URI = "/tasks/";
     private final Long ID = 1L;
     private final Long NOT_EXIST_ID = 100L;
     private final String TITLE = "test";
@@ -60,7 +59,7 @@ class TaskControllerTest {
                 String content = objectMapper.writeValueAsString(new Task(ID, TITLE));
 
                 // mock를 통해 post를 일으키고 테스트 하는 것과
-                mockMvc.perform(post(BASE_URI + ID)
+                mockMvc.perform(post("/tasks/" + ID)
                         .content(content));
 
                 // mockbean을 이용하여 TaskService를 만들어서 task를 생성한 후에 다음 테스트를 진행하는 것중 어떤 방식이 나을까요?
@@ -69,7 +68,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("200 OK를 반환합니다.")
             void list() throws Exception {
-                mockMvc.perform(get(BASE_URI + ID))
+                mockMvc.perform(get("/tasks/" + ID))
                         .andExpect(status().isOk());
             }
         }
@@ -81,7 +80,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("할일과 404 Not Found를 반환합니다.")
             void detail() throws Exception {
-                mockMvc.perform(get(BASE_URI + NOT_EXIST_ID))
+                mockMvc.perform(get("/tasks/" + NOT_EXIST_ID))
                         .andExpect(status().isNotFound());
             }
         }
