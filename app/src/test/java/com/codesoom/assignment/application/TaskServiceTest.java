@@ -13,12 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskServiceTest 클래스")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskServiceTest {
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTasks_메서드는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_Task가_추가되지_않은_상태라면 {
             TaskService taskService() {
                 return new TaskService();
@@ -32,7 +31,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_Task가_1개_추가된_상태라면 {
             TaskService taskService() {
                 TaskService taskService = new TaskService();
@@ -49,7 +47,6 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTask_메서드는 {
         TaskService taskService() {
             TaskService taskService = new TaskService();
@@ -58,7 +55,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_값이_1인_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 1L;
@@ -71,7 +67,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 100L;
@@ -87,7 +82,6 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class findTask_메서드는 {
         TaskService taskService() {
             TaskService taskService = new TaskService();
@@ -96,7 +90,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_값이_1인_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 1L;
@@ -109,7 +102,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 100L;
@@ -125,14 +117,12 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class addTask_메서드는 {
         TaskService taskService() {
             return new TaskService();
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_빈문자열인_TaskRequest가_주어진다면 {
             TaskService taskService = taskService();
             TaskRequest taskRequest() {
@@ -149,7 +139,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_과제하기인_TaskRequest가_주어진다면 {
             TaskService taskService = taskService();
             TaskRequest taskRequest() {
@@ -165,7 +154,6 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class updateTask_메서드는 {
         TaskService taskService() {
             TaskService taskService = new TaskService();
@@ -174,7 +162,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 100L;
@@ -192,7 +179,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_빈문자열인_TaskRequest가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 1L;
@@ -210,7 +196,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_밥먹기인_TaskRequest가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 1L;
@@ -229,7 +214,6 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class deleteTask_메서드는 {
         TaskService taskService() {
             TaskService taskService = new TaskService();
@@ -238,7 +222,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 100L;
@@ -253,7 +236,6 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_값이_1인_id가_주어진다면 {
             TaskService taskService = taskService();
             Long id = 1L;
@@ -269,7 +251,6 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class generateId_메서드는 {
         @Test
         @DisplayName("id의_값을_1_증가시킨다")

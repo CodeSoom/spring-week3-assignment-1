@@ -6,12 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskTest 클래스")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskTest {
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class Task_생성자는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_매개변수로_주어진_title이_비어있다면 {
             String title = "";
 
@@ -24,10 +23,8 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getId_메서드는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_id가_1인_Task_객체가_주어진다면 {
             Task task() {
                 Task task = new Task("과제하기");
@@ -44,7 +41,6 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class setId_메서드는 {
         Task task() {
             Task task = new Task("잠자기");
@@ -52,7 +48,6 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_id로_2가_주어진다면 {
             Long id = 2L;
 
@@ -66,7 +61,6 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_id로_5가_주어진다면 {
             Long id = 5L;
 
@@ -81,10 +75,8 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTitle_메서드는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_밥먹기인_Task_객체가_주어진다면 {
             Task task() {
                 Task task = new Task("밥먹기");
@@ -100,7 +92,6 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class updateTitle_메서드는 {
         Task task() {
             Task task = new Task("과제하기");
@@ -108,7 +99,6 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_새로운_title로_노래하기가_주어진다면 {
             String newTitle = "노래하기";
 
@@ -123,7 +113,6 @@ class TaskTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_새로운_title로_밥먹기가_주어진다면 {
             String newTitle = "밥먹기";
 
@@ -139,10 +128,8 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class validateTitle_메서드는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_비어있는_문자열이라면 {
             Task task() {
                 Task task = new Task("");

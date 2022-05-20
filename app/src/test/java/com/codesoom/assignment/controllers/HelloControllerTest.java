@@ -5,9 +5,9 @@ import org.junit.jupiter.api.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("HelloControllerTest 클래스")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class HelloControllerTest {
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class sayHello_메서드는 {
         private HelloController helloController;
 

@@ -9,12 +9,12 @@ import org.junit.jupiter.api.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("TaskControllerTest 클래스")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskControllerTest {
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTasks_메서드는 {
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_Task가_추가되지_않은_상태라면 {
             TaskController taskController() {
                 return new TaskController(new TaskService());
@@ -28,7 +28,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_Task가_1개_추가된_상태라면 {
             TaskController taskController() {
                 TaskController taskController = new TaskController(new TaskService());
@@ -45,7 +44,6 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTask_메서드는 {
         TaskController taskController() {
             TaskController taskController = new TaskController(new TaskService());
@@ -54,7 +52,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_값이_1인_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
@@ -67,7 +64,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 100L;
@@ -83,14 +79,12 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class create_메서드는 {
         TaskController taskController() {
             return new TaskController(new TaskService());
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_빈문자열인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             TaskRequest taskRequest() {
@@ -107,7 +101,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_과제하기인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             TaskRequest taskRequest() {
@@ -123,7 +116,6 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class update_메서드는 {
         TaskController taskController() {
             TaskController taskController = new TaskController(new TaskService());
@@ -132,7 +124,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 100L;
@@ -150,7 +141,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_빈문자열인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
@@ -168,7 +158,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_밥먹기인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
@@ -187,7 +176,6 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class patch_메서드는 {
         TaskController taskController() {
             TaskController taskController = new TaskController(new TaskService());
@@ -196,7 +184,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 100L;
@@ -214,7 +201,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_빈문자열인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
@@ -232,7 +218,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_title이_밥먹기인_TaskRequest가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
@@ -251,7 +236,6 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class delete_메서드는 {
         TaskController taskController() {
             TaskController taskController = new TaskController(new TaskService());
@@ -260,7 +244,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_존재하지_않는_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 100L;
@@ -275,7 +258,6 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 만약_값이_1인_id가_주어진다면 {
             TaskController taskController = taskController();
             Long id = 1L;
