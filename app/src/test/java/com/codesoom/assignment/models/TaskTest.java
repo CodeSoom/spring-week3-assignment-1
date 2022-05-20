@@ -1,6 +1,8 @@
 package com.codesoom.assignment.models;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,27 +19,69 @@ class TaskTest {
         task.setTitle(TASK_TITLE);
     }
 
-    @Test
-    void getId() {
-        Long id = task.getId();
+    @Nested
+    @DisplayName("인자가 하나도 없는 생성자는")
+    class Describe_no_args_constructor {
 
-        assertThat(id).isEqualTo(TASK_ID);
+        @Test
+        @DisplayName("필드값들이 모두 null이다.")
+        void it_has_not_any_properties_value() {
+            Task task = new Task();
+
+            assertThat(task.getTitle()).isNull();
+            assertThat(task.getId()).isNull();
+        }
     }
 
-    @Test
-    void setId() {
-        Long source = 2L;
+    @Nested
+    @DisplayName("getId 메소드는")
+    class Describe_getId {
 
-        task.setId(source);
+        @Test
+        @DisplayName("task의 id값을 반환한다.")
+        void it_returns_id_value() {
+            Long id = task.getId();
 
-        assertThat(task.getId()).isEqualTo(source);
+            assertThat(id).isEqualTo(TASK_ID);
+        }
     }
 
-    @Test
-    void getTitle() {
-        String title = task.getTitle();
+    @Nested
+    @DisplayName("setId 메소드는")
+    class Describe_setId {
+        private Long id;
 
-        assertThat(title).isEqualTo(TASK_TITLE);
+        @BeforeEach
+        void setUp() {
+            id = 2L;
+        }
+
+        @Test
+        @DisplayName("id값을 변경한다.")
+        void it_changes_id_value() {
+            task.setId(id);
+
+            assertThat(task.getId()).isEqualTo(id);
+        }
+    }
+
+    @Nested
+    @DisplayName("setTitle 메소드는")
+    class Describe_setTitle {
+        private String title;
+
+        @BeforeEach
+        void setUp() {
+            title = "hello";
+        }
+
+        @Test
+        @DisplayName("title값을 변경한다.")
+        void it_changes_title_value() {
+            task.setTitle(title);
+
+            assertThat(task.getId()).isEqualTo(title);
+        }
     }
 
     @Test
