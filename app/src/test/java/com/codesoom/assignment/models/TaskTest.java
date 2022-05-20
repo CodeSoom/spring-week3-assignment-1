@@ -66,6 +66,19 @@ class TaskTest {
     }
 
     @Nested
+    @DisplayName("getTitle 메소드는")
+    class Describe_getTitle {
+
+        @Test
+        @DisplayName("task의 title값을 반환한다.")
+        void it_returns_id_value() {
+            String title = task.getTitle();
+
+            assertThat(title).isEqualTo(TASK_TITLE);
+        }
+    }
+
+    @Nested
     @DisplayName("setTitle 메소드는")
     class Describe_setTitle {
         private String title;
@@ -80,16 +93,7 @@ class TaskTest {
         void it_changes_title_value() {
             task.setTitle(title);
 
-            assertThat(task.getId()).isEqualTo(title);
+            assertThat(task.getTitle()).isEqualTo(title);
         }
-    }
-
-    @Test
-    void setTitle() {
-        String title = "masdm";
-
-        task.setTitle(title);
-
-        assertThat(task.getTitle()).isEqualTo(title);
     }
 }
