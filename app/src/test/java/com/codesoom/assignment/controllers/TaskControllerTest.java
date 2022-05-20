@@ -94,12 +94,4 @@ class TaskControllerTest {
         assertThatThrownBy(() -> taskController.delete(NOT_EXISTING_ID))
                 .isInstanceOf(TaskNotFoundException.class);
     }
-
-    @Test
-    void patch() { update();}
-
-    @Test
-    void patchWithNotExistId() {
-        updateWithNotExistingId();
-    }
 }
