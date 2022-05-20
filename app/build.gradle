@@ -13,16 +13,6 @@ plugins {
     // Spring
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-
-    // Jacoco
-    id 'jacoco'
-}
-
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
 }
 
 repositories {
@@ -31,14 +21,15 @@ repositories {
 }
 
 dependencies {
+
     // Use JUnit Jupiter API for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
 
-    // AssertJ
-    testImplementation 'org.assertj:assertj-core:3.18.1'
-
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    // AssertJ
+    testImplementation 'org.assertj:assertj-core:3.18.1'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
@@ -50,17 +41,11 @@ dependencies {
     // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // Spring Data JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.h2database:h2'
-
-    // Spring Developer Tools
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     // Spring Boot Test
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    testImplementation('org.springframework.boot:spring-boot-starter-test'){
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
 }
 
 application {
@@ -71,36 +56,4 @@ application {
 tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
-
-    finalizedBy jacocoTestReport
-}
-
-jacoco {
-    toolVersion = "0.8.6"
-}
-
-jacocoTestReport {
-    dependsOn test
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            element = "CLASS"
-
-            limit {
-                counter = 'LINE'
-                minimum = 1
-            }
-
-            limit {
-                counter = 'BRANCH'
-                minimum = 1
-            }
-
-            excludes = [
-                    "com.codesoom.assignment.App"
-            ]
-        }
-    }
 }

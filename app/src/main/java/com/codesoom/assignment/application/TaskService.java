@@ -1,8 +1,7 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
