@@ -39,6 +39,7 @@ class TaskServiceTest {
         @DisplayName("Collection 타입의 형태로 값을 반환한다")
         void it_returns_list() {
             final List<Task> actual = service.getTasks();
+
             assertThat(actual).isInstanceOf(Collection.class);
         }
     }
@@ -88,11 +89,11 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 수정한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 수정한다면")
+        class Context_with_existing_task {
             @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 id와 기본 생성된 Task의 id는 동일하다")
-            void it_returns_task_having_id_equal_to_default_task_id() {
+            @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
+            void it_returns_task_having_id_equal_to_param() {
                 final Task task = new Task(TASK_TITLE_UPDATED);
 
                 final Task actual = service.updateTask(TASK_ID, task);
@@ -100,8 +101,8 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("Task를 반환하는데, 반환한 Task의 title과 요청 시 전달한 Task의 title과 동일한다")
-            void it_returns_task_having_title_equal_to_task_title_delivered() {
+            @DisplayName("매개변수로 전달한 값이 반영된 Task를 반환한다")
+            void it_returns_task_reflecting_params() {
                 final Task task = new Task(TASK_TITLE_UPDATED);
 
                 final Task actual = service.updateTask(TASK_ID, task);
@@ -113,7 +114,7 @@ class TaskServiceTest {
         @DisplayName("만약 존재하지 않는 Task를 수정한다면")
         class Context_with_not_existing_task {
             @Test
-            @DisplayName("TaskNotFoundException을 발생시킨다")
+            @DisplayName("예외를 발생시킨다")
             void it_throws_exception() {
                 final Task task = new Task(TASK_TITLE_UPDATED);
 
@@ -132,7 +133,7 @@ class TaskServiceTest {
         class Context_with_existing_task {
             @Test
             @DisplayName("매개변수로 전달한 값을 Id로 가지고 있는 Task를 반환한다")
-            void it_throws_exception() {
+            void it_returns_task_having_id_equal_to_param() {
                 final Task actual = service.deleteTask(TASK_ID);
 
                 assertThat(actual.getId()).isEqualTo(TASK_ID);
