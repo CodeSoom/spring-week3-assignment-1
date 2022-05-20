@@ -25,74 +25,90 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("TaskController 클래스는")
 public class TaskControllerWebTest {
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	private MockMvc mockMvc;
+
+	@BeforeEach
+	void setUp() {
+		TaskService taskService = new TaskService();
+		TaskController taskController = new TaskController(taskService);
+		TaskErrorAdvice taskErrorAdvice = new TaskErrorAdvice();
+		mockMvc = MockMvcBuilders.standaloneSetup(taskController).setControllerAdvice(taskErrorAdvice).build();
+	}
+
+	void create() throws Exception {
+		Task task = new Task();
+		task.setTitle("test");
+		String source = objectMapper.writeValueAsString(task);
+		mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(source))
+			.andExpect(status().isCreated());
+	}
 
 	@Nested
-	class task가_주어질때 {
+	class tasks_get_method는 {
 
-		private final ObjectMapper objectMapper = new ObjectMapper();
-
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setUp() {
-			TaskService taskService = new TaskService();
-			TaskController taskController = new TaskController(taskService);
-			TaskErrorAdvice taskErrorAdvice = new TaskErrorAdvice();
-			mockMvc = MockMvcBuilders.standaloneSetup(taskController).setControllerAdvice(taskErrorAdvice).build();
+		@Test
+		void tasks_리스트를_받아온다() throws Exception {
+			create();
+			mockMvc.perform(get("/tasks")).andExpect(status().isOk());
 		}
+	}
 
-		void create() throws Exception {
-			Task task = new Task();
-			task.setTitle("test");
-			String source = objectMapper.writeValueAsString(task);
-			mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(source))
-				.andExpect(status().isCreated());
-		}
-
+	@Nested
+	class tasks_id_get_method는 {
 		@Nested
-		class tasks_를_입력하면 {
+		class ID가_유효할때 {
 			@Test
-			void get_method일때_tasks_리스트를_받아온다() throws Exception {
-				create();
-				mockMvc.perform(get("/tasks")).andExpect(status().isOk());
-			}
-		}
-
-		@Nested
-		class tasks와_id를_입력하면 {
-			@Test
-			void 유효한_ID의_get_method일때_task를_받아온다() throws Exception {
+			void task를_받아온다() throws Exception {
 				create();
 				mockMvc.perform(get("/tasks/1")).andExpect(status().isOk()).andDo(print());
 			}
+		}
+
+		@Nested
+		class ID가_유효하지_않을때 {
 			@Test
-			void 유호하지_않는_ID의_get_method일때_NOT_FOUND를_뱉는다() throws Exception {
+			void NOT_FOUND를_뱉는다() throws Exception {
 				mockMvc.perform(get("/tasks/100")).andExpect(status().isNotFound()).andDo(print());
-			}
-			@Test
-			void update_method일때_task_title를_변경한다() throws Exception {
-				create();
-				Task task = new Task();
-				task.setTitle("update");
-				String source = objectMapper.writeValueAsString(task);
-				mockMvc.perform(put("/tasks/1").contentType(MediaType.APPLICATION_JSON).content(source))
-					.andExpect(status().isOk());
-			}
-			@Test
-			void patch_method일때_task_title를_변경한다() throws Exception {
-				create();
-				Task task = new Task();
-				task.setTitle("update");
-				String source = objectMapper.writeValueAsString(task);
-				mockMvc.perform(patch("/tasks/1").contentType(MediaType.APPLICATION_JSON).content(source))
-					.andExpect(status().isOk());
-			}
-			@Test
-			void delete_method일때_task를_제거한다() throws Exception {
-				create();
-				mockMvc.perform(delete("/tasks/1").contentType(MediaType.APPLICATION_JSON))
-					.andExpect(status().isNoContent());
 			}
 		}
 	}
+
+	@Nested
+	class tasks_id_update_method는 {
+		@Test
+		void task_title를_변경한다() throws Exception {
+			create();
+			Task task = new Task();
+			task.setTitle("update");
+			String source = objectMapper.writeValueAsString(task);
+			mockMvc.perform(put("/tasks/1").contentType(MediaType.APPLICATION_JSON).content(source))
+				.andExpect(status().isOk());
+		}
+	}
+
+	@Nested
+	class tasks_id_patch_method는 {
+		@Test
+		void task_title를_변경한다() throws Exception {
+			create();
+			Task task = new Task();
+			task.setTitle("update");
+			String source = objectMapper.writeValueAsString(task);
+			mockMvc.perform(patch("/tasks/1").contentType(MediaType.APPLICATION_JSON).content(source))
+				.andExpect(status().isOk());
+		}
+	}
+
+	@Nested
+	class tasks_id_delete_method는 {
+		@Test
+		void task를_제거한다() throws Exception {
+			create();
+			mockMvc.perform(delete("/tasks/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent());
+		}
+	}
 }
+
