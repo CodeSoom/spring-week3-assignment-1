@@ -143,11 +143,11 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("존재하는 id가 주어지면")
-        class Context_with_exist_id_and_source {
+        class Context_with_exist_id {
 
             @BeforeEach
             void setUp() {
-                Task task = taskService.createTask(source);
+                Task task = taskService.createTask(givenSource(TASK_TITLE));
                 id = task.getId();
             }
 
