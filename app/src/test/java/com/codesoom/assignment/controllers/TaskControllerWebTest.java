@@ -38,7 +38,6 @@ class TaskControllerWebTest {
     private final Long TASK_ID = 1L;
     private final int FIRST = 0;
     private final Long TASK_ID_NOT_EXISTING = 10L;
-    private final String DEFAULT_PATH = "/tasks";
 
     @BeforeEach
     void setUp() {
@@ -123,11 +122,9 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
-
                 mockMvc.perform(put("/tasks/" + TASK_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
+                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
             }
         }
@@ -164,11 +161,9 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("HTTP Status Code 200 OK 응답한다")
             void it_responds_with_200_ok() throws Exception {
-                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
-
                 mockMvc.perform(patch("/tasks/" + TASK_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
+                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
             }
         }
@@ -234,15 +229,13 @@ class TaskControllerWebTest {
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
-            @Test
-            @DisplayName("HTTP Status Code 201 CREATED 응답한다")
-            void it_responds_with_201() throws Exception {
-                String content = objectMapper.writeValueAsString(new Task(TASK_TITLE_UPDATED));
-
-                mockMvc.perform(post("/tasks")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
-                        .andExpect(status().isCreated());
-            }
+        @Test
+        @DisplayName("HTTP Status Code 201 CREATED 응답한다")
+        void it_responds_with_201() throws Exception {
+            mockMvc.perform(post("/tasks")
+                            .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated());
         }
+    }
 }
