@@ -33,7 +33,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("만약 Task 가 하나만 존재한다면, list 메서드로 조회시 Task 의 갯수는 1개이다.")
+    @DisplayName("만약 Task 가 1개 있다면, list 메서드로 조회시 Task 의 갯수는 1이다.")
     void list() {
         final List<Task> list = taskController.list();
 
@@ -68,7 +68,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("만약 Task 가 하나만 존재한다면, create 메서드로 생성시 Task 의 id 값이 1 증가한 상태로 Tasks 에 추가된다.")
+    @DisplayName("만약 Task 가 있다면, create 메서드로 생성시 Task 의 id 값이 1 증가한 상태로 Task 에 추가된다.")
     void create() {
         final int new_size = taskController.list().size() + 1;
         final Task task = new Task();
@@ -91,10 +91,10 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("클라이언트가 수정한 Task 의 Title 과")
+        @DisplayName("만약 해당 id 가 있으면")
         class valid_id {
             @Test
-            @DisplayName("전달한 Task 의 Title 은 같아야 한다.")
+            @DisplayName("Task 의 title 을 수정하고 해당 title 을 반환한다.")
             void update_valid_id() {
                 Task task = new Task();
                 task.setTitle(TASK_TITLE_TWO);
@@ -106,24 +106,31 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("클라이언트가 수정한 Task 의 id 값이 없으면")
+        @DisplayName("만약 해당 id 가 없으면")
         class invalid_id {
             @Test
             @DisplayName("TaskNotFoundException 을 반환한다.")
             void update_invalid_id() {
-                assertThatThrownBy(() -> taskController.update(100L, task))
+                final int SIZE_ID = taskController.list().size();
+                final Long UNKNOWN_ID = Long.valueOf(SIZE_ID + 10);
+
+                assertThatThrownBy(() -> taskController.update(UNKNOWN_ID, task))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
     }
 
-    @Test
-    @DisplayName("Delete 메서드는 클라이언트가 요청한 Task 의 id 를 삭제한다.")
-    void delete() {
-        int old_size = taskController.list().size();
-        taskController.delete(TASK_ID);
-        int new_size = taskController.list().size();
+    @Nested
+    @DisplayName("Delete 메서드는")
+    class delete {
+        @Test
+        @DisplayName("해당 id 가 있으면 Task 의 id 를 삭제한다.")
+        void delete() {
+            int old_size = taskController.list().size();
+            taskController.delete(TASK_ID);
+            int new_size = taskController.list().size();
 
-        assertThat(old_size - new_size).isEqualTo(1);
+            assertThat(old_size - new_size).isEqualTo(1);
+        }
     }
 }
