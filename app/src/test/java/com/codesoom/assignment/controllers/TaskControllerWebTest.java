@@ -71,8 +71,8 @@ class TaskControllerWebTest {
     @DisplayName("detail 메소드는")
     class Describe_detail {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 상세조회한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 상세조회한다면")
+        class Context_with_existing_task {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
@@ -110,8 +110,8 @@ class TaskControllerWebTest {
     @DisplayName("update 메소드는")
     class Describe_update {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 수정한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 수정한다면")
+        class Context_with_existing_task {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
@@ -169,8 +169,8 @@ class TaskControllerWebTest {
     @DisplayName("patch 메소드는")
     class Describe_patch {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 부분 수정한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 부분 수정한다면")
+        class Context_with_existing_task {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
@@ -226,8 +226,8 @@ class TaskControllerWebTest {
     @DisplayName("delete 메소드는")
     class Describe_delete {
         @Nested
-        @DisplayName("만약 기본 생성된 Task를 삭제한다면")
-        class Context_with_default_task {
+        @DisplayName("만약 존재하는 Task를 삭제한다면")
+        class Context_with_existing_task {
             @BeforeEach
             void setUp() {
                 final Task task = tasks.get(FIRST);
