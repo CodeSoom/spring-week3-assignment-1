@@ -35,11 +35,11 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Test
-        @DisplayName("Collection 타입으로 값을 반환한다")
+        @DisplayName("List 타입의 Collection으로 값을 반환한다")
         void it_returns_list() {
             final List<Task> actual = service.getTasks();
 
-            assertThat(actual).isInstanceOf(Collection.class);
+            assertThat(actual).isInstanceOf(List.class);
         }
     }
 
@@ -140,8 +140,6 @@ class TaskServiceTest {
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
         abstract class ContextDeleting {
-            final Task task = new Task(TASK_TITLE_UPDATED);
-
             Task givenExistingTask() {
                 return service.deleteTask(TASK_ID);
             }
