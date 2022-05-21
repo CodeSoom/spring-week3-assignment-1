@@ -236,6 +236,11 @@ class TaskControllerWebTest {
     @Nested
     @DisplayName("create 메소드는")
     class Describe_create {
+        @BeforeEach
+        void setUp() {
+            given(service.createTask(any(Task.class))).willReturn(any(Task.class));
+        }
+
         @Test
         @DisplayName("HTTP Status Code 201 CREATED 응답한다")
         void it_responds_with_201() throws Exception {
