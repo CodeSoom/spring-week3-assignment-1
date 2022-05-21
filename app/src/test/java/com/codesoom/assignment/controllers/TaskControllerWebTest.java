@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,20 +75,20 @@ public class TaskControllerWebTest {
             @BeforeEach
             void setUp() {
                 given(taskService.getTasks()).willReturn(tasks);
+                tasks.add(task);
+                tasks.add(task);
             }
 
-            boolean subject() {
-                return tasks.add(task);
+            RequestBuilder subject() {
+                return get("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
             }
 
             @Test
             @DisplayName("모든 task들과 상태코드 200을 응답한다")
             void list() throws Exception {
-                subject();
-                subject();
-                mockMvc.perform(get("/tasks")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(content().string(containsString(TASK_TITLE)))
                         .andExpect(content().string(objectMapper.writeValueAsString(tasks)))
                         .andExpect(status().isOk());
@@ -102,12 +104,16 @@ public class TaskControllerWebTest {
                 given(taskService.getTasks()).willReturn(tasks);
             }
 
+            RequestBuilder subject() {
+                return get("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
+            }
+
             @Test
             @DisplayName("빈 ArrayList와 상태코드 200을 응답한다")
             void emptyList() throws Exception {
-                mockMvc.perform(get("/tasks")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(content().string(objectMapper.writeValueAsString(tasks)))
                         .andExpect(status().isOk());
             }
@@ -127,12 +133,16 @@ public class TaskControllerWebTest {
                 given(taskService.getTask(EXISTING_ID)).willReturn(task);
             }
 
+            RequestBuilder subject() {
+                return get("/tasks/{id}", EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
+            }
+
             @Test
-            @DisplayName("task와 상태코드 200d을 응답한다")
+            @DisplayName("task와 상태코드 200을 응답한다")
             void detail() throws Exception {
-                mockMvc.perform(get("/tasks/{id}", EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").exists())
                         .andExpect(jsonPath("title").exists())
                         .andExpect(status().isOk());
@@ -149,12 +159,16 @@ public class TaskControllerWebTest {
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
+            RequestBuilder subject() {
+                return get("/tasks/{id}", NOT_EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
+            }
+
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
             void detailWithNotAnExistingId() throws Exception {
-                mockMvc.perform(get("/tasks/{id}", NOT_EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").doesNotExist())
                         .andExpect(jsonPath("title").doesNotExist())
                         .andExpect(jsonPath("message").exists())
@@ -177,14 +191,18 @@ public class TaskControllerWebTest {
                         .willReturn(task);
             }
 
+            RequestBuilder subject() throws JsonProcessingException {
+                return post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task));
+            }
+
             @Test
             @DisplayName("task와 상태코드 201을 응답한다")
             void create() throws Exception {
-                mockMvc.perform(post("/tasks")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task)))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").exists())
                         .andExpect(jsonPath("title").exists())
                         .andExpect(status().isCreated());
@@ -206,20 +224,19 @@ public class TaskControllerWebTest {
                         .willReturn(task);
             }
 
-            void subject() throws Exception {
-                mockMvc.perform(put("/tasks/{id}", EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task)))
-                        .andExpect(jsonPath("id").exists())
-                        .andExpect(jsonPath("title").exists())
-                        .andExpect(status().isOk());
+            RequestBuilder subject() throws Exception {
+                return put("/tasks/{id}", EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task));
             }
 
             @Test
             @DisplayName("업데이트한 task와 상태코드 200을 응답한다")
             void update() throws Exception {
-                subject();
+                mockMvc.perform(subject()).andExpect(jsonPath("id").exists())
+                       .andExpect(jsonPath("title").exists())
+                       .andExpect(status().isOk());
             }
         }
 
@@ -233,17 +250,20 @@ public class TaskControllerWebTest {
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
+            RequestBuilder subject() throws JsonProcessingException {
+                return put("/task/{id}", NOT_EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task));
+            }
+
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
             void updateWithNotExistingId() throws Exception {
-                mockMvc.perform(put("/task/{id}", NOT_EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task)))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").doesNotExist())
                         .andExpect(jsonPath("title").doesNotExist())
                         .andExpect(status().isNotFound());
-
             }
         }
     }
@@ -262,13 +282,17 @@ public class TaskControllerWebTest {
                         .willReturn(task);
             }
 
+            RequestBuilder subject() throws JsonProcessingException {
+                return patch("/tasks/{id}", EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task));
+            }
+
             @Test
             @DisplayName("업데이트한 task와 상태코드 200을 응답한다")
             void update() throws Exception {
-                mockMvc.perform(patch("/tasks/{id}", EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task)))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").exists())
                         .andExpect(jsonPath("title").exists())
                         .andExpect(status().isOk());
@@ -285,13 +309,17 @@ public class TaskControllerWebTest {
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
+            RequestBuilder subject() throws JsonProcessingException {
+                return patch("/task/{id}", NOT_EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(task));
+            }
+
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
             void updateWithNotExistingId() throws Exception {
-                mockMvc.perform(patch("/task/{id}", NOT_EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(task)))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").doesNotExist())
                         .andExpect(jsonPath("title").doesNotExist())
                         .andExpect(status().isNotFound());
@@ -314,16 +342,19 @@ public class TaskControllerWebTest {
                         .willReturn(task);
             }
 
+            RequestBuilder subject() {
+                return delete("/tasks/{id}", EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
+            }
+
             @Test
             @DisplayName("상태코드 204를 응답한다")
             void deleteTask() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").doesNotExist())
                         .andExpect(jsonPath("title").doesNotExist())
                         .andExpect(status().isNoContent());
-
             }
         }
 
@@ -337,12 +368,16 @@ public class TaskControllerWebTest {
                         .willThrow(new TaskNotFoundException(NOT_EXISTING_ID));
             }
 
+            RequestBuilder subject() {
+                return delete("/tasks/{id}", NOT_EXISTING_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON);
+            }
+
             @Test
             @DisplayName("에러메시지와 상태코드 404를 응답한다")
             void deleteWithNoExistingId() throws Exception {
-                mockMvc.perform(delete("/tasks/{id}", NOT_EXISTING_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
+                mockMvc.perform(subject())
                         .andExpect(jsonPath("id").doesNotExist())
                         .andExpect(jsonPath("title").doesNotExist())
                         .andExpect(jsonPath("message").exists())
