@@ -129,19 +129,25 @@ class TaskControllerWebTest {
             }
         }
 
-//        @Nested
-//        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
-//        class Context_without_existing_task {
-//            @Test
-//            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
-//            void it_responds_with_404() throws Exception {
-//                mockMvc.perform(put("/tasks/" + TASK_ID_NOT_EXISTING)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
-//                                .accept(MediaType.APPLICATION_JSON))
-//                        .andExpect(status().isNotFound());
-//            }
-//        }
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 수정한다면")
+        class Context_without_existing_task {
+            @BeforeEach
+            void setUp() {
+                given(service.updateTask(eq(TASK_ID_NOT_EXISTING), any(Task.class)))
+                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
+            void it_responds_with_404() throws Exception {
+                mockMvc.perform(put("/tasks/" + TASK_ID_NOT_EXISTING)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+                                .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
     @Nested
@@ -168,19 +174,24 @@ class TaskControllerWebTest {
             }
         }
 
-//        @Nested
-//        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
-//        class Context_without_existing_task {
-//            @Test
-//            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
-//            void it_responds_with_404() throws Exception {
-//                mockMvc.perform(patch("/tasks/" + TASK_ID_NOT_EXISTING)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
-//                                .accept(MediaType.APPLICATION_JSON))
-//                        .andExpect(status().isNotFound());
-//            }
-//        }
+        @Nested
+        @DisplayName("만약 존재하지 않는 Task를 부분 수정한다면")
+        class Context_without_existing_task {
+            @BeforeEach
+            void setUp() {
+                given(service.updateTask(eq(TASK_ID_NOT_EXISTING), any(Task.class)))
+                        .willThrow(new TaskNotFoundException(TASK_ID_NOT_EXISTING));
+            }
+
+            @Test
+            @DisplayName("HTTP Status Code 404 NOT FOUND 응답한다")
+            void it_responds_with_404() throws Exception {
+                mockMvc.perform(patch("/tasks/" + TASK_ID_NOT_EXISTING)
+                                .content(taskToJson(new Task(TASK_TITLE_UPDATED)))
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNotFound());
+            }
+        }
     }
 
     @Nested
