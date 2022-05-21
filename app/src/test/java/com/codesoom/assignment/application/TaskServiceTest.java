@@ -130,12 +130,6 @@ public class TaskServiceTest {
     @DisplayName("updateTask 호출은")
     class Describe_update_task {
 
-        Task subject() {
-            task.setId(EXISTING_ID);
-            task.setTitle(TASK_TITLE + UPDATE_POSTFIX);
-            return taskService.createTask(task);
-        }
-
         @Nested
         @DisplayName("저장된 task id가 주어지면")
         class Context_with_stored_task_id {
@@ -143,7 +137,10 @@ public class TaskServiceTest {
             @Test
             @DisplayName("업데이트한 task를 리턴한다")
             void it_returns_updated_task() {
-                Task task = taskService.updateTask(EXISTING_ID, subject());
+                task.setId(EXISTING_ID);
+                task.setTitle(TASK_TITLE + UPDATE_POSTFIX);
+                taskService.createTask(task);
+                taskService.updateTask(EXISTING_ID, task);
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE + UPDATE_POSTFIX);
             }
         }
@@ -155,7 +152,7 @@ public class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException이 발생한다")
             void it_throws_task_not_found_exception() {
-                assertThatThrownBy(() -> taskService.updateTask(NOT_EXISTING_ID, subject()))
+                assertThatThrownBy(() -> taskService.updateTask(NOT_EXISTING_ID, task))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
