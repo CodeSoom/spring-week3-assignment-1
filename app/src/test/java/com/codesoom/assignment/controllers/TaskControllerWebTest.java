@@ -38,6 +38,7 @@ public class TaskControllerWebTest {
     private static final String TASK_TITLE = "babo";
     private static final Long VALID_TASK_ID = 1L;
     private static final Long INVALID_TASK_ID = 1231231L;
+
     @BeforeEach
     void setUp() {
         task = new Task();
