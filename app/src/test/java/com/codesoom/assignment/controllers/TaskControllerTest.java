@@ -28,7 +28,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환값 내 Task의 개수는 1개여야 한다")
+    @DisplayName("기본 생성된 Task가 존재하면, 목록조회 요청 시 반환값 내 Task도 존재한다")
     void whenList_returnEqualSize() {
         // WHEN
         final List<Task> actual = controller.list();
@@ -39,7 +39,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task id는 기본 생성된 Task의 id와 같아야 한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task id는 기본 생성된 Task의 id와 같다")
     void whenList_returnEqualId() {
         // WHEN
         final List<Task> actual = controller.list();
@@ -49,7 +49,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task title은 기본 생성된 Task의 title과 같아야 한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 목록조회 요청 시 반환된 Task title은 기본 생성된 Task의 title과 같다")
     void whenList_returnEqualTitle() {
         // WHEN
         final List<Task> actual = controller.list();
@@ -59,7 +59,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 id는 기본 생성된 Task의 id와 같아야 한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 id는 기본 생성된 Task의 id와 같다")
     void whenDetail_returnEqualId() {
         // WHEN
         final Task actual = controller.detail(TASK_ID);
@@ -69,7 +69,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 title은 기본 생성된 Task의 title과 같아야 한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 상세조회 요청 시 반환된 Task의 title은 기본 생성된 Task의 title과 같다")
     void whenDetail_returnEqualTitle() {
         // WHEN
         final Task actual = controller.detail(TASK_ID);
@@ -78,7 +78,7 @@ class TaskControllerTest {
         assertThat(actual.getTitle()).isEqualTo(TASK_TITLE);
     }
     @Test
-    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 생성 요청 시 Task 목록 요청에 따른 반환값의 사이즈는 1이 증가해야 한다")
+    @DisplayName("기본 생성된 Task가 하나만 존재하면, 해당 Task 생성 요청 시 Task 목록 요청에 따른 반환값의 사이즈는 1이 증가한다")
     void whenCreate_shouldSizeUp() {
         // WHEN
         controller.create(new Task(INPUT_TITLE));
@@ -90,7 +90,7 @@ class TaskControllerTest {
 
 
     @Test
-    @DisplayName("Task 생성 요청 시 반환된 Task의 title은 요청 시 전달한 title과 같아야 한다")
+    @DisplayName("Task 생성 요청 시 반환된 Task의 title은 요청 시 전달한 title과 같다")
     void whenCreate_returnTaskWithFields() {
         // WHEN
         final Task actual = controller.create(new Task(INPUT_TITLE));
