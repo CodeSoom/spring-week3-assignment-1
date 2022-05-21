@@ -4,12 +4,14 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-
+@DisplayName("TaskController 클래스")
 class TaskControllerTest {
 
     private TaskController taskController;
@@ -50,17 +52,37 @@ class TaskControllerTest {
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
-    @Test
-    void create() {
-        int oldSize = taskController.list().size();
+    @Nested
+    @DisplayName("create 메서드는")
+    class Describe_crate {
 
-        Task task = new Task();
-        task.setTitle(TASK_TITLE);
-        taskController.create(task);
+        int oldSize;
 
-        int newSize = taskController.list().size();
-        assertThat(newSize - oldSize).isEqualTo(1);
+        @Nested
+        @DisplayName("텀을 두고 task를 2개 생성한다면")
+        class Context_create {
+
+            @BeforeEach
+            void setUp() {
+                oldSize = taskController.list().size();
+            }
+
+            int subject() {
+                Task task = new Task();
+                task.setTitle(TASK_TITLE);
+                taskController.create(task);
+                return taskController.list().size();
+            }
+
+            @Test
+            @DisplayName("새로운 task 크기에서 이전 task 크기를 빼면 1이다")
+            void create() {
+                int newSize = subject();
+                assertThat(newSize - oldSize).isEqualTo(1);
+            }
+        }
     }
+
 
     @Test
     void update() {
