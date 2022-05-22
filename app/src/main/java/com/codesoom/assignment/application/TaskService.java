@@ -36,7 +36,10 @@ public class TaskService {
     public Task updateTask(Long id, Task source) {
         return tasks.stream()
                 .filter(task -> task.getId().equals(id))
-                .peek(task -> task.setTitle(source.getTitle()))
+                .map(task -> {
+                                task.setTitle(source.getTitle());
+                                return task;
+                            })
                 .findFirst()
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
