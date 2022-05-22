@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("TaskTest_클래스의")
+@DisplayName("Task_클래스의")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskTest {
     private static final Long TASK_ID_ONE = 1L;
