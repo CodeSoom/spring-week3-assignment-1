@@ -32,7 +32,7 @@ class TaskServiceTest {
     @Nested
     class getTasks_메서드는 {
         @Nested
-        class 만약_Task가_있으면 {
+        class Task가_있으면 {
             @Test
             void Task의_리스트를_반환한다() {
                 final List<Task> list = taskService.getTasks();
@@ -46,7 +46,7 @@ class TaskServiceTest {
     @Nested
     class getTask_메서드는 {
         @Nested
-        class 만약_요청한_Task의_id가_있으면 {
+        class 요청한_Task의_id가_있으면 {
             @Test
             void id에_해당하는_Task를_반환한다() {
                 assertThat(TASK_TITLE_ONE).isEqualTo(taskService.getTask(TASK_ID_ONE).getTitle());
@@ -54,7 +54,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        class 만약_요청한_Task의_id가_없으면 {
+        class 요청한_Task의_id가_없으면 {
             @Test
             void TaskNotFoundException를_반환한다() {
                 final Long UNKNOWN_ID = TASK_ID_ONE + 10;
@@ -68,7 +68,7 @@ class TaskServiceTest {
     @Nested
     class createTask_메서드는 {
         @Nested
-        class 만약_요청한_Task의_id가_없으면 {
+        class 요청한_Task의_id가_없으면 {
             @Test
             void 새로운_Task에_해당_id를_생성한다() {
                 Task task = new Task();
@@ -86,7 +86,7 @@ class TaskServiceTest {
     @Nested
     class update_메서드는 {
         @Nested
-        class 만약_해당_id가_있으면 {
+        class 요청한_Task의_id가_있으면 {
             @Test
             void Task의_title을_수정하고_해당_title을_반환한다() {
                 Task source = new Task();
@@ -101,7 +101,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        class 만약_해당_id가_없으면 {
+        class 요청한_Task의_id가_없으면 {
             @Test
             void TaskNotFoundException를_반환한다() {
                 Task source = new Task();
@@ -118,7 +118,7 @@ class TaskServiceTest {
     @Nested
     class delete_메서드는 {
         @Nested
-        class 만약_해당_id가_있으면 {
+        class 요청한_Task의_id가_있으면 {
             @Test
             void 해당_id의_Task를_삭제한다() {
                 final Long OLD_SIZE = Long.valueOf(taskService.getTasks().size());
