@@ -1,6 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ class TaskControllerTest {
 
 	@BeforeEach
 	void setUp() {
-		taskService = new TaskService();
+		taskService = spy(new TaskService());
 		taskController = new TaskController(taskService);
 	}
 
@@ -39,11 +40,13 @@ class TaskControllerTest {
 	}
 
 	@Test
-	@DisplayName("task 목록을 받아온다")
+	@DisplayName("task 리스트를 받아온다")
 	void list() {
 		create();
 		List<Task> taskList = taskController.list();
 		assertThat(taskList).hasSize(2);
+
+		verify(taskService).getTasks();
 	}
 
 	@Test
@@ -51,6 +54,8 @@ class TaskControllerTest {
 	void detailWithInvalidId() {
 		assertThatThrownBy(() -> taskController.detail(1L))
 			.isInstanceOf(TaskNotFoundException.class);
+
+		verify(taskService).getTask(1L);
 	}
 
 	@Test
@@ -61,9 +66,13 @@ class TaskControllerTest {
 		assertThat(task1.getId()).isEqualTo(1L);
 		assertThat(task1.getTitle()).isEqualTo(TEST_TASK_1_NAME);
 
+		verify(taskService).getTask(1L);
+
 		Task task2 = taskController.detail(2L);
 		assertThat(task2.getId()).isEqualTo(2L);
 		assertThat(task2.getTitle()).isEqualTo(TEST_TASK_2_NAME);
+
+		verify(taskService).getTask(2L);
 	}
 
 	@Test
@@ -77,6 +86,8 @@ class TaskControllerTest {
 		Task target = taskController.detail(1L);
 
 		assertThat(target.getTitle()).isEqualTo(TEST_TASK_UPDATE_NAME);
+
+		verify(taskService).updateTask(1L, source);
 	}
 
 	@Test
@@ -90,6 +101,8 @@ class TaskControllerTest {
 		Task target = taskController.detail(1L);
 
 		assertThat(target.getTitle()).isEqualTo(TEST_TASK_UPDATE_NAME);
+
+		verify(taskService).updateTask(1L, source);
 	}
 
 	@Test
@@ -103,5 +116,7 @@ class TaskControllerTest {
 
 		assertThatThrownBy(() -> taskController.detail(1L))
 			.isInstanceOf(TaskNotFoundException.class);
+
+		verify(taskService).deleteTask(1L);
 	}
 }
