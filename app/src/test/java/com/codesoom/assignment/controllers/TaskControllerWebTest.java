@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("TaskController 클래스는")
 public class TaskControllerWebTest {
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -46,9 +43,10 @@ public class TaskControllerWebTest {
 	}
 
 	@Nested
-	class tasks_get_method는 {
-
+	@DisplayName("/tasks/ get method 는 ")
+	class getTasks {
 		@Test
+		@DisplayName("tasks 리스트를 받아온다")
 		void tasks_리스트를_받아온다() throws Exception {
 			create();
 			mockMvc.perform(get("/tasks")).andExpect(status().isOk());
@@ -56,10 +54,13 @@ public class TaskControllerWebTest {
 	}
 
 	@Nested
-	class tasks_id_get_method는 {
+	@DisplayName("/tasks/{id} get method 는 ")
+	class getTask {
 		@Nested
+		@DisplayName("ID가 유효할 때")
 		class ID가_유효할때 {
 			@Test
+			@DisplayName("해당 ID의 task 를 반환한다")
 			void task를_받아온다() throws Exception {
 				create();
 				mockMvc.perform(get("/tasks/1")).andExpect(status().isOk()).andDo(print());
@@ -67,8 +68,10 @@ public class TaskControllerWebTest {
 		}
 
 		@Nested
+		@DisplayName("ID가 유효하지 않을 때")
 		class ID가_유효하지_않을때 {
 			@Test
+			@DisplayName("NOT FOUND 를 반환한다")
 			void NOT_FOUND를_뱉는다() throws Exception {
 				mockMvc.perform(get("/tasks/100")).andExpect(status().isNotFound()).andDo(print());
 			}
@@ -76,8 +79,10 @@ public class TaskControllerWebTest {
 	}
 
 	@Nested
-	class tasks_id_update_method는 {
+	@DisplayName("/tasks/{id} update method 는 ")
+	class updateTask {
 		@Test
+		@DisplayName("task title 를 변경한다")
 		void task_title를_변경한다() throws Exception {
 			create();
 			Task task = new Task();
@@ -89,8 +94,10 @@ public class TaskControllerWebTest {
 	}
 
 	@Nested
-	class tasks_id_patch_method는 {
+	@DisplayName("/tasks/{id} patch method 는 ")
+	class patchTask {
 		@Test
+		@DisplayName("title 를 변경한다")
 		void task_title를_변경한다() throws Exception {
 			create();
 			Task task = new Task();
@@ -102,8 +109,10 @@ public class TaskControllerWebTest {
 	}
 
 	@Nested
-	class tasks_id_delete_method는 {
+	@DisplayName("/tasks/{id} delete method 는 ")
+	class deleteTask {
 		@Test
+		@DisplayName("task 를 제거한다")
 		void task를_제거한다() throws Exception {
 			create();
 			mockMvc.perform(delete("/tasks/1").contentType(MediaType.APPLICATION_JSON))
