@@ -14,9 +14,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@DisplayName("ComplexNumber 클래스")
+@DisplayName("TaskController 클래스는")
 class TaskControllerTest {
 	private static final String TEST_TASK_1_NAME = "test1";
 	private static final String TEST_TASK_2_NAME = "test2";
