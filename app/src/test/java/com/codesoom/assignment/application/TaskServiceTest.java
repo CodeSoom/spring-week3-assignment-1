@@ -43,27 +43,24 @@ class TaskServiceTest {
     @Test
     void getTask(){
 
-        Task task = taskService.getTask(1L);
-
-        assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
         assertThat(taskService.getTask(1L).getTitle()).isEqualTo("test");
-
-        assertThatThrownBy(() -> taskService.getTask(1L)).isInstanceOf(TaskNotFoundException.class);
+        // assertThatThrownBy(() -> taskService.getTask(1L)).isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
     void updateTask(){
-        Task updatedTask = new Task();
-        updatedTask.setTitle("updated test");
+        Task task = new Task();
+        task.setTitle("updated test");
         taskService.updateTask(1L, updatedTask);
         assertThat(taskService.getTask(1L).getTitle()).isEqualTo("updated test");
     }
 
     @Test
     void deleteTask(){
-        assertThat(taskService.getTasks()).hasSize(1);
+        int originSize = taskService.getTasks().size();
         taskService.deleteTask(1L);
-        assertThat(taskService.getTasks()).hasSize(0);
+        int newSize = taskService.getTasks().size();
+        assertThat(originSize-newSize).isEqualTo(1);
     }
 
 

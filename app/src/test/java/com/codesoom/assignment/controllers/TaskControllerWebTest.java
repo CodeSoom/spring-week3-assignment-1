@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class TaskControllerWebTest {
 
+    private TaskController controller;
+    private TaskService taskService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -33,12 +36,8 @@ public class TaskControllerWebTest {
 
     @BeforeEach
     void setUp(){
-        List<Task> tasks = new ArrayList<>();
-        Task task = new Task();
-        task.setTitle("Test Task");
-        tasks.add(task);
-
-        given(taskService.getTasks()).willReturn(tasks);
+        taskService = new TaskService();
+        controller = new TaskController(taskService);
     }
 
     @Test
@@ -56,13 +55,22 @@ public class TaskControllerWebTest {
 
     @Test
     void detailWithValidId() throws Exception {
-
         Task task = new Task();
-        given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
+        given(taskService.getTask(1L).willReturn(task));
+
+        taskService.createTask(task);
+
+        mockMvc.perform(get("/tasks/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void detailWithInValidId() throws Exception {
+        given(taskService.getTask(1L)).willThrow(new TaskNotFoundException(100L));
 
         taskService.createTask(task);
 
         mockMvc.perform(get("/tasks/100"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 }
