@@ -1,8 +1,9 @@
 package com.codesoom.assignment.controllers;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +43,13 @@ class TaskControllerTest {
 	@Test
 	@DisplayName("task 리스트를 받아온다")
 	void list() {
+		Task task = new Task();
+		task.setTitle(TEST_TASK_1_NAME);
+
+		given(taskService.getTasks()).willReturn(Arrays.asList(task));
 		create();
 		List<Task> taskList = taskController.list();
-		assertThat(taskList).hasSize(2);
+		assertThat(taskList).hasSize(1);
 
 		verify(taskService).getTasks();
 	}
