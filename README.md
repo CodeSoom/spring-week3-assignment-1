@@ -20,6 +20,62 @@
 - 모든 인수 테스트를 통과해야 합니다.
 - 테스트 커버리지 100%를 달성해야 합니다.
 
+## 테스트 시나리오
+### Domain Model (Task)
+- 현재 타이틀 조회
+  - [x] Task 객체 내 현재 title를 반환해야 한다.
+- 타이틀 유효성 검증
+  - [x] title이 존재하는 경우, true 반환해야 한다.
+  - [x] title이 존재하지 않는 경우, false 반환해야 한다.
+- 타이틀 수정
+  - [x] title을 수정하면 수정 후, 현재의 task 반환해야 한다.
+- Task 객체 이용한 Task 객체 생성
+  - [x] id와 Task 객체를 이용하여 동일한 타이틀을 갖는 객체를 생성하고 반환한다.
+### Service
+- 할일 목록 전체 조회
+  - [x] 목록에 할일이 있는 경우, 목록을 반환한다.
+  - [x] 목록에 할일이 하나도 없는 경우, 빈 목록을 반환한다.
+- 할일 목록 단건 조회
+  - [x] 일치하는 할일이 있는 경우, 그에 맞는 Task 객체를 반환한다.
+  - [x] 일치하는 할일이 없는 경우, TaskNotFoundException 발생 시킨다.
+- 할일 등록
+  - 입력 받은 title이 유효하다면,
+    - [x] 입력 받은 title에 대해 신규 객체를 생성하여 목록에 추가하고 이를 반환한다.
+    - [x] 입력 후 목록의 크기는 이전 목록 크기에서 1 증가된다.
+  - 입력 받은 title이 유효하지 않다면,
+    - [x] TaskHasInvalidTitleException 예외를 발생 시킨다.
+- 할일 수정
+  - 입력 받은 id와 title이 유효하다면,
+    - [x] 수정하여 목록에 반영하고 해당 Task 객체를 반환한다.
+  - 입력 받은 id와 title이 유효하지 않다면,
+    - [x] 존재하지 않는 id 라면, TaskNotFoundException 예외를 발생 시킨다.
+    - [x] title이 유효하지 않다면, TaskNotFoundException 예외를 발생 시킨다.
+- 할일 삭제
+  - 입력 받은 id가 유효하다면,
+    - [x] 이를 목록에서 삭제 한다. 이때의 목록 사이즈는 1 감소한다.
+    - [x] 삭제 후 재조회 시, TaskNotFoundException 예외를 발생 시킨다.
+  - 입력 받은 id가 유효하지 않다면,
+    - [x] TaskNotFoundException 예외를 발생 시킨다.
+### Controller
+- GET
+  - /tasks/
+    - [x] 할일 목록을 조회하면, 200 OK를 반환한다.
+  - /tasks/{id}
+    - [x] 할일이 존재하면, 200 OK를 반환한다.
+    - [x] 할일이 존재하지 않으면, 404 NOT FOUND를 반환한다.
+- POST
+  - /tasks/
+    - [x] title을 입력하면, 201 CREATED를 반환한다.
+- PUT/PATCH
+  - /tasks/{id}
+    - [x] 유효한 id와 task를 입력하면, 200 OK를 반환한다.
+    - [x] id가 존재하지 않으면, 404 NOT FOUND를 반환한다.
+    - [x] title을 입력하지 않으면, 400 BAD REQUEST를 반환한다.
+- DELETE
+  - /tasks/{id}
+    - [x] id가 존재하면, 204 NO CONTENT를 반환한다.
+    - [x] id가 존재하지 않으면, 404 NOT FOUND를 반환한다.
+
 ## API 실행하기
 
 ```bash

@@ -1,7 +1,8 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
-import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.domain.Task;
+import com.codesoom.assignment.exception.TaskHasInvalidTitleException;
+import com.codesoom.assignment.exception.TaskNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,46 +10,58 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
-    private Long newId = 0L;
 
-    public List<Task> getTasks() {
+    private List<Task> tasks;
+    private Long maxId = 0L;
+
+    public TaskService() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public List<Task> list() {
         return tasks;
     }
 
-    public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+    public Task detail(Long id) {
+        return findTaskById(id);
     }
 
-    public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+    public Task create(Task task) {
+        if (!task.hasValidTitle()) {
+            throw new TaskHasInvalidTitleException();
+        }
 
-        tasks.add(task);
-
-        return task;
+        Task createdTask = Task.createNewTask(generateId(), task);
+        tasks.add(createdTask);
+        return createdTask;
     }
 
-    public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
+    public Task update(Long id, Task task) {
 
-        return task;
-    }
+        if (!task.hasValidTitle()) {
+            throw new TaskHasInvalidTitleException();
+        }
 
-    public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
+        Task foundTask = findTaskById(id);
+        foundTask.changeTitle(task);
 
-        return task;
+        return foundTask;
     }
 
     private Long generateId() {
-        newId += 1;
-        return newId;
+        maxId += 1;
+        return maxId;
+    }
+
+    private Task findTaskById(Long id) {
+        return tasks.stream()
+                .filter((task) -> task.isMyId(id))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException());
+    }
+
+    public void delete(Long id) {
+        Task foundTask = findTaskById(id);
+        tasks.remove(foundTask);
     }
 }
