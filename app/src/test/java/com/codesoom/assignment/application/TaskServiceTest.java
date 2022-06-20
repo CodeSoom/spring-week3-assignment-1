@@ -137,7 +137,6 @@ class TaskServiceTest {
         void setup() {
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
-            savedtask.setId(1L);
             service.createTask(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
@@ -159,7 +158,7 @@ class TaskServiceTest {
         @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
         class has_task {
             @Test
-            @DisplayName("task를 업데이트 한다.")
+            @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
             void update_task() {
                 assertThat(service.updateTask(TASK_ID,source).getId()).isEqualTo(TASK_ID);
                 assertThat(service.updateTask(TASK_ID,source).getTitle()).isEqualTo(UPDATED_TITLE);
@@ -168,7 +167,38 @@ class TaskServiceTest {
 
     }
 
-    @Test
-    void deleteTask() {
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
+        @BeforeEach
+        void setup() {
+            Task savedtask = new Task();
+            savedtask.setTitle(TASK_TITLE);
+            service.createTask(savedtask);
+        }
+
+        @Nested
+        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        class No_task {
+
+            @Test
+            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            void it_throws_TaskNotFoundException() {
+                assertThatThrownBy(() -> service.deleteTask(INVALID_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        class has_task {
+            @Test
+            @DisplayName("task를 삭제하고 삭제된 task를 리턴한다.")
+            void delete_task() {
+                assertThat(service.deleteTask(TASK_ID).getId()).isEqualTo(TASK_ID);
+                assertThatThrownBy(() -> service.deleteTask(TASK_ID))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }
