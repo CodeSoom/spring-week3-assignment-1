@@ -24,34 +24,37 @@ class TaskTest {
 
     @DisplayName("getId 동작 테스트")
     @Test
-    public void getIdTest() throws Exception {
+    public void getIdTest() {
         //given
         //when
         Long receivedId = task.getId();
         //then
         assertThat(receivedId).isEqualTo(INITIAL_ID);
     }
+
     @DisplayName("getTitle 동작 테스트")
     @Test
-    public void getTitleTest() throws Exception {
+    public void getTitleTest() {
         //given
         //when
         String receivedTitle = task.getTitle();
         //then
         assertThat(receivedTitle).isEqualTo(INITIAL_TITLE);
     }
+
     @DisplayName("setId 동작 테스트")
     @Test
-    public void setIdTest() throws Exception {
+    public void setIdTest() {
         //given
         //when
         task.setId(TEST_ID);
         //then
         assertThat(task.getId()).isEqualTo(TEST_ID);
     }
+
     @DisplayName("setTitle 동작 테스트")
     @Test
-    public void setTitleTest() throws Exception {
+    public void setTitleTest() {
         //given
         //when
         task.setTitle(TEST_TITLE);
