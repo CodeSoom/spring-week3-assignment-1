@@ -68,12 +68,23 @@ public class ServiceTest {
 
     @Test
     public void getTasks_등록된_task_2개_이상일_때() {
-        // GIVEN:
+        // GIVEN: 2개 이상의 task가 등록된 상태
+        Task createdTask1 = this.service.createTask(dummyTask("1"));
+        Task createdTask2 = this.service.createTask(dummyTask("2"));
+        Task createdTask3 = this.service.createTask(dummyTask("3"));
+        this.service.createTask(createdTask1);
+        this.service.createTask(createdTask2);
+        this.service.createTask(createdTask3);
 
-        // WHEN:
+        // WHEN: getTasks() 함수 호출
+        List<Task> tasks = this.service.getTasks();
 
-        // THEN:
-
+        // THEN: 등록된 모든 task가 List 형태로 반환
+        assertThat(tasks).hasSize(3);
+        assertThat(tasks).contains(createdTask1);
+        assertThat(tasks).contains(createdTask2);
+        assertThat(tasks).contains(createdTask3);
+        assertThat(tasks).doesNotContain(dummyTask("dummy"));
     }
 
     @Test
