@@ -19,7 +19,7 @@ public class ServiceTest {
 
     @Test
     public void createTask() {
-        // GIVEN: List에 아무 것도 없는 상태
+        // GIVEN: 등록된 Task가 아무 것도 없는 상태
 
         // WHEN: 3개의 dummy task가 추가됨
         Task createdTask1 = this.service.createTask(dummyTask("1"));
