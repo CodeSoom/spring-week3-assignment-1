@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ServiceTest {
     private TaskService service;
@@ -89,22 +90,42 @@ public class ServiceTest {
 
     @Test
     public void getTask_찾는_id가_없을_때() {
-        // GIVEN:
+        // GIVEN: 여러 task가 등록된 상태
+        Task createdTask1 = this.service.createTask(dummyTask("1"));
+        Task createdTask2 = this.service.createTask(dummyTask("2"));
+        Task createdTask3 = this.service.createTask(dummyTask("3"));
+        this.service.createTask(createdTask1);
+        this.service.createTask(createdTask2);
+        this.service.createTask(createdTask3);
 
-        // WHEN:
-
-        // THEN:
-
+        // WHEN: 등록되지 않은 ID를 조회하려고 함
+        assertThatThrownBy(() -> this.service.getTask(100L))
+        // THEN: Throws TaskNotFoundException
+                .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
     public void getTask_찾는_id가_있을_때() {
-        // GIVEN:
+        // GIVEN: 여러 task가 등록된 상태
+        Task createdTask1 = this.service.createTask(dummyTask("1"));
+        Task createdTask2 = this.service.createTask(dummyTask("2"));
+        Task createdTask3 = this.service.createTask(dummyTask("3"));
+        this.service.createTask(createdTask1);
+        this.service.createTask(createdTask2);
+        this.service.createTask(createdTask3);
 
-        // WHEN:
+        // WHEN: 등록되어있는 ID를 조회하려고 함
+        Task task1 = this.service.getTask(createdTask1.getId());
+        Task task2 = this.service.getTask(createdTask2.getId());
+        Task task3 = this.service.getTask(createdTask3.getId());
 
-        // THEN:
-
+        // THEN: Throws TaskNotFoundException
+        assertThat(task1).isNotNull();
+        assertThat(task1).isEqualTo(createdTask1);
+        assertThat(task2).isNotNull();
+        assertThat(task2).isEqualTo(createdTask2);
+        assertThat(task3).isNotNull();
+        assertThat(task3).isEqualTo(createdTask3);
     }
 
     @Test
