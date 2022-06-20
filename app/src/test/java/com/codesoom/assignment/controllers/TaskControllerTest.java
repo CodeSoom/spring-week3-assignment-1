@@ -164,6 +164,43 @@ class TaskControllerTest {
         }
 
     }
+    @Nested
+    @DisplayName("patch 메소드는")
+    class Describe_patch {
+        Task source;
+        @BeforeEach
+        void setup() {
+            Task savedtask = new Task();
+            savedtask.setTitle(TASK_TITLE);
+            controller.create(savedtask);
+            source = new Task();
+            source.setTitle(UPDATED_TITLE);
+        }
+
+        @Nested
+        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        class No_task {
+
+            @Test
+            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            void it_throws_TaskNotFoundException() {
+                assertThatThrownBy(() -> controller.patch(INVALID_ID,source))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        class Has_task {
+            @Test
+            @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
+            void update_task() {
+                assertThat(controller.patch(TASK_ID,source).getId()).isEqualTo(TASK_ID);
+                assertThat(controller.patch(TASK_ID,source).getTitle()).isEqualTo(UPDATED_TITLE);
+            }
+        }
+
+    }
 
     @Nested
     @DisplayName("delete 메소드는")
