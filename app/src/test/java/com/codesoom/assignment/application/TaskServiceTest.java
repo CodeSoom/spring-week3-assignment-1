@@ -43,7 +43,7 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("만약 task가 3개 있으면")
-        class Have_task {
+        class Has_task {
             final static int TASK_SIZE = 3;
 
             @BeforeEach
@@ -80,7 +80,7 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
-        class has_task {
+        class Has_task {
             @BeforeEach
             void setup() {
                 Task task = new Task();
@@ -103,7 +103,7 @@ class TaskServiceTest {
     class Describe_createTask {
         @Nested
         @DisplayName("만약 task가 등록되었을 때")
-        class create_Task {
+        class Create_Task {
             Task task;
 
             @BeforeEach
@@ -156,7 +156,7 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
-        class has_task {
+        class Has_task {
             @Test
             @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
             void update_task() {
@@ -191,7 +191,7 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
-        class has_task {
+        class Has_task {
             @Test
             @DisplayName("task를 삭제하고 삭제된 task를 리턴한다.")
             void delete_task() {
