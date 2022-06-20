@@ -109,6 +109,7 @@ class TaskControllerTest {
             void setup() {
                 task = new Task();
                 task.setTitle(TASK_TITLE);
+                controller = new TaskController(new TaskService());
             }
 
             @Test
