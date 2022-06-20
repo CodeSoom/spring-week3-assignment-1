@@ -43,45 +43,108 @@ public class ServiceTest {
 
     @Test
     public void getTasks_등록된_task_없을_때() {
+        // GIVEN: 등록된 Task가 없는 상태
+
+        // WHEN: getTasks() 함수 호출
         List<Task> tasks = this.service.getTasks();
 
+        // THEN: 빈 List가 반환
         assertThat(tasks).hasSize(0);
     }
 
     @Test
     public void getTasks_등록된_task_1개일_때() {
+        // GIVEN: 하나의 Task만 등록된 상태
         Task createdTask = this.service.createTask(dummyTask("1"));
         this.service.createTask(createdTask);
 
+        // WHEN: getTasks() 함수 호출
         List<Task> tasks = this.service.getTasks();
 
+        // THEN: 하나의 element를 가진 List가 반환
         assertThat(tasks).hasSize(1);
         assertThat(tasks).contains(createdTask);
     }
 
     @Test
-    public void getTasks_등록된_task_2개_이상일_때() {}
+    public void getTasks_등록된_task_2개_이상일_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void getTask_찾는_id가_없을_때() {}
+    public void getTask_찾는_id가_없을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void getTask_찾는_id가_있을_때() {}
+    public void getTask_찾는_id가_있을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void 새로운_task_생성() {}
+    public void 새로운_task_생성() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void 수정하려는_id가_없을_때() {}
+    public void 수정하려는_id가_없을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void 수정하려는_id가_있을_때() {}
+    public void 수정하려는_id가_있을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void 지우려는_id가_없을_때() {}
+    public void 지우려는_id가_없을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
     @Test
-    public void 지우려는_id가_있을_때() {}
+    public void 지우려는_id가_있을_때() {
+        // GIVEN:
+
+        // WHEN:
+
+        // THEN:
+
+    }
 
 
 
