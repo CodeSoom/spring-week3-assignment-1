@@ -31,9 +31,9 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
     @MockBean
     private TaskService taskService;
 
-    private final Task dummyTask1 = dummyTask("1");
-    private final Task dummyTask2 = dummyTask("2");
-    private final Task dummyTask3 = dummyTask("3");
+    private final Task dummyTask1 = dummyTask(1L, "1");
+    private final Task dummyTask2 = dummyTask(2L, "2");
+    private final Task dummyTask3 = dummyTask(3L, "3");
 
     @Nested
     @DisplayName("GET /tasks API는")
@@ -78,6 +78,50 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
                         .andExpect(content().string(containsString(dummyTask1.getTitle())))
                         .andExpect(content().string(containsString(dummyTask2.getTitle())))
                         .andExpect(content().string(containsString(dummyTask3.getTitle())));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /tasks/{id} API는")
+    class Describe_GET_task_id {
+
+        @Nested
+        @DisplayName("해당 id를 가진 task가 없다면")
+        class Context_no_tasks {
+
+            @Test
+            @DisplayName("404 NOT FOUND 예외를 던진다")
+            void it_throws_404_exception() throws Exception {
+                given(taskService.getTask(Long.MAX_VALUE))
+                        .willThrow(new TaskNotFoundException(Long.MAX_VALUE));
+
+                mockMvc.perform(get("/task/" + Long.MAX_VALUE))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("해당 id를 가진 task가 있다면")
+        class Context_multiple_tasks {
+            private List<Task> taskList = new ArrayList<>();
+
+            @BeforeEach
+            void setUp() {
+                taskList.add(dummyTask1);
+                taskList.add(dummyTask2);
+                taskList.add(dummyTask3);
+            }
+
+            @Test
+            @DisplayName("200 OK와 task를 반환한다")
+            void it_returns_task() throws Exception {
+                given(taskService.getTask(dummyTask1.getId()))
+                        .willReturn(dummyTask1);
+
+                mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask1.getTitle())));
             }
         }
     }
