@@ -11,9 +11,11 @@ class AppTest {
 
     @BeforeEach
     void setUp(){
+        app = new App();
     }
 
     @Test
     void getGreeting() {
+        assertThat(this.app.getGreeting()).isEqualTo("Hello, world!");
     }
 }
