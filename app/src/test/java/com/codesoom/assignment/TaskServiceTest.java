@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스")
-public class TaskServiceTest {
+public class TaskServiceTest extends TestHelper {
     private TaskService service;
 
     private final Task dummyTask1 = dummyTask("1");
@@ -244,10 +244,5 @@ public class TaskServiceTest {
         }
     }
 
-    private Task dummyTask(String title) {
-        Task newTask = new Task();
-        newTask.setTitle(title);
 
-        return newTask;
-    }
 }
