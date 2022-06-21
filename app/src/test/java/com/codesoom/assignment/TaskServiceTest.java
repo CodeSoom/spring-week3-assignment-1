@@ -20,6 +20,18 @@ public class TaskServiceTest {
     private final Task dummyTask2 = dummyTask("2");
     private final Task dummyTask3 = dummyTask("3");
 
+    private Task subject1() {
+        return service.createTask(dummyTask1);
+    }
+
+    private Task subject2() {
+        return service.createTask(dummyTask2);
+    }
+
+    private Task subject3() {
+        return service.createTask(dummyTask3);
+    }
+
     @BeforeEach
     private void setUp() {
         this.service = new TaskService();
@@ -46,7 +58,7 @@ public class TaskServiceTest {
         class Context_only_one_task {
             @BeforeEach
             void setup() {
-                service.createTask(dummyTask1);
+                subject1();
             }
 
             @Test
@@ -64,9 +76,9 @@ public class TaskServiceTest {
         class Context_multiple_tasks {
             @BeforeEach
             void setup() {
-                service.createTask(dummyTask1);
-                service.createTask(dummyTask2);
-                service.createTask(dummyTask3);
+                subject1();
+                subject2();
+                subject3();
             }
 
             @Test
@@ -105,7 +117,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task = service.createTask(dummyTask1);;
+                task = subject1();
             }
 
             @Test
@@ -126,7 +138,7 @@ public class TaskServiceTest {
             @Test
             @DisplayName("Task를 추가하고, 추가된 object를 반환한다")
             void it_returns_added_task() {
-                Task task = service.createTask(dummyTask1);
+                Task task = subject1();
 
                 assertThat(task.getId()).isInstanceOf(Long.class);
                 assertThat(task.getTitle()).isEqualTo(dummyTask1.getTitle());
@@ -142,9 +154,9 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task1 = service.createTask(dummyTask1);
-                task2 = service.createTask(dummyTask2);
-                task3 = service.createTask(dummyTask3);
+                task1 = subject1();
+                task2 = subject2();
+                task3 = subject3();
             }
 
             @Test
@@ -180,7 +192,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task = service.createTask(dummyTask1);
+                task = subject1();
             }
 
             @Test
@@ -217,7 +229,7 @@ public class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                task = service.createTask(dummyTask1);
+                task = subject1();
             }
 
             @Test
