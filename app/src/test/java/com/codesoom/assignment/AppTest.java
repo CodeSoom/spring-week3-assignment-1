@@ -2,6 +2,7 @@ package com.codesoom.assignment;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,5 +18,14 @@ class AppTest {
     @Test
     void getGreeting() {
         assertThat(this.app.getGreeting()).isEqualTo("Hello, world!");
+    }
+
+    @Test
+    public void applicationContextLoaded() {
+    }
+
+    @Test
+    public void applicationContextTest() {
+        App.main(new String[] {});
     }
 }
