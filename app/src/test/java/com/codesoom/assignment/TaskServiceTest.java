@@ -16,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class TaskServiceTest extends TestHelper {
     private TaskService service;
 
-    private final Task dummyTask1 = dummyTask("1");
-    private final Task dummyTask2 = dummyTask("2");
-    private final Task dummyTask3 = dummyTask("3");
+    private final Task dummyTask1 = dummyTask(1L, "1");
+    private final Task dummyTask2 = dummyTask(2L, "2");
+    private final Task dummyTask3 = dummyTask(3L, "3");
 
     private Task subject1() {
         return service.createTask(dummyTask1);

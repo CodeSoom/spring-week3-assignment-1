@@ -9,4 +9,12 @@ abstract class TestHelper {
 
         return newTask;
     }
+
+    public Task dummyTask(Long id, String title) {
+        Task newTask = new Task();
+        newTask.setId(id);
+        newTask.setTitle(title);
+
+        return newTask;
+    }
 }
