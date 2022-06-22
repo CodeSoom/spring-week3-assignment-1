@@ -71,7 +71,7 @@ class TaskServiceTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> service.getTask(INVALID_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -147,7 +147,7 @@ class TaskServiceTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> service.updateTask(INVALID_ID,source))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -182,7 +182,7 @@ class TaskServiceTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> service.deleteTask(INVALID_ID))
                         .isInstanceOf(TaskNotFoundException.class);

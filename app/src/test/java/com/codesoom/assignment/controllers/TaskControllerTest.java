@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
     static final String TASK_TITLE = "Test Title";
@@ -57,7 +56,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("크기 3의 리스트를 반환한다.")
+            @DisplayName("크기 3의 리스트를 리턴한다.")
             void it_retruns_tasks() {
                 assertThat(controller.list()).hasSize(TASK_SIZE);
             }
@@ -72,7 +71,7 @@ class TaskControllerTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> controller.detail(INVALID_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -90,7 +89,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("찾은 task를 반환한다.")
+            @DisplayName("찾은 task를 리턴한다.")
             void return_found_task() {
                 assertThat(controller.detail(TASK_ID).getId()).isEqualTo(TASK_ID);
                 assertThat(controller.detail(TASK_ID).getTitle()).isEqualTo(TASK_TITLE);
@@ -119,7 +118,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("getTask를 통해 찾을 수 있다. ")
+            @DisplayName("getTask를 통해 찾을 수 있다.")
             void it_can_be_founded_by_deatil() {
                 assertThatThrownBy(() -> controller.detail(TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -146,7 +145,7 @@ class TaskControllerTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> controller.update(INVALID_ID,source))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -183,7 +182,7 @@ class TaskControllerTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> controller.patch(INVALID_ID,source))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -218,7 +217,7 @@ class TaskControllerTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
                 assertThatThrownBy(() -> controller.delete(INVALID_ID))
                         .isInstanceOf(TaskNotFoundException.class);

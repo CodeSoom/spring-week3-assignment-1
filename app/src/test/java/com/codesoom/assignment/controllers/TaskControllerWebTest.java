@@ -189,7 +189,7 @@ class TaskControllerWebTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() throws Exception {
                 mockMvc.perform(put("/tasks/" + INVALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -235,7 +235,7 @@ class TaskControllerWebTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() throws Exception {
                 mockMvc.perform(put("/tasks/" + INVALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -278,7 +278,7 @@ class TaskControllerWebTest {
         class No_task {
 
             @Test
-            @DisplayName("TasksNotFoundException을 발생시킨다.")
+            @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() throws Exception {
                 mockMvc.perform(delete("/tasks/" + INVALID_ID))
                         .andExpect(status().isNotFound());
