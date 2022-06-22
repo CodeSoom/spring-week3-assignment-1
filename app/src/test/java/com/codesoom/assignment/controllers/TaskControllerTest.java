@@ -33,6 +33,11 @@ class TaskControllerTest {
         @Nested
         @DisplayName("저장되어 있는 task가 없다면")
         class No_task {
+            @BeforeEach
+            void setup() {
+                taskService = new TaskService();
+                controller = new TaskController(taskService);
+            }
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
             void it_return_empty_List() {

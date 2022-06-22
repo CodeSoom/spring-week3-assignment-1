@@ -55,7 +55,7 @@ class TaskControllerWebTest {
     void setup() {
 
         taskService = new TaskService();
-        this.mockMvc = MockMvcBuilders
+        mockMvc = MockMvcBuilders
                 .standaloneSetup(new TaskController(taskService))
                 .setControllerAdvice(TaskErrorAdvice.class)
                 .build();
@@ -67,6 +67,15 @@ class TaskControllerWebTest {
         @Nested
         @DisplayName("저장되어 있는 task가 없다면")
         class No_task {
+            @BeforeEach
+            void setup() {
+
+                taskService = new TaskService();
+                mockMvc = MockMvcBuilders
+                        .standaloneSetup(new TaskController(taskService))
+                        .setControllerAdvice(TaskErrorAdvice.class)
+                        .build();
+            }
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
             void it_returns_empty_List() throws Exception {

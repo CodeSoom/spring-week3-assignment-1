@@ -18,7 +18,7 @@ class TaskServiceTest {
     static final String TASK_TITLE = "Test Title";
     static final Long TASK_ID = 1L;
     static final Long INVALID_ID = 12384L;
-    static final String UPDATED_TITLE= "Test Title Updated";
+    static final String UPDATED_TITLE = "Test Title Updated";
     private TaskService service;
 
     @BeforeEach
@@ -69,6 +69,10 @@ class TaskServiceTest {
         @Nested
         @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
+            @BeforeEach
+            void setup() {
+                service = new TaskService();
+            }
 
             @Test
             @DisplayName("TasksNotFoundException을 던진다.")
@@ -127,6 +131,7 @@ class TaskServiceTest {
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
         Task source;
+
         @BeforeEach
         void setup() {
             Task savedtask = new Task();
@@ -143,7 +148,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
-                assertThatThrownBy(() -> service.updateTask(INVALID_ID,source))
+                assertThatThrownBy(() -> service.updateTask(INVALID_ID, source))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -154,8 +159,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
             void update_task() {
-                assertThat(service.updateTask(TASK_ID,source).getId()).isEqualTo(TASK_ID);
-                assertThat(service.updateTask(TASK_ID,source).getTitle()).isEqualTo(UPDATED_TITLE);
+                assertThat(service.updateTask(TASK_ID, source).getId()).isEqualTo(TASK_ID);
+                assertThat(service.updateTask(TASK_ID, source).getTitle()).isEqualTo(UPDATED_TITLE);
             }
         }
 
