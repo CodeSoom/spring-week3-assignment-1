@@ -31,7 +31,7 @@ class TaskControllerTest {
     @DisplayName("list 메소드는")
     class Describe_list {
         @Nested
-        @DisplayName("만약 task가 없다면")
+        @DisplayName("저장되어 있는 task가 없다면")
         class No_task {
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -67,7 +67,7 @@ class TaskControllerTest {
     @DisplayName("detail 메소드는")
     class Describe_detail {
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -79,7 +79,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @BeforeEach
             void setup() {
@@ -100,7 +100,7 @@ class TaskControllerTest {
     @DisplayName("create 메소드는")
     class Describe_create {
         @Nested
-        @DisplayName("만약 task가 등록되었을 때")
+        @DisplayName("만약 task가 주어지면")
         class Create_Task {
             Task task;
 
@@ -112,19 +112,14 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("등록한 Task를 리턴한다.")
+            @DisplayName("주어진 task를 등록하고 등록한 task를 리턴한다.")
             void it_return_created_task() {
-                assertThat(controller.create(task).getTitle()).isEqualTo(TASK_TITLE);
-            }
-
-            @Test
-            @DisplayName("getTask를 통해 찾을 수 있다.")
-            void it_can_be_founded_by_deatil() {
                 assertThatThrownBy(() -> controller.detail(TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
                 controller.create(task);
                 assertThat(controller.detail(TASK_ID).getTitle()).isEqualTo(TASK_TITLE);
             }
+
         }
     }
     @Nested
@@ -141,7 +136,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -153,7 +148,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @Test
             @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
@@ -178,7 +173,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -190,7 +185,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @Test
             @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
@@ -213,7 +208,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -225,7 +220,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class has_task {
             @Test
             @DisplayName("task를 삭제한다.")

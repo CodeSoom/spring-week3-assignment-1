@@ -31,7 +31,7 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("만약 task가 없다면")
+        @DisplayName("저장되어 있는 task가 없다면")
         class No_task {
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -56,7 +56,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("크기 3의 리스트를 반환한다.")
+            @DisplayName("크기 3의 리스트를 리턴한다.")
             void it_retruns_tasks() {
                 assertThat(service.getTasks()).hasSize(TASK_SIZE);
             }
@@ -67,7 +67,7 @@ class TaskServiceTest {
     @DisplayName("getTask 메소드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -79,7 +79,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @BeforeEach
             void setup() {
@@ -89,7 +89,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("찾은 task를 반환한다.")
+            @DisplayName("찾은 task를 리턴한다.")
             void return_found_task() {
                 assertThat(service.getTask(TASK_ID).getId()).isEqualTo(TASK_ID);
                 assertThat(service.getTask(TASK_ID).getTitle()).isEqualTo(TASK_TITLE);
@@ -102,7 +102,7 @@ class TaskServiceTest {
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
         @Nested
-        @DisplayName("만약 task가 등록되었을 때")
+        @DisplayName("만약 task가 주어지면")
         class Create_Task {
             Task task;
 
@@ -113,14 +113,8 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("등록한 Task를 리턴한다.")
+            @DisplayName("주어진 task를 등록하고 등록한 task를 리턴한다.")
             void it_return_created_task() {
-                assertThat(service.createTask(task).getTitle()).isEqualTo(TASK_TITLE);
-            }
-
-            @Test
-            @DisplayName("getTask를 통해 찾을 수 있다. ")
-            void it_can_be_founded_by_getTask() {
                 assertThatThrownBy(() -> service.getTask(TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
                 service.createTask(task);
@@ -143,7 +137,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -155,7 +149,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @Test
             @DisplayName("task를 업데이트 하고 업데이트된 task를 리턴한다.")
@@ -178,7 +172,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾지 못하면")
+        @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
 
             @Test
@@ -190,7 +184,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("만약 요청한 Id에 해당하는 task를 찾으면")
+        @DisplayName("만약 저장되어 있는 task의 ID가 주어지면")
         class Has_task {
             @Test
             @DisplayName("task를 삭제하고 삭제된 task를 리턴한다.")
