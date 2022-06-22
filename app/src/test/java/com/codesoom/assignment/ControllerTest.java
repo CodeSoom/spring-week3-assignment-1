@@ -18,8 +18,10 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +50,18 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
 
     private ResultActions performDelete(String url) throws Exception {
         return mockMvc.perform(delete(url));
+    }
+
+    private ResultActions performPut(String url, Object object) throws Exception {
+        return mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(object)));
+    }
+
+    private ResultActions performPatch(String url, Object object) throws Exception {
+        return mockMvc.perform(patch(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(object)));
     }
 
     @BeforeEach
@@ -204,5 +218,132 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             }
         }
 
+    }
+
+
+    @Nested
+    @DisplayName("PUT /tasks/{id} API는")
+    class Describe_PUT_tasks_id {
+
+        @Nested
+        @DisplayName("정상적인 요청이라면")
+        class Context_valid_request {
+            private Task task;
+
+            @BeforeEach
+            void setUp() throws Exception {
+                MvcResult result = performPost("/tasks", dummyTask1).andReturn();
+                String content = result.getResponse().getContentAsString();
+                task = mapper.readValue(content, Task.class);
+            }
+
+            @Test
+            @DisplayName("200 OK와 수정된 Task를 반환한다")
+            void it_returns_updated_task() throws Exception {
+                System.out.println(task.getId());
+                performPut("/tasks/" + task.getId(), dummyTask2)
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask2.getTitle())));
+            }
+        }
+
+        @Nested
+        @DisplayName("해당 id를 가진 task가 없다면")
+        class Context_no_tasks {
+
+            @Test
+            @DisplayName("404 NOT FOUND 예외를 던진다")
+            void it_throws_404_exception () throws Exception {
+                performPut("/tasks/1", dummyTask2)
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("Request body가 없는 요청이라면")
+        class Context_no_request_body {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                mockMvc.perform(put("/tasks/1"))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("Request body에 Task가 없는 요청이라면")
+        class Context_no_task {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                performPut("/tasks/1", "")
+                        .andExpect(status().isBadRequest());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH /tasks/{id} API는")
+    class Describe_PATCH_tasks_id {
+
+        @Nested
+        @DisplayName("정상적인 요청이라면")
+        class Context_valid_request {
+            private Task task;
+
+            @BeforeEach
+            void setUp() throws Exception {
+                MvcResult result = performPost("/tasks", dummyTask1).andReturn();
+                String content = result.getResponse().getContentAsString();
+                task = mapper.readValue(content, Task.class);
+            }
+
+            @Test
+            @DisplayName("200 OK와 수정된 Task를 반환한다")
+            void it_returns_updated_task() throws Exception {
+                System.out.println(task.getId());
+                performPatch("/tasks/" + task.getId(), dummyTask2)
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask2.getTitle())));
+            }
+        }
+
+        @Nested
+        @DisplayName("해당 id를 가진 task가 없다면")
+        class Context_no_tasks {
+
+            @Test
+            @DisplayName("404 NOT FOUND 예외를 던진다")
+            void it_throws_404_exception () throws Exception {
+                performPatch("/tasks/1", dummyTask2)
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("Request body가 없는 요청이라면")
+        class Context_no_request_body {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                mockMvc.perform(patch("/tasks/1"))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("Request body에 Task가 없는 요청이라면")
+        class Context_no_task {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                performPatch("/tasks/1", "")
+                        .andExpect(status().isBadRequest());
+            }
+        }
     }
 }
