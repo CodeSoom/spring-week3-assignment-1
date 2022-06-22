@@ -1,7 +1,7 @@
 package com.codesoom.assignment;
 
-import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -9,15 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,12 +30,28 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private TaskService taskService;
+    ObjectMapper mapper = new ObjectMapper();
 
     private final Task dummyTask1 = dummyTask(1L, "1");
     private final Task dummyTask2 = dummyTask(2L, "2");
     private final Task dummyTask3 = dummyTask(3L, "3");
+
+    @BeforeEach
+    void setUp() throws Exception {
+        /**
+         * [고민]
+         * 아무 task도 저장되어 있지 않은 mockMvc를 만들기 위해 모든 task의 id를 받아와 delete 하려 한다.
+         * 하지만 모든 task의 id를 받아오기 위해선 GET /tasks 메소드를 이용해야 한다.
+         * GET /tasks를 테스트하기 위한 사전 동작으로 GET /tasks를 이용해도 괜찮을까..?
+         */
+
+        MvcResult result = mockMvc.perform(get("/tasks")).andReturn();
+        String content = result.getResponse().getContentAsString();
+        List<Task> tasks = mapper.readValue(content, mapper.getTypeFactory().constructCollectionType(List.class, Task.class));
+        for (Task task : tasks) {
+            mockMvc.perform(delete("/tasks/" + task.getId()));
+        }
+    }
 
     @Nested
     @DisplayName("GET /tasks API는")
@@ -46,9 +64,6 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             @Test
             @DisplayName("200 OK와 빈 리스트를 리턴한다")
             void it_returns_empty_array() throws Exception {
-                given(taskService.getTasks())
-                        .willReturn(new ArrayList<>());
-
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString("[]")));
@@ -58,21 +73,17 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
         @Nested
         @DisplayName("등록된 task가 있다면")
         class Context_multiple_tasks {
-            private List<Task> taskList = new ArrayList<>();
 
             @BeforeEach
-            void setUp() {
-                taskList.add(dummyTask1);
-                taskList.add(dummyTask2);
-                taskList.add(dummyTask3);
+            void setUp() throws Exception {
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask1)));
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask2)));
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask3)));
             }
 
             @Test
             @DisplayName("200 OK와 task가 포함된 리스트를 반환한다")
             void it_returns_array() throws Exception {
-                given(taskService.getTasks())
-                        .willReturn(taskList);
-
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(dummyTask1.getTitle())))
@@ -93,9 +104,6 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             @Test
             @DisplayName("404 NOT FOUND 예외를 던진다")
             void it_throws_404_exception() throws Exception {
-                given(taskService.getTask(Long.MAX_VALUE))
-                        .willThrow(new TaskNotFoundException(Long.MAX_VALUE));
-
                 mockMvc.perform(get("/task/" + Long.MAX_VALUE))
                         .andExpect(status().isNotFound());
             }
@@ -116,8 +124,6 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             @Test
             @DisplayName("200 OK와 task를 반환한다")
             void it_returns_task() throws Exception {
-                given(taskService.getTask(dummyTask1.getId()))
-                        .willReturn(dummyTask1);
 
                 mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
                         .andExpect(status().isOk())
