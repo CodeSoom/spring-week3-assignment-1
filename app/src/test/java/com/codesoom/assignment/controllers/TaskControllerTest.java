@@ -1,32 +1,63 @@
 package com.codesoom.assignment.controllers;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
 
-    @Test
-    void list() {
+
+    @Nested
+    @DisplayName("list")
+    class testList {
+        @Test
+        public void list() {
+
+        }
     }
 
-    @Test
-    void detail() {
+    @Nested
+    @DisplayName("detail")
+    class testDetail {
+        @Test
+        public void detail() {
+        }
     }
 
-    @Test
-    void create() {
+    @Nested
+    @DisplayName("create")
+    class testCreate {
+        @Test
+        public void create() {
+        }
     }
 
-    @Test
-    void update() {
+    @Nested
+    @DisplayName("update")
+    class testUpdate {
+        @Test
+        public void update() {
+
+        }
     }
 
-    @Test
-    void patch() {
+    @Nested
+    @DisplayName("patch")
+    class testPatch {
+        @Test
+        public void patch() {
+
+        }
     }
 
-    @Test
-    void delete() {
+    @Nested
+    @DisplayName("delete")
+    class testDelete {
+        @Test
+        public void delete() {
+
+        }
     }
 }
