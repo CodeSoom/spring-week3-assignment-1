@@ -95,7 +95,7 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
 
     @Nested
     @DisplayName("GET /tasks/{id} API는")
-    class Describe_GET_task_id {
+    class Describe_GET_tasks_id {
 
         @Nested
         @DisplayName("해당 id를 가진 task가 없다면")
@@ -112,18 +112,31 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
         @Nested
         @DisplayName("해당 id를 가진 task가 있다면")
         class Context_multiple_tasks {
-            private List<Task> taskList = new ArrayList<>();
 
             @BeforeEach
-            void setUp() {
-                taskList.add(dummyTask1);
-                taskList.add(dummyTask2);
-                taskList.add(dummyTask3);
+            void setUp() throws Exception {
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask1)));
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask2)));
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask3)));
             }
 
             @Test
             @DisplayName("200 OK와 task를 반환한다")
             void it_returns_task() throws Exception {
+                mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask1.getTitle())));
+
+                mockMvc.perform(get("/tasks/" + dummyTask2.getId()))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask2.getTitle())));
+
+                mockMvc.perform(get("/tasks/" + dummyTask3.getId()))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string(containsString(dummyTask3.getTitle())));
+            }
+        }
+    }
 
                 mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
                         .andExpect(status().isOk())
