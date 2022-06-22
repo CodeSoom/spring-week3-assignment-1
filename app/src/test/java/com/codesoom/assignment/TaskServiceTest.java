@@ -54,7 +54,7 @@ public class TaskServiceTest extends TestHelper {
         }
 
         @Nested
-        @DisplayName("1개의 task가 등록된 상황에서")
+        @DisplayName("1개의 task만 등록되어 있다면")
         class Context_only_one_task {
             @BeforeEach
             void setup() {
@@ -62,7 +62,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("1개의 task만이 들어있는 리스트를 리턴한다")
+            @DisplayName("등록된 1개의 task만이 들어있는 리스트를 리턴한다")
             void it_returns_empty_list() {
                 List<Task> tasks = service.getTasks();
 
@@ -72,7 +72,7 @@ public class TaskServiceTest extends TestHelper {
         }
 
         @Nested
-        @DisplayName("3개의 task가 등록된 상황에")
+        @DisplayName("3개의 task만 등록되어 있다면")
         class Context_multiple_tasks {
             @BeforeEach
             void setup() {
@@ -82,7 +82,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("3개의 task만이 들어있는 리스트를 리턴한다")
+            @DisplayName("등록된 3개의 task만이 들어있는 리스트를 리턴한다")
             void it_returns_empty_list() {
                 List<Task> tasks = service.getTasks();
 
@@ -136,7 +136,7 @@ public class TaskServiceTest extends TestHelper {
         class Context_normal {
 
             @Test
-            @DisplayName("Task를 추가하고, 추가된 object를 반환한다")
+            @DisplayName("Task를 추가하고, 추가된 Task를 반환한다")
             void it_returns_added_task() {
                 Task task = subject1();
 
@@ -161,7 +161,7 @@ public class TaskServiceTest extends TestHelper {
 
             @Test
             @DisplayName("모두 다른 ID를 부여한다")
-            void it_returns_() {
+            void it_gives_tasks_all_different_IDs() {
                 assertThat(task1.getId()).isNotEqualTo(task2.getId());
                 assertThat(task2.getId()).isNotEqualTo(task3.getId());
                 assertThat(task3.getId()).isNotEqualTo(task1.getId());
@@ -196,7 +196,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("기존 Task를 새로운 Task로 수정한다")
+            @DisplayName("해당 ID를 가진 Task의 title을 새로운 title로 수정한다")
             void it_updates_found_task() {
                 Task updatedTask = service.updateTask(task.getId(), dummyTask2);
 
@@ -233,7 +233,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("찾은 task를 삭제한다")
+            @DisplayName("해당 ID를 가진 task를 삭제한다")
             void it_delete_found_task() {
                 Task deletedTask = service.deleteTask(task.getId());
 
