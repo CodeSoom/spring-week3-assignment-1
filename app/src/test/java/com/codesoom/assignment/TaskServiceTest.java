@@ -62,7 +62,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("1개의 task가 포함된 리스트를 리턴한다")
+            @DisplayName("1개의 task만이 들어있는 리스트를 리턴한다")
             void it_returns_empty_list() {
                 List<Task> tasks = service.getTasks();
 
@@ -82,7 +82,7 @@ public class TaskServiceTest extends TestHelper {
             }
 
             @Test
-            @DisplayName("3개의 task가 포함된 리스트를 리턴한다")
+            @DisplayName("3개의 task만이 들어있는 리스트를 리턴한다")
             void it_returns_empty_list() {
                 List<Task> tasks = service.getTasks();
 
