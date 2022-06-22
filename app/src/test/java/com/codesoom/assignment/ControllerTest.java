@@ -303,7 +303,6 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             @Test
             @DisplayName("200 OK와 수정된 Task를 반환한다")
             void it_returns_updated_task() throws Exception {
-                System.out.println(task.getId());
                 performPatch("/tasks/" + task.getId(), dummyTask2)
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(dummyTask2.getTitle())));
