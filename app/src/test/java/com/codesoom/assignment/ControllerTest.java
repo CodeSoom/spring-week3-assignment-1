@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -136,13 +135,15 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             }
         }
 
-                mockMvc.perform(get("/tasks/" + dummyTask2.getId()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(containsString(dummyTask2.getTitle())));
+        @Nested
+        @DisplayName("정상적인 id를 요청하지 않으면")
+        class Context_invalid_id {
 
-                mockMvc.perform(get("/tasks/" + dummyTask3.getId()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(containsString(dummyTask3.getTitle())));
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                mockMvc.perform(get("/tasks/invalid"))
+                        .andExpect(status().isBadRequest());
             }
         }
     }
