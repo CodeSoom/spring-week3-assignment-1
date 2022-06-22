@@ -148,10 +148,46 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
         }
     }
 
-                mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
-                        .andExpect(status().isOk())
+    @Nested
+    @DisplayName("POST /tasks API는")
+    class Describe_POST_tasks {
+
+        @Nested
+        @DisplayName("정상적인 요청이라면")
+        class Context_valid_request {
+
+            @Test
+            @DisplayName("201 CREATED와 생성된 Task를 반환한다")
+            void it_returns_created_task() throws Exception {
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask1)))
+                        .andExpect(status().isCreated())
                         .andExpect(content().string(containsString(dummyTask1.getTitle())));
             }
         }
+
+        @Nested
+        @DisplayName("Request body가 없는 요청이라면")
+        class Context_no_request_body {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                mockMvc.perform(post("/tasks"))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("Request body에 Task가 없는 요청이라면")
+        class Context_no_task {
+
+            @Test
+            @DisplayName("400 BAD REQUEST 예외를 던진다")
+            void it_returns_400_exception() throws Exception {
+                mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(""))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+        
     }
 }
