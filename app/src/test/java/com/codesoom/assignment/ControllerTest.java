@@ -112,20 +112,29 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
         @Nested
         @DisplayName("해당 id를 가진 task가 있다면")
         class Context_multiple_tasks {
+            private List<Task> tasks;
 
             @BeforeEach
             void setUp() throws Exception {
                 mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask1)));
                 mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask2)));
                 mockMvc.perform(post("/tasks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(dummyTask3)));
+
+                MvcResult result = mockMvc.perform(get("/tasks")).andReturn();
+                String content = result.getResponse().getContentAsString();
+                tasks = mapper.readValue(content, mapper.getTypeFactory().constructCollectionType(List.class, Task.class));
             }
 
             @Test
             @DisplayName("200 OK와 task를 반환한다")
             void it_returns_task() throws Exception {
-                mockMvc.perform(get("/tasks/" + dummyTask1.getId()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string(containsString(dummyTask1.getTitle())));
+                for (Task task: tasks) {
+                    mockMvc.perform(get("/tasks/" + task.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().string(containsString(task.getTitle())));
+                }
+            }
+        }
 
                 mockMvc.perform(get("/tasks/" + dummyTask2.getId()))
                         .andExpect(status().isOk())
