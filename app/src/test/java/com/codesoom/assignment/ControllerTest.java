@@ -345,4 +345,43 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
             }
         }
     }
+
+    @Nested
+    @DisplayName("DELETE /tasks/{id} API는")
+    class Describe_DELETE_tasks_id {
+
+        @Nested
+        @DisplayName("정상적인 요청이라면")
+        class Context_valid_request {
+            private Task task;
+
+            @BeforeEach
+            void setUp() throws Exception {
+                MvcResult result = performPost("/tasks", dummyTask1).andReturn();
+                String content = result.getResponse().getContentAsString();
+                task = mapper.readValue(content, Task.class);
+            }
+
+            @Test
+            @DisplayName("204 NO CONTENT와 비어있는 body를 반환한다")
+            void it_returns_204_no_content() throws Exception {
+                performDelete("/tasks/" + task.getId())
+                        .andExpect(status().isNoContent());
+            }
+        }
+
+        @Nested
+        @DisplayName("해당 id를 가진 task가 없다면")
+        class Context_no_tasks {
+
+            @Test
+            @DisplayName("404 NOT FOUND 예외를 던진다")
+            void it_throws_404_exception () throws Exception {
+                performDelete("/tasks/1")
+                        .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+
 }
