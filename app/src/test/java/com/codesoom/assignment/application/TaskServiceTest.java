@@ -25,15 +25,15 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("getTasks")
-    class testGetTasks{
+    class testGetTasks {
         @Test
-        @DisplayName("태스크가 존재하지 않을 경우, 비어있는 리스트를 반환한다")
+        @DisplayName("태스크가 찾을 수 없을 경우, 비어있는 리스트를 반환한다")
         public void getTasks_NoTask_EmptyList() {
             assertThat(taskService.getTasks()).isEmpty();
         }
 
         @Test
-        @DisplayName("태스크가 존재할 경우, 존재하는 태스크를 포함한 리스트를 반환한다.")
+        @DisplayName("사전에 등록된 태스크가 존재할 경우, 태스크들을 포함한 리스트를 반환한다.")
         void getTasks_Task_TaskInList() {
             // given
             Task task = new Task();
@@ -56,32 +56,42 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("getTask")
-    class testGetTask{
-        @Test
-        @DisplayName("존재하지 않는 테스크 id 를 인자로 받으면, 익셉션을 던진다")
-        void getTask_NonExistingId_ThrowTaskNotFoundException() {
-            assertThatThrownBy(() -> taskService.getTask(1L)).hasMessageStartingWith("Task not found:");
+    class testGetTask {
+
+        @Nested
+        @DisplayName("태스크를 찾을 수 있을 때")
+        class testExistingTask {
+            @Test
+            @DisplayName("동록되어있는 태스크의 id 를 인자로 받으면, 해당 태스크를 리턴한다")
+            void getTask_ExistingId_ReturnTask() {
+                Task task = new Task();
+                task.setTitle("test");
+                Task generatedTask = taskService.createTask(task);
+                Long generatedId = generatedTask.getId();
+
+                assertThat(taskService.getTask(generatedId).getId()).isEqualTo(generatedId);
+                assertThat(taskService.getTask(generatedId).getTitle()).isEqualTo(generatedTask.getTitle());
+            }
+
         }
 
-        @Test
-        @DisplayName("동록되어있는 태스크의 id 를 인자로 받으면, 해당 태스크를 리턴한다")
-        void getTask_ExistingId_ReturnTask() {
-            Task task = new Task();
-            task.setTitle("test");
-            Task generatedTask = taskService.createTask(task);
-            Long generatedId = generatedTask.getId();
+        @Nested
+        @DisplayName("태스크가 찾을 수 않을때")
+        class testNonExistingTask {
+            @Test
+            @DisplayName("인자로 받은 id에 해당하는 태스크를 찾을 수 없다면 id, 익셉션을 던진다")
+            void getTask_NonExistingId_ThrowTaskNotFoundException() {
+                Long nonExistingId = 1L;
 
-            assertThat(taskService.getTask(generatedId).getId()).isEqualTo(generatedId);
-            assertThat(taskService.getTask(generatedId).getTitle()).isEqualTo(generatedTask.getTitle());
+                assertThatThrownBy(() -> taskService.getTask(nonExistingId)).hasMessageStartingWith("Task not found:");
+            }
         }
-
-
     }
 
 
     @Nested
     @DisplayName("createTask")
-    class testCreatTask{
+    class testCreatTask {
         @Test
         @DisplayName("새로운 태스크를 만든다면, 만들어진 태스크를 반환한다.")
         void createTask_Will_ReturnCreatedTask() {
@@ -117,9 +127,9 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("updateTask")
-    class testUpdateTask{
+    class testUpdateTask {
         @Test
-        @DisplayName("등록된 태스크가 있을때, 존재하는 id 의 태스크를 변경하면, 새로운 타이틀로 변경한다.")
+        @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, updateTask 를 호출해 존재하는 id 의 태스크를 변경하면, 새로운 타이틀로 변경한다.")
         void updateTask_ExisingId_ChangeTaskTitle() {
             // given
             Task task = new Task();
@@ -139,9 +149,9 @@ class TaskServiceTest {
 
     @Nested
     @DisplayName("deleteTask")
-    class testDeleteTask{
+    class testDeleteTask {
         @Test
-        @DisplayName("등록된 태스크가 존재할때, 해당 id 로 태스크를 지우면, 지워진 태스크를 리턴한다.")
+        @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, deleteTask 를 호출해 해당 id 로 태스크를 지우면, 지워진 태스크를 리턴한다.")
         void deleteTask_ExisingId_ReturnTargetTask() {
             Task task = new Task();
             task.setTitle("test");
@@ -151,7 +161,7 @@ class TaskServiceTest {
         }
 
         @Test
-        @DisplayName("등록된 태스크가 존재할때, 해당 id로 태스크를 지우면, 서비스의 리스트에서 삭제된다")
+        @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, 해당 id로 태스크를 지우면, 서비스의 리스트에서 삭제된다")
         void deleteTask_ExisingId_DeleteTaskFromList() {
             Task task = new Task();
             task.setTitle("test");
@@ -161,11 +171,4 @@ class TaskServiceTest {
             assertThat(taskService.getTasks()).doesNotContain(firstTask);
         }
     }
-
-
-
-
-
-
-
 }
