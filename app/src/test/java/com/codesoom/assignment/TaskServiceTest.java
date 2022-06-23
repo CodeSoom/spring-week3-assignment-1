@@ -6,7 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,24 +75,30 @@ public class TaskServiceTest extends TestHelper {
         }
 
         @Nested
-        @DisplayName("3개의 task만 등록되어 있다면")
+        @DisplayName("n개의 task가 등록되어 있다면")
         class Context_multiple_tasks {
-            @BeforeEach
-            void setup() {
-                subject1();
-                subject2();
-                subject3();
+            private List<Task> tasks = new ArrayList<>();
+
+            void setup(int testCase) {
+                for (int i = 0; i < testCase; i++) {
+                    Task randomTask = randomTask();
+                    tasks.add(randomTask);
+                    service.createTask(randomTask);
+                }
             }
 
-            @Test
-            @DisplayName("등록된 3개의 task만이 들어있는 리스트를 리턴한다")
-            void it_returns_empty_list() {
-                List<Task> tasks = service.getTasks();
+            @DisplayName("n개의 task만이 들어있는 리스트를 리턴한다")
+            @ParameterizedTest
+            @ValueSource(ints = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20})
+            void it_returns_empty_list(int testCase) {
+                setup(testCase);
 
-                assertThat(tasks).hasSize(3);
-                assertThat(tasks.get(0).getTitle()).isEqualTo(dummyTask1.getTitle());
-                assertThat(tasks.get(1).getTitle()).isEqualTo(dummyTask2.getTitle());
-                assertThat(tasks.get(2).getTitle()).isEqualTo(dummyTask3.getTitle());
+                List<Task> registeredTasks = service.getTasks();
+
+                assertThat(registeredTasks).hasSize(tasks.size());
+                for (int i = 0; i < registeredTasks.size(); i++) {
+                    assertThat(registeredTasks.get(i).getTitle()).isEqualTo(tasks.get(i).getTitle());
+                }
             }
         }
     }
