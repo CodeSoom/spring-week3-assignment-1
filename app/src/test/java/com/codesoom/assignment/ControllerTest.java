@@ -32,7 +32,7 @@ public class ControllerTest extends TestHelper { // FIXME: 이름을 TaskControl
     @Autowired
     private MockMvc mockMvc;
 
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private final Task dummyTask1 = dummyTask(1L, "1");
     private final Task dummyTask2 = dummyTask(2L, "2");
