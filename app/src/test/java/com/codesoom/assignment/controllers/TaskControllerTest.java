@@ -97,7 +97,7 @@ class TaskControllerTest extends BaseTaskTest {
     class testCreate {
         @Test
         @DisplayName("태스크를 인자로 받으면, 새로 생성된 태스크를 반환한다")
-        void it_return_newTask(){
+        void it_return_newTask() {
             // given
 
             // when
@@ -114,10 +114,10 @@ class TaskControllerTest extends BaseTaskTest {
     class testUpdate {
         @Nested
         @DisplayName("인자로 받은 id와 일치하는 태스크가 등록되어있다면")
-        class Context_existingId{
+        class Context_existingId {
             @Test
             @DisplayName("두번째 인자로 받은 태스크의 타이틀로 id와 일치하는 기존 태스크의 타이틀을 수정하고 수정된 태스크를 반환한다")
-            void it_update_exisingTask(){
+            void it_update_exisingTask() {
                 // given
                 taskController.create(supplyDummyTask(TASK_TITLE_1));
 
@@ -129,26 +129,116 @@ class TaskControllerTest extends BaseTaskTest {
                 assertThat(update.getId()).isEqualTo(TASK_ID);
             }
         }
-        public void update() {
 
+        @Nested
+        @DisplayName("인자로 받은 id와 일치하는 태스크를 찾을 수 없다면")
+        class Context_nonExistingId {
+            @Test
+            @DisplayName("익셉션을 던진다")
+            void it_update_nonExisintingTask() {
+                Long taskId = TASK_ID;
+                Task task = supplyDummyTask(TASK_TITLE_1);
+
+                assertThatThrownBy(() -> taskController.update(taskId, task)) // when
+                        .isInstanceOf(TaskNotFoundException.class) //then
+                        .hasMessage(supplyErrorMSG(taskId));
+            }
         }
     }
 
     @Nested
     @DisplayName("patch")
     class testPatch {
-        @Test
-        public void patch() {
+        @Nested
+        @DisplayName("인자로 받은 id와 일치하는 태스크가 등록되어있다면")
+        class Context_existingId {
+            @Test
+            @DisplayName("두번째 인자로 받은 태스크의 타이틀로 id와 일치하는 기존 태스크의 타이틀을 수정하고 수정된 태스크를 반환한다")
+            void it_patch_exisingTask() {
+                // given
+                taskController.create(supplyDummyTask(TASK_TITLE_1));
 
+                // when
+                Task update = taskController.patch(TASK_ID, supplyDummyTask(TASK_TITLE_2));
+
+                // then
+                assertThat(update.getTitle()).isEqualTo(TASK_TITLE_2);
+                assertThat(update.getId()).isEqualTo(TASK_ID);
+            }
         }
+
+        @Nested
+        @DisplayName("인자로 받은 id와 일치하는 태스크를 찾을 수 없다면")
+        class Context_nonExistingId {
+            Long taskId;
+            Task task;
+
+            @BeforeEach
+            void setUp() {
+                taskId = TASK_ID;
+                task = supplyDummyTask(TASK_TITLE_1);
+            }
+
+            @Test
+            @DisplayName("익셉션을 던진다")
+            void it_patch_nonExisintingTask() {
+
+                assertThatThrownBy(() -> taskController.patch(taskId, task)) // when
+                        .isInstanceOf(TaskNotFoundException.class) //then
+                        .hasMessage(supplyErrorMSG(taskId));
+            }
+        }
+
+
     }
 
     @Nested
     @DisplayName("delete")
     class testDelete {
-        @Test
-        public void delete() {
+        Long taskId;
+        Task task;
 
+        @BeforeEach
+        void setUp() {
+            taskId = TASK_ID;
+            task = supplyDummyTask(TASK_TITLE_1);
+        }
+
+        @Nested
+        @DisplayName("인자로 받은 id의 태스크를 찾을 수 없다면")
+        class Context_nonExistingId {
+            @Test
+            @DisplayName("익셉션을 던진다")
+            void it_update_nonExisintingTask() {
+                assertThatThrownBy(() -> taskController.patch(taskId, task)) // when
+                        .isInstanceOf(TaskNotFoundException.class) //then
+                        .hasMessage(supplyErrorMSG(taskId));
+            }
+        }
+
+        @Nested
+        @DisplayName("인자로 받은 id의 태스크를 찾으면")
+        class Context_existingId {
+            @BeforeEach
+            void setUp() {
+                task = taskController.create(task);
+            }
+
+            @Test
+            @DisplayName("해당 태스크를 삭제한다")
+            void it_delete_task() {
+                assertThat(taskController.list()).anySatisfy(t -> {
+                    assertThat(t.getTitle()).isEqualTo(task.getTitle());
+                    assertThat(t.getId()).isEqualTo(task.getId());
+                });
+
+                taskController.delete(TASK_ID);
+
+                assertThat(taskController.list()).noneSatisfy(t -> {
+                    assertThat(t.getTitle()).isEqualTo(task.getTitle());
+                    assertThat(t.getId()).isEqualTo(task.getId());
+                });
+            }
         }
     }
 }
