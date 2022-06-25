@@ -30,6 +30,10 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
+        @BeforeEach
+        void setup(){
+            service = new TaskService();
+        }
         @Nested
         @DisplayName("저장되어 있는 task가 없다면")
         class No_task {
@@ -72,6 +76,7 @@ class TaskServiceTest {
             @BeforeEach
             void setup() {
                 service = new TaskService();
+                service.deleteTask(INVALID_ID);
             }
 
             @Test
@@ -134,17 +139,18 @@ class TaskServiceTest {
 
         @BeforeEach
         void setup() {
+            service = new TaskService();
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             service.createTask(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
+            service.deleteTask(INVALID_ID);
         }
 
         @Nested
         @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
-
             @Test
             @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
@@ -171,9 +177,12 @@ class TaskServiceTest {
     class Describe_deleteTask {
         @BeforeEach
         void setup() {
+            service = new TaskService();
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             service.createTask(savedtask);
+            service.deleteTask(INVALID_ID);
+
         }
 
         @Nested

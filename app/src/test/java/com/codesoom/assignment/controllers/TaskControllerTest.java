@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.contentOf;
 
 class TaskControllerTest {
     static final String TASK_TITLE = "Test Title";
@@ -37,6 +38,7 @@ class TaskControllerTest {
             void setup() {
                 taskService = new TaskService();
                 controller = new TaskController(taskService);
+                controller.delete(INVALID_ID);
             }
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
@@ -71,10 +73,16 @@ class TaskControllerTest {
     @Nested
     @DisplayName("detail 메소드는")
     class Describe_detail {
+
         @Nested
         @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
-
+            @BeforeEach
+            void setup() {
+                taskService = new TaskService();
+                controller = new TaskController(taskService);
+                controller.delete(INVALID_ID);
+            }
             @Test
             @DisplayName("TasksNotFoundException을 던진다.")
             void it_throws_TaskNotFoundException() {
@@ -88,6 +96,8 @@ class TaskControllerTest {
         class Has_task {
             @BeforeEach
             void setup() {
+                taskService = new TaskService();
+                controller = new TaskController(taskService);
                 Task task = new Task();
                 task.setTitle(TASK_TITLE);
                 controller.create(task);
@@ -133,11 +143,14 @@ class TaskControllerTest {
         Task source;
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            controller = new TaskController(taskService);
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             controller.create(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
+            controller.delete(INVALID_ID);
         }
 
         @Nested
@@ -170,11 +183,14 @@ class TaskControllerTest {
         Task source;
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            controller = new TaskController(taskService);
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             controller.create(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
+            controller.delete(INVALID_ID);
         }
 
         @Nested
@@ -207,9 +223,12 @@ class TaskControllerTest {
     class Describe_delete {
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            controller = new TaskController(taskService);
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             controller.create(savedtask);
+            controller.delete(INVALID_ID);
         }
 
         @Nested

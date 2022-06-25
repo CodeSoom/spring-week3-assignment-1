@@ -75,7 +75,9 @@ class TaskControllerWebTest {
                         .standaloneSetup(new TaskController(taskService))
                         .setControllerAdvice(TaskErrorAdvice.class)
                         .build();
+                taskService.deleteTask(INVALID_ID);
             }
+
             @Test
             @DisplayName("빈 리스트를 리턴한다.")
             void it_returns_empty_List() throws Exception {
@@ -121,6 +123,16 @@ class TaskControllerWebTest {
     @Nested
     @DisplayName("detail 메소드는")
     class Describe_detail {
+        void setup() {
+
+            taskService = new TaskService();
+            mockMvc = MockMvcBuilders
+                    .standaloneSetup(new TaskController(taskService))
+                    .setControllerAdvice(TaskErrorAdvice.class)
+                    .build();
+            taskService.deleteTask(INVALID_ID);
+        }
+
         @Nested
         @DisplayName("만약 저장되어 있지 않는 task의 ID가 주어지면")
         class No_task {
@@ -186,11 +198,17 @@ class TaskControllerWebTest {
 
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            mockMvc = MockMvcBuilders
+                    .standaloneSetup(new TaskController(taskService))
+                    .setControllerAdvice(TaskErrorAdvice.class)
+                    .build();
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             taskService.createTask(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
+            taskService.deleteTask(INVALID_ID);
         }
 
         @Nested
@@ -232,11 +250,17 @@ class TaskControllerWebTest {
 
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            mockMvc = MockMvcBuilders
+                    .standaloneSetup(new TaskController(taskService))
+                    .setControllerAdvice(TaskErrorAdvice.class)
+                    .build();
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             taskService.createTask(savedtask);
             source = new Task();
             source.setTitle(UPDATED_TITLE);
+            taskService.deleteTask(INVALID_ID);
         }
 
         @Nested
@@ -277,6 +301,12 @@ class TaskControllerWebTest {
     class Describe_delete {
         @BeforeEach
         void setup() {
+            taskService = new TaskService();
+            mockMvc = MockMvcBuilders
+                    .standaloneSetup(new TaskController(taskService))
+                    .setControllerAdvice(TaskErrorAdvice.class)
+                    .build();
+            taskService.deleteTask(INVALID_ID);
             Task savedtask = new Task();
             savedtask.setTitle(TASK_TITLE);
             taskService.createTask(savedtask);
@@ -299,10 +329,10 @@ class TaskControllerWebTest {
         class has_task {
             @Test
             @DisplayName("task를 삭제한다.")
-            void delete_task() throws Exception{
+            void delete_task() throws Exception {
                 assertThat(taskService.getTask(TASK_ID).getId()).isEqualTo(TASK_ID);
                 mockMvc.perform(delete("/tasks/" + TASK_ID))
-                                .andExpect(status().isNoContent());
+                        .andExpect(status().isNoContent());
                 assertThatThrownBy(() -> taskService.getTask(TASK_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
