@@ -16,10 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
     private TaskService taskService;
+    private Task task;
 
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+
+        task = new Task();
+        task.setTitle("test");
     }
 
 
@@ -27,17 +31,15 @@ class TaskServiceTest {
     @DisplayName("getTasks")
     class testGetTasks {
         @Test
-        @DisplayName("태스크가 찾을 수 없을 경우, 비어있는 리스트를 반환한다")
+        @DisplayName("태스크가 하나도 없을 경우, 비어있는 리스트를 반환한다")
         public void getTasks_NoTask_EmptyList() {
             assertThat(taskService.getTasks()).isEmpty();
         }
 
         @Test
-        @DisplayName("사전에 등록된 태스크가 존재할 경우, 태스크들을 포함한 리스트를 반환한다.")
+        @DisplayName("등록된 태스크가 하나 이상 있다면, 태스크들을 포함한 리스트를 반환한다.")
         void getTasks_Task_TaskInList() {
-            // given
-            Task task = new Task();
-            task.setTitle("test");
+            // givensps
             Task generatedTask = taskService.createTask(task);
 
             // when
@@ -64,8 +66,6 @@ class TaskServiceTest {
             @Test
             @DisplayName("동록되어있는 태스크의 id 를 인자로 받으면, 해당 태스크를 리턴한다")
             void getTask_ExistingId_ReturnTask() {
-                Task task = new Task();
-                task.setTitle("test");
                 Task generatedTask = taskService.createTask(task);
                 Long generatedId = generatedTask.getId();
 
@@ -92,13 +92,10 @@ class TaskServiceTest {
     @Nested
     @DisplayName("createTask")
     class testCreatTask {
+
         @Test
         @DisplayName("새로운 태스크를 만든다면, 만들어진 태스크를 반환한다.")
         void createTask_Will_ReturnCreatedTask() {
-            // given
-            Task task = new Task();
-            task.setTitle("test");
-
             // when
             Task generatedTask = taskService.createTask(task);
 
@@ -110,10 +107,6 @@ class TaskServiceTest {
         @Test
         @DisplayName("새로운 태스크를 만든다면, 리스트에 해당 태스크를 등록한다.")
         void createTask_Will_AddTaskInList() {
-            // given
-            Task task = new Task();
-            task.setTitle("test");
-
             // when
             Task generatedTask = taskService.createTask(task);
 
@@ -132,8 +125,6 @@ class TaskServiceTest {
         @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, updateTask 를 호출해 존재하는 id 의 태스크를 변경하면, 새로운 타이틀로 변경한다.")
         void updateTask_ExisingId_ChangeTaskTitle() {
             // given
-            Task task = new Task();
-            task.setTitle("test");
             Task firstTask = taskService.createTask(task);
 
             // when
@@ -153,8 +144,6 @@ class TaskServiceTest {
         @Test
         @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, deleteTask 를 호출해 해당 id 로 태스크를 지우면, 지워진 태스크를 리턴한다.")
         void deleteTask_ExisingId_ReturnTargetTask() {
-            Task task = new Task();
-            task.setTitle("test");
             Task firstTask = taskService.createTask(task);
 
             assertThat(taskService.deleteTask(firstTask.getId())).isEqualTo(firstTask);
@@ -163,8 +152,6 @@ class TaskServiceTest {
         @Test
         @DisplayName("인자로 주어진 id의 태스크를 찾을 수 있고, 해당 id로 태스크를 지우면, 서비스의 리스트에서 삭제된다")
         void deleteTask_ExisingId_DeleteTaskFromList() {
-            Task task = new Task();
-            task.setTitle("test");
             Task firstTask = taskService.createTask(task);
 
             taskService.deleteTask(firstTask.getId());
