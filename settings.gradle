@@ -9,3 +9,5 @@
 
 rootProject.name = 'week3-assignment-1'
 include('app')
+include 'test'
+
