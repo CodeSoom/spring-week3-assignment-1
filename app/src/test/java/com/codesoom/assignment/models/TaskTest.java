@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
-    public static final String TEST_TITLE = "title";
-    public static final long TEST_ID = 0L;
+    private static final String TEST_TITLE = "title";
+    private static final long TEST_ID = 0L;
 
     @DisplayName("id 지정 안했을 때 getId 호출하면 null 반환")
     @Test
