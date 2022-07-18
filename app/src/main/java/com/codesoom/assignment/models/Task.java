@@ -9,12 +9,9 @@ public class Task {
     public Task() {
     }
 
-    public Task(String title) {
-        this.title = title;
-    }
-
-    public Task(Long id) {
+    public Task(Long id, String title) {
         this.id = id;
+        this.title = title;
     }
 
     public Long getId() {
