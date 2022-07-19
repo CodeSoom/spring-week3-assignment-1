@@ -2,6 +2,7 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,7 +17,7 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
+        taskService = new TaskService(new TaskRepository());
     }
 
     @Nested
@@ -29,7 +30,7 @@ class TaskServiceTest {
             @DisplayName("작업을 리턴한다")
             void it_returns_task_with_id() {
                 Task task = new Task(1L, "BJP");
-                taskService.createTask(task);
+//                taskService.createTask(task);
 
                 assertThat(taskService.getTask(1L)).isEqualTo(task);
             }
@@ -56,8 +57,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("작업 목록을 리턴한다")
             void It_returns_tasks() {
-                taskService.createTask(new Task(null, "BJP"));
-                taskService.createTask(new Task(null, "BJP"));
+//                taskService.createTask(new Task(null, "BJP"));
+//                taskService.createTask(new Task(null, "BJP"));
 
                 assertThat(taskService.getTasks().size()).isEqualTo(2);
             }
@@ -78,15 +79,15 @@ class TaskServiceTest {
     @DisplayName("createTask 메소드는")
     class Describe_create_task {
         @Nested
-        @DisplayName("제목을 가진 객체가 주어지면")
-        class Context_with_task {
+        @DisplayName("제목이 주어지면")
+        class Context_with_title {
+            String givenTitle = "주어진 제목";
+
             @Test
-            @DisplayName("주어진 객체에 식별자를 할당하고 작업을 리턴한다.")
+            @DisplayName("주어진 제목을 가진 작업을 생성하고 리턴한다.")
             void It_returns_task_with_id() {
-                assertThat(taskService.createTask(new Task(null, "BJP")))
-                        .isEqualTo(new Task(1L, "BJP"));
-                assertThat(taskService.createTask(new Task(null, "BJP")))
-                        .isEqualTo(new Task(2L, "BJP"));
+                assertThat(taskService.createTask(givenTitle)).isEqualTo(new Task(0L, givenTitle));
+                assertThat(taskService.createTask(givenTitle)).isEqualTo(new Task(1L, givenTitle));
             }
         }
     }
@@ -104,7 +105,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("작업의 제목을 변경하고 리턴한다")
             void It_change_title_and_return() {
-                taskService.createTask(givenTask);
+//                taskService.createTask(givenTask);
 
                 assertThat(taskService.updateTask(givenId, givenChangeTask))
                         .isEqualTo(givenChangeTask);

@@ -30,7 +30,7 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
-        return taskService.createTask(task);
+        return taskService.createTask("임시 에러 제거용");
     }
 
     @PutMapping("{id}")
