@@ -78,10 +78,10 @@ class TaskServiceTest {
     @DisplayName("createTask 메소드는")
     class Describe_create_task {
         @Nested
-        @DisplayName("작업이 주어졌을 때")
+        @DisplayName("제목을 가진 객체가 주어지면")
         class Context_with_task {
             @Test
-            @DisplayName("식별자를 가진 작업을 생성하고 리턴한다")
+            @DisplayName("주어진 객체에 식별자를 할당하고 작업을 리턴한다.")
             void It_returns_task_with_id() {
                 assertThat(taskService.createTask(new Task(null, "BJP")))
                         .isEqualTo(new Task(1L, "BJP"));
