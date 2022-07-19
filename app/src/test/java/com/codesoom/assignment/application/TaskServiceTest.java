@@ -73,4 +73,21 @@ class TaskServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("createTask 메소드는")
+    class Describe_create_task {
+        @Nested
+        @DisplayName("작업이 주어졌을 때")
+        class Context_with_task {
+            @Test
+            @DisplayName("식별자를 가진 작업을 생성하고 리턴한다")
+            void It_returns_task_with_id() {
+                assertThat(taskService.createTask(new Task(null, "BJP")))
+                        .isEqualTo(new Task(1L, "BJP"));
+                assertThat(taskService.createTask(new Task(null, "BJP")))
+                        .isEqualTo(new Task(2L, "BJP"));
+            }
+        }
+    }
 }
