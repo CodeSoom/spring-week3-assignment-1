@@ -1,6 +1,8 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.dto.ErrorResponse;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +18,8 @@ import java.util.Arrays;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TaskController.class)
 @DisplayName("TaskController 클래스의")
@@ -25,9 +28,17 @@ class TaskControllerWebTest {
     @MockBean
     private TaskService taskService;
 
+    final Long givenId1 = 1L;
+    final Long givenId2 = 2L;
+    final String givenTodo1 = "Todo1";
+    final String givenTodo2 = "Todo2";
+
     @BeforeEach
     void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new TaskController(taskService)).build();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new TaskController(taskService))
+                .setControllerAdvice(TaskErrorAdvice.class)
+                .build();
     }
 
     @Nested
@@ -55,13 +66,46 @@ class TaskControllerWebTest {
             void It_returns_list_and_ok() throws Exception {
                 given(taskService.getTasks())
                         .willReturn(Arrays.asList(
-                                new Task(0L, "Todo1"),
-                                new Task(1L, "Todo2")));
+                                new Task(givenId1, givenTodo1),
+                                new Task(givenId2, givenTodo2)));
 
                 mockMvc.perform(get("/tasks"))
-                        .andExpect(jsonPath("$.[0].title").value("Todo1"))
-                        .andExpect(jsonPath("$.[1].title").value("Todo2"))
+                        .andExpect(jsonPath("$.[0].title").value(givenTodo1))
+                        .andExpect(jsonPath("$.[1].title").value(givenTodo2))
                         .andExpect(status().isOk());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("detail 메소드는")
+    class Describe_create {
+        @Nested
+        @DisplayName("식별자가 주어지고 해당 식별자를 가진 작업이 있다면")
+        class Context_with_id_and_task {
+            @Test
+            @DisplayName("작업을 리턴한다")
+            void It_returns_task() throws Exception {
+                given(taskService.getTask(givenId1)).willReturn(new Task(givenId1, givenTodo1));
+
+                mockMvc.perform(get("/tasks/1"))
+                        .andExpect(jsonPath("$.id").value(givenId1))
+                        .andExpect(jsonPath("$.title").value(givenTodo1))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Nested
+        @DisplayName("작업을 찾지 못했다면")
+        class Context_without_task {
+            @Test
+            @DisplayName("에러 응답과 상태 코드 404를 보냅니다")
+            void It_throw_exception() throws Exception {
+                given(taskService.getTask(givenId1)).willThrow(TaskNotFoundException.class);
+
+                mockMvc.perform(get("/tasks/1"))
+                        .andExpect(jsonPath("$.message").value("Task not found"))
+                        .andExpect(status().isNotFound());
             }
         }
     }
