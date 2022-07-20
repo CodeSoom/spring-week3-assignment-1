@@ -58,6 +58,23 @@ class TaskServiceTest {
                 assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
             }
         }
+
+        @Nested
+        @DisplayName("존재하지 않는 taskId로 deleteTask() 요청하면")
+        class When_DeleteTaskWithNotExistedTaskId {
+            Throwable thrown;
+
+            @BeforeEach
+            void when() {
+                thrown = catchThrowable(() -> { service.getTask(1L); });
+            }
+
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
+            void then_throwTaskNotFoundException() {
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Nested
@@ -166,31 +183,21 @@ class TaskServiceTest {
                 assertThat(updatedTask.getTitle()).isEqualTo("new title");
             }
         }
-    }
 
-    @DisplayName("없는 task id로 deleteTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
-    @Test
-    void whenDeleteTaskWithNotExistedId_thenThrowTaskNotFoundException() {
-        // when
-        Throwable thrown = catchThrowable(() -> { service.deleteTask(1L); });
+        @Nested
+        @DisplayName("존재하는 task id로 updateTask() 요청하면")
+        class When_deleteTaskWithExistedId {
+            @BeforeEach
+            void when() {
+                service.deleteTask(1L);
+            }
 
-        // then
-        assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
-    }
-
-    @DisplayName("존재하는 task id로 deleteTask() 요청하면, task 삭제됨")
-    @Test
-    void givenCreateTask_whenDeleteTaskWithExistedId_thenTaskIsDeleted() {
-        // given
-        Task task = new Task();
-        task.setTitle("title");
-        service.createTask(task);
-
-        // when
-        service.deleteTask(1L);
-
-        // then
-        Throwable thrown = catchThrowable(() -> { service.getTask(1L); });
-        assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            @Test
+            @DisplayName("할일이 삭제된다")
+            void then_taskDeleted() {
+                Throwable thrown = catchThrowable(() -> { service.getTask(1L); });
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 }
