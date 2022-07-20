@@ -13,9 +13,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스의")
 class TaskServiceTest {
-    TaskService taskService;
-    final Long givenId = 0L;
-    final String givenTitle = "BJP";
+    private TaskService taskService;
+    private final Long givenId = 0L;
+    private final String givenTitle = "BJP";
 
     @BeforeEach
     void setUp() {
