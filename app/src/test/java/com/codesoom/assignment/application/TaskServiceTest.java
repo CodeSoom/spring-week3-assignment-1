@@ -23,7 +23,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("task가 생성되지 않았을 때")
+    @DisplayName("할일이 생성되지 않았을 때")
     class Given_didNotCreateTask {
         private List<Task> tasks;
 
@@ -60,6 +60,23 @@ class TaskServiceTest {
         }
 
         @Nested
+        @DisplayName("존재하지 않는 taskId로 updateTask() 요청하면")
+        class When_updateTaskWithNotExistedTaskId {
+            Throwable thrown;
+
+            @BeforeEach
+            void when() {
+                thrown = catchThrowable(() -> { service.getTask(1L); });
+            }
+
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
+            void then_throwTaskNotFoundException() {
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
+        @Nested
         @DisplayName("존재하지 않는 taskId로 deleteTask() 요청하면")
         class When_DeleteTaskWithNotExistedTaskId {
             Throwable thrown;
@@ -78,7 +95,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("task를 2개 생성했을 때")
+    @DisplayName("할일이 2개 생성되었을 때")
     class Given_didCreateTasks {
         @BeforeEach
         void given() {
@@ -124,44 +141,10 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("요청한 id에 해당하는 task 반환")
+            @DisplayName("요청한 id에 해당하는 할일을 반환한다")
             void then_returnTask() {
                 assertThat(result.getId()).isEqualTo(1L);
                 assertThat(result.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
-            }
-        }
-
-        @Nested
-        @DisplayName("존재하지 않는 taskId로 getTask() 요청하면")
-        class When_getTaskWithNotExistedTaskId {
-            Throwable thrown;
-
-            @BeforeEach
-            void when() {
-                thrown = catchThrowable(() -> { service.getTask(3L); });
-            }
-
-            @Test
-            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
-            void then_throwTaskNotFoundException() {
-                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
-            }
-        }
-
-        @Nested
-        @DisplayName("존재하지 않는 taskId로 updateTask() 요청하면")
-        class When_updateTaskWithNotExistedTaskId {
-            Throwable thrown;
-
-            @BeforeEach
-            void when() {
-                thrown = catchThrowable(() -> { service.getTask(3L); });
-            }
-
-            @Test
-            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
-            void then_throwTaskNotFoundException() {
-                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
             }
         }
 
