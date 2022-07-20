@@ -23,4 +23,8 @@ public class TaskRepository {
     public List<Task> getAll() {
         return new ArrayList<>(taskMap.values());
     }
+
+    public Task remove(Long id) {
+        return taskMap.remove(id);
+    }
 }

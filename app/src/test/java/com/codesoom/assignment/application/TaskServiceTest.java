@@ -111,4 +111,20 @@ class TaskServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("deleteTask 메소드는")
+    class Describe_delete_task {
+        @Nested
+        @DisplayName("주어진 식별자와 같은 식별자를 가진 작업이 있다면")
+        class Context_with_task_and_id {
+            @Test
+            @DisplayName("해당 작업을 제거하고 제거한 작업을 리턴한다")
+            void It_remove_task() {
+                taskService.createTask(givenTitle);
+
+                assertThat(taskService.deleteTask(givenId)).isEqualTo(new Task(givenId, givenTitle));
+            }
+        }
+    }
 }

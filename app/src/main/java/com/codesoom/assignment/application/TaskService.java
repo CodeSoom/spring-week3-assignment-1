@@ -37,14 +37,7 @@ public class TaskService {
     }
 
     public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
-
-        return task;
-    }
-
-    private Long generateId() {
-        newId += 1;
-        return newId;
+        getTask(id);
+        return taskRepository.remove(id);
     }
 }
