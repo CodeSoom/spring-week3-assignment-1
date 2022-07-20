@@ -69,7 +69,7 @@ class TaskServiceTest {
         assertThat(result.getTitle()).isEqualTo("title");
     }
 
-    @DisplayName("없는 task id로 getTask() 요청하면, TaskNotFoundException 예외 발생")
+    @DisplayName("없는 task id로 getTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
     @Test
     void whenGetTaskWithNotExistedId_thenThrowTaskNotFoundException() {
         // when
@@ -79,7 +79,7 @@ class TaskServiceTest {
         assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("없는 task id로 updateTask() 요청하면, TaskNotFoundException 예외 발생")
+    @DisplayName("없는 task id로 updateTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
     @Test
     void whenUpdateTaskWithNotExistedId_thenThrowTaskNotFoundException() {
         // when
@@ -106,7 +106,7 @@ class TaskServiceTest {
         assertThat(updatedTask.getTitle()).isEqualTo("title");
     }
 
-    @DisplayName("없는 task id로 deleteTask() 요청하면, TaskNotFoundException 예외 발생")
+    @DisplayName("없는 task id로 deleteTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
     @Test
     void whenDeleteTaskWithNotExistedId_thenThrowTaskNotFoundException() {
         // when
