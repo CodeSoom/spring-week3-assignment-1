@@ -24,7 +24,7 @@ class TaskTest {
         assertThat(actual).isNull();
     }
 
-    @DisplayName("id 지정 했을 떄 getId 호출하면 지정한 id 반환")
+    @DisplayName("id 지정 했을 때 getId 호출하면 지정한 id 반환")
     @Test
     void givenSetId_whenGetId_thenReturnId() {
         // given

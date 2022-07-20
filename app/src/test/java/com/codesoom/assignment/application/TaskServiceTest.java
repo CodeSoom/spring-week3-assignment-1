@@ -19,7 +19,7 @@ class TaskServiceTest {
         service = new TaskService();
     }
 
-    @DisplayName("task를 생성하지 않았을 떄, getTask() 요청하면, 빈 배열 반환")
+    @DisplayName("task를 생성하지 않았을 때, getTask() 요청하면, 빈 배열 반환")
     @Test
     void givenDidNotCreateTask_whenGetTasks_thenReturnEmptyList() {
         // when
