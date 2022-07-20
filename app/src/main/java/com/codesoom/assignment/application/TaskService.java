@@ -32,11 +32,8 @@ public class TaskService {
         return taskRepository.add(title);
     }
 
-    public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
-
-        return task;
+    public Task updateTask(Long id, String title) {
+        return getTask(id).changeTitle(title);
     }
 
     public Task deleteTask(Long id) {

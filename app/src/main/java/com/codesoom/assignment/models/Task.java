@@ -30,6 +30,11 @@ public class Task {
         this.title = title;
     }
 
+    public Task changeTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
