@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-@DisplayName("TaskService 클래스는")
+@DisplayName("TaskService 테스트")
 class TaskServiceTest {
     public static final String EXAMPLE_TITLE = "title";
     private TaskService service;
@@ -130,33 +130,42 @@ class TaskServiceTest {
                 assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
             }
         }
-    }
 
-    @DisplayName("없는 task id로 updateTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
-    @Test
-    void whenUpdateTaskWithNotExistedId_thenThrowTaskNotFoundException() {
-        // when
-        Throwable thrown = catchThrowable(() -> { service.updateTask(1L, new Task()); });
+        @Nested
+        @DisplayName("존재하지 않는 taskId로 updateTask() 요청하면")
+        class When_updateTaskWithNotExistedTaskId {
+            Throwable thrown;
 
-        // then
-        assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
-    }
+            @BeforeEach
+            void when() {
+                thrown = catchThrowable(() -> { service.getTask(3L); });
+            }
 
-    @DisplayName("존재하는 task id로 updateTask() 요청하면, task 업데이트 됨")
-    @Test
-    void givenCreateTask_whenUpdateTaskWithExistedId_thenTaskUpdated() {
-        // given
-        Task task = new Task();
-        task.setTitle("title");
-        service.createTask(task);
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
+            void then_throwTaskNotFoundException() {
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
 
-        // when
-        service.updateTask(1L, task);
+        @Nested
+        @DisplayName("존재하는 task id로 updateTask() 요청하면")
+        class When_updateTaskWithExistedId {
+            @BeforeEach
+            void when() {
+                Task task = new Task();
+                task.setTitle("new title");
+                service.updateTask(1L, task);
+            }
 
-        // then
-        Task updatedTask = service.getTask(1L);
-        assertThat(updatedTask.getId()).isEqualTo(1L);
-        assertThat(updatedTask.getTitle()).isEqualTo("title");
+            @Test
+            @DisplayName("할일이 업데이트 된다")
+            void then_taskUpdated() {
+                Task updatedTask = service.getTask(1L);
+                assertThat(updatedTask.getId()).isEqualTo(1L);
+                assertThat(updatedTask.getTitle()).isEqualTo("new title");
+            }
+        }
     }
 
     @DisplayName("없는 task id로 deleteTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
