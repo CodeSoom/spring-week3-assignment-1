@@ -18,16 +18,13 @@ public class Task {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Task changeTitle(String title) {
         this.title = title;
+        return this;
     }
 
     @Override

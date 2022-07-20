@@ -13,23 +13,6 @@ class TaskTest {
     final String givenTitle = "BJP";
 
     @Nested
-    @DisplayName("setId 메소드는")
-    class Describe_set_id {
-        @Nested
-        @DisplayName("식별자가 주어진다면")
-        class Context_with_id {
-            @Test
-            @DisplayName("작업의 식별자를 주어진 식별자로 할당한다.")
-            void it_assignment_id_to_task() {
-                Task task = new Task();
-                task.setId(givenId);
-
-                assertThat(task.getId()).isEqualTo(givenId);
-            }
-        }
-    }
-
-    @Nested
     @DisplayName("getId 메소드는")
     class Describe_get_id {
         Task task = new Task(givenId, givenTitle);
@@ -45,18 +28,19 @@ class TaskTest {
     }
 
     @Nested
-    @DisplayName("setTitle 메소드는")
+    @DisplayName("change 메소드는")
     class Describe_set_title {
         @Nested
         @DisplayName("제목이 주어질 때")
         class Context_with_title {
-            @Test
-            @DisplayName("작업에 제목을 할당한다")
-            void it_assignment_title_to_task() {
-                Task task = new Task();
-                task.setTitle(givenTitle);
+            final String givenToChangeTitle = "변경할 제목";
 
-                assertThat(task.getTitle()).isEqualTo(givenTitle);
+            @Test
+            @DisplayName("작업에 제목을 할당하고 작업을 리턴한다")
+            void it_assignment_title_to_task() {
+                Task task = new Task(givenId, givenTitle);
+
+                assertThat(task.changeTitle(givenToChangeTitle)).isEqualTo(new Task(givenId, givenToChangeTitle));
             }
         }
     }
