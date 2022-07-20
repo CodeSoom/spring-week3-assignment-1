@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 @DisplayName("TaskService 클래스는")
 class TaskServiceTest {
+    public static final String EXAMPLE_TITLE = "title";
     private TaskService service;
 
     @BeforeEach
@@ -40,17 +41,34 @@ class TaskServiceTest {
                 assertThat(tasks).isEmpty();
             }
         }
+
+        @Nested
+        @DisplayName("존재하지 않는 taskId로 getTask() 요청하면")
+        class When_getTaskWithNotExistedTaskId {
+            Throwable thrown;
+
+            @BeforeEach
+            void when() {
+                thrown = catchThrowable(() -> { service.getTask(1L); });
+            }
+
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
+            void then_throwTaskNotFoundException() {
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @Nested
-    @DisplayName("task를 생성했을 때")
+    @DisplayName("task를 2개 생성했을 때")
     class Given_didCreateTasks {
         @BeforeEach
         void given() {
             final Task task1 = new Task();
-            task1.setTitle("title1");
+            task1.setTitle(EXAMPLE_TITLE + 1);
             final Task task2 = new Task();
-            task2.setTitle("title2");
+            task2.setTitle(EXAMPLE_TITLE + 2);
             service.createTask(task1);
             service.createTask(task2);
         }
@@ -72,37 +90,46 @@ class TaskServiceTest {
                 final Task resultTask1 = tasks.get(0);
                 final Task resultTask2 = tasks.get(1);
                 assertThat(resultTask1.getId()).isEqualTo(1L);
-                assertThat(resultTask1.getTitle()).isEqualTo("title1");
+                assertThat(resultTask1.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
                 assertThat(resultTask2.getId()).isEqualTo(2L);
-                assertThat(resultTask2.getTitle()).isEqualTo("title2");
+                assertThat(resultTask2.getTitle()).isEqualTo(EXAMPLE_TITLE + 2);
             }
         }
-    }
 
-    @DisplayName("task를 생성했을 때, getTask() 요청하면, 생성한 task 반환")
-    @Test
-    void givenDidCreateTasks_whenGetTask_thenReturnTask() {
-        // given
-        final Task task = new Task();
-        task.setTitle("title");
-        service.createTask(task);
+        @Nested
+        @DisplayName("존재하는 taskId로 getTask() 요청하면")
+        class When_getTaskWithExistedTaskId {
+            private Task result;
 
-        // when
-        final Task result = service.getTask(1L);
+            @BeforeEach
+            void when() {
+                result = service.getTask(1L);
+            }
 
-        // then
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("title");
-    }
+            @Test
+            @DisplayName("요청한 id에 해당하는 task 반환")
+            void then_returnTask() {
+                assertThat(result.getId()).isEqualTo(1L);
+                assertThat(result.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+            }
+        }
 
-    @DisplayName("없는 task id로 getTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
-    @Test
-    void whenGetTaskWithNotExistedId_thenThrowTaskNotFoundException() {
-        // when
-        Throwable thrown = catchThrowable(() -> { service.getTask(1L); });
+        @Nested
+        @DisplayName("존재하지 않는 taskId로 getTask() 요청하면")
+        class When_getTaskWithNotExistedTaskId {
+            Throwable thrown;
 
-        // then
-        assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            @BeforeEach
+            void when() {
+                thrown = catchThrowable(() -> { service.getTask(3L); });
+            }
+
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
+            void then_throwTaskNotFoundException() {
+                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            }
+        }
     }
 
     @DisplayName("없는 task id로 updateTask() 요청하면, 할일을 찾을 수 없다는 예외가 던져짐")
