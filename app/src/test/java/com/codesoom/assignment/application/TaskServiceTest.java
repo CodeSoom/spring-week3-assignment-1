@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+@DisplayName("TaskService 클래스는")
 class TaskServiceTest {
     private TaskService service;
 
@@ -19,38 +21,62 @@ class TaskServiceTest {
         service = new TaskService();
     }
 
-    @DisplayName("task를 생성하지 않았을 때, getTask() 요청하면, 빈 배열 반환")
-    @Test
-    void givenDidNotCreateTask_whenGetTasks_thenReturnEmptyList() {
-        // when
-        final List<Task> tasks = service.getTasks();
+    @Nested
+    @DisplayName("task가 생성되지 않았을 때")
+    class Given_didNotCreateTask {
+        private List<Task> tasks;
 
-        // then
-        assertThat(tasks).isEmpty();
+        @Nested
+        @DisplayName("getTask() 요청하면")
+        class When_getTasks {
+            @BeforeEach
+            public void when() {
+                tasks = service.getTasks();
+            }
+
+            @Test
+            @DisplayName("빈 배열을 반환한다")
+            void then_returnEmptyList() {
+                assertThat(tasks).isEmpty();
+            }
+        }
     }
 
-    @DisplayName("task를 생성했을 때, getTasks() 요청하면, 생성했던 task들 반환")
-    @Test
-    void givenDidCreateTasks_whenGetTasks_thenReturnTasks() {
-        // given
-        final Task task1 = new Task();
-        task1.setTitle("title1");
-        final Task task2 = new Task();
-        task2.setTitle("title2");
-        service.createTask(task1);
-        service.createTask(task2);
+    @Nested
+    @DisplayName("task를 생성했을 때")
+    class Given_didCreateTasks {
+        @BeforeEach
+        void given() {
+            final Task task1 = new Task();
+            task1.setTitle("title1");
+            final Task task2 = new Task();
+            task2.setTitle("title2");
+            service.createTask(task1);
+            service.createTask(task2);
+        }
 
-        // when
-        final List<Task> tasks = service.getTasks();
+        @Nested
+        @DisplayName("getTasks() 요청하면")
+        class When_getTasks {
+            private List<Task> tasks;
 
-        // then
-        assertThat(tasks).hasSize(2);
-        final Task resultTask1 = tasks.get(0);
-        final Task resultTask2 = tasks.get(1);
-        assertThat(resultTask1.getId()).isEqualTo(1L);
-        assertThat(resultTask1.getTitle()).isEqualTo("title1");
-        assertThat(resultTask2.getId()).isEqualTo(2L);
-        assertThat(resultTask2.getTitle()).isEqualTo("title2");
+            @BeforeEach
+            void when() {
+                tasks = service.getTasks();
+            }
+
+            @Test
+            @DisplayName("생성했던 할일을 반환한다")
+            void then_returnTasks() {
+                assertThat(tasks).hasSize(2);
+                final Task resultTask1 = tasks.get(0);
+                final Task resultTask2 = tasks.get(1);
+                assertThat(resultTask1.getId()).isEqualTo(1L);
+                assertThat(resultTask1.getTitle()).isEqualTo("title1");
+                assertThat(resultTask2.getId()).isEqualTo(2L);
+                assertThat(resultTask2.getTitle()).isEqualTo("title2");
+            }
+        }
     }
 
     @DisplayName("task를 생성했을 때, getTask() 요청하면, 생성한 task 반환")
