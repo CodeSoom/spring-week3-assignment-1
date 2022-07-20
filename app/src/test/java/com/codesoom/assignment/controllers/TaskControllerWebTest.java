@@ -2,7 +2,6 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.dto.ErrorResponse;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,18 +78,18 @@ class TaskControllerWebTest {
 
     @Nested
     @DisplayName("detail 메소드는")
-    class Describe_create {
+    class Describe_detail {
         @Nested
         @DisplayName("식별자가 주어지고 해당 식별자를 가진 작업이 있다면")
         class Context_with_id_and_task {
             @Test
             @DisplayName("작업을 리턴한다")
             void It_returns_task() throws Exception {
-                given(taskService.getTask(givenId1)).willReturn(new Task(givenId1, givenTodo1));
+                given(taskService.getTask(givenId2)).willReturn(new Task(givenId2, givenTodo2));
 
-                mockMvc.perform(get("/tasks/1"))
-                        .andExpect(jsonPath("$.id").value(givenId1))
-                        .andExpect(jsonPath("$.title").value(givenTodo1))
+                mockMvc.perform(get("/tasks/2"))
+                        .andExpect(jsonPath("$.id").value(givenId2))
+                        .andExpect(jsonPath("$.title").value(givenTodo2))
                         .andExpect(status().isOk());
             }
         }
@@ -99,8 +98,8 @@ class TaskControllerWebTest {
         @DisplayName("작업을 찾지 못했다면")
         class Context_without_task {
             @Test
-            @DisplayName("에러 응답과 상태 코드 404를 보냅니다")
-            void It_throw_exception() throws Exception {
+            @DisplayName("에러 응답과 상태 코드 404를 리턴합니다")
+            void It_returns_error_response_and_not_found() throws Exception {
                 given(taskService.getTask(givenId1)).willThrow(TaskNotFoundException.class);
 
                 mockMvc.perform(get("/tasks/1"))
