@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.reset;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,6 +39,8 @@ class TaskControllerWebTest {
                 .standaloneSetup(new TaskController(taskService))
                 .setControllerAdvice(TaskErrorAdvice.class)
                 .build();
+
+        reset(taskService);
     }
 
     @Nested
@@ -85,11 +88,11 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("작업을 리턴한다")
             void It_returns_task() throws Exception {
-                given(taskService.getTask(givenId2)).willReturn(new Task(givenId2, givenTodo2));
+                given(taskService.getTask(givenId1)).willReturn(new Task(givenId1, givenTodo1));
 
-                mockMvc.perform(get("/tasks/2"))
-                        .andExpect(jsonPath("$.id").value(givenId2))
-                        .andExpect(jsonPath("$.title").value(givenTodo2))
+                mockMvc.perform(get("/tasks/1"))
+                        .andExpect(jsonPath("$.id").value(givenId1))
+                        .andExpect(jsonPath("$.title").value(givenTodo1))
                         .andExpect(status().isOk());
             }
         }
