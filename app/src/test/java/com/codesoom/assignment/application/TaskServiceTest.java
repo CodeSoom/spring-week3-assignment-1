@@ -23,16 +23,18 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_get_task {
+        final Long givenId = 0L;
+        final String givenTitle = "BJP";
+
         @Nested
         @DisplayName("주어진 식별자를 가진 작업이 존재하면")
         class Context_with_id {
             @Test
-            @DisplayName("작업을 리턴한다")
+            @DisplayName("해당 작업을 리턴한다")
             void it_returns_task_with_id() {
-                Task task = new Task(1L, "BJP");
-//                taskService.createTask(task);
+                taskService.createTask(givenTitle);
 
-                assertThat(taskService.getTask(1L)).isEqualTo(task);
+                assertThat(taskService.getTask(0L)).isEqualTo(new Task(givenId, givenTitle));
             }
         }
 
@@ -42,7 +44,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 던진다")
             void it_throws_exception() {
-                assertThatThrownBy(() -> taskService.getTask(1L))
+                assertThatThrownBy(() -> taskService.getTask(givenId))
                         .isExactlyInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -81,7 +83,7 @@ class TaskServiceTest {
         @Nested
         @DisplayName("제목이 주어지면")
         class Context_with_title {
-            String givenTitle = "주어진 제목";
+            final String givenTitle = "주어진 제목";
 
             @Test
             @DisplayName("주어진 제목을 가진 작업을 생성하고 리턴한다.")
