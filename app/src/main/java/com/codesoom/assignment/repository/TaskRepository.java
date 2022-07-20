@@ -3,9 +3,7 @@ package com.codesoom.assignment.repository;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class TaskRepository {
@@ -20,5 +18,9 @@ public class TaskRepository {
 
     public Optional<Task> get(Long id) {
         return Optional.ofNullable(taskMap.get(id));
+    }
+
+    public List<Task> getAll() {
+        return new ArrayList<>(taskMap.values());
     }
 }

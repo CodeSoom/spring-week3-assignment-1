@@ -20,7 +20,7 @@ public class TaskService {
     private Long newId = 0L;
 
     public List<Task> getTasks() {
-        return tasks;
+        return taskRepository.getAll();
     }
 
     public Task getTask(Long id) {

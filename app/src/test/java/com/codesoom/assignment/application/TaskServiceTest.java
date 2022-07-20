@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("TaskService 클래스의")
 class TaskServiceTest {
     TaskService taskService;
+    final Long givenId = 0L;
+    final String givenTitle = "BJP";
 
     @BeforeEach
     void setUp() {
@@ -23,9 +25,6 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTask 메소드는")
     class Describe_get_task {
-        final Long givenId = 0L;
-        final String givenTitle = "BJP";
-
         @Nested
         @DisplayName("주어진 식별자를 가진 작업이 존재하면")
         class Context_with_id {
@@ -59,8 +58,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("작업 목록을 리턴한다")
             void It_returns_tasks() {
-//                taskService.createTask(new Task(null, "BJP"));
-//                taskService.createTask(new Task(null, "BJP"));
+                taskService.createTask(givenTitle);
+                taskService.createTask(givenTitle);
 
                 assertThat(taskService.getTasks().size()).isEqualTo(2);
             }
