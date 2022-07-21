@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("TaskService 클래스")
@@ -19,15 +18,15 @@ class TaskServiceTest {
         @BeforeEach
         void context() {
             final Task task1 = new Task();
-            task1.setTitle(EXAMPLE_TITLE + 1);
+            task1.setTitle(FIXTURE_TITLE + 1);
             final Task task2 = new Task();
-            task2.setTitle(EXAMPLE_TITLE + 2);
+            task2.setTitle(FIXTURE_TITLE + 2);
             service.createTask(task1);
             service.createTask(task2);
         }
     }
 
-    public static final String EXAMPLE_TITLE = "title";
+    public static final String FIXTURE_TITLE = "title";
     private TaskService service;
 
     @BeforeEach
@@ -62,9 +61,9 @@ class TaskServiceTest {
                 final Task resultTask1 = tasks.get(0);
                 final Task resultTask2 = tasks.get(1);
                 assertThat(resultTask1.getId()).isEqualTo(1L);
-                assertThat(resultTask1.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(resultTask1.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
                 assertThat(resultTask2.getId()).isEqualTo(2L);
-                assertThat(resultTask2.getTitle()).isEqualTo(EXAMPLE_TITLE + 2);
+                assertThat(resultTask2.getTitle()).isEqualTo(FIXTURE_TITLE + 2);
             }
         }
     }
@@ -93,7 +92,7 @@ class TaskServiceTest {
                 Task result = service.getTask(1L);
 
                 assertThat(result.getId()).isEqualTo(1L);
-                assertThat(result.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
             }
         }
     }

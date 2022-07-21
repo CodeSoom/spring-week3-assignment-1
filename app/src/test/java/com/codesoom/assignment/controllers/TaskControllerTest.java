@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -20,15 +19,15 @@ class TaskControllerTest {
         @BeforeEach
         void context() {
             final Task task1 = new Task();
-            task1.setTitle(EXAMPLE_TITLE + 1);
+            task1.setTitle(FIXTURE_TITLE + 1);
             final Task task2 = new Task();
-            task2.setTitle(EXAMPLE_TITLE + 2);
+            task2.setTitle(FIXTURE_TITLE + 2);
             controller.create(task1);
             controller.create(task2);
         }
     }
 
-    public static final String EXAMPLE_TITLE = "title";
+    public static final String FIXTURE_TITLE = "title";
     private TaskController controller;
 
     @BeforeEach
@@ -60,9 +59,9 @@ class TaskControllerTest {
                 List<Task> result = controller.list();
 
                 assertThat(result).isNotEmpty();
-                assertThat(result.get(0).getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(result.get(0).getTitle()).isEqualTo(FIXTURE_TITLE + 1);
                 assertThat(result.get(0).getId()).isEqualTo(1L);
-                assertThat(result.get(1).getTitle()).isEqualTo(EXAMPLE_TITLE + 2);
+                assertThat(result.get(1).getTitle()).isEqualTo(FIXTURE_TITLE + 2);
                 assertThat(result.get(1).getId()).isEqualTo(2L);
             }
         }
@@ -92,7 +91,7 @@ class TaskControllerTest {
                 Task result = controller.detail(1L);
 
                 assertThat(result.getId()).isEqualTo(1L);
-                assertThat(result.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
             }
         }
     }
@@ -107,7 +106,7 @@ class TaskControllerTest {
             @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 Task newTask = new Task();
-                newTask.setTitle(EXAMPLE_TITLE);
+                newTask.setTitle(FIXTURE_TITLE);
                 assertThrows(TaskNotFoundException.class, () -> {
                     controller.update(0L, newTask);
                 });
@@ -121,11 +120,11 @@ class TaskControllerTest {
             @DisplayName("수정된 할일을 반환한다")
             void it_returnsUpdatedTask() {
                 Task newTask = new Task();
-                newTask.setTitle(EXAMPLE_TITLE + 1);
+                newTask.setTitle(FIXTURE_TITLE + 1);
                 Task updatedTask = controller.update(1L, newTask);
 
                 assertThat(updatedTask.getId()).isEqualTo(1L);
-                assertThat(updatedTask.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(updatedTask.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
             }
         }
     }

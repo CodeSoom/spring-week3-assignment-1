@@ -4,12 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
-    private static final String TEST_TITLE = "title";
-    private static final long TEST_ID = 0L;
+    private static final String FIXTURE_TITLE = "title";
+    private static final long FIXTURE_ID = 0L;
 
     @DisplayName("id 지정 안했을 때 getId 호출하면 null 반환")
     @Test
@@ -73,13 +72,13 @@ class TaskTest {
     void givenSetTitle_whenGetTitle_thenReturnTitle() {
         // given
         final Task task = new Task();
-        task.setTitle(TEST_TITLE);
+        task.setTitle(FIXTURE_TITLE);
 
         // when
         final String actual = task.getTitle();
 
         // then
-        assertThat(actual).isEqualTo(TEST_TITLE);
+        assertThat(actual).isEqualTo(FIXTURE_TITLE);
     }
 
     @DisplayName("title 업데이트 하고 때 getTitle 호출하면 업데이트한 title 반환")
@@ -87,14 +86,14 @@ class TaskTest {
     void givenUpdateTitle_whenGetTitle_thenReturnTitle() {
         // given
         final Task task = new Task();
-        task.setTitle(TEST_TITLE);
-        task.setTitle(TEST_TITLE + "new");
+        task.setTitle(FIXTURE_TITLE);
+        task.setTitle(FIXTURE_TITLE + "new");
 
         // when
         final String actual = task.getTitle();
 
         // then
-        assertThat(actual).isEqualTo(TEST_TITLE + "new");
+        assertThat(actual).isEqualTo(FIXTURE_TITLE + "new");
     }
 
     @DisplayName("id, title 지정하고 getId, getTitle 호출하면 id와 title 반환")
@@ -102,15 +101,15 @@ class TaskTest {
     void givenSetIdAndSetTitle_whenGetIdAndGetTitle_thenReturnIdAndTitle() {
         // given
         final Task task = new Task();
-        task.setId(TEST_ID);
-        task.setTitle(TEST_TITLE);
+        task.setId(FIXTURE_ID);
+        task.setTitle(FIXTURE_TITLE);
 
         // when
         final String title = task.getTitle();
         final Long id = task.getId();
 
         // then
-        assertThat(id).isEqualTo(TEST_ID);
-        assertThat(title).isEqualTo(TEST_TITLE);
+        assertThat(id).isEqualTo(FIXTURE_ID);
+        assertThat(title).isEqualTo(FIXTURE_TITLE);
     }
 }
