@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Task 클래스")
 class TaskTest {
     private static final String FIXTURE_TITLE = "title";
-    private static final long FIXTURE_ID = 0L;
     private Task task;
 
     @BeforeEach
