@@ -97,34 +97,37 @@ class TaskControllerTest {
         }
     }
 
-    @DisplayName("찾을 수 없는 id로 업데이트 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
-    @Test
-    void whenUpdateTaskWithNotFindableTaskId_thenThrowTaskNotFound() {
-        // when
-        Task newTask = new Task();
-        newTask.setTitle(EXAMPLE_TITLE);
-        Throwable thrown = catchThrowable(() -> { controller.update(0L, newTask); });
+    @Nested
+    @DisplayName("update 메소드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("찾을 수 없는 id로 요청했을 때")
+        class Context_withNotFindableTaskId {
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
+            void it_throwsTaskNotFoundException() {
+                Task newTask = new Task();
+                newTask.setTitle(EXAMPLE_TITLE);
+                assertThrows(TaskNotFoundException.class, () -> {
+                    controller.update(0L, newTask);
+                });
+            }
+        }
 
-        // then
-        then(thrown).isInstanceOf(TaskNotFoundException.class);
-    }
+        @Nested
+        @DisplayName("찾을 수 있는 id로 요청했을 때")
+        class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            @Test
+            @DisplayName("수정된 할일을 반환한다")
+            void it_returnsUpdatedTask() {
+                Task newTask = new Task();
+                newTask.setTitle(EXAMPLE_TITLE + 1);
+                Task updatedTask = controller.update(1L, newTask);
 
-    @DisplayName("찾을 수 있는 id로 업데이트 했을 때, 업데이트된 할일 반환")
-    @Test
-    void givenCreateTask_whenUpdateTaskWithFindableTaskId_thenReturnUpdatedTask() {
-        // given
-        Task oldTask = new Task();
-        oldTask.setTitle(EXAMPLE_TITLE);
-        controller.create(oldTask);
-
-        // when
-        Task newTask = new Task();
-        newTask.setTitle(EXAMPLE_TITLE + 1);
-        Task updatedTask = controller.update(1L, newTask);
-
-        // then
-        then(updatedTask.getId()).isEqualTo(1L);
-        then(updatedTask.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(updatedTask.getId()).isEqualTo(1L);
+                assertThat(updatedTask.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+            }
+        }
     }
 
     @DisplayName("찾을 수 없는 할일 id로 삭제 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
