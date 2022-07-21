@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,7 +15,19 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class TaskControllerTest {
-    public static final String SAMPLE_TITLE = "title";
+    abstract class Context_didCreateTwoTasks {
+        @BeforeEach
+        void context() {
+            final Task task1 = new Task();
+            task1.setTitle(EXAMPLE_TITLE + 1);
+            final Task task2 = new Task();
+            task2.setTitle(EXAMPLE_TITLE + 2);
+            controller.create(task1);
+            controller.create(task2);
+        }
+    }
+
+    public static final String EXAMPLE_TITLE = "title";
     private TaskController controller;
 
     @BeforeEach
@@ -22,36 +35,36 @@ class TaskControllerTest {
         controller = new TaskController(new TaskService());
     }
 
-    @DisplayName("할일 생성하지 않았을 때, 할일 목록을 가져오면, 빈 목록 반환")
-    @Test
-    void givenDidNotCreateTask_whenGetList_thenEmpty() {
-        // when
-        List<Task> result = controller.list();
+    @Nested
+    @DisplayName("list 메소드는")
+    class Describe_list {
+        @Nested
+        @DisplayName("할일이 생성되지 않았을 때")
+        class Contxet_didNotCreateTask {
+            @Test
+            @DisplayName("빈 목록을 반환한다")
+            void it_returnsEmtpyList() {
+                List<Task> result = controller.list();
 
-        // then
-        assertThat(result).isEmpty();
-    }
+                assertThat(result).isEmpty();
+            }
+        }
 
-    @DisplayName("할일 생성했을 때, 할일 목록을 가져오면, 생성한 할일 목록 반환")
-    @Test
-    void givenDidCreateTasks_whenGetList_thenReturnTasks() {
-        // given
-        Task task1 = new Task();
-        task1.setTitle(SAMPLE_TITLE + 1);
-        Task task2 = new Task();
-        task2.setTitle(SAMPLE_TITLE + 2);
-        controller.create(task1);
-        controller.create(task2);
+        @Nested
+        @DisplayName("할일을 생성했었을 때")
+        class Context_didCreateContext extends Context_didCreateTwoTasks {
+            @Test
+            @DisplayName("생성된 할일 목록을 반환한다")
+            void it_returnsTasks() {
+                List<Task> result = controller.list();
 
-        // when
-        List<Task> result = controller.list();
-
-        // then
-        assertThat(result).isNotEmpty();
-        assertThat(result.get(0).getTitle()).isEqualTo(SAMPLE_TITLE + 1);
-        assertThat(result.get(0).getId()).isEqualTo(1L);
-        assertThat(result.get(1).getTitle()).isEqualTo(SAMPLE_TITLE + 2);
-        assertThat(result.get(1).getId()).isEqualTo(2L);
+                assertThat(result).isNotEmpty();
+                assertThat(result.get(0).getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+                assertThat(result.get(0).getId()).isEqualTo(1L);
+                assertThat(result.get(1).getTitle()).isEqualTo(EXAMPLE_TITLE + 2);
+                assertThat(result.get(1).getId()).isEqualTo(2L);
+            }
+        }
     }
 
     @DisplayName("찾을 수 없는 id로 조회했을 때, 할일을 찾을 수 없다는 에러 던져짐")
@@ -69,7 +82,7 @@ class TaskControllerTest {
     void givenCreatedTask_whenGetDetailWithFindableTaskId_thenReturnTask() {
         // given
         Task task = new Task();
-        task.setTitle(SAMPLE_TITLE);
+        task.setTitle(EXAMPLE_TITLE);
         controller.create(task);
 
         // when
@@ -77,7 +90,7 @@ class TaskControllerTest {
 
         // then
         then(result.getId()).isEqualTo(1L);
-        then(result.getTitle()).isEqualTo(SAMPLE_TITLE);
+        then(result.getTitle()).isEqualTo(EXAMPLE_TITLE);
     }
 
     @DisplayName("찾을 수 없는 id로 업데이트 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
@@ -85,7 +98,7 @@ class TaskControllerTest {
     void whenUpdateTaskWithNotFindableTaskId_thenThrowTaskNotFound() {
         // when
         Task newTask = new Task();
-        newTask.setTitle(SAMPLE_TITLE);
+        newTask.setTitle(EXAMPLE_TITLE);
         Throwable thrown = catchThrowable(() -> { controller.update(0L, newTask); });
 
         // then
@@ -97,17 +110,17 @@ class TaskControllerTest {
     void givenCreateTask_whenUpdateTaskWithFindableTaskId_thenReturnUpdatedTask() {
         // given
         Task oldTask = new Task();
-        oldTask.setTitle(SAMPLE_TITLE);
+        oldTask.setTitle(EXAMPLE_TITLE);
         controller.create(oldTask);
 
         // when
         Task newTask = new Task();
-        newTask.setTitle(SAMPLE_TITLE + 1);
+        newTask.setTitle(EXAMPLE_TITLE + 1);
         Task updatedTask = controller.update(1L, newTask);
 
         // then
         then(updatedTask.getId()).isEqualTo(1L);
-        then(updatedTask.getTitle()).isEqualTo(SAMPLE_TITLE + 1);
+        then(updatedTask.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
     }
 
     @DisplayName("찾을 수 없는 할일 id로 삭제 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
@@ -125,7 +138,7 @@ class TaskControllerTest {
     void givenCreateTask_whenDeleteTaskWithFindableTaskId_thenDeleted() {
         // given
         Task oldTask = new Task();
-        oldTask.setTitle(SAMPLE_TITLE);
+        oldTask.setTitle(EXAMPLE_TITLE);
         controller.create(oldTask);
 
         // when
