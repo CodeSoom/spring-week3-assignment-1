@@ -3,23 +3,29 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = TaskController.class)
 @DisplayName("TaskController 클래스의")
@@ -27,11 +33,11 @@ class TaskControllerWebTest {
     private MockMvc mockMvc;
     @MockBean
     private TaskService taskService;
-
-    final Long givenId1 = 1L;
-    final Long givenId2 = 2L;
-    final String givenTodo1 = "Todo1";
-    final String givenTodo2 = "Todo2";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Long givenId1 = 1L;
+    private final Long givenId2 = 2L;
+    private final String givenTodo1 = "Todo1";
+    private final String givenTodo2 = "Todo2";
 
     @BeforeEach
     void setUp() {
@@ -108,6 +114,31 @@ class TaskControllerWebTest {
                 mockMvc.perform(get("/tasks/1"))
                         .andExpect(jsonPath("$.message").value("Task not found"))
                         .andExpect(status().isNotFound());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("create 메소드는")
+    class Describe_create {
+        @Nested
+        @DisplayName("제목이 주어지면")
+        class Context_with_title {
+            @Test
+            @DisplayName("식별자를 가진 작업을 리턴한다")
+            void It_returns_task_with_id() throws Exception {
+                Map<String, String> input = new HashMap<>();
+                input.put("title", givenTodo1);
+                given(taskService.createTask(givenTodo1)).willReturn(new Task(givenId1, givenTodo1));
+
+                mockMvc.perform(post("/tasks")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(input))
+                        )
+                        .andDo(print())
+                        .andExpect(jsonPath("$.id").value(givenId1))
+                        .andExpect(jsonPath("$.title").value(givenTodo1))
+                        .andExpect(status().isCreated());
             }
         }
     }
