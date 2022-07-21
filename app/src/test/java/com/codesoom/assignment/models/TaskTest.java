@@ -68,63 +68,56 @@ class TaskTest {
             }
         }
     }
-    
-    @DisplayName("title 지정 안했을 때 getTitle 호출하면 null 반환")
-    @Test
-    void givenWithoutSetTitle_whenGetTitle_thenNull() {
-        // given
-        final Task task = new Task();
 
-        // when
-        final String actual = task.getTitle();
+    @Nested
+    @DisplayName("getTitle은")
+    class Describe_getTitle {
+        @Nested
+        @DisplayName("title 세팅 안했을 때")
+        class Context_didNotSetTitle {
+            @Test
+            @DisplayName("null을 반환한다")
+            void it_returnsNull() {
+                final String result = task.getTitle();
 
-        // then
-        assertThat(actual).isNull();
-    }
+                assertThat(result).isNull();
+            }
+        }
 
-    @DisplayName("title 지정 하고 때 getTitle 호출하면 지정된 title 반환")
-    @Test
-    void givenSetTitle_whenGetTitle_thenReturnTitle() {
-        // given
-        final Task task = new Task();
-        task.setTitle(FIXTURE_TITLE);
+        @Nested
+        @DisplayName("title을 세팅했을 때")
+        class Context_didSetTitle {
+            @BeforeEach
+            void context() {
+                task.setTitle(FIXTURE_TITLE);
+            }
 
-        // when
-        final String actual = task.getTitle();
+            @Test
+            @DisplayName("세팅된 title을 반환한다")
+            void it_returnsTitle() {
+                final String result = task.getTitle();
 
-        // then
-        assertThat(actual).isEqualTo(FIXTURE_TITLE);
-    }
+                assertThat(result).isEqualTo(FIXTURE_TITLE);
+            }
+        }
 
-    @DisplayName("title 업데이트 하고 때 getTitle 호출하면 업데이트한 title 반환")
-    @Test
-    void givenUpdateTitle_whenGetTitle_thenReturnTitle() {
-        // given
-        final Task task = new Task();
-        task.setTitle(FIXTURE_TITLE);
-        task.setTitle(FIXTURE_TITLE + "new");
 
-        // when
-        final String actual = task.getTitle();
+        @Nested
+        @DisplayName("title을 변경했을 때")
+        class Context_didChangeTitle {
+            @BeforeEach
+            void context() {
+                task.setTitle(FIXTURE_TITLE + 1);
+                task.setTitle(FIXTURE_TITLE + 2);
+            }
 
-        // then
-        assertThat(actual).isEqualTo(FIXTURE_TITLE + "new");
-    }
+            @Test
+            @DisplayName("마지막으로 세팅한 title을 반환한다")
+            void it_returnsTitle() {
+                final String result = task.getTitle();
 
-    @DisplayName("id, title 지정하고 getId, getTitle 호출하면 id와 title 반환")
-    @Test
-    void givenSetIdAndSetTitle_whenGetIdAndGetTitle_thenReturnIdAndTitle() {
-        // given
-        final Task task = new Task();
-        task.setId(FIXTURE_ID);
-        task.setTitle(FIXTURE_TITLE);
-
-        // when
-        final String title = task.getTitle();
-        final Long id = task.getId();
-
-        // then
-        assertThat(id).isEqualTo(FIXTURE_ID);
-        assertThat(title).isEqualTo(FIXTURE_TITLE);
+                assertThat(result).isEqualTo(FIXTURE_TITLE + 2);
+            }
+        }
     }
 }
