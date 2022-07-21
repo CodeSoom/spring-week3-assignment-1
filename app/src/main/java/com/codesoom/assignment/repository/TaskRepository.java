@@ -1,14 +1,28 @@
 package com.codesoom.assignment.repository;
 
 import com.codesoom.assignment.models.Task;
-import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 
-@Repository
-public class TaskRepository {
-    private final Map<Long, Task> taskMap = new HashMap<>();
-    private final IdGenerator idGenerator = new IdGenerator();
+/**
+ * 작업을 관리하는 역할을 가지고 있다.
+ */
+public interface TaskRepository {
+    /**
+     * 주어진 식별자를 가진 작업을 리턴한다.
+     *
+     * @param id 식별자
+     * @return 작업
+     */
+    Optional<Task> get(Long id);
+
+    /**
+     * 작업 콜렉션을 리턴한다.
+     *
+     * @return 작업 콜렉션
+     */
+    Collection<Task> getAll();
 
     /**
      * 작업을 추가합니다.
@@ -16,22 +30,12 @@ public class TaskRepository {
      * @param title 제목
      * @return 작업
      */
-    public Task add(String title) {
-        Long id = idGenerator.generate();
-        Task task = new Task(id, title);
-        taskMap.put(id, task);
-        return task;
-    }
+    Task add(String title);
 
-    public Optional<Task> get(Long id) {
-        return Optional.ofNullable(taskMap.get(id));
-    }
-
-    public Collection<Task> getAll() {
-        return taskMap.values();
-    }
-
-    public Task remove(Long id) {
-        return taskMap.remove(id);
-    }
+    /**
+     * 주어진 식별자를 가진 작업을 삭제한다.
+     *
+     * @param id 식별자
+     */
+    void remove(Long id);
 }
