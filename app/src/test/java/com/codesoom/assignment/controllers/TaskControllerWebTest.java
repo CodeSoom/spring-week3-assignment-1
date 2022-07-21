@@ -179,7 +179,7 @@ class TaskControllerWebTest {
 
                 given(taskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
 
-                mockMvc.perform(put("/tasks/1")
+                mockMvc.perform(patch("/tasks/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(input)))
                         .andExpect(jsonPath("$.id").value(givenId1))
