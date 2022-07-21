@@ -27,8 +27,8 @@ public class TaskRepository {
         return Optional.ofNullable(taskMap.get(id));
     }
 
-    public List<Task> getAll() {
-        return new ArrayList<>(taskMap.values());
+    public Collection<Task> getAll() {
+        return taskMap.values();
     }
 
     public Task remove(Long id) {

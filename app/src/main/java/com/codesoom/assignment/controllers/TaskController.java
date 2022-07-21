@@ -5,6 +5,7 @@ import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> list() {
+    public Collection<Task> list() {
         return taskService.getTasks();
     }
 

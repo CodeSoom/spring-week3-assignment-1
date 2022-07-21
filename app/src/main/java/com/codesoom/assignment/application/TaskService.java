@@ -5,6 +5,8 @@ import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -15,8 +17,8 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> getTasks() {
-        return taskRepository.getAll();
+    public Collection<Task> getTasks() {
+        return new ArrayList<>(taskRepository.getAll());
     }
 
     public Task getTask(Long id) {
