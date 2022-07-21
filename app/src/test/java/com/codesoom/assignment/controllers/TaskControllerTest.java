@@ -54,9 +54,9 @@ class TaskControllerTest {
         assertThat(result.get(1).getId()).isEqualTo(2L);
     }
 
-    @DisplayName("존재하지 않는 할일 id로 조회했을 때, 존재하지 않는다고 에러 반환")
+    @DisplayName("찾을 수 없는 id로 조회했을 때, 할일을 찾을 수 없다는 에러 던져짐")
     @Test
-    void whenGetDetailWithNotExistedTaskId_thenThrowTaskNotFound() {
+    void whenGetDetailWithNotFindableTaskId_thenThrowTaskNotFound() {
         // when
         Throwable thrown = catchThrowable(() -> { controller.detail(0L); });
 
@@ -64,9 +64,9 @@ class TaskControllerTest {
         then(thrown).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("존재하는 할일 id로 조회했을 때, 할일 반환")
+    @DisplayName("찾을 수 있는 id로 조회했을 때, 할일 반환")
     @Test
-    void givenCreatedTask_whenGetDetailWithExistedTaskId_thenReturnTask() {
+    void givenCreatedTask_whenGetDetailWithFindableTaskId_thenReturnTask() {
         // given
         Task task = new Task();
         task.setTitle(SAMPLE_TITLE);
@@ -80,9 +80,9 @@ class TaskControllerTest {
         then(result.getTitle()).isEqualTo(SAMPLE_TITLE);
     }
 
-    @DisplayName("존재하지 않는 할일 id로 업데이트 했을 때, 존재하지 않는다고 에러 반환")
+    @DisplayName("찾을 수 없는 id로 업데이트 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
     @Test
-    void whenUpdateTaskWithNotExistedTaskId_thenThrowTaskNotFound() {
+    void whenUpdateTaskWithNotFindableTaskId_thenThrowTaskNotFound() {
         // when
         Task newTask = new Task();
         newTask.setTitle(SAMPLE_TITLE);
@@ -92,9 +92,9 @@ class TaskControllerTest {
         then(thrown).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("존재하는 할일 id로 업데이트 했을 때, 업데이트된 할일 반환")
+    @DisplayName("찾을 수 있는 id로 업데이트 했을 때, 업데이트된 할일 반환")
     @Test
-    void givenCreateTask_whenUpdateTaskWithExistedTaskId_thenReturnUpdatedTask() {
+    void givenCreateTask_whenUpdateTaskWithFindableTaskId_thenReturnUpdatedTask() {
         // given
         Task oldTask = new Task();
         oldTask.setTitle(SAMPLE_TITLE);
@@ -110,9 +110,9 @@ class TaskControllerTest {
         then(updatedTask.getTitle()).isEqualTo(SAMPLE_TITLE + 1);
     }
 
-    @DisplayName("존재하지 않는 할일 id로 삭제 했을 때, 할일이 존재하지 않는다고 에러 반환")
+    @DisplayName("찾을 수 없는 할일 id로 삭제 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
     @Test
-    void whenDeleteTaskWithNotExistedTaskId_thenThrowTaskNotFound() {
+    void whenDeleteTaskWithNotFindableTaskId_thenThrowTaskNotFound() {
         // when
         Throwable thrown = catchThrowable(() -> { controller.delete(0L); });
 
@@ -120,9 +120,9 @@ class TaskControllerTest {
         then(thrown).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @DisplayName("존재하는 할일 id로 업데이트 했을 때, 할일 삭제됨")
+    @DisplayName("찾을 수 있는 id로 업데이트 했을 때, 할일 삭제됨")
     @Test
-    void givenCreateTask_whenDeleteTaskWithExistedTaskId_thenDeleted() {
+    void givenCreateTask_whenDeleteTaskWithFindableTaskId_thenDeleted() {
         // given
         Task oldTask = new Task();
         oldTask.setTitle(SAMPLE_TITLE);

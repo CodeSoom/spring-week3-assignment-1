@@ -43,8 +43,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하지 않는 taskId로 getTask() 요청하면")
-        class When_getTaskWithNotExistedTaskId {
+        @DisplayName("찾을 수 없는 id로 getTask() 요청하면")
+        class When_getTaskWithNotFindableTaskId {
             Throwable thrown;
 
             @BeforeEach
@@ -60,8 +60,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하지 않는 taskId로 updateTask() 요청하면")
-        class When_updateTaskWithNotExistedTaskId {
+        @DisplayName("찾을 수 없는 id로 updateTask() 요청하면")
+        class When_updateTaskWithNotFindableTaskId {
             Throwable thrown;
 
             @BeforeEach
@@ -77,8 +77,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하지 않는 taskId로 deleteTask() 요청하면")
-        class When_DeleteTaskWithNotExistedTaskId {
+        @DisplayName("찾을 수 없는 Id로 deleteTask() 요청하면")
+        class When_DeleteTaskWithNotFindableTaskId {
             Throwable thrown;
 
             @BeforeEach
@@ -131,8 +131,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하는 taskId로 getTask() 요청하면")
-        class When_getTaskWithExistedTaskId {
+        @DisplayName("찾을 수 있는 Id로 getTask() 요청하면")
+        class When_getTaskWithFindableTaskId {
             private Task result;
 
             @BeforeEach
@@ -149,8 +149,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하는 task id로 updateTask() 요청하면")
-        class When_updateTaskWithExistedId {
+        @DisplayName("찾을 수 있는 Id로 updateTask() 요청하면")
+        class When_updateTaskWithFindableId {
             @BeforeEach
             void when() {
                 Task task = new Task();
@@ -168,8 +168,8 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("존재하는 task id로 updateTask() 요청하면")
-        class When_deleteTaskWithExistedId {
+        @DisplayName("찾을 수 있는 Id로 updateTask() 요청하면")
+        class When_deleteTaskWithFindableId {
             @BeforeEach
             void when() {
                 service.deleteTask(1L);
