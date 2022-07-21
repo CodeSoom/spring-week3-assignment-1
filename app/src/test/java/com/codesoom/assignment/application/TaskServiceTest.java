@@ -99,6 +99,40 @@ class TaskServiceTest {
     }
 
     @Nested
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTask {
+        @Nested
+        @DisplayName("찾을 수 없는 id로 요청하면")
+        class Context_withNotFindableTaskId {
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            void it_throwsTaskNotFoundException() {
+                assertThrows(TaskNotFoundException.class, () -> {
+                    Task task = new Task();
+                    task.setTitle("new title");
+                    service.updateTask(1L, task);
+                });
+            }
+        }
+
+        @Nested
+        @DisplayName("찾을 수 있는 Id로 요청하면")
+        class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            @Test
+            @DisplayName("요청한 id에 해당하는 할일을 반환한다")
+            void then_returnTask() {
+                Task task = new Task();
+                task.setTitle("new title");
+                service.updateTask(1L, task);
+
+                Task updatedTask = service.getTask(1L);
+                assertThat(updatedTask.getId()).isEqualTo(1L);
+                assertThat(updatedTask.getTitle()).isEqualTo("new title");
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("할일이 생성되지 않았을 때")
     class Given_didNotCreateTask {
         @Nested
@@ -147,48 +181,6 @@ class TaskServiceTest {
             task2.setTitle(EXAMPLE_TITLE + 2);
             service.createTask(task1);
             service.createTask(task2);
-        }
-
-        @Nested
-        @DisplayName("getTasks() 요청하면")
-        class When_getTasks {
-            private List<Task> tasks;
-
-            @BeforeEach
-            void when() {
-                tasks = service.getTasks();
-            }
-
-            @Test
-            @DisplayName("생성했던 할일을 반환한다")
-            void then_returnTasks() {
-                assertThat(tasks).hasSize(2);
-                final Task resultTask1 = tasks.get(0);
-                final Task resultTask2 = tasks.get(1);
-                assertThat(resultTask1.getId()).isEqualTo(1L);
-                assertThat(resultTask1.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
-                assertThat(resultTask2.getId()).isEqualTo(2L);
-                assertThat(resultTask2.getTitle()).isEqualTo(EXAMPLE_TITLE + 2);
-            }
-        }
-
-        @Nested
-        @DisplayName("찾을 수 있는 Id로 updateTask() 요청하면")
-        class When_updateTaskWithFindableId {
-            @BeforeEach
-            void when() {
-                Task task = new Task();
-                task.setTitle("new title");
-                service.updateTask(1L, task);
-            }
-
-            @Test
-            @DisplayName("할일이 업데이트 된다")
-            void then_taskUpdated() {
-                Task updatedTask = service.getTask(1L);
-                assertThat(updatedTask.getId()).isEqualTo(1L);
-                assertThat(updatedTask.getTitle()).isEqualTo("new title");
-            }
         }
 
         @Nested
