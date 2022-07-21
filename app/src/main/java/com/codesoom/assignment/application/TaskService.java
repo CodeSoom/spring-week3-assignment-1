@@ -1,41 +1,49 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.repository.TaskRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-@Service
-public class TaskService {
-    private final TaskRepository taskRepository;
+/**
+ * 작업에 대한 비즈니스 로직을 처리하는 역할을 가지고 있습니다.
+ */
+public interface TaskService {
+    /**
+     * 작업 콜렉션을 리턴합니다.
+     *
+     * @return 작업 콜렉션
+     */
+    Collection<Task> getTasks();
 
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    /**
+     * 작업을 리턴합니다.
+     *
+     * @param id 식별자
+     * @return 작업
+     */
+    Task getTask(Long id);
 
-    public Collection<Task> getTasks() {
-        return new ArrayList<>(taskRepository.getAll());
-    }
+    /**
+     * 작업을 생성하고 리턴합니다.
+     *
+     * @param title 제목
+     * @return 작업
+     */
+    Task createTask(String title);
 
-    public Task getTask(Long id) {
-        return taskRepository.get(id)
-                    .orElseThrow(() -> new TaskNotFoundException(id));
-    }
+    /**
+     * 주어진 식별자를 가진 작업을 수정하고 리턴합니다.
+     *
+     * @param id 식별자
+     * @param title 변경할 제목
+     * @return 작업
+     */
+    Task updateTask(Long id, String title);
 
-    public Task createTask(String title) {
-        return taskRepository.add(title);
-    }
-
-    public Task updateTask(Long id, String title) {
-        return getTask(id).changeTitle(title);
-    }
-
-    public void deleteTask(Long id) {
-        getTask(id);
-        taskRepository.remove(id);
-    }
+    /**
+     * 주어진 식별자를 가진 작업을 제거합니다.
+     *
+     * @param id 식별자
+     */
+    void deleteTask(Long id);
 }

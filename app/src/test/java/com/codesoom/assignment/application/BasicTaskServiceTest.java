@@ -12,14 +12,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스의")
-class TaskServiceTest {
-    private TaskService taskService;
+class BasicTaskServiceTest {
+    private BasicTaskService basicTaskService;
     private final Long givenId = 0L;
     private final String givenTitle = "BJP";
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService(new TaskRepository());
+        basicTaskService = new BasicTaskService(new TaskRepository());
     }
 
     @Nested
@@ -31,9 +31,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("해당 작업을 리턴한다")
             void it_returns_task_with_id() {
-                taskService.createTask(givenTitle);
+                basicTaskService.createTask(givenTitle);
 
-                assertThat(taskService.getTask(0L)).isEqualTo(new Task(givenId, givenTitle));
+                assertThat(basicTaskService.getTask(0L)).isEqualTo(new Task(givenId, givenTitle));
             }
         }
 
@@ -43,7 +43,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("예외를 던진다")
             void it_throws_exception() {
-                assertThatThrownBy(() -> taskService.getTask(givenId))
+                assertThatThrownBy(() -> basicTaskService.getTask(givenId))
                         .isExactlyInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -58,10 +58,10 @@ class TaskServiceTest {
             @Test
             @DisplayName("작업 목록을 리턴한다")
             void It_returns_tasks() {
-                taskService.createTask(givenTitle);
-                taskService.createTask(givenTitle);
+                basicTaskService.createTask(givenTitle);
+                basicTaskService.createTask(givenTitle);
 
-                assertThat(taskService.getTasks().size()).isEqualTo(2);
+                assertThat(basicTaskService.getTasks().size()).isEqualTo(2);
             }
         }
 
@@ -71,7 +71,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("빈 배열을 리턴한다")
             void It_returns_empty_array() {
-                assertThat(taskService.getTasks()).isEmpty();
+                assertThat(basicTaskService.getTasks()).isEmpty();
             }
         }
     }
@@ -87,8 +87,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("주어진 제목을 가진 작업을 생성하고 리턴한다.")
             void It_returns_task_with_id() {
-                assertThat(taskService.createTask(givenTitle)).isEqualTo(new Task(0L, givenTitle));
-                assertThat(taskService.createTask(givenTitle)).isEqualTo(new Task(1L, givenTitle));
+                assertThat(basicTaskService.createTask(givenTitle)).isEqualTo(new Task(0L, givenTitle));
+                assertThat(basicTaskService.createTask(givenTitle)).isEqualTo(new Task(1L, givenTitle));
             }
         }
     }
@@ -104,9 +104,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("해당 작업의 제목을 변경하고 리턴한다")
             void It_change_title_and_return() {
-                taskService.createTask(givenTitle);
+                basicTaskService.createTask(givenTitle);
 
-                assertThat(taskService.updateTask(givenId, givenTitleToChange))
+                assertThat(basicTaskService.updateTask(givenId, givenTitleToChange))
                         .isEqualTo(new Task(givenId, givenTitleToChange));
             }
         }
@@ -121,10 +121,10 @@ class TaskServiceTest {
             @Test
             @DisplayName("해당 작업을 제거한다.")
             void It_remove_task() {
-                taskService.createTask(givenTitle);
-                taskService.deleteTask(givenId);
+                basicTaskService.createTask(givenTitle);
+                basicTaskService.deleteTask(givenId);
 
-                assertThat(taskService.getTasks()).hasSize(0);
+                assertThat(basicTaskService.getTasks()).hasSize(0);
             }
         }
     }

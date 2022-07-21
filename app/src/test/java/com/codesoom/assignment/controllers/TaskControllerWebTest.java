@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
-import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.application.BasicTaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TaskControllerWebTest {
     private MockMvc mockMvc;
     @MockBean
-    private TaskService taskService;
+    private BasicTaskService basicTaskService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Long givenId1 = 1L;
     private final Long givenId2 = 2L;
@@ -41,11 +40,11 @@ class TaskControllerWebTest {
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new TaskController(taskService))
+                .standaloneSetup(new TaskController(basicTaskService))
                 .setControllerAdvice(TaskErrorAdvice.class)
                 .build();
 
-        reset(taskService);
+        reset(basicTaskService);
     }
 
     @Nested
@@ -57,7 +56,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("빈 배열과 상태코드 200을 보낸다")
             void It_return_empty_list_and_status_ok() throws Exception {
-                given(taskService.getTasks()).willReturn(new ArrayList<>());
+                given(basicTaskService.getTasks()).willReturn(new ArrayList<>());
 
                 mockMvc.perform(get("/tasks"))
                         .andExpect(jsonPath("$").isEmpty())
@@ -71,7 +70,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("작업 목록과 상태코드 200을 보낸다")
             void It_returns_list_and_ok() throws Exception {
-                given(taskService.getTasks())
+                given(basicTaskService.getTasks())
                         .willReturn(Arrays.asList(
                                 new Task(givenId1, givenTodo1),
                                 new Task(givenId2, givenTodo2)));
@@ -93,7 +92,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("작업을 리턴한다")
             void It_returns_task() throws Exception {
-                given(taskService.getTask(givenId1)).willReturn(new Task(givenId1, givenTodo1));
+                given(basicTaskService.getTask(givenId1)).willReturn(new Task(givenId1, givenTodo1));
 
                 mockMvc.perform(get("/tasks/1"))
                         .andExpect(jsonPath("$.id").value(givenId1))
@@ -108,7 +107,7 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("에러 응답과 상태 코드 404를 리턴합니다")
             void It_returns_error_response_and_not_found() throws Exception {
-                given(taskService.getTask(givenId1)).willThrow(TaskNotFoundException.class);
+                given(basicTaskService.getTask(givenId1)).willThrow(TaskNotFoundException.class);
 
                 mockMvc.perform(get("/tasks/1"))
                         .andExpect(jsonPath("$.message").value("Task not found"))
@@ -128,7 +127,7 @@ class TaskControllerWebTest {
             void It_returns_task_with_id() throws Exception {
                 Map<String, String> input = new HashMap<>();
                 input.put("title", givenTodo1);
-                given(taskService.createTask(givenTodo1)).willReturn(new Task(givenId1, givenTodo1));
+                given(basicTaskService.createTask(givenTodo1)).willReturn(new Task(givenId1, givenTodo1));
 
                 mockMvc.perform(post("/tasks")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +152,7 @@ class TaskControllerWebTest {
                 Map<String, String> input = new HashMap<>();
                 input.put("title", givenTitleToChange);
 
-                given(taskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
+                given(basicTaskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
 
                 mockMvc.perform(put("/tasks/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -177,7 +176,7 @@ class TaskControllerWebTest {
                 Map<String, String> input = new HashMap<>();
                 input.put("title", givenTitleToChange);
 
-                given(taskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
+                given(basicTaskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
 
                 mockMvc.perform(patch("/tasks/1")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -198,12 +197,12 @@ class TaskControllerWebTest {
             @Test
             @DisplayName("작업을 삭제하고 상태코드 204를 리턴한다")
             void It_delete_task_and_returns_no_content() throws Exception {
-                doNothing().when(taskService).deleteTask(givenId1);
+                doNothing().when(basicTaskService).deleteTask(givenId1);
 
                 mockMvc.perform(delete("/tasks/1"))
                         .andExpect(status().isNoContent());
 
-                verify(taskService, times(1)).deleteTask(givenId1);
+                verify(basicTaskService, times(1)).deleteTask(givenId1);
             }
         }
     }
