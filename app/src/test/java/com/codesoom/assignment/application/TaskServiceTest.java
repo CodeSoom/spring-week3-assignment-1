@@ -42,7 +42,7 @@ class TaskServiceTest {
         @DisplayName("할일이 생성되지 않았을 때")
         class Context_didNotCreateTask {
             @Test
-            @DisplayName("빈 배열을 반환한다")
+            @DisplayName("빈 목록을 반환한다")
             void it_returnsEmptyList() {
                 List<Task> tasks = service.getTasks();
 
@@ -54,7 +54,7 @@ class TaskServiceTest {
         @DisplayName("할일을 생성했었다면")
         class Context_didCreateTasks extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("생성했던 할일을 반환한다")
+            @DisplayName("생성했던 할일 목록을 반환한다")
             void it_returnsTasks() {
                 List<Task> tasks = service.getTasks();
 
@@ -119,7 +119,7 @@ class TaskServiceTest {
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("요청한 id에 해당하는 할일을 반환한다")
+            @DisplayName("요청한 id에 해당하는 할일을 수정한다")
             void then_returnTask() {
                 Task task = new Task();
                 task.setTitle("new title");
