@@ -38,7 +38,7 @@ class TaskServiceTest {
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
         @Nested
-        @DisplayName("할일이 생성되지 않았을 때")
+        @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
             @Test
             @DisplayName("빈 목록을 반환한다")
@@ -50,7 +50,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("할일을 생성했었다면")
+        @DisplayName("생성된 할 일들이 있다면")
         class Context_didCreateTasks extends Context_didCreateTwoTasks {
             @Test
             @DisplayName("생성했던 할일 목록을 반환한다")

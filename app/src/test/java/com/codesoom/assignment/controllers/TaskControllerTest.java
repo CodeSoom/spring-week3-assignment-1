@@ -39,7 +39,7 @@ class TaskControllerTest {
     @DisplayName("list 메소드는")
     class Describe_list {
         @Nested
-        @DisplayName("할일이 생성되지 않았을 때")
+        @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
             @Test
             @DisplayName("빈 목록을 반환한다")
