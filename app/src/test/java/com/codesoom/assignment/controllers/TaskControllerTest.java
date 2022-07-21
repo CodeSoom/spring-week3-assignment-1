@@ -130,28 +130,33 @@ class TaskControllerTest {
         }
     }
 
-    @DisplayName("찾을 수 없는 할일 id로 삭제 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
-    @Test
-    void whenDeleteTaskWithNotFindableTaskId_thenThrowTaskNotFound() {
-        // when
-        Throwable thrown = catchThrowable(() -> { controller.delete(0L); });
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("찾을 수 없는 할일 id로 요청했을 때")
+        class Context_withNotFindableTaskId {
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
+            void it_throwsTaskNotFoundException() {
+                assertThrows(TaskNotFoundException.class, () -> {
+                    controller.delete(0L);
+                });
+            }
+        }
 
-        // then
-        then(thrown).isInstanceOf(TaskNotFoundException.class);
-    }
+        @Nested
+        @DisplayName("찾을 수 있는 id로 요청했을 때")
+        class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            @Test
+            @DisplayName("요청된 할일을 삭제한다")
+            void it_deletesTask() {
+                controller.delete(1L);
 
-    @DisplayName("찾을 수 있는 id로 업데이트 했을 때, 할일 삭제됨")
-    @Test
-    void givenCreateTask_whenDeleteTaskWithFindableTaskId_thenDeleted() {
-        // given
-        Task oldTask = new Task();
-        oldTask.setTitle(EXAMPLE_TITLE);
-        controller.create(oldTask);
-
-        // when
-        controller.delete(1L);
-
-        // then
-        assertThat(controller.list()).isEmpty();
+                assertThrows(TaskNotFoundException.class, () -> {
+                    controller.detail(1L);
+                });
+            }
+        }
     }
 }
