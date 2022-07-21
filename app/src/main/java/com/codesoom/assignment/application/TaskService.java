@@ -32,8 +32,8 @@ public class TaskService {
         return getTask(id).changeTitle(title);
     }
 
-    public Task deleteTask(Long id) {
+    public void deleteTask(Long id) {
         getTask(id);
-        return taskRepository.remove(id);
+        taskRepository.remove(id);
     }
 }

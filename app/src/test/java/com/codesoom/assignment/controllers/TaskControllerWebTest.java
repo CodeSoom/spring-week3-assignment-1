@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,10 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.reset;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = TaskController.class)
@@ -38,6 +36,7 @@ class TaskControllerWebTest {
     private final Long givenId2 = 2L;
     private final String givenTodo1 = "Todo1";
     private final String givenTodo2 = "Todo2";
+    private final String givenTitleToChange = "변경 후";
 
     @BeforeEach
     void setUp() {
@@ -135,10 +134,76 @@ class TaskControllerWebTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(input))
                         )
-                        .andDo(print())
                         .andExpect(jsonPath("$.id").value(givenId1))
                         .andExpect(jsonPath("$.title").value(givenTodo1))
                         .andExpect(status().isCreated());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("update 메소드는")
+    class Describe_update {
+        @Nested
+        @DisplayName("주어진 식별자를 갖는 작업이 있을 때")
+        class Context_when_exists_task {
+            @Test
+            @DisplayName("작업의 제목을 변경하고 상태코드 200을 리턴한다")
+            void It_change_title_and_return() throws Exception {
+                Map<String, String> input = new HashMap<>();
+                input.put("title", givenTitleToChange);
+
+                given(taskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
+
+                mockMvc.perform(put("/tasks/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(input)))
+                        .andExpect(jsonPath("$.id").value(givenId1))
+                        .andExpect(jsonPath("$.title").value(givenTitleToChange))
+                        .andExpect(status().isOk());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("patch 메소드는")
+    class Describe_patch {
+        @Nested
+        @DisplayName("주어진 식별자를 갖는 작업이 있을 때")
+        class Context_when_exists_task {
+            @Test
+            @DisplayName("작업의 제목을 변경하고 상태코드 200을 리턴한다")
+            void It_change_title_and_return() throws Exception {
+                Map<String, String> input = new HashMap<>();
+                input.put("title", givenTitleToChange);
+
+                given(taskService.updateTask(givenId1, givenTitleToChange)).willReturn(new Task(givenId1, givenTitleToChange));
+
+                mockMvc.perform(put("/tasks/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(input)))
+                        .andExpect(jsonPath("$.id").value(givenId1))
+                        .andExpect(jsonPath("$.title").value(givenTitleToChange))
+                        .andExpect(status().isOk());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Describe_delete {
+        @Nested
+        @DisplayName("주어진 식별자를 가진 작업이 있으면")
+        class Context_with_task {
+            @Test
+            @DisplayName("작업을 삭제하고 상태코드 204를 리턴한다")
+            void It_delete_task_and_returns_no_content() throws Exception {
+                doNothing().when(taskService).deleteTask(givenId1);
+
+                mockMvc.perform(delete("/tasks/1"))
+                        .andExpect(status().isNoContent());
+
+                verify(taskService, times(1)).deleteTask(givenId1);
             }
         }
     }
