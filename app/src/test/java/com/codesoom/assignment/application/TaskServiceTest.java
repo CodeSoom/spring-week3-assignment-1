@@ -133,69 +133,31 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("할일이 생성되지 않았을 때")
-    class Given_didNotCreateTask {
+    @DisplayName("deleteTask 메소드는")
+    class Describe_deleteTask {
         @Nested
-        @DisplayName("찾을 수 없는 id로 updateTask() 요청하면")
-        class When_updateTaskWithNotFindableTaskId {
-            Throwable thrown;
-
-            @BeforeEach
-            void when() {
-                thrown = catchThrowable(() -> { service.getTask(1L); });
-            }
-
+        @DisplayName("찾을 수 없는 id로 요청하면")
+        class Context_withNotFindableTaskId {
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
-            void then_throwTaskNotFoundException() {
-                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            void it_throwsTaskNotFoundException() {
+                assertThrows(TaskNotFoundException.class, () -> {
+                    service.deleteTask(1L);
+                });
             }
         }
 
         @Nested
-        @DisplayName("찾을 수 없는 Id로 deleteTask() 요청하면")
-        class When_DeleteTaskWithNotFindableTaskId {
-            Throwable thrown;
-
-            @BeforeEach
-            void when() {
-                thrown = catchThrowable(() -> { service.getTask(1L); });
-            }
-
+        @DisplayName("찾을 수 있는 Id로 요청하면")
+        class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외가 던져짐")
-            void then_throwTaskNotFoundException() {
-                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
-            }
-        }
-    }
-
-    @Nested
-    @DisplayName("할일이 2개 생성되었을 때")
-    class Given_didCreateTasks {
-        @BeforeEach
-        void given() {
-            final Task task1 = new Task();
-            task1.setTitle(EXAMPLE_TITLE + 1);
-            final Task task2 = new Task();
-            task2.setTitle(EXAMPLE_TITLE + 2);
-            service.createTask(task1);
-            service.createTask(task2);
-        }
-
-        @Nested
-        @DisplayName("찾을 수 있는 Id로 updateTask() 요청하면")
-        class When_deleteTaskWithFindableId {
-            @BeforeEach
-            void when() {
+            @DisplayName("요청한 id에 해당하는 할일이 삭제된다")
+            void then_deletesTask() {
                 service.deleteTask(1L);
-            }
 
-            @Test
-            @DisplayName("할일이 삭제된다")
-            void then_taskDeleted() {
-                Throwable thrown = catchThrowable(() -> { service.getTask(1L); });
-                assertThat(thrown).isInstanceOf(TaskNotFoundException.class);
+                assertThrows(TaskNotFoundException.class, () -> {
+                    service.deleteTask(1L);
+                });
             }
         }
     }
