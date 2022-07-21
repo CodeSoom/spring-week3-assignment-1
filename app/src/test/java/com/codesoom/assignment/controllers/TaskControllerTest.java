@@ -13,6 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaskControllerTest {
     abstract class Context_didCreateTwoTasks {
@@ -67,30 +68,33 @@ class TaskControllerTest {
         }
     }
 
-    @DisplayName("찾을 수 없는 id로 조회했을 때, 할일을 찾을 수 없다는 에러 던져짐")
-    @Test
-    void whenGetDetailWithNotFindableTaskId_thenThrowTaskNotFound() {
-        // when
-        Throwable thrown = catchThrowable(() -> { controller.detail(0L); });
+    @Nested
+    @DisplayName("detail 메소드는")
+    class Describe_detail {
+        @Nested
+        @DisplayName("찾을 수 없는 id로 조회했을 때")
+        class Context_withNotFindableTaskId {
+            @Test
+            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            void it_throwsTaskNotFound() {
+                assertThrows(TaskNotFoundException.class, () -> {
+                    controller.detail(0L);
+                });
+            }
+        }
 
-        // then
-        then(thrown).isInstanceOf(TaskNotFoundException.class);
-    }
+        @Nested
+        @DisplayName("찾을 수 있는 id로 조회했을 떄")
+        class Context_didCreateContext extends Context_didCreateTwoTasks {
+            @Test
+            @DisplayName("조회한 할일을 반환한다")
+            void it_returnsTasks() {
+                Task result = controller.detail(1L);
 
-    @DisplayName("찾을 수 있는 id로 조회했을 때, 할일 반환")
-    @Test
-    void givenCreatedTask_whenGetDetailWithFindableTaskId_thenReturnTask() {
-        // given
-        Task task = new Task();
-        task.setTitle(EXAMPLE_TITLE);
-        controller.create(task);
-
-        // when
-        Task result = controller.detail(1L);
-
-        // then
-        then(result.getId()).isEqualTo(1L);
-        then(result.getTitle()).isEqualTo(EXAMPLE_TITLE);
+                assertThat(result.getId()).isEqualTo(1L);
+                assertThat(result.getTitle()).isEqualTo(EXAMPLE_TITLE + 1);
+            }
+        }
     }
 
     @DisplayName("찾을 수 없는 id로 업데이트 했을 때, 할일을 찾을 수 없다고 에러 던져짐")
