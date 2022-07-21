@@ -7,12 +7,19 @@ import java.util.*;
 
 @Repository
 public class TaskRepository {
-    private Long sequence = 0L;
     private final Map<Long, Task> taskMap = new HashMap<>();
+    private final IdGenerator idGenerator = new IdGenerator();
 
+    /**
+     * 작업을 추가합니다.
+     *
+     * @param title 제목
+     * @return 작업
+     */
     public Task add(String title) {
-        Task task = new Task(sequence, title);
-        taskMap.put(sequence++, task);
+        Long id = idGenerator.generate();
+        Task task = new Task(id, title);
+        taskMap.put(id, task);
         return task;
     }
 
