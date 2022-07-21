@@ -8,10 +8,10 @@ import java.util.*;
 @Repository
 public class TaskMapRepository implements TaskRepository {
     private final Map<Long, Task> taskMap = new HashMap<>();
-    private final IdGenerator idGenerator = new IdGenerator();
+    private final LongIdGenerator longIdGenerator = new LongIdGenerator();
 
     public Task add(String title) {
-        Long id = idGenerator.generate();
+        Long id = longIdGenerator.generate();
         Task task = new Task(id, title);
         taskMap.put(id, task);
         return task;
