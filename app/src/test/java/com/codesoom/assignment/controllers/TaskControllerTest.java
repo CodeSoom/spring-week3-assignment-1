@@ -40,10 +40,10 @@ class TaskControllerTest {
     class Describe_list {
         @Nested
         @DisplayName("할일이 생성되지 않았을 때")
-        class Contxet_didNotCreateTask {
+        class Context_didNotCreateTask {
             @Test
             @DisplayName("빈 목록을 반환한다")
-            void it_returnsEmtpyList() {
+            void it_returnsEmptyList() {
                 List<Task> result = controller.list();
 
                 assertThat(result).isEmpty();
