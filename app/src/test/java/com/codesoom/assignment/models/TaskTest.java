@@ -1,59 +1,74 @@
 package com.codesoom.assignment.models;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Task 클래스")
 class TaskTest {
-
     private static final String FIXTURE_TITLE = "title";
     private static final long FIXTURE_ID = 0L;
+    private Task task;
 
-    @DisplayName("id 지정 안했을 때 getId 호출하면 null 반환")
-    @Test
-    void givenWithoutSetId_whenGetId_thenNull() {
-        // given
-        final Task task = new Task();
-
-        // when
-        final Long actual = task.getId();
-
-        // then
-        assertThat(actual).isNull();
+    @BeforeEach
+    void beforeEach() {
+        task = new Task();
     }
 
-    @DisplayName("id 지정 했을 때 getId 호출하면 지정한 id 반환")
-    @Test
-    void givenSetId_whenGetId_thenReturnId() {
-        // given
-        final Task task = new Task();
-        task.setId(1L);
+    @Nested
+    @DisplayName("getId 메소드는")
+    class Describe_getId {
+        @Nested
+        @DisplayName("id를 세팅안했을 때")
+        class Context_didNotSetId {
+            @Test
+            @DisplayName("null을 반환한다")
+            void it_returnsNull() {
+                final Long result = task.getId();
 
-        // when
-        final Long actual = task.getId();
+                assertThat(result).isNull();
+            }
+        }
 
-        // then
-        assertThat(actual).isEqualTo(1L);
+        @Nested
+        @DisplayName("id를 세팅했을 때")
+        class Context_didSetId {
+            @BeforeEach
+            void context() {
+                task.setId(1L);
+            }
+
+            @Test
+            @DisplayName("세팅된 id를 반환한다")
+            void it_returnsId() {
+                final Long actual = task.getId();
+
+                assertThat(actual).isEqualTo(1L);
+            }
+        }
+
+        @Nested
+        @DisplayName("id를 변경했을 때")
+        class Context_didChangeId {
+            @BeforeEach
+            void context() {
+                task.setId(1L);
+                task.setId(2L);
+            }
+
+            @Test
+            @DisplayName("마지막으로 세팅된 id를 반환한다")
+            void it_returnsId() {
+                final Long result = task.getId();
+
+                assertThat(result).isEqualTo(2L);
+            }
+        }
     }
-
-    @DisplayName("id 변경했을 때 getId 호출하면 변경한 id 반환")
-    @Test
-    void givenUpdateId_whenGetId_thenReturnId() {
-        // given
-        final Long oldId = 1L;
-        final Long newId = 2L;
-        final Task task = new Task();
-        task.setId(oldId);
-        task.setId(newId);
-
-        // when
-        final Long actual = task.getId();
-
-        // then
-        assertThat(actual).isEqualTo(newId);
-    }
-
+    
     @DisplayName("title 지정 안했을 때 getTitle 호출하면 null 반환")
     @Test
     void givenWithoutSetTitle_whenGetTitle_thenNull() {
