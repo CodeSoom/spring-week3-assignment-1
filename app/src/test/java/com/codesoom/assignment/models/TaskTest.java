@@ -15,6 +15,7 @@ class TaskTest {
     @DisplayName("getId 메소드는")
     class Describe_get_id {
         Task task = new Task(givenId, givenTitle);
+
         @Nested
         @DisplayName("작업이 식별자를 가지고 있을 때")
         class Context_when_Task_has_id {
@@ -59,4 +60,55 @@ class TaskTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("equals 메소드는")
+    class Describe_equals {
+        Task task = new Task(givenId, givenTitle);
+        @Nested
+        @DisplayName("주어진 작업과 주소값이 같다면")
+        class Context_when_equals_address {
+            @Test
+            @DisplayName("true를 리턴한다")
+            void It_returns_true() {
+                Task task1 = task;
+
+                assertThat(task.equals(task1)).isTrue();
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 작업이 null이거나 클래스 타입이 같지 않다면")
+        class Context_with_null_and_not_equal_class {
+            class MiniTask extends Task {
+                public MiniTask(Long givenId, String givenTitle) {
+                    super(givenId, givenTitle);
+                }
+            }
+
+            @Test
+            @DisplayName("false를 리턴한다")
+            void It_returns_false() {
+                Task task1 = null;
+                MiniTask task2 = new MiniTask(givenId, givenTitle);
+
+                assertThat(task.equals(task1)).isFalse();
+                assertThat(task.equals(task2)).isFalse();
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 작업과 식별자와 제목이 같으면")
+        class Context_with_task {
+            @Test
+            @DisplayName("true를 리턴한다")
+            void It_returns_true() {
+                Object task1 = new Task(givenId, givenTitle);
+
+                assertThat(task.equals(task1)).isTrue();
+            }
+        }
+    }
+
+    
 }
