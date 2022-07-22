@@ -15,14 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("TaskService 클래스")
 class TaskServiceTest {
     abstract class Context_didCreateTwoTasks {
+        final int numberOfTasksCreated = 2;
+
         @BeforeEach
         void context() {
-            final Task task1 = new Task();
-            task1.setTitle(FIXTURE_TITLE + 1);
-            final Task task2 = new Task();
-            task2.setTitle(FIXTURE_TITLE + 2);
-            service.createTask(task1);
-            service.createTask(task2);
+            for (int i = 1; i <= numberOfTasksCreated; i++) {
+                final Task task = new Task();
+                task.setTitle(FIXTURE_TITLE + i);
+                service.createTask(task);
+            }
         }
     }
 
@@ -57,7 +58,7 @@ class TaskServiceTest {
             void it_returnsTasks() {
                 List<Task> tasks = service.getTasks();
 
-                assertThat(tasks).hasSize(2);
+                assertThat(tasks).hasSize(numberOfTasksCreated);
                 final Task resultTask1 = tasks.get(0);
                 final Task resultTask2 = tasks.get(1);
                 assertThat(resultTask1.getId()).isEqualTo(1L);
