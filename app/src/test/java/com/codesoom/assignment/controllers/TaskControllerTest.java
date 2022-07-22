@@ -74,11 +74,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 조회했을 때")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFound() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.detail(0L);
+                    controller.detail(idOfNotCreatedTask);
                 });
             }
         }
@@ -103,13 +105,15 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청했을 때")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 Task newTask = new Task();
                 newTask.setTitle(FIXTURE_TITLE);
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.update(0L, newTask);
+                    controller.update(idOfNotCreatedTask, newTask);
                 });
             }
         }
@@ -136,11 +140,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 할일 id로 요청했을 때")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.delete(0L);
+                    controller.delete(idOfNotCreatedTask);
                 });
             }
         }
