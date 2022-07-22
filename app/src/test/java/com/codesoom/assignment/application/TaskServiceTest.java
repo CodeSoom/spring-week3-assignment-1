@@ -41,6 +41,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
+            @BeforeEach
+            void prepare() {
+                service.createTask(new Task());
+                service.deleteTask(1L);
+            }
+
             @Test
             @DisplayName("빈 목록을 반환한다")
             void it_returnsEmptyList() {
@@ -75,13 +81,19 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            private final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void prepare() {
+                service.createTask(new Task());
+                service.deleteTask(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.getTask(didNotCreateTaskId);
+                    service.getTask(deletedTaskId);
                 });
             }
         }
@@ -106,7 +118,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            private final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void prepare() {
+                service.createTask(new Task());
+                service.deleteTask(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
@@ -114,7 +132,7 @@ class TaskServiceTest {
                 assertThrows(TaskNotFoundException.class, () -> {
                     Task task = new Task();
                     task.setTitle("new title");
-                    service.updateTask(didNotCreateTaskId, task);
+                    service.updateTask(deletedTaskId, task);
                 });
             }
         }
@@ -142,13 +160,19 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            private final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void prepare() {
+                service.createTask(new Task());
+                service.deleteTask(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.deleteTask(didNotCreateTaskId);
+                    service.deleteTask(deletedTaskId);
                 });
             }
         }
