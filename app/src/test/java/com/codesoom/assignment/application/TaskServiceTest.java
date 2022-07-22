@@ -36,15 +36,15 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks 메소드는")
-    class Describe_getTasks {
+    @DisplayName("getTaskList 메소드는")
+    class Describe_getTaskList {
         @Nested
         @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
             @Test
             @DisplayName("빈 목록을 반환한다")
             void it_returnsEmptyList() {
-                List<Task> tasks = service.getTasks();
+                List<Task> tasks = service.getTaskList();
 
                 assertThat(tasks).isEmpty();
             }
@@ -56,7 +56,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("생성했던 할 일 목록을 반환한다")
             void it_returnsTasks() {
-                List<Task> tasks = service.getTasks();
+                List<Task> tasks = service.getTaskList();
 
                 assertThat(tasks).hasSize(numberOfTasksCreated);
                 final Task resultTask1 = tasks.get(0);

@@ -12,7 +12,7 @@ public class TaskService {
     private final List<Task> tasks = new ArrayList<>();
     private Long newId = 0L;
 
-    public List<Task> getTasks() {
+    public List<Task> getTaskList() {
         return tasks;
     }
 

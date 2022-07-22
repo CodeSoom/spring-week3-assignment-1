@@ -20,7 +20,7 @@ public class TaskController {
 
     @GetMapping
     public List<Task> list() {
-        return taskService.getTasks();
+        return taskService.getTaskList();
     }
 
     @GetMapping("{id}")
