@@ -75,11 +75,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.getTask(1L);
+                    service.getTask(idOfNotCreatedTask);
                 });
             }
         }
@@ -104,13 +106,15 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     Task task = new Task();
                     task.setTitle("new title");
-                    service.updateTask(1L, task);
+                    service.updateTask(idOfNotCreatedTask, task);
                 });
             }
         }
@@ -138,11 +142,13 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
+            final Long idOfNotCreatedTask = 1L;
+
             @Test
             @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.deleteTask(1L);
+                    service.deleteTask(idOfNotCreatedTask);
                 });
             }
         }
