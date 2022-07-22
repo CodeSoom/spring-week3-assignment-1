@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService 클래스의")
+@DisplayName("BasicTaskService 클래스의")
 class BasicTaskServiceTest {
     private BasicTaskService basicTaskService;
     private final Long givenId = 0L;
