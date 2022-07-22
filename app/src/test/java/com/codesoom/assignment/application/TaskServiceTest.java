@@ -20,6 +20,7 @@ class TaskServiceTest {
     // 5. delete -> delete Task (with ID)
     private TaskService taskService;
     final String TASK_TITLE = "test";
+    final String UPDATE_POSTFIX = "!!!!!";
 
     @BeforeEach
     void setUp(){
@@ -43,12 +44,44 @@ class TaskServiceTest {
     void getTaskWithValidId(){
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
-
     }
     @Test
     void getTaskWithInvalidId(){
         assertThatThrownBy(() -> taskService.getTask(100L))
                 .isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
+    void createTask(){
+        int oldSize = taskService.getTasks().size();
+        Task task = new Task();
+        task.setTitle(TASK_TITLE);
+
+        taskService.createTask(task);
+
+        int newSize = taskService.getTasks().size();
+        assertThat(newSize-oldSize).isEqualTo(1);
+    }
+
+    @Test
+    void updateTask(){
+        Task source = new Task();
+        source.setTitle(TASK_TITLE+ UPDATE_POSTFIX);
+        taskService.updateTask(1L, source);
+
+        Task task = taskService.getTask(1L);
+        assertThat(task.getTitle()).isEqualTo(TASK_TITLE+UPDATE_POSTFIX);
+    }
+
+    @Test
+    void deleteTask(){
+        int oldSize = taskService.getTasks().size();
+
+        taskService.deleteTask(1L);
+
+        int newSize = taskService.getTasks().size();
+
+        assertThat(oldSize - newSize).isEqualTo(1);
     }
 
 }
