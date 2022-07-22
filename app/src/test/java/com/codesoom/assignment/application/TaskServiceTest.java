@@ -54,7 +54,7 @@ class TaskServiceTest {
         @DisplayName("생성된 할 일들이 있다면")
         class Context_didCreateTasks extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("생성했던 할일 목록을 반환한다")
+            @DisplayName("생성했던 할 일 목록을 반환한다")
             void it_returnsTasks() {
                 List<Task> tasks = service.getTasks();
 
@@ -78,7 +78,7 @@ class TaskServiceTest {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     service.getTask(didNotCreateTaskId);
@@ -90,7 +90,7 @@ class TaskServiceTest {
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("요청한 id에 해당하는 할일을 반환한다")
+            @DisplayName("요청한 id에 해당하는 할 일을 반환한다")
             void then_returnTask() {
                 Task result = service.getTask(1L);
 
@@ -109,7 +109,7 @@ class TaskServiceTest {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     Task task = new Task();
@@ -123,7 +123,7 @@ class TaskServiceTest {
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("요청한 id에 해당하는 할일을 수정한다")
+            @DisplayName("요청한 id에 해당하는 할 일을 수정한다")
             void then_returnTask() {
                 Task task = new Task();
                 task.setTitle("new title");
@@ -145,7 +145,7 @@ class TaskServiceTest {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     service.deleteTask(didNotCreateTaskId);
@@ -157,7 +157,7 @@ class TaskServiceTest {
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("요청한 id에 해당하는 할일이 삭제된다")
+            @DisplayName("요청한 id에 해당하는 할 일이 삭제된다")
             void then_deletesTask() {
                 service.deleteTask(1L);
 

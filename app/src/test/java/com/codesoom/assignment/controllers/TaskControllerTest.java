@@ -52,10 +52,10 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("할일을 생성했었을 때")
+        @DisplayName("할 일을 생성했었을 때")
         class Context_didCreateContext extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("생성된 할일 목록을 반환한다")
+            @DisplayName("생성된 할 일 목록을 반환한다")
             void it_returnsTasks() {
                 List<Task> result = controller.list();
 
@@ -77,7 +77,7 @@ class TaskControllerTest {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 예외를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFound() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     controller.detail(didNotCreateTaskId);
@@ -89,7 +89,7 @@ class TaskControllerTest {
         @DisplayName("찾을 수 있는 id로 조회했을 떄")
         class Context_didCreateContext extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("조회한 할일을 반환한다")
+            @DisplayName("조회한 할 일을 반환한다")
             void it_returnsTasks() {
                 Task result = controller.detail(1L);
 
@@ -108,7 +108,7 @@ class TaskControllerTest {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 Task newTask = new Task();
                 newTask.setTitle(FIXTURE_TITLE);
@@ -122,7 +122,7 @@ class TaskControllerTest {
         @DisplayName("찾을 수 있는 id로 요청했을 때")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("수정된 할일을 반환한다")
+            @DisplayName("수정된 할 일을 반환한다")
             void it_returnsUpdatedTask() {
                 Task newTask = new Task();
                 newTask.setTitle(FIXTURE_TITLE + 1);
@@ -138,12 +138,12 @@ class TaskControllerTest {
     @DisplayName("delete 메소드는")
     class Describe_delete {
         @Nested
-        @DisplayName("찾을 수 없는 할일 id로 요청했을 때")
+        @DisplayName("찾을 수 없는 할 일 id로 요청했을 때")
         class Context_withNotFindableTaskId {
             final Long didNotCreateTaskId = 1L;
 
             @Test
-            @DisplayName("할일을 찾을 수 없다는 에러를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     controller.delete(didNotCreateTaskId);
@@ -155,7 +155,7 @@ class TaskControllerTest {
         @DisplayName("찾을 수 있는 id로 요청했을 때")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
             @Test
-            @DisplayName("요청된 할일을 삭제한다")
+            @DisplayName("요청된 할 일을 삭제한다")
             void it_deletesTask() {
                 controller.delete(1L);
 
