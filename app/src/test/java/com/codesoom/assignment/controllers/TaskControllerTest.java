@@ -16,14 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaskControllerTest {
     abstract class Context_didCreateTwoTasks {
+        final int numberOfTasksCreated = 2;
+
         @BeforeEach
         void context() {
-            final Task task1 = new Task();
-            task1.setTitle(FIXTURE_TITLE + 1);
-            final Task task2 = new Task();
-            task2.setTitle(FIXTURE_TITLE + 2);
-            controller.create(task1);
-            controller.create(task2);
+            for (int i = 1; i <= numberOfTasksCreated; i++) {
+                final Task task = new Task();
+                task.setTitle(FIXTURE_TITLE + i);
+                controller.create(task);
+            }
         }
     }
 
@@ -58,7 +59,7 @@ class TaskControllerTest {
             void it_returnsTasks() {
                 List<Task> result = controller.list();
 
-                assertThat(result).isNotEmpty();
+                assertThat(result).hasSize(numberOfTasksCreated);
                 assertThat(result.get(0).getTitle()).isEqualTo(FIXTURE_TITLE + 1);
                 assertThat(result.get(0).getId()).isEqualTo(1L);
                 assertThat(result.get(1).getTitle()).isEqualTo(FIXTURE_TITLE + 2);
