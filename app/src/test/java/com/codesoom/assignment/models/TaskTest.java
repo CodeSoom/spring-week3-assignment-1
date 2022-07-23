@@ -14,7 +14,7 @@ class TaskTest {
 
     @BeforeEach
     void beforeEach() {
-        task = new Task();
+        task = new Task(null);
     }
 
     @Nested

@@ -42,7 +42,7 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void prepare() {
-                taskController.create(new Task());
+                taskController.create(new Task(FIXTURE_TITLE));
                 taskController.delete(deletedTaskId);
             }
 
@@ -60,12 +60,10 @@ public class TaskControllerWebTest {
         class Context_didCreateContext {
             @BeforeEach
             void prepare() {
-                final Task task1 = new Task();
-                task1.setTitle(FIXTURE_TITLE + 1);
+                final Task task1 = new Task(FIXTURE_TITLE + 1);
                 taskController.create(task1);
 
-                final Task task2 = new Task();
-                task2.setTitle(FIXTURE_TITLE + 2);
+                final Task task2 = new Task(FIXTURE_TITLE + 2);
                 taskController.create(task2);
             }
 

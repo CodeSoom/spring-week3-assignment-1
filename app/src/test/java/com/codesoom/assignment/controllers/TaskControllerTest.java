@@ -21,8 +21,7 @@ class TaskControllerTest {
         @BeforeEach
         void context() {
             for (int i = 1; i <= numberOfTasksCreated; i++) {
-                final Task task = new Task();
-                task.setTitle(FIXTURE_TITLE + i);
+                final Task task = new Task(FIXTURE_TITLE + i);
                 controller.create(task);
             }
         }
@@ -78,7 +77,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void context() {
-                controller.create(new Task());
+                controller.create(new Task(FIXTURE_TITLE));
                 controller.delete(deletedTaskId);
             }
 
@@ -115,15 +114,14 @@ class TaskControllerTest {
 
             @BeforeEach
             void context() {
-                controller.create(new Task());
+                controller.create(new Task(FIXTURE_TITLE));
                 controller.delete(deletedTaskId);
             }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
-                Task newTask = new Task();
-                newTask.setTitle(FIXTURE_TITLE);
+                Task newTask = new Task(FIXTURE_TITLE);
                 assertThrows(TaskNotFoundException.class, () -> {
                     controller.update(deletedTaskId, newTask);
                 });
@@ -136,8 +134,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("수정된 할 일을 반환한다")
             void it_returnsUpdatedTask() {
-                Task newTask = new Task();
-                newTask.setTitle(FIXTURE_TITLE + 1);
+                Task newTask = new Task(FIXTURE_TITLE + 1);
                 Task updatedTask = controller.update(1L, newTask);
 
                 assertThat(updatedTask.getId()).isEqualTo(1L);
@@ -156,7 +153,7 @@ class TaskControllerTest {
 
             @BeforeEach
             void context() {
-                controller.create(new Task());
+                controller.create(new Task(FIXTURE_TITLE));
                 controller.delete(deletedTaskId);
             }
 

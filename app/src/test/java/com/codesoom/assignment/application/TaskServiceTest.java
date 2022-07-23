@@ -20,8 +20,7 @@ class TaskServiceTest {
         @BeforeEach
         void context() {
             for (int i = 1; i <= numberOfTasksCreated; i++) {
-                final Task task = new Task();
-                task.setTitle(FIXTURE_TITLE + i);
+                final Task task = new Task(FIXTURE_TITLE + i);
                 service.createTask(task);
             }
         }
@@ -43,7 +42,7 @@ class TaskServiceTest {
         class Context_didNotCreateTask {
             @BeforeEach
             void prepare() {
-                service.createTask(new Task());
+                service.createTask(new Task(FIXTURE_TITLE));
                 service.deleteTask(1L);
             }
 
@@ -85,7 +84,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void prepare() {
-                service.createTask(new Task());
+                service.createTask(new Task(FIXTURE_TITLE));
                 service.deleteTask(deletedTaskId);
             }
 
@@ -122,7 +121,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void prepare() {
-                service.createTask(new Task());
+                service.createTask(new Task(FIXTURE_TITLE));
                 service.deleteTask(deletedTaskId);
             }
 
@@ -130,8 +129,7 @@ class TaskServiceTest {
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    Task task = new Task();
-                    task.setTitle("new title");
+                    Task task = new Task(FIXTURE_TITLE);
                     service.updateTask(deletedTaskId, task);
                 });
             }
@@ -143,8 +141,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("요청한 id에 해당하는 할 일을 수정한다")
             void then_returnTask() {
-                Task task = new Task();
-                task.setTitle("new title");
+                Task task = new Task("new title");
                 service.updateTask(1L, task);
 
                 Task updatedTask = service.getTask(1L);
@@ -164,7 +161,7 @@ class TaskServiceTest {
 
             @BeforeEach
             void prepare() {
-                service.createTask(new Task());
+                service.createTask(new Task(FIXTURE_TITLE));
                 service.deleteTask(deletedTaskId);
             }
 
