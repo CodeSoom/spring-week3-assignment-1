@@ -1,5 +1,6 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,19 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerWebTest {
     public static final String FIXTURE_TITLE = "title";
 
-    private TaskController taskController;
+    private TaskController controller;
     private MockMvc mockMvc;
 
     @BeforeEach
     void setup() {
-        taskController = new TaskController(new TaskService());
+        controller = new TaskController(new TaskService());
         mockMvc = MockMvcBuilders
-                .standaloneSetup(taskController)
+                .standaloneSetup(controller)
+                .setControllerAdvice(new TaskErrorAdvice())
                 .build();
     }
 
     @Nested
-    @DisplayName("/tasks GET 요청은")
+    @DisplayName("GET /tasks 요청은")
     class Describe_getTasks {
         @Nested
         @DisplayName("생성되어 있는 할 일이 없다면")
@@ -42,8 +45,8 @@ public class TaskControllerWebTest {
 
             @BeforeEach
             void prepare() {
-                taskController.create(new Task(FIXTURE_TITLE));
-                taskController.delete(deletedTaskId);
+                controller.create(new Task(FIXTURE_TITLE));
+                controller.delete(deletedTaskId);
             }
 
             @Test
@@ -61,10 +64,10 @@ public class TaskControllerWebTest {
             @BeforeEach
             void prepare() {
                 final Task task1 = new Task(FIXTURE_TITLE + 1);
-                taskController.create(task1);
+                controller.create(task1);
 
                 final Task task2 = new Task(FIXTURE_TITLE + 2);
-                taskController.create(task2);
+                controller.create(task2);
             }
 
             @Test
@@ -73,6 +76,47 @@ public class TaskControllerWebTest {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
                         .andExpect(content().string("[{\"id\":1,\"title\":\"title1\"},{\"id\":2,\"title\":\"title2\"}]"));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /tasks/{id} 요청은")
+    class Describe_getTasksWithId {
+        @Nested
+        @DisplayName("찾을 수 없는 id로 조회했을 때")
+        class Context_withNotFindableTaskId {
+            private final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void context() {
+                controller.create(new Task(FIXTURE_TITLE));
+                controller.delete(deletedTaskId);
+            }
+
+            @Test
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
+            void it_throwsTaskNotFound() throws Exception {
+                mockMvc.perform(get("/tasks/" + deletedTaskId))
+                        .andExpect(status().isNotFound());
+            }
+        }
+
+        @Nested
+        @DisplayName("찾을 수 있는 id로 조회했을 떄")
+        class Context_withFindableTaskId {
+            @BeforeEach
+            void prepare() {
+                final Task task = new Task(FIXTURE_TITLE);
+                controller.create(task);
+            }
+
+            @Test
+            @DisplayName("OK status, 조회한 할 일을 반환한다")
+            void it_returnsTasks() throws Exception {
+                mockMvc.perform(get("/tasks/1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("{\"id\":1,\"title\":\"title\"}"));
             }
         }
     }
