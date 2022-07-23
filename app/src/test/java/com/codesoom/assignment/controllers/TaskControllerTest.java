@@ -74,13 +74,19 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 조회했을 때")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void context() {
+                controller.create(new Task());
+                controller.delete(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFound() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.detail(didNotCreateTaskId);
+                    controller.detail(deletedTaskId);
                 });
             }
         }
@@ -105,7 +111,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청했을 때")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void context() {
+                controller.create(new Task());
+                controller.delete(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
@@ -113,7 +125,7 @@ class TaskControllerTest {
                 Task newTask = new Task();
                 newTask.setTitle(FIXTURE_TITLE);
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.update(didNotCreateTaskId, newTask);
+                    controller.update(deletedTaskId, newTask);
                 });
             }
         }
@@ -140,13 +152,19 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 없는 할 일 id로 요청했을 때")
         class Context_withNotFindableTaskId {
-            final Long didNotCreateTaskId = 1L;
+            final Long deletedTaskId = 1L;
+
+            @BeforeEach
+            void context() {
+                controller.create(new Task());
+                controller.delete(deletedTaskId);
+            }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.delete(didNotCreateTaskId);
+                    controller.delete(deletedTaskId);
                 });
             }
         }
