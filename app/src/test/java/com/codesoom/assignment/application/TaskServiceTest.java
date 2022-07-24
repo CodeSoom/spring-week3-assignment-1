@@ -151,9 +151,8 @@ class TaskServiceTest {
             void then_returnTask() {
                 final String NEW_TITLE = "new title";
                 Task task = new Task(NEW_TITLE);
-                service.updateTask(CREATED_TASK_ID, task);
+                Task updatedTask = service.updateTask(CREATED_TASK_ID, task);
 
-                Task updatedTask = service.getTask(CREATED_TASK_ID);
                 assertThat(updatedTask.getId()).isEqualTo(CREATED_TASK_ID);
                 assertThat(updatedTask.getTitle()).isEqualTo(NEW_TITLE);
             }
