@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.TaskRepository;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ class TaskServiceTest {
 
     @BeforeEach
     void setup() {
-        service = new TaskService();
+        service = new TaskService(new TaskRepository());
     }
 
     @Nested

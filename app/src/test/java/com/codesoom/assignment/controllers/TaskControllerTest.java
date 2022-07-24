@@ -1,6 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.TaskRepository;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,8 @@ class TaskControllerTest {
 
     @BeforeEach
     void setup() {
-        controller = new TaskController(new TaskService());
+        final TaskRepository repository = new TaskRepository();
+        controller = new TaskController(new TaskService(repository));
     }
 
     @Nested
