@@ -131,7 +131,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 Task newTask = new Task(FIXTURE_TITLE);
                 assertThrows(TaskNotFoundException.class, () -> {
@@ -172,7 +172,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 에러를 던진다")
+            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     controller.delete(DELETED_TASK_ID);
