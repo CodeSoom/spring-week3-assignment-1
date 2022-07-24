@@ -104,13 +104,15 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("요청한 id에 해당하는 할 일을 반환한다")
             void then_returnTask() {
-                Task result = service.getTask(1L);
+                Task result = service.getTask(CREATED_TASK_ID);
 
-                assertThat(result.getId()).isEqualTo(1L);
-                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
+                assertThat(result.getId()).isEqualTo(CREATED_TASK_ID);
+                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + CREATED_TASK_ID);
             }
         }
     }
@@ -142,15 +144,18 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("요청한 id에 해당하는 할 일을 수정한다")
             void then_returnTask() {
-                Task task = new Task("new title");
-                service.updateTask(1L, task);
+                final String NEW_TITLE = "new title";
+                Task task = new Task(NEW_TITLE);
+                service.updateTask(CREATED_TASK_ID, task);
 
-                Task updatedTask = service.getTask(1L);
-                assertThat(updatedTask.getId()).isEqualTo(1L);
-                assertThat(updatedTask.getTitle()).isEqualTo("new title");
+                Task updatedTask = service.getTask(CREATED_TASK_ID);
+                assertThat(updatedTask.getId()).isEqualTo(CREATED_TASK_ID);
+                assertThat(updatedTask.getTitle()).isEqualTo(NEW_TITLE);
             }
         }
     }
@@ -181,13 +186,15 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 있는 Id로 요청하면")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("요청한 id에 해당하는 할 일이 삭제된다")
             void then_deletesTask() {
-                service.deleteTask(1L);
+                service.deleteTask(CREATED_TASK_ID);
 
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.deleteTask(1L);
+                    service.deleteTask(CREATED_TASK_ID);
                 });
             }
         }

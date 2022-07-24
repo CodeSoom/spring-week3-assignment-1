@@ -103,13 +103,15 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 있는 id로 조회했을 떄")
         class Context_didCreateContext extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("조회한 할 일을 반환한다")
             void it_returnsTasks() {
-                Task result = controller.detail(1L);
+                Task result = controller.detail(CREATED_TASK_ID);
 
-                assertThat(result.getId()).isEqualTo(1L);
-                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
+                assertThat(result.getId()).isEqualTo(CREATED_TASK_ID);
+                assertThat(result.getTitle()).isEqualTo(FIXTURE_TITLE + CREATED_TASK_ID);
             }
         }
     }
@@ -141,14 +143,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 있는 id로 요청했을 때")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("수정된 할 일을 반환한다")
             void it_returnsUpdatedTask() {
-                Task newTask = new Task(FIXTURE_TITLE + 1);
-                Task updatedTask = controller.update(1L, newTask);
+                Task newTask = new Task(FIXTURE_TITLE + CREATED_TASK_ID);
+                Task updatedTask = controller.update(CREATED_TASK_ID, newTask);
 
-                assertThat(updatedTask.getId()).isEqualTo(1L);
-                assertThat(updatedTask.getTitle()).isEqualTo(FIXTURE_TITLE + 1);
+                assertThat(updatedTask.getId()).isEqualTo(CREATED_TASK_ID);
+                assertThat(updatedTask.getTitle()).isEqualTo(FIXTURE_TITLE + CREATED_TASK_ID);
             }
         }
     }
@@ -179,13 +183,15 @@ class TaskControllerTest {
         @Nested
         @DisplayName("찾을 수 있는 id로 요청했을 때")
         class Context_withFindableTaskId extends Context_didCreateTwoTasks {
+            private final Long CREATED_TASK_ID = 1L;
+
             @Test
             @DisplayName("요청된 할 일을 삭제한다")
             void it_deletesTask() {
-                controller.delete(1L);
+                controller.delete(CREATED_TASK_ID);
 
                 assertThrows(TaskNotFoundException.class, () -> {
-                    controller.detail(1L);
+                    controller.detail(CREATED_TASK_ID);
                 });
             }
         }
