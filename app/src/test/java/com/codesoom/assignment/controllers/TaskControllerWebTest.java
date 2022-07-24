@@ -4,6 +4,8 @@ import com.codesoom.assignment.TaskRepository;
 import com.codesoom.assignment.TaskRepositoryCleaner;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,6 +31,7 @@ public class TaskControllerWebTest {
     private TaskController controller;
     private TaskRepositoryCleaner repositoryCleaner;
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setup() {
@@ -54,7 +60,7 @@ public class TaskControllerWebTest {
             void it_returnsEmptyList() throws Exception {
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
-                        .andExpect(content().string("[]"));
+                        .andExpect(content().string(writeTaskListAsString(List.of())));
             }
         }
 
@@ -73,9 +79,13 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("OK status, 생성된 할 일 목록을 반환한다")
             void it_returnsTasks() throws Exception {
+                List<Task> expectedTasks = new ArrayList<>();
+                expectedTasks.add(new Task(1L, FIXTURE_TITLE + 1));
+                expectedTasks.add(new Task(2L, FIXTURE_TITLE + 2));
+
                 mockMvc.perform(get("/tasks"))
                         .andExpect(status().isOk())
-                        .andExpect(content().string("[{\"id\":1,\"title\":\"title1\"},{\"id\":2,\"title\":\"title2\"}]"));
+                        .andExpect(content().string(writeTaskListAsString(expectedTasks)));
             }
         }
     }
@@ -114,9 +124,11 @@ public class TaskControllerWebTest {
             @Test
             @DisplayName("OK status, 조회한 할 일을 반환한다")
             void it_returnsTasks() throws Exception {
+                Task expectedTask = new Task(1L, FIXTURE_TITLE);
+
                 mockMvc.perform(get("/tasks/1"))
                         .andExpect(status().isOk())
-                        .andExpect(content().string("{\"id\":1,\"title\":\"title\"}"));
+                        .andExpect(content().string(writeTaskAsString(expectedTask)));
             }
         }
     }
@@ -140,16 +152,29 @@ public class TaskControllerWebTest {
         @Nested
         @DisplayName("request content를 담아서 요청했을 때")
         class Context_withBody {
-            final String requestContent = "{\"title\":\"title\"}";
+            private String content;
+
+            @BeforeEach
+            void prepare() throws JsonProcessingException {
+                content = writeTaskAsString(new Task("title"));
+            }
 
             @Test
             @DisplayName("OK status를 반환한다")
             void it_returnsNotFoundStatus() throws Exception {
                 mockMvc.perform(post("/tasks")
-                                .content(requestContent)
+                                .content(content)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isCreated());
             }
         }
+    }
+
+    private String writeTaskListAsString(List<Task> taskList) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(taskList);
+    }
+
+    private String writeTaskAsString(Task task) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(task);
     }
 }
