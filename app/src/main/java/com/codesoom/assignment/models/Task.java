@@ -2,7 +2,9 @@ package com.codesoom.assignment.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"id", "title"})
 public class Task {
     private Long id;
 
