@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,8 +97,8 @@ public class TaskControllerWebTest {
             }
 
             @Test
-            @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
-            void it_throwsTaskNotFound() throws Exception {
+            @DisplayName("NotFound status를 반환한다")
+            void it_returnsTaskNotFoundStatus() throws Exception {
                 mockMvc.perform(get("/tasks/" + deletedTaskId))
                         .andExpect(status().isNotFound());
             }
@@ -117,6 +119,38 @@ public class TaskControllerWebTest {
                 mockMvc.perform(get("/tasks/1"))
                         .andExpect(status().isOk())
                         .andExpect(content().string("{\"id\":1,\"title\":\"title\"}"));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /tasks 요청은")
+    class Describe_postTasks {
+        @Nested
+        @DisplayName("request content를 담아서 요청하지 않았을 때")
+        class Context_withoutBody {
+            final String requestContent = "";
+
+            @Test
+            @DisplayName("BadRequest status를 반환한다")
+            void it_returnsNotFoundStatus() throws Exception {
+                mockMvc.perform(post("/tasks").content(requestContent))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("request content를 담아서 요청했을 때")
+        class Context_withBody {
+            final String requestContent = "{\"title\":\"title\"}";
+
+            @Test
+            @DisplayName("OK status를 반환한다")
+            void it_returnsNotFoundStatus() throws Exception {
+                mockMvc.perform(post("/tasks")
+                                .content(requestContent)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isCreated());
             }
         }
     }
