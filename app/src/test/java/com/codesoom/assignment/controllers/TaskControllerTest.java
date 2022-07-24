@@ -2,6 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.TaskRepository;
+import com.codesoom.assignment.TaskRepositoryCleaner;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,13 @@ class TaskControllerTest {
     }
 
     public static final String FIXTURE_TITLE = "title";
+    private TaskRepositoryCleaner repositoryCleaner;
     private TaskController controller;
 
     @BeforeEach
     void setup() {
         final TaskRepository repository = new TaskRepository();
+        repositoryCleaner = new TaskRepositoryCleaner(repository);
         controller = new TaskController(new TaskService(repository));
     }
 
@@ -43,6 +46,11 @@ class TaskControllerTest {
         @Nested
         @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
+            @BeforeEach
+            void prepare() {
+                repositoryCleaner.deleteAllTasks();
+            }
+
             @Test
             @DisplayName("빈 목록을 반환한다")
             void it_returnsEmptyList() {

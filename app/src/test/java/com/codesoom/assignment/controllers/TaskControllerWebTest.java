@@ -1,19 +1,16 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.TaskRepository;
+import com.codesoom.assignment.TaskRepositoryCleaner;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,11 +24,13 @@ public class TaskControllerWebTest {
     public static final String FIXTURE_TITLE = "title";
 
     private TaskController controller;
+    private TaskRepositoryCleaner repositoryCleaner;
     private MockMvc mockMvc;
 
     @BeforeEach
     void setup() {
         final TaskRepository repository = new TaskRepository();
+        repositoryCleaner = new TaskRepositoryCleaner(repository);
         controller = new TaskController(new TaskService(repository));
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
@@ -45,12 +44,9 @@ public class TaskControllerWebTest {
         @Nested
         @DisplayName("생성되어 있는 할 일이 없다면")
         class Context_didNotCreateTask {
-            final Long deletedTaskId = 1L;
-
             @BeforeEach
             void prepare() {
-                controller.create(new Task(FIXTURE_TITLE));
-                controller.delete(deletedTaskId);
+                repositoryCleaner.deleteAllTasks();
             }
 
             @Test

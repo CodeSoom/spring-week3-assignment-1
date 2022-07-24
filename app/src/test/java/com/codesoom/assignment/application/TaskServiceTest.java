@@ -2,6 +2,7 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.TaskRepository;
+import com.codesoom.assignment.TaskRepositoryCleaner;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,11 +29,14 @@ class TaskServiceTest {
     }
 
     public static final String FIXTURE_TITLE = "title";
+    private TaskRepositoryCleaner repositoryCleaner;
     private TaskService service;
 
     @BeforeEach
     void setup() {
-        service = new TaskService(new TaskRepository());
+        final TaskRepository repository = new TaskRepository();
+        repositoryCleaner = new TaskRepositoryCleaner(repository);
+        service = new TaskService(repository);
     }
 
     @Nested
@@ -43,8 +47,7 @@ class TaskServiceTest {
         class Context_didNotCreateTask {
             @BeforeEach
             void prepare() {
-                service.createTask(new Task(FIXTURE_TITLE));
-                service.deleteTask(1L);
+                repositoryCleaner.deleteAllTasks();
             }
 
             @Test
