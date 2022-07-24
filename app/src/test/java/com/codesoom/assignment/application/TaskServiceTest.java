@@ -84,19 +84,19 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            private final Long deletedTaskId = 1L;
+            private final Long DELETED_TASK_ID = 1L;
 
             @BeforeEach
             void prepare() {
                 service.createTask(new Task(FIXTURE_TITLE));
-                service.deleteTask(deletedTaskId);
+                service.deleteTask(DELETED_TASK_ID);
             }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.getTask(deletedTaskId);
+                    service.getTask(DELETED_TASK_ID);
                 });
             }
         }
@@ -123,12 +123,12 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            private final Long deletedTaskId = 1L;
+            private final Long DELETED_TASK_ID = 1L;
 
             @BeforeEach
             void prepare() {
                 service.createTask(new Task(FIXTURE_TITLE));
-                service.deleteTask(deletedTaskId);
+                service.deleteTask(DELETED_TASK_ID);
             }
 
             @Test
@@ -136,7 +136,7 @@ class TaskServiceTest {
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
                     Task task = new Task(FIXTURE_TITLE);
-                    service.updateTask(deletedTaskId, task);
+                    service.updateTask(DELETED_TASK_ID, task);
                 });
             }
         }
@@ -166,19 +166,19 @@ class TaskServiceTest {
         @Nested
         @DisplayName("찾을 수 없는 id로 요청하면")
         class Context_withNotFindableTaskId {
-            private final Long deletedTaskId = 1L;
+            private final Long DELETED_TASK_ID = 1L;
 
             @BeforeEach
             void prepare() {
                 service.createTask(new Task(FIXTURE_TITLE));
-                service.deleteTask(deletedTaskId);
+                service.deleteTask(DELETED_TASK_ID);
             }
 
             @Test
             @DisplayName("할 일을 찾을 수 없다는 예외를 던진다")
             void it_throwsTaskNotFoundException() {
                 assertThrows(TaskNotFoundException.class, () -> {
-                    service.deleteTask(deletedTaskId);
+                    service.deleteTask(DELETED_TASK_ID);
                 });
             }
         }
