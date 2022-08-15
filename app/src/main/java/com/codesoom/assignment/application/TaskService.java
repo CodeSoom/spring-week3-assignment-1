@@ -1,54 +1,49 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-@Service
-public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
-    private Long newId = 0L;
+/**
+ * 작업에 대한 비즈니스 로직을 처리하는 역할을 가지고 있습니다.
+ */
+public interface TaskService {
+    /**
+     * 작업 콜렉션을 리턴합니다.
+     *
+     * @return 작업 콜렉션
+     */
+    Collection<Task> getTasks();
 
-    public List<Task> getTasks() {
-        return tasks;
-    }
+    /**
+     * 작업을 리턴합니다.
+     *
+     * @param id 식별자
+     * @return 작업
+     */
+    Task getTask(Long id);
 
-    public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
-    }
+    /**
+     * 작업을 생성하고 리턴합니다.
+     *
+     * @param title 제목
+     * @return 작업
+     */
+    Task createTask(String title);
 
-    public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+    /**
+     * 주어진 식별자를 가진 작업을 수정하고 리턴합니다.
+     *
+     * @param id 식별자
+     * @param title 변경할 제목
+     * @return 작업
+     */
+    Task updateTask(Long id, String title);
 
-        tasks.add(task);
-
-        return task;
-    }
-
-    public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
-
-        return task;
-    }
-
-    public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
-
-        return task;
-    }
-
-    private Long generateId() {
-        newId += 1;
-        return newId;
-    }
+    /**
+     * 주어진 식별자를 가진 작업을 제거합니다.
+     *
+     * @param id 식별자
+     */
+    void deleteTask(Long id);
 }
