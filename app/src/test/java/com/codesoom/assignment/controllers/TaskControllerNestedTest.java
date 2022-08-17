@@ -72,11 +72,11 @@ class TaskControllerNestedTest {
         @Nested
         @DisplayName("id가 null이라면")
         class Context_NullPathVariable{
-
+            private final givenId = null;
             @Test
-            @DisplayName("TaskNotFoundException이 발생한다")
+            @DisplayName("TaskNotFoundException를 던진다")
             void It_ThrowException(){
-                assertThatThrownBy(() -> controller.detail(null))
+                assertThatThrownBy(() -> controller.detail(givenId))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
