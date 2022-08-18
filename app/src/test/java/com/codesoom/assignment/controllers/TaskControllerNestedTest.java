@@ -16,11 +16,13 @@ class TaskControllerNestedTest {
     private final String DEFAULT_TITLE = "TEST";
     private final long DEFAULT_SIZE = 3;
     private TaskController controller;
+    private TaskService service;
 
     @BeforeEach
     void setUp() {
         // subject
-        controller = new TaskController(new TaskService());
+        service = new TaskService();
+        controller = new TaskController(service);
 
         // fixtures
     }
@@ -33,12 +35,16 @@ class TaskControllerNestedTest {
         }
     }
 
+    void clearTasks(){
+        service.clearTasks();
+    }
+
     @Nested
     @DisplayName("list 메소드는")
     class Describe_List{
 
         @Nested
-        @DisplayName("Task가 존재한다면")
+        @DisplayName("할 일이 존재한다면")
         class Context_ExistsTask{
 
             @BeforeEach
@@ -47,7 +53,7 @@ class TaskControllerNestedTest {
             }
 
             @Test
-            @DisplayName("모든 Task를 반환한다")
+            @DisplayName("모든 할 일을 반환한다")
             void It_ReturnAllTask(){
                 assertThat(controller.list()).hasSize((int) DEFAULT_SIZE);
                 for(long i = 1 ; i <= DEFAULT_SIZE ; i++){
@@ -57,9 +63,14 @@ class TaskControllerNestedTest {
         }
 
         @Nested
-        @DisplayName("Task가 존재하지 않는다면")
+        @DisplayName("할 일이 존재하지 않는다면")
         class Context_NotExistsTask{
             private final int EMPTY = 0;
+
+            @BeforeEach
+            void setUp(){
+                clearTasks();
+            }
 
             @Test
             @DisplayName("비어있는 List를 반환한다")
@@ -80,7 +91,7 @@ class TaskControllerNestedTest {
             private final Long givenId = null;
 
             @Test
-            @DisplayName("TaskNotFoundException를 던진다")
+            @DisplayName("할 일을 찾지 못하는 예외를 던진다")
             void It_ThrowException(){
                 assertThatThrownBy(() -> controller.detail(givenId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -90,10 +101,16 @@ class TaskControllerNestedTest {
         @Nested
         @DisplayName("존재하지 않는 id로 조회한다면")
         class Context_SearchInvalidId{
-            private final Long invalidId = 100L;
+            private final Long invalidId = 1L;
+
+            @BeforeEach
+            void setUp(){
+                setDefaultSizeTasks();
+                controller.delete(1L);
+            }
 
             @Test
-            @DisplayName("TaskNotFoundException을 던진다")
+            @DisplayName("할 일을 찾지 못하는 예외를 던진다")
             void It_ThrowException(){
                 assertThatThrownBy(() -> controller.detail(invalidId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -110,7 +127,7 @@ class TaskControllerNestedTest {
             }
 
             @Test
-            @DisplayName("Task를 반환한다")
+            @DisplayName("할 일을 반환한다")
             void It_ReturnTask(){
                 assertThat(controller.detail(DEFAULT_SIZE))
                         .isEqualTo(new Task(DEFAULT_SIZE , DEFAULT_TITLE + DEFAULT_SIZE));
@@ -123,8 +140,9 @@ class TaskControllerNestedTest {
     class Describe_Create{
 
         @Nested
-        @DisplayName("id가 null이 아닌 Task가 주어져도")
+        @DisplayName("id가 null이 아닌 할 일이 주어지면")
         class Context_NotNullIdTask{
+
             private final long beforeId = DEFAULT_SIZE + 1;
             private final String title = DEFAULT_TITLE + beforeId;
             private final Task beforeTask = new Task(beforeId , title);
@@ -139,21 +157,21 @@ class TaskControllerNestedTest {
         }
 
         @Nested
-        @DisplayName("title이 null이면")
-        class Context_NullTitle{
+        @DisplayName("body가 없다면")
+        class Context_NotExistsBody{
+
             private final Task titleNullTask = new Task();
-            private final String title = null;
 
             @Test
-            @DisplayName("Task의 제목은 null로 저장된다")
+            @DisplayName("할 일의 제목은 null로 저장된다")
             void It_SaveTitleNull(){
                 Task saveTask = controller.create(titleNullTask);
-                assertThat(saveTask.getTitle()).isEqualTo(title);
+                assertThat(saveTask.getTitle()).isEqualTo(null);
             }
         }
 
         @Nested
-        @DisplayName("title이 존재하는 Task를 전달하면")
+        @DisplayName("제목이 존재하는 할 일을 전달하면")
         class Context_ExistsTitleTask{
             private final String title = DEFAULT_TITLE + DEFAULT_SIZE;
             private final Task beforeTask = new Task(null , title);
@@ -174,14 +192,21 @@ class TaskControllerNestedTest {
     class Describe_Update{
 
         @Nested
-        @DisplayName("id가 null이거나 id에 해당하는 Task가 없다면")
+        @DisplayName("id가 null이거나 id에 해당하는 할 일이 없다면")
         class Context_IdIsNullAndInvalidId{
+
             private final Long nullId = null;
-            private final Long invalidId = 100L;
+            private final Long invalidId = 1L;
             private final Task updateTask = new Task();
 
+            @BeforeEach
+            void setUp(){
+                setDefaultSizeTasks();
+                controller.delete(invalidId);
+            }
+
             @Test
-            @DisplayName("TaskNotFouneException이 발생한다")
+            @DisplayName("할 일을 찾지 못하는 예외를 던진다")
             void It_ThrowException(){
                 assertThatThrownBy(() -> controller.update(nullId , updateTask))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -191,7 +216,7 @@ class TaskControllerNestedTest {
         }
 
         @Nested
-        @DisplayName("id에 해당하는 Task가 있으면")
+        @DisplayName("id에 해당하는 할 일이 있으면")
         class Context_ValidId{
 
             private final String title = DEFAULT_TITLE + (DEFAULT_SIZE + 1);
@@ -203,7 +228,7 @@ class TaskControllerNestedTest {
             }
 
             @Test
-            @DisplayName("Task의 title을 업데이트한다")
+            @DisplayName("할 일의 제목을 업데이트한다")
             void It_UpdateTitle(){
                 int oldSize = controller.list().size();
                 Task afterTask = controller.update(DEFAULT_SIZE , beforeTask);
@@ -218,15 +243,21 @@ class TaskControllerNestedTest {
     class Describe_Patch{
 
         @Nested
-        @DisplayName("id가 null이거나 id에 해당하는 Task가 없다면")
+        @DisplayName("id가 null이거나 id에 해당하는 할 일이 없다면")
         class Context_IdIsNullAndInvalidId{
 
             private final Long nullId = null;
-            private final Long invalidId = 100L;
+            private final Long invalidId = 1L;
             private final Task updateTask = new Task();
 
+            @BeforeEach
+            void setUp(){
+                setDefaultSizeTasks();
+                controller.delete(invalidId);
+            }
+
             @Test
-            @DisplayName("TaskNotFouneException이 발생한다")
+            @DisplayName("할 일을 찾지 못하는 예외를 던진다")
             void It_ThrowException(){
                 assertThatThrownBy(() -> controller.patch(nullId , updateTask))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -236,7 +267,7 @@ class TaskControllerNestedTest {
         }
 
         @Nested
-        @DisplayName("id에 해당하는 Task가 있으면")
+        @DisplayName("id에 해당하는 할 일이 있으면")
         class Context_ValidId{
 
             private final String title = DEFAULT_TITLE + (DEFAULT_SIZE + 1);
@@ -267,10 +298,16 @@ class TaskControllerNestedTest {
         class Context_IdIsNullAndInvalidId{
 
             private final Long nullId = null;
-            private final Long invalidId = 100L;
+            private final Long invalidId = 1L;
+
+            @BeforeEach
+            void setUp(){
+                setDefaultSizeTasks();
+                controller.delete(invalidId);
+            }
 
             @Test
-            @DisplayName("TaskNotFouneException이 발생한다")
+            @DisplayName("할 일을 찾지 못하는 예외를 던진다")
             void It_ThrowException(){
                 assertThatThrownBy(() -> controller.delete(nullId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -280,7 +317,7 @@ class TaskControllerNestedTest {
         }
 
         @Nested
-        @DisplayName("id에 해당하는 Task가 있다면")
+        @DisplayName("id에 해당하는 할 일이 있다면")
         class Context_ValidId{
 
             private final Long validId = DEFAULT_SIZE;
