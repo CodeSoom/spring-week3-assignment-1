@@ -36,7 +36,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("모든 Task를 조회한다.")
     void list(){
-        assertThat(controller.list()).hasSize(allTaskCount);
+        assertThat(controller.list()).hasSize(DEFAULT_SIZE);
     }
 
     @Test
