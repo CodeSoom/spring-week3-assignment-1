@@ -48,6 +48,7 @@ public class TaskService {
     }
 
     public void clearTasks(){
+        newId = 0L;
         tasks = new ArrayList<>();
     }
 
