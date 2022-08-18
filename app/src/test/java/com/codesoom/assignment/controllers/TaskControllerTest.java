@@ -36,14 +36,14 @@ class TaskControllerTest {
     @Test
     @DisplayName("모든 Task를 조회한다.")
     void list(){
-        assertThat(controller.list()).hasSize(DEFAULT_SIZE);
+        assertThat(controller.list()).hasSize(3);
     }
 
     @Test
     @DisplayName("존재하는 [id]로 Task를 조회한다.")
     void getTaskValidId() {
         long id = 3;
-        assertThat(controller.detail(id)).isEqualTo(new Task((long) DEFAULT_SIZE, DEFAULT_TITLE + 3));
+        assertThat(controller.detail(id)).isEqualTo(new Task(3L , DEFAULT_TITLE + 3));
     }
 
     @Test
