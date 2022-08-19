@@ -55,8 +55,7 @@ class TaskControllerWebTest {
                 .build();
     }
 
-    void setErrorAdvice(String invalidId){
-        Long id = Long.parseLong(invalidId);
+    void setErrorAdvice(Long id){
         given(service.getTask(id)).willThrow(new TaskNotFoundException(id));
         given(advice.handleNotFound()).willReturn(new ErrorResponse("Task not found"));
     }
@@ -150,7 +149,7 @@ class TaskControllerWebTest {
         @DisplayName("{id}에 해당하는 할 일이 없다면")
         class Context_NotExistsTask{
 
-            private final String invalidId = "1";
+            private final Long invalidId = 1L;
 
             @BeforeEach
             void setUp(){
@@ -252,7 +251,7 @@ class TaskControllerWebTest {
         class Context_InvalidId{
 
             private final Task updateTask = new Task();
-            private final String invalidId = "1";
+            private final Long invalidId = 1L;
 
             @BeforeEach
             void setUp(){
@@ -318,11 +317,12 @@ class TaskControllerWebTest {
         @DisplayName("{id}에 해당하는 할 일이 없다면")
         class Context_InvalidId{
 
-            private final String invalidId = "1";
+            private final Long invalidId = 1L;
 
             @BeforeEach
             void setUp(){
                 setErrorAdvice(invalidId);
+                given(service.deleteTask(invalidId)).willReturn(null);
             }
 
             @Test
@@ -339,6 +339,12 @@ class TaskControllerWebTest {
         class Context_ValidId{
 
             private final Long validId = 1L;
+
+            @BeforeEach
+            void setUp(){
+                reset(service);
+                given(service.deleteTask(validId)).willReturn(null);
+            }
 
             @Test
             @DisplayName("상태 204를 반환 , 할 일을 삭제한다")
