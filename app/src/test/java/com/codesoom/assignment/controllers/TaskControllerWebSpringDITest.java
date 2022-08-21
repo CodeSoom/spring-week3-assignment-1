@@ -277,7 +277,7 @@ class TaskControllerWebSpringDITest {
             @DisplayName("body에 담긴 제목으로 수정한다")
             void It_UpdateTask() throws Exception {
                 String content = mapper.writeValueAsString(afterTask);
-                mockMvc.perform(put(RESOURCE +"/"+updateId)
+                mockMvc.perform(put(RESOURCE + "/" + updateId)
                                 .content(content)
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
