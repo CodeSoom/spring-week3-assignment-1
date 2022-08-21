@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -69,6 +70,8 @@ class TaskControllerWebTest {
         void It_Status200Return() throws Exception {
             mockMvc.perform(get(RESOURCE))
                     .andExpect(status().isOk());
+
+            verify(service).getTasks();
         }
 
         @Nested
@@ -93,6 +96,8 @@ class TaskControllerWebTest {
                 mockMvc.perform(get(RESOURCE))
                         .andExpect(status().isOk())
                         .andExpect(content().string(equalTo(mapper.writeValueAsString(tasks))));
+
+                verify(service).getTasks();
             }
         }
 
@@ -113,6 +118,8 @@ class TaskControllerWebTest {
                 mockMvc.perform(get(RESOURCE))
                         .andExpect(status().isOk())
                         .andExpect(content().string(equalTo(EMPTY_ARR)));
+
+                verify(service).getTasks();
             }
         }
     }
@@ -164,6 +171,7 @@ class TaskControllerWebTest {
                         .andDo(print())
                         .andExpect(status().isNotFound())
                         .andExpect(content().string(containsString("Task not found")));
+                verify(service).getTask(invalidId);
             }
         }
     }
@@ -194,6 +202,7 @@ class TaskControllerWebTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isCreated())
                         .andExpect(content().string(equalTo(content)));
+                verify(service).createTask(newTask);
             }
         }
 
@@ -293,6 +302,8 @@ class TaskControllerWebTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(content().string(equalTo(content)));
+
+                verify(service).updateTask(updateId , beforeTask);
             }
         }
     }
@@ -351,6 +362,8 @@ class TaskControllerWebTest {
             void It_DeleteTask() throws Exception {
                 mockMvc.perform(delete(RESOURCE +"/"+validId))
                         .andExpect(status().isNoContent());
+
+                verify(service).deleteTask(validId);
             }
         }
     }
