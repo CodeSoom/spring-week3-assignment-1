@@ -47,6 +47,11 @@ public class TaskService {
         return task;
     }
 
+    public void clearTasks(){
+        newId = 0L;
+        tasks = new ArrayList<>();
+    }
+
     private Long generateId() {
         newId += 1;
         return newId;
