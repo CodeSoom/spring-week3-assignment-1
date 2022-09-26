@@ -33,7 +33,7 @@ class TaskServiceTest {
     @Order(1)
     @Test
     @DisplayName("빈 DB에서 전체 할 일 조회")
-    void getTasks() {
+    void get_empty_tasks() {
         List<Task> findTasks = taskService.getTasks();
 
         assertThat(findTasks).hasSize(0);
@@ -44,7 +44,7 @@ class TaskServiceTest {
     @Order(2)
     @Test
     @DisplayName("새로운 할 일 2개 추가 ")
-    void createTask() {
+    void create_task() {
         // given
         Task task1 = new Task();
         task1.setTitle("할 일 추가1");
@@ -62,8 +62,32 @@ class TaskServiceTest {
         assertThat(taskService.getTask(2L).getTitle()).isEqualTo("할 일 추가2");
     }
 
-
     @Order(3)
+    @Test
+    @DisplayName("2개 할 일 추가된 후 전체 할 일 조회")
+    void get_not_empty_tasks() {
+        if (taskService.getTasks().size() == 0) {
+            // given
+            Task task1 = new Task();
+            task1.setTitle("할 일 추가1");
+
+            Task task2 = new Task();
+            task2.setTitle("할 일 추가2");
+
+            taskService.createTask(task1);
+            taskService.createTask(task2);
+        }
+
+        List<Task> findTasks = taskService.getTasks();
+
+        final int expectSize = 2;
+        final int actualSize = findTasks.size();
+
+        assertThat(actualSize).isEqualTo(expectSize);
+    }
+
+
+    @Order(4)
     @Test
     @DisplayName("존재하는 ID의 할 일 조회")
     void get_task_with_existing_taskId() {
@@ -82,14 +106,14 @@ class TaskServiceTest {
         assertThat(findTask.getTitle()).isEqualTo("할 일 추가1");
     }
 
-    @Order(4)
+    @Order(5)
     @Test
     @DisplayName("존재하지않는 ID의 할 일 조회")
     void get_task_with_not_existing_taskId() {
         assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @Order(5)
+    @Order(6)
     @Test
     @DisplayName("존재하는 ID의 할 일 수정")
     void update_task_with_existing_taskId() {
@@ -108,7 +132,7 @@ class TaskServiceTest {
         assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
     }
 
-    @Order(6)
+    @Order(7)
     @Test
     @DisplayName("존재하지않는 ID의 할 일 수정")
     void update_task_with_not_existing_taskId() {
@@ -118,7 +142,7 @@ class TaskServiceTest {
         assertThatThrownBy(() -> taskService.updateTask(100L, newTask)).isInstanceOf(TaskNotFoundException.class);
     }
 
-    @Order(7)
+    @Order(8)
     @Test
     @DisplayName("존재하는 ID의 할 일 삭제")
     void delete_task_with_existing_taskId() {
@@ -140,7 +164,7 @@ class TaskServiceTest {
         assertThat(deletedTask).isEqualTo(expectedTask);
     }
 
-    @Order(8)
+    @Order(9)
     @Test
     @DisplayName("존재하지않는 ID의 할 일 삭제")
     void delete_task_with_not_existing_taskId() {
