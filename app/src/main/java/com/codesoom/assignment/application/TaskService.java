@@ -24,9 +24,9 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+        Task task = new Task(generateId(), source.getTitle());
+//        task.setId(generateId());
+//        task.setTitle(source.getTitle());
 
         tasks.add(task);
 
@@ -35,9 +35,9 @@ public class TaskService {
 
     public Task updateTask(Long id, Task source) {
         Task task = getTask(id);
-        task.setTitle(source.getTitle());
+//        task.setTitle(source.getTitle());
 
-        return task;
+        return task.updateTitle(source.getTitle());
     }
 
     public Task deleteTask(Long id) {
@@ -47,7 +47,8 @@ public class TaskService {
         return task;
     }
 
-    private Long generateId() {
+
+    private synchronized Long  generateId() {
         newId += 1;
         return newId;
     }

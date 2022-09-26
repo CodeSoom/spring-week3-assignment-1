@@ -18,9 +18,8 @@ class TaskControllerTest {
     void setUp() {
         taskService = new TaskService();
         taskController = new TaskController(taskService);
-        task = new Task();
-        task.setTitle("title");
-        task.setId(1L);
+
+        task = new Task(1L, "title");
     }
 
     @Test
@@ -32,9 +31,7 @@ class TaskControllerTest {
     @Test
     void detailWithValidId() {
         //given
-        Task task = new Task();
-        task.setTitle("title");
-        task.setId(1L);
+
         taskService.createTask(task);
         //when
         Task detail = taskController.detail(1L);
@@ -54,11 +51,10 @@ class TaskControllerTest {
 
     @Test
     void create() {
-        Task task = new Task();
-        task.setTitle("1");
-        taskController.create(task);
-        task.setTitle("2");
-        taskController.create(task);
+        Task task1 = new Task(1L, "title1");
+        taskController.create(task1);
+        Task task2 = new Task(2L, "title2");
+        taskController.create(task2);
 
         assertThat(taskController.list()).hasSize(2);
     }

@@ -15,8 +15,7 @@ class TaskServiceTest {
     void setup() {
         taskService = new TaskService();
 
-        Task task = new Task();
-        task.setTitle("title");
+        Task task = new Task(1L, "title");
         taskService.createTask(task);
     }
 

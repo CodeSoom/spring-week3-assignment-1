@@ -30,7 +30,7 @@ class TaskControllerWebTest {
 
     @Test
     void detailwithValidId() throws Exception {
-        Task task = new Task();
+        Task task = new Task(1L, "title");
         given(taskService.getTask (1L)).willReturn(task);
         taskService.createTask(task);
 
