@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("할 일 Controller 유닛 테스트")
@@ -30,9 +32,22 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("모든 할 일을 조회할 수 있다")
+    @DisplayName("할 일을 생성할 수 있다")
     void createTask() {
-        assertThat(taskController.list()).hasSize(TASKS_SIZE);
+    }
+
+    @Test
+    @DisplayName("모든 할 일을 조회할 수 있다")
+    void list() {
+        long id = 1L;
+        List<Task> tasks = taskController.list();
+
+        assertThat(tasks).hasSize(TASKS_SIZE);
+        for (Task task : tasks) {
+            assertThat(task.getId()).isEqualTo(id);
+            assertThat(task.getTitle()).isEqualTo(TITLE + id);
+            id += 1;
+        }
     }
 
     @Test
