@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.dto.TaskRequestDto;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,16 +20,11 @@ class TaskServiceTest {
         taskService = new TaskService();
     }
 
-    Task getNewTask(Long id) {
-        Task task = new Task(id, TITLE + id);
-        return task;
-    }
-
     @Test
     @DisplayName("새로운 할 일을 목록에 추가할 수 있다")
     void createTask() {
         // given
-        Task source = getNewTask(1L);
+        TaskRequestDto source = new TaskRequestDto(TITLE);
 
         // when
         taskService.createTask(source);
@@ -36,21 +32,22 @@ class TaskServiceTest {
         // then
         Task task = taskService.getTask(1L);
         assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo(TITLE + task.getId());
+        assertThat(task.getTitle()).isEqualTo(TITLE);
     }
 
     @Test
-    @DisplayName("유효한 id로 할 일을 목록에서 조회할 수 있다")
+    @DisplayName("유효한 id로 할 일을 조회할 수 있다")
     void getTaskWithValidId() {
         // given
-        taskService.createTask(getNewTask(1L));
+        TaskRequestDto source = new TaskRequestDto(TITLE);
+        taskService.createTask(source);
 
         // when
         Task task = taskService.getTask(1L);
 
         // then
         assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo(TITLE + task.getId());
+        assertThat(task.getTitle()).isEqualTo(TITLE);
     }
 
     @Test
