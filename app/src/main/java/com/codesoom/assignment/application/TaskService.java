@@ -37,12 +37,10 @@ public class TaskService {
     public Task deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
-
         return task;
     }
 
-
-    private synchronized Long  generateId() {
+    public synchronized Long  generateId() {
         newId += 1;
         return newId;
     }
