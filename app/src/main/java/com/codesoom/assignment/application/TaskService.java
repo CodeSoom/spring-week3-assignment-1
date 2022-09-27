@@ -24,8 +24,7 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        Long id = generateId();
-        Task task = new Task(id, source.getTitle());
+        final Task task = new Task(generateId(), source.getTitle());
         tasks.add(task);
 
         return task;
