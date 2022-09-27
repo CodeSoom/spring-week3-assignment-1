@@ -19,34 +19,22 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+
+        TaskRequestDto source = new TaskRequestDto(TITLE);
+        taskService.createTask(source);
     }
 
     @Test
     @DisplayName("새로운 할 일을 목록에 추가할 수 있다")
     void createTask() {
-        // given
-        TaskRequestDto source = new TaskRequestDto(TITLE);
-
-        // when
-        taskService.createTask(source);
-
-        // then
-        Task task = taskService.getTask(1L);
-        assertThat(task.getId()).isEqualTo(1L);
-        assertThat(task.getTitle()).isEqualTo(TITLE);
+        assertThat(taskService.getTasks()).isNotEmpty();
     }
 
     @Test
     @DisplayName("유효한 id로 할 일을 조회할 수 있다")
     void getTaskWithValidId() {
-        // given
-        TaskRequestDto source = new TaskRequestDto(TITLE);
-        taskService.createTask(source);
-
-        // when
         Task task = taskService.getTask(1L);
 
-        // then
         assertThat(task.getId()).isEqualTo(1L);
         assertThat(task.getTitle()).isEqualTo(TITLE);
     }
@@ -61,15 +49,8 @@ class TaskServiceTest {
     @Test
     @DisplayName("유효한 id로 찾은 할 일을 업데이트할 수 있다")
     void updateTask() {
-        // given
-        TaskRequestDto source = new TaskRequestDto(TITLE);
-        taskService.createTask(source);
+        taskService.updateTask(1L, new TaskRequestDto(UPDATE_TITLE));
 
-        // when
-        TaskRequestDto updateDto = new TaskRequestDto(UPDATE_TITLE);
-        taskService.updateTask(1L, updateDto);
-
-        // then
         Task updatedTask = taskService.getTask(1L);
         assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
     }
@@ -77,17 +58,10 @@ class TaskServiceTest {
     @Test
     @DisplayName("유효한 id로 할 일을 삭제할 수 있다")
     void deleteTask() {
-        // given
-        TaskRequestDto source = new TaskRequestDto(TITLE);
-        taskService.createTask(source);
-
-        // when
         Task deletedTask = taskService.deleteTask(1L);
 
-        // then
         assertThat(deletedTask.getId()).isEqualTo(1L);
         assertThat(deletedTask.getTitle()).isEqualTo(TITLE);
-
         assertThat(taskService.getTasks()).isEmpty();
     }
 }
