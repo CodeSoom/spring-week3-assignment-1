@@ -14,6 +14,7 @@ class TaskServiceTest {
     private TaskService taskService;
 
     private static final String TITLE = "test";
+    private static final String UPDATE_TITLE = "update test";
 
     @BeforeEach
     void setUp() {
@@ -57,5 +58,36 @@ class TaskServiceTest {
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
-    // TODO: update, delete 테스트 구현
+    @Test
+    @DisplayName("유효한 id로 찾은 할 일을 업데이트할 수 있다")
+    void updateTask() {
+        // given
+        TaskRequestDto source = new TaskRequestDto(TITLE);
+        taskService.createTask(source);
+
+        // when
+        TaskRequestDto updateDto = new TaskRequestDto(UPDATE_TITLE);
+        taskService.updateTask(1L, updateDto);
+
+        // then
+        Task updatedTask = taskService.getTask(1L);
+        assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
+    }
+
+    @Test
+    @DisplayName("유효한 id로 할 일을 삭제할 수 있다")
+    void deleteTask() {
+        // given
+        TaskRequestDto source = new TaskRequestDto(TITLE);
+        taskService.createTask(source);
+
+        // when
+        Task deletedTask = taskService.deleteTask(1L);
+
+        // then
+        assertThat(deletedTask.getId()).isEqualTo(1L);
+        assertThat(deletedTask.getTitle()).isEqualTo(TITLE);
+
+        assertThat(taskService.getTasks()).isEmpty();
+    }
 }
