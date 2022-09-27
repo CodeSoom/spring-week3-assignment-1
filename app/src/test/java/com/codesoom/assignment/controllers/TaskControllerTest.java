@@ -213,7 +213,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
-        class context_with_non_existing_task_id extends NewTask {
+        class Context_with_non_existing_task_id extends NewTask {
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
@@ -234,7 +234,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
-        class context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends NewTask {
             @Test
             @DisplayName("Status 200와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
@@ -269,7 +269,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
-        class context_with_non_existing_task_id extends NewTask {
+        class Context_with_non_existing_task_id extends NewTask {
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
@@ -289,7 +289,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
-        class context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends NewTask {
             @Test
             @DisplayName("Status 200와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
@@ -321,7 +321,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 삭제요청 한다면")
-        class context_with_non_existing_task_id {
+        class Context_with_non_existing_task_id {
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
@@ -341,7 +341,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("존재하는 ID로 할 일을 삭제요청 한다면")
-        class context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends NewTask {
             @Test
             @DisplayName("Status 204와 수정된 할 일을 리턴한다")
             void it_returns_204() throws Exception {
