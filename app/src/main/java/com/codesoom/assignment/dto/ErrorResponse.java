@@ -10,4 +10,5 @@ public class ErrorResponse {
     public String getMessage() {
         return message;
     }
+
 }
