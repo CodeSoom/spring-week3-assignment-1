@@ -71,12 +71,14 @@ class TaskControllerTest {
         @Nested
         @DisplayName("DB가 비어있을때 할 일 리스트를 조회한다면")
         class Context_with_empty_db {
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.getTasks()).willReturn(new ArrayList<>());
+            }
+
             @Test
             @DisplayName("Status 200에 []를 리턴한다")
             void it_return_200_and_empty_array() throws Exception {
-                // given
-                given(taskService.getTasks()).willReturn(new ArrayList<>());
-
                 // when
                 ResultActions resultActions = subject();
 
@@ -91,21 +93,23 @@ class TaskControllerTest {
         @Nested
         @DisplayName("DB에 데이터가 있을때 할 일 리스트를 조회한다면")
         class Context_with_non_empty_db extends NewTask {
-            final String TITLE = "오늘의 할 일";
+            private final String TITLE = "오늘의 할 일";
 
-            @Test
-            @DisplayName("Status 200에 모든 할 일을 리턴한다")
-            void it_returns_200_and_all_tasks() throws Exception {
-                // given
+            @BeforeEach
+            void prepareTests() {
                 List<Task> tasks = new ArrayList<>();
-                Task task1 = withTitle(TITLE + "1");
-                Task task2 = withTitle(TITLE + "2");
+                Task task1 = withIdAndTitle(1L, TITLE + "1");
+                Task task2 = withIdAndTitle(2L, TITLE + "2");
 
                 tasks.add(task1);
                 tasks.add(task2);
 
                 given(taskService.getTasks()).willReturn(tasks);
+            }
 
+            @Test
+            @DisplayName("Status 200에 모든 할 일을 리턴한다")
+            void it_returns_200_and_all_tasks() throws Exception {
                 // when
                 ResultActions resultActions = subject();
 
@@ -121,8 +125,7 @@ class TaskControllerTest {
     @Nested
     @DisplayName("datail 메소드 [/tasks/id::GET]는")
     class Describe_detail {
-        final Long TASK_ID = 1L;
-        final String TITLE = "1번 할 일";
+        private final Long TASK_ID = 1L;
 
         ResultActions subject() throws Exception {
             return mockMvc.perform(get("/tasks/" + TASK_ID));
@@ -131,12 +134,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 검색한다면")
         class Context_with_non_existing_task_id {
+            private final String TITLE = "1번 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.getTask(TASK_ID)).willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // given
-                given(taskService.getTask(TASK_ID)).willThrow(new TaskNotFoundException(TASK_ID));
-
                 // when
                 ResultActions resultActions = subject();
 
@@ -152,12 +159,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 ID로 할 일을 검색한다면")
         class Context_with_existing_task_id extends NewTask {
+            private final String TITLE = "1번 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.getTask(TASK_ID)).willReturn(withTitle(TITLE));
+            }
+
             @Test
             @DisplayName("Status 200에 검색된 할 일을 리턴한다")
             void it_returns_200_and_found_task() throws Exception {
-                // given
-                given(taskService.getTask(TASK_ID)).willReturn(withTitle(TITLE));
-
                 // when
                 ResultActions resultActions = subject();
 
@@ -174,18 +185,20 @@ class TaskControllerTest {
     @Nested
     @DisplayName("create 메소드 [/tasks::POST]는")
     class Describe_create {
-        final Long TASK_ID = 1L;
-        final String TITLE = "등록된 할 일";
-
         @Nested
         @DisplayName("신규 할 일을 등록요청 한다면")
         class Context_with_new_task extends NewTask {
+            private final Long TASK_ID = 1L;
+            private final String TITLE = "등록된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.createTask(any(Task.class))).willReturn(withTitle(TITLE));
+            }
+
             @Test
             @DisplayName("등록 후 Status 201과 등록된 할 일을 리턴한다")
             void it_returns_201_and_registered_task() throws Exception {
-                // given
-                given(taskService.createTask(any(Task.class))).willReturn(withTitle(TITLE));
-
                 // when
                 ResultActions resultActions = mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,8 +215,7 @@ class TaskControllerTest {
     @Nested
     @DisplayName("update 메소드 [/tasks/id::PUT]는")
     class Describe_update {
-        final Long TASK_ID = 1L;
-        final String TITLE = "수정된 할 일";
+        private final Long TASK_ID = 1L;
 
         ResultActions subject(Task task) throws Exception {
             return mockMvc.perform(put("/tasks/" + TASK_ID)
@@ -214,13 +226,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
         class Context_with_non_existing_task_id extends NewTask {
+            private final String TITLE = "수정된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // given
-
-                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willThrow(new TaskNotFoundException(TASK_ID));
-
                 // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
@@ -235,16 +250,18 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
         class Context_with_existing_task_id extends NewTask {
+            private final String TITLE = "수정된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willReturn(withIdAndTitle(TASK_ID, TITLE));
+            }
+
             @Test
             @DisplayName("Status 200와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
-                // given
-                Task task = withTitle(TITLE);
-
-                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willReturn(task);
-
                 // when
-                ResultActions resultActions = subject(task);
+                ResultActions resultActions = subject(withTitle(TITLE));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -258,24 +275,26 @@ class TaskControllerTest {
     @Nested
     @DisplayName("patch 메소드 [/tasks/id::PATCH]는")
     class Describe_patch {
-        final Long TASK_ID = 1L;
-        final String TITLE = "수정된 할 일";
+        private final Long TASK_ID = 1L;
 
         ResultActions subject(Task task) throws Exception {
             return mockMvc.perform(patch("/tasks/" + TASK_ID)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(task)));
         }
-
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
         class Context_with_non_existing_task_id extends NewTask {
+            private final String TITLE = "수정된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // given
-                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willThrow(new TaskNotFoundException(TASK_ID));
-
                 // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
@@ -290,12 +309,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
         class Context_with_existing_task_id extends NewTask {
+            private final String TITLE = "수정된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willReturn(withIdAndTitle(TASK_ID, TITLE));
+            }
+
             @Test
             @DisplayName("Status 200와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
-                // given
-                given(taskService.updateTask(eq(TASK_ID), any(Task.class))).willReturn(withIdAndTitle(TASK_ID, TITLE));
-
                 // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
@@ -311,9 +334,7 @@ class TaskControllerTest {
     @Nested
     @DisplayName("delete 메소드 [/tasks/id::DELETE]는")
     class Describe_delete {
-        final Long TASK_ID = 1L;
-        final String TITLE = "삭제된 할 일";
-
+        private final Long TASK_ID = 1L;
         ResultActions subject() throws Exception {
             return mockMvc.perform(delete("/tasks/" + TASK_ID)
                     .contentType(MediaType.APPLICATION_JSON));
@@ -322,12 +343,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하지않는 ID로 할 일을 삭제요청 한다면")
         class Context_with_non_existing_task_id {
+            private final String TITLE = "삭제된 할 일";
+
+            @BeforeEach
+            void prepareTests() {
+                given(taskService.deleteTask(TASK_ID)).willThrow(new TaskNotFoundException(TASK_ID));
+            }
+
             @Test
             @DisplayName("Status 404와 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // given
-                given(taskService.deleteTask(TASK_ID)).willThrow(new TaskNotFoundException(TASK_ID));
-
                 // when
                 ResultActions resultActions = subject();
 
@@ -342,12 +367,16 @@ class TaskControllerTest {
         @Nested
         @DisplayName("존재하는 ID로 할 일을 삭제요청 한다면")
         class Context_with_existing_task_id extends NewTask {
+            private final String TITLE = "삭제된 할 일";
+
+            @BeforeEach
+            void prepareTest() {
+                given(taskService.deleteTask(TASK_ID)).willReturn(withIdAndTitle(TASK_ID, TITLE));
+            }
+
             @Test
             @DisplayName("Status 204와 수정된 할 일을 리턴한다")
             void it_returns_204() throws Exception {
-                // given
-                given(taskService.deleteTask(TASK_ID)).willReturn(withIdAndTitle(TASK_ID, TITLE));
-
                 // when
                 ResultActions resultActions = subject();
 
