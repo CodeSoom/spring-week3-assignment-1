@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("할 일 Model 테스트")
 class TaskTest {
 
     private static final String UPDATE_PREFIX = "update_";

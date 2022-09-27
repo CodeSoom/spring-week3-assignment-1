@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("할 일 Service 테스트")
 class TaskServiceTest {
 
     private TaskService taskService;
@@ -25,7 +26,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("새로운 할 일을 목록에 추가할 수 있다")
+    @DisplayName("새로운 할 일을 추가할 수 있다")
     void createTask() {
         assertThat(taskService.getTasks()).isNotEmpty();
     }
