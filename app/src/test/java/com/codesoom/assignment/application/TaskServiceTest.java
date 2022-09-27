@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.models.NewTask;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,9 @@ class TaskServiceTest {
     @Nested
     @DisplayName("getTasks 메소드는")
     class Describe_getTasks {
+        List<Task> subject() {
+            return taskService.getTasks();
+        }
 
         @Nested
         @DisplayName("DB에 데이터가 없는데 조회를 한다면")
@@ -35,7 +39,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("빈 ArrayList를 리턴한다")
             void it_returns_empty_arraylist() {
-                List<Task> findTasks = taskService.getTasks();
+                List<Task> findTasks = subject();
 
                 assertThat(findTasks).hasSize(0);
                 assertThat(findTasks).isEqualTo(new ArrayList<>());
@@ -44,23 +48,20 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("DB에 데이터가 있는데 조회를 한다면")
-        class Context_with_non_empty_db {
+        class Context_with_non_empty_db extends NewTask {
             @Test
             @DisplayName("등록된 모든 할 일을 리턴한다")
             void it_returns_all_tasks() {
                 // given
-                Task task1 = new Task();
-                task1.setTitle("할 일 추가1");
-
-                Task task2 = new Task();
-                task2.setTitle("할 일 추가2");
+                Task task1 = withTitle("할 일 추가1");
+                Task task2 = withTitle("할 일 추가2");
 
 
                 taskService.createTask(task1);
                 taskService.createTask(task2);
 
                 // when
-                List<Task> findTasks = taskService.getTasks();
+                List<Task> findTasks = subject();
 
                 final int expectSize = 2;
                 final int actualSize = findTasks.size();
@@ -76,24 +77,23 @@ class TaskServiceTest {
     @Nested
     @DisplayName("createTask 메소드는")
     class Describe_createTask {
+        final Long TASK_ID = 1L;
+        final String TITLE = "할 일 추가";
         @Nested
         @DisplayName("새로운 할 일을 추가한다면")
-        class Context_with_new_task {
+        class Context_with_new_task extends NewTask {
             @Test
             @DisplayName("DB에 등록 후 등록된 할 일을 리턴한다")
             void it_returns_registered_task() {
                 // given
-                Task task = new Task();
-                task.setId(1L);
-                task.setTitle("할 일 추가1");
+                Task task = withTitle(TITLE);
 
                 // when
                 Task actualTask = taskService.createTask(task);
 
                 // then
-                assertThat(actualTask.equals(task)).isEqualTo(true);
                 assertThat(taskService.getTasks()).hasSize(1);
-                assertThat(taskService.getTask(1L).getTitle()).isEqualTo("할 일 추가1");
+                assertThat(taskService.getTask(TASK_ID).getTitle()).isEqualTo(TITLE);
             }
         }
     }
@@ -103,37 +103,32 @@ class TaskServiceTest {
     class Describe_getTask {
         @Nested
         @DisplayName("존재하는 할 일 ID로 검색한다면")
-        class Context_with_existing_taskid {
-            final Task task = new Task();
-
-            @BeforeEach
-            void insertTask() {
-                task.setId(1L);
-                task.setTitle("할 일 추가1");
-
-                taskService.createTask(task);
-            }
+        class Context_with_existing_task_id extends NewTask {
+            final Long TASK_ID = 1L;
+            final String TITLE = "할 일 검색";
 
             @Test
             @DisplayName("검색된 할 일을 리턴한다")
             void it_returns_found_task() {
                 // given
+                Task task = withTitle(TITLE);
+
+                taskService.createTask(task);
                 // when
-                Task findTask = taskService.getTask(1L);
+                Task findTask = taskService.getTask(TASK_ID);
 
                 // then
-                assertThat(findTask.equals(task)).isEqualTo(true);
-                assertThat(findTask.getTitle()).isEqualTo("할 일 추가1");
+                assertThat(findTask.getTitle()).isEqualTo(TITLE);
             }
 
         }
 
         @Nested
         @DisplayName("존재하지않는 할 일 ID로 검색한다면")
-        class Context_with_non_existing_taskid {
+        class Context_with_non_existing_task_id {
             @Test
             @DisplayName("TaskNotFoundException 예외가 발생한다")
-            void it_throws_tasknotfoundexception() {
+            void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -145,13 +140,13 @@ class TaskServiceTest {
     class Describe_updateTask {
         @Nested
         @DisplayName("존재하는 할 일 ID로 수정요청한다면")
-        class Describe_with_existing_taskid {
-            final Task task = new Task();
+        class Context_with_existing_task_id extends NewTask {
+            final Long TASK_ID = 1L;
+            final String TITLE = "할 일 수정";
 
             @BeforeEach
             void insertTask() {
-                task.setId(1L);
-                task.setTitle("할 일 추가1");
+                Task task = withTitle("할 일 추가");
 
                 taskService.createTask(task);
             }
@@ -160,28 +155,23 @@ class TaskServiceTest {
             @DisplayName("DB를 수정 후 수정된 할 일을 리턴한다")
             void it_returns_modified_task() {
                 // given
-                Task newTask = new Task();
-                newTask.setId(1L);
-                newTask.setTitle("할 일 수정1");
+                Task newTask = withTitle(TITLE);
 
                 // when
-                Task updatedTask = taskService.updateTask(1L, newTask);
+                Task updatedTask = taskService.updateTask(TASK_ID, newTask);
 
                 // then
-                assertThat(updatedTask.equals(newTask)).isEqualTo(true);
-                assertThat(updatedTask.getTitle()).isEqualTo(newTask.getTitle());
+                assertThat(updatedTask.getTitle()).isEqualTo(TITLE);
             }
         }
 
         @Nested
         @DisplayName("존재하지않는 할 일 ID로 수정요청한다면")
-        class Describe_with_non_existing_taskid {
+        class Context_with_non_existing_task_id extends NewTask {
             @Test
             @DisplayName("TaskNotFoundException 예외가 발생한다")
-            void it_throws_tasknotfoundexception() {
-                Task newTask = new Task();
-                newTask.setId(100L);
-                newTask.setTitle("할 일 수정100");
+            void it_throws_task_not_found_exception() {
+                Task newTask = withTitle("할 일 수정예외");
 
                 assertThatThrownBy(() -> taskService.updateTask(100L, newTask)).isInstanceOf(TaskNotFoundException.class);
             }
@@ -191,16 +181,14 @@ class TaskServiceTest {
     @Nested
     @DisplayName("deleteTask 메소드는")
     class Describe_deleteTask {
+        final Long TASK_ID = 1L;
+
         @Nested
         @DisplayName("존재하는 할 일 ID로 삭제요청한다면")
-        class Describe_with_existing_taskid {
-            final Task task = new Task();
-
+        class Context_with_existing_task_id extends NewTask {
             @BeforeEach
             void insertTask() {
-                task.setId(1L);
-                task.setTitle("할 일 추가1");
-
+                Task task = withTitle("할 일 추가");
                 taskService.createTask(task);
             }
 
@@ -208,14 +196,14 @@ class TaskServiceTest {
             @DisplayName("DB를 삭제 후 삭제된 할 일을 리턴한다")
             void it_returns_modified_task() {
                 final int beforeTotalCount = taskService.getTasks().size();
-                final Task expectedTask = taskService.getTask(1L);
+                final Task expectedTask = taskService.getTask(TASK_ID);
 
                 // when
-                Task deletedTask = taskService.deleteTask(1L);
+                final Task deletedTask = taskService.deleteTask(TASK_ID);
                 final int afterTotalCount = taskService.getTasks().size();
 
                 // then
-                assertThat(deletedTask.equals(task)).isEqualTo(true);
+                assertThat(deletedTask.getTitle()).isEqualTo(expectedTask.getTitle());
                 assertThat(afterTotalCount).isEqualTo(beforeTotalCount - 1);
                 assertThat(deletedTask).isEqualTo(expectedTask);
             }
@@ -223,10 +211,10 @@ class TaskServiceTest {
 
         @Nested
         @DisplayName("존재하지않는 할 일 ID로 삭제요청한다면")
-        class Describe_with_non_existing_taskid {
+        class Context_with_non_existing_task_id {
             @Test
             @DisplayName("TaskNotFoundException 예외가 발생한다")
-            void it_throws_tasknotfoundexception() {
+            void it_throws_task_not_found_exception() {
                 assertThatThrownBy(() -> taskService.deleteTask(100L)).isInstanceOf(TaskNotFoundException.class);
             }
         }
