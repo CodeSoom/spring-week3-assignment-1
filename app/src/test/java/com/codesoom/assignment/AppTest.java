@@ -1,23 +1,36 @@
 package com.codesoom.assignment;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("APP 클래스")
 class AppTest {
+    @Nested
+    @DisplayName("getGreeting 메소드는")
+    class Describe_getGreeting {
+        @Nested
+        @DisplayName("해당 메소드를 호출하면")
+        class Context_with_nothing {
+            private final String expected = "Hello, world!";
+            @Test
+            @DisplayName("주어진 문자열을 리턴한다")
+            void it_returns_string() {
+                // when
+                App classUnderTest = new App();
+                String actual = classUnderTest.getGreeting();
 
-    @Test
-    void appHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
-        assertEquals(classUnderTest.getGreeting(), "Hello, world!");
+                assertThat(actual).isEqualTo(expected);
+            }
+
+        }
     }
 
     @Test
-    void mainTest() {
-        App.main(new String[] {});
+    @DisplayName("Spring Application이 잘 작동하는지 확인한다.")
+    void contextLoads() {
+        App.main(new String[]{});
     }
 }
