@@ -45,7 +45,7 @@ class TaskControllerTest {
         //given
         taskService.createTask(task);
         //when
-        Throwable throwable = catchThrowable(() -> taskController.detail(1L));
+        Throwable throwable = catchThrowable(() -> taskController.detail(2L));
         //then
         assertThat(throwable).isInstanceOf(TaskNotFoundException.class);
     }
