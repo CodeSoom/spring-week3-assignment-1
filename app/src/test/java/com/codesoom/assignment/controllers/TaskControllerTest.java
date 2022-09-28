@@ -27,17 +27,17 @@ class TaskControllerTest {
         taskController = new TaskController(taskService);
 
         for (int id = 1; id <= TASKS_SIZE; id++) {
-            taskController.create(new TaskRequestDto(TITLE + id));
+            taskController.create(new TaskRequestDto(TITLE));
         }
     }
 
     @Test
-    @DisplayName("할 일을 생성할 수 있다")
+    @DisplayName("할 일을 생성한다")
     void createTask() {
     }
 
     @Test
-    @DisplayName("모든 할 일을 조회할 수 있다")
+    @DisplayName("모든 할 일을 조회한다")
     void list() {
         long id = 1L;
         List<Task> tasks = taskController.list();
@@ -45,40 +45,39 @@ class TaskControllerTest {
         assertThat(tasks).hasSize(TASKS_SIZE);
         for (Task task : tasks) {
             assertThat(task.getId()).isEqualTo(id);
-            assertThat(task.getTitle()).isEqualTo(TITLE + id);
+            assertThat(task.getTitle()).isEqualTo(TITLE);
             id += 1;
         }
     }
 
     @Test
-    @DisplayName("id에 해당하는 할 일을 상세 조회할 수 있다")
+    @DisplayName("존재하는 id로 할 일을 조회하면 할 일을 반환한다")
     void detailTask() {
         Task task1 = taskController.detail(3L);
         Task task2 = taskController.detail(4L);
 
         assertThat(task1.getId()).isEqualTo(3L);
-        assertThat(task1.getTitle()).isEqualTo(TITLE + 3L);
         assertThat(task2.getId()).isEqualTo(4L);
-        assertThat(task2.getTitle()).isEqualTo(TITLE + 4L);
     }
 
     @Test
-    @DisplayName("id에 해당하는 할 일이 없으면 예외가 발생한다")
+    @DisplayName("존재하지 않는 id로 할 일을 조회하면 예외를 던진다")
     void detailTaskWithInvalidId() {
         assertThatThrownBy(() -> taskController.detail(1000L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("id에 해당하는 할 일을 찾아 수정할 수 있다")
+    @DisplayName("할 일을 수정하면 수정된 할 일을 반환한다")
     void updateTask() {
         Task updatedTask = taskController.update(1L, new TaskRequestDto(UPDATE_TITLE));
 
+        assertThat(updatedTask.getId()).isEqualTo(1L);
         assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
     }
 
     @Test
-    @DisplayName("id에 해당하는 할 일을 삭제할 수 있다")
+    @DisplayName("할 일을 삭제한다")
     void deleteTask() {
         taskController.delete(3L);
 

@@ -43,7 +43,7 @@ class TaskControllerMockTest {
     }
 
     @Test
-    @DisplayName("모든 할 일을 조회할 수 있다")
+    @DisplayName("모든 할 일을 조회할 수 있다. 200 응답 코드를 생성한다")
     void list() throws Exception {
         when(taskService.getTasks())
                 .thenReturn(List.of(new Task(1L, TITLE), new Task(2L, TITLE)));
@@ -57,7 +57,7 @@ class TaskControllerMockTest {
     }
 
     @Test
-    @DisplayName("id에 해당하는 할 일을 조회할 수 있다")
+    @DisplayName("id에 해당하는 할 일을 조회할 수 있다. 200 응답 코드를 생성한다")
     void detail() throws Exception {
         when(taskService.getTask(1L))
                 .thenReturn(new Task(1L, TITLE));
@@ -81,7 +81,7 @@ class TaskControllerMockTest {
     }
 
     @Test
-    @DisplayName("할 일을 새로 생성할 수 있다")
+    @DisplayName("할 일을 새로 생성할 수 있다. 201 응답 코드를 생성한다")
     void createTask() throws Exception {
         TaskRequestDto source = new TaskRequestDto(TITLE);
         when(taskService.createTask(source))
@@ -95,7 +95,7 @@ class TaskControllerMockTest {
     }
 
     @Test
-    @DisplayName("기존의 할 일을 수정할 수 있다")
+    @DisplayName("기존의 할 일을 수정할 수 있다. 200 응답 코드를 생성한다")
     void updateTask() throws Exception {
         Long id = 1L;
 
@@ -117,7 +117,7 @@ class TaskControllerMockTest {
     }
 
     @Test
-    @DisplayName("할 일을 삭제할 수 있다")
+    @DisplayName("할 일을 삭제할 수 있다. 204 응답 코드를 생성한다")
     void deleteTask() throws Exception {
         when(taskService.deleteTask(1L))
                 .thenReturn(new Task(1L, TITLE));
