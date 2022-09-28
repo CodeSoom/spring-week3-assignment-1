@@ -4,6 +4,7 @@ import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -23,6 +24,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("task리스트를 요청한 경우 task를 모두 반환한다")
     void list() {
         // given
         taskController.create(new Task(2L, "test2"));
@@ -35,6 +37,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효한 task의 id로 task를 조회한 경우 task의 데이터를 반환한다")
     void detailWithValidId() {
         // given
         Long id = testTask.getId();
@@ -48,12 +51,15 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 task id로 task를 조회한 경우 TaskNotFoundException 예외를 던진다")
     void detailWithInvalidId() {
         assertThatThrownBy(
                 () -> taskController.detail(INVALID_TASK_ID)
         ).isExactlyInstanceOf(TaskNotFoundException.class);
     }
+
     @Test
+    @DisplayName("새로운 task를 생성하려는 경우 생성 후 task의 데이터를 반환한다")
     void create() {
         // given
         Task newTask = new Task(null, "task2");
@@ -67,6 +73,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효한 task id로 task의 수정을 요청한 경우 task의 데이터를 수정 후 반환한다")
     void updateWithValidId() {
         // given
         Long id = testTask.getId();
@@ -80,6 +87,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 task id로 task의 수정을 요청한 경우 TaskNotFoundException 예외를 던진다")
     void updateWithInvalidId() {
         Task task = new Task(null, "update Task");
         assertThatThrownBy(
@@ -88,6 +96,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효한 task id로 task의 삭제를 요청한 경우 task의 데이터를 삭제 후 빈값을 반환한다")
     void deleteTaskWithValidId() {
         // given
         Long id = testTask.getId();
@@ -102,6 +111,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 task id로 task의 삭제를 요청한 경우 TaskNotFoundException 예외를 던진다")
     void deleteTaskWithInvalidId() {
         assertThatThrownBy(
                 () -> taskController.delete(INVALID_TASK_ID)
