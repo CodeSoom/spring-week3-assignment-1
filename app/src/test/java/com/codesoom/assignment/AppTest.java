@@ -11,21 +11,19 @@ class AppTest {
     @Nested
     @DisplayName("getGreeting 메소드는")
     class Describe_getGreeting {
-        @Nested
-        @DisplayName("해당 메소드를 호출하면")
-        class Context_with_nothing {
-            private final String expected = "Hello, world!";
-            @Test
-            @DisplayName("주어진 문자열을 리턴한다")
-            void it_returns_string() {
-                // when
-                App classUnderTest = new App();
-                String actual = classUnderTest.getGreeting();
+        private final String expected = "Hello, world!";
 
-                assertThat(actual).isEqualTo(expected);
-            }
+        @Test
+        @DisplayName("해당 메소드를 호출하면 주어진 문자열을 리턴한다")
+        void it_returns_string() {
+            // when
+            App classUnderTest = new App();
+            String actual = classUnderTest.getGreeting();
 
+            assertThat(actual).isEqualTo(expected);
         }
+
+
     }
 
     @Test
