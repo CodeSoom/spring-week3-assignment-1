@@ -3,6 +3,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.appllication.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,16 +25,19 @@ class TaskControllerTest {
     }
 
     @Test
-    void list() {
+    @DisplayName("tasks.size()")
+    void getList() {
         assertThat(controller.list()).hasSize(1);
     }
 
     @Test
+    @DisplayName("특정 task객체의 title가져오기")
     void detailTask() {
         assertThat(controller.detail(1L).getTitle()).isEqualTo(TEST_TITLE);
     }
 
     @Test
+    @DisplayName("tasks에 task추가")
     void createNewTask() {
         Task task = new Task();
         task.updateTitle("Test");
@@ -44,6 +48,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("task의 title수정")
     void updateTask() {
         Task source = new Task();
         source.updateTitle(UPDATE_TITLE);
@@ -54,13 +59,12 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("tasks에서 task삭제")
     void deleteTask() {
         controller.delete(1L);
         assertThat(controller.list()).hasSize(0);
     }
 
-
-
-
-
 }
+
+
