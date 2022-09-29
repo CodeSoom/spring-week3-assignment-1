@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -69,7 +70,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("DB가 비어있을때 할 일 리스트를 조회한다면")
+        @DisplayName("등록된 할 일이 존재하지 않는다면")
         class Context_with_empty_db {
             @BeforeEach
             void prepareTests() {
@@ -77,12 +78,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 200에 []를 리턴한다")
+            @DisplayName("OK(200)와 빈 데이터를 리턴한다")
             void it_return_200_and_empty_array() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(content().string("[]"))
@@ -91,7 +90,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("DB에 데이터가 있을때 할 일 리스트를 조회한다면")
+        @DisplayName("등록된 할 일이 존재한다면")
         class Context_with_non_empty_db extends NewTask {
             private final String TITLE = "오늘의 할 일";
 
@@ -108,12 +107,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 200에 모든 할 일을 리턴한다")
+            @DisplayName("OK(200)와 모든 할 일을 리턴한다")
             void it_returns_200_and_all_tasks() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(jsonPath("$[0].title").value(equalTo(TITLE + "1")))
                         .andExpect(jsonPath("$[1].title").value(equalTo(TITLE + "2")))
@@ -132,7 +129,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하지않는 ID로 할 일을 검색한다면")
+        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
         class Context_with_non_existing_task_id {
             private final String TITLE = "1번 할 일";
 
@@ -142,12 +139,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 404와 메시지를 리턴한다")
+            @DisplayName("NOT_FOUND(404)와 예외 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isNotFound())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("message", containsString("Task not found")))
@@ -157,7 +152,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하는 ID로 할 일을 검색한다면")
+        @DisplayName("요청한 할 일 ID가 존재한다면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "1번 할 일";
 
@@ -167,12 +162,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 200에 검색된 할 일을 리턴한다")
+            @DisplayName("OK(200)와 요청한 할 일을 리턴한다")
             void it_returns_200_and_found_task() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("title").value(equalTo(TITLE)))
@@ -186,7 +179,7 @@ class TaskControllerTest {
     @DisplayName("create 메소드 [/tasks::POST]는")
     class Describe_create {
         @Nested
-        @DisplayName("신규 할 일을 등록요청 한다면")
+        @DisplayName("새로운 할 일을 등록요청 한다면")
         class Context_with_new_task extends NewTask {
             private final Long TASK_ID = 1L;
             private final String TITLE = "등록된 할 일";
@@ -197,14 +190,12 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("등록 후 Status 201과 등록된 할 일을 리턴한다")
+            @DisplayName("DB에 등록하고 CREATED(201)와 등록된 할 일을 리턴한다")
             void it_returns_201_and_registered_task() throws Exception {
-                // when
                 ResultActions resultActions = mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(withIdAndTitle(TASK_ID, TITLE))));
 
-                // then
                 resultActions.andExpect(status().isCreated())
                         .andExpect(jsonPath("title").value(equalTo(TITLE)))
                         .andDo(print());
@@ -224,7 +215,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
         class Context_with_non_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -234,12 +225,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 404와 메시지를 리턴한다")
+            @DisplayName("NOT_FOUND(404)와 예외 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
-                // then
                 resultActions.andExpect(status().isNotFound())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("message", containsString("Task not found")))
@@ -248,7 +237,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재한다면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -258,12 +247,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 200와 수정된 할 일을 리턴한다")
+            @DisplayName("DB를 수정하고 OK(200)와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
-                // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
-                // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("title").value(equalTo(TITLE)))
@@ -283,7 +270,7 @@ class TaskControllerTest {
                     .content(objectMapper.writeValueAsString(task)));
         }
         @Nested
-        @DisplayName("존재하지않는 ID로 할 일을 수정요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
         class Context_with_non_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -293,12 +280,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 404와 메시지를 리턴한다")
+            @DisplayName("NOT_FOUND(404)와 예외 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
-                // then
                 resultActions.andExpect(status().isNotFound())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("message", containsString("Task not found")))
@@ -307,7 +292,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하는 ID로 할 일을 수정요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재한다면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -317,12 +302,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 200와 수정된 할 일을 리턴한다")
+            @DisplayName("DB를 수정하고 OK(200)와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
-                // when
                 ResultActions resultActions = subject(withTitle(TITLE));
 
-                // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("title").value(equalTo(TITLE)))
@@ -341,7 +324,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하지않는 ID로 할 일을 삭제요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
         class Context_with_non_existing_task_id {
             private final String TITLE = "삭제된 할 일";
 
@@ -351,12 +334,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 404와 메시지를 리턴한다")
+            @DisplayName("NOT_FOUND(404)와 예외 메시지를 리턴한다")
             void it_returns_404_and_message() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isNotFound())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("message", containsString("Task not found")))
@@ -365,7 +346,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하는 ID로 할 일을 삭제요청 한다면")
+        @DisplayName("요청한 할 일 ID가 존재한다면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "삭제된 할 일";
 
@@ -375,12 +356,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Status 204와 수정된 할 일을 리턴한다")
+            @DisplayName("DB에서 삭제하고 NO_CONTENT(204)를 리턴한다")
             void it_returns_204() throws Exception {
-                // when
                 ResultActions resultActions = subject();
 
-                // then
                 resultActions.andExpect(status().isNoContent())
                         .andDo(print());
             }
