@@ -64,7 +64,7 @@ class TaskServiceTest {
     @DisplayName("getTask() 메서드는")
     class Describe_getTask {
         @Nested
-        @DisplayName("기존에 있는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있는 task의 id가 주어지면")
         class Context_with_existing_task_id {
             private Task testTask;
 
@@ -85,7 +85,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 없는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있지 않은 task의 id가 주어지면")
         class Context_with_non_existent_task_id {
             @Test
             @DisplayName("TaskNotFoundException 예외를 던진다")
@@ -108,7 +108,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 없던 task를 생성하는 경우")
+        @DisplayName("저장되어 있지 않은 task를 생성하는 경우")
         class Context_with_new_task {
             @Test
             @DisplayName("새로운 task를 생성한다")
@@ -121,7 +121,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 있는 task와 title이 같은 task를 생성하는 경우")
+        @DisplayName("저장되어 있는 task와 title이 같은 task를 생성하는 경우")
         class Context_with_duplicated_title_task {
             @BeforeEach
             void setUp() {
@@ -150,7 +150,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 있는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있는 task의 id가 주어지면")
         class Context_with_existing_task_id {
             private Task testTask;
 
@@ -171,7 +171,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 없는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있지 않은 task의 id가 주어지면")
         class Context_with_non_existent_task_id {
             @Test
             @DisplayName("TaskNotFoundException 예외를 던진다")
@@ -188,7 +188,7 @@ class TaskServiceTest {
     class Describe_deleteTask {
 
         @Nested
-        @DisplayName("기존에 있는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있는 task의 id가 주어지면")
         class Context_with_existing_task_id {
             private Task testTask;
 
@@ -211,7 +211,7 @@ class TaskServiceTest {
         }
 
         @Nested
-        @DisplayName("기존에 없는 task의 id로 요청할 때")
+        @DisplayName("저장되어 있지 않은 task의 id가 주어지면")
         class Context_with_non_existent_task_id {
             @Test
             @DisplayName("TaskNotFoundException 예외를 던진다")
