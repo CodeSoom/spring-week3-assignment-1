@@ -29,18 +29,20 @@ class TaskServiceTest {
         @Nested
         @DisplayName("task가 여러개 있을 때")
         class Context_with_tasks {
+            List<Task> givenTasks;
+
             @BeforeEach
             void setUp() {
-                taskService.createTask(new Task(1L, "test1"));
-                taskService.createTask(new Task(2L, "test2"));
+                givenTasks = List.of(new Task(1L, "test1"), new Task(2L, "test2"));
+                givenTasks.forEach(task -> taskService.createTask(task));
             }
 
             @Test
             @DisplayName("모든 task를 리턴한다")
             void it_returns_tasks() {
-                List<Task> tasks = taskService.getTasks();
+                List<Task> resultTasks = taskService.getTasks();
 
-                assertThat(tasks.size()).isEqualTo(2);
+                assertThat(resultTasks.size()).isEqualTo(givenTasks.size());
             }
         }
 
@@ -52,7 +54,7 @@ class TaskServiceTest {
             void it_returns_empty() {
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks.size()).isEqualTo(0);
+                assertThat(tasks).isEmpty();
             }
         }
     }
