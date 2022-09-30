@@ -39,7 +39,7 @@ class TaskTest {
 
             @BeforeEach
             void setup() {
-                task = new Task(1L, "title");
+                task = new Task(id1, "title");
             }
 
             @Test
