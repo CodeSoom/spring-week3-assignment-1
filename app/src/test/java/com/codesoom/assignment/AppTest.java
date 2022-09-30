@@ -20,12 +20,12 @@ class AppTest {
     private MockMvc mockMvc;
 
     @Nested
-    @DisplayName("home(HomeController) 메소드는")
-    class Describe_home {
+    @DisplayName("checkServerHealth(HomeController) 메소드는")
+    class Describe_checkServerHealth {
         @Test
         @DisplayName("호출하면 서버 상태를 리턴한다")
         void it_returns_server_status() throws Exception {
-            mockMvc.perform(get("/"))
+            mockMvc.perform(get("/healthcheck"))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Server is OK"));
         }

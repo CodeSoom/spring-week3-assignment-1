@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
+    @GetMapping("/healthcheck")
+    public String checkServerHealth() {
         return "Server is OK";
     }
 }
