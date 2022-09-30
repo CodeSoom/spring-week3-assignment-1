@@ -58,6 +58,7 @@ class TaskServiceTest {
         class Context_with_added_tasks {
             private final int taskSize = 5;
 
+            @BeforeEach
             void setUp() {
                 for (int i = 0; i < taskSize; i++) {
                     setUpTask();
@@ -67,16 +68,9 @@ class TaskServiceTest {
             @Test
             @DisplayName("등록된 모든 할 일을 조회한다")
             void it_returns_tasks() {
-                setUp();
-
                 List<Task> tasks = taskService.getTasks();
 
                 assertThat(tasks).hasSize(taskSize);
-                assertThat(tasks.get(0).getId()).isEqualTo(1L);
-                assertThat(tasks.get(1).getId()).isEqualTo(2L);
-                assertThat(tasks.get(2).getId()).isEqualTo(3L);
-                assertThat(tasks.get(3).getId()).isEqualTo(4L);
-                assertThat(tasks.get(4).getId()).isEqualTo(5L);
             }
         }
     }
@@ -86,7 +80,7 @@ class TaskServiceTest {
     class Describe_getTask {
 
         @Nested
-        @DisplayName("만약 할 일을 찾을 수 없는 id가 주어지면")
+        @DisplayName("만약 할 일을 찾을 수 있는 id가 주어지면")
         class Context_with_valid_id {
             private final Long id = 1L;
 
@@ -97,8 +91,8 @@ class TaskServiceTest {
 
                 Task task = taskService.getTask(id);
 
+                assertThat(task).isNotNull();
                 assertThat(task.getId()).isEqualTo(id);
-                assertThat(task.getTitle()).isEqualTo(TITLE);
             }
         }
 
@@ -169,8 +163,8 @@ class TaskServiceTest {
 
                 Task deletedTask = taskService.deleteTask(id);
 
+                assertThat(deletedTask).isNotNull();
                 assertThat(deletedTask.getId()).isEqualTo(id);
-                assertThat(deletedTask.getTitle()).isEqualTo(TITLE);
             }
         }
 

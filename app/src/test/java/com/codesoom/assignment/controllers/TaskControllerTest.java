@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.*;
 class TaskControllerTest {
 
     private final String TITLE = "test";
-    private final String UPDATE_TITLE = "update test";
 
     private TaskController taskController;
 
@@ -69,8 +68,6 @@ class TaskControllerTest {
                 List<Task> tasks = taskController.list();
 
                 assertThat(tasks).hasSize(2);
-                assertThat(tasks.get(0).getId()).isEqualTo(1L);
-                assertThat(tasks.get(1).getId()).isEqualTo(2L);
             }
         }
     }
@@ -115,6 +112,7 @@ class TaskControllerTest {
     @Nested
     @DisplayName("update 메소드는")
     class Describe_update {
+        private final String UPDATE_TITLE = "update";
 
         @Nested
         @DisplayName("만약 할 일을 찾을 수 있는 id와 title이 주어지면")
