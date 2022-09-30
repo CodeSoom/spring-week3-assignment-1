@@ -10,10 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -40,8 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(TaskController.class)
 @DisplayName("TaskControllerTest 클래스")
 class TaskControllerTest {
 
@@ -70,7 +67,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("등록된 할 일이 존재하지 않는다면")
+        @DisplayName("할 일이 존재하지 않는다면")
         class Context_with_empty_db {
             @BeforeEach
             void prepareTests() {
@@ -90,7 +87,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("등록된 할 일이 존재한다면")
+        @DisplayName("할 일이 존재한다면")
         class Context_with_non_empty_db extends NewTask {
             private final String TITLE = "오늘의 할 일";
 
@@ -129,7 +126,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
+        @DisplayName("유효하지 않은 ID가 주어지면")
         class Context_with_non_existing_task_id {
             private final String TITLE = "1번 할 일";
 
@@ -152,7 +149,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재한다면")
+        @DisplayName("유효한 ID가 주어지면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "1번 할 일";
 
@@ -179,7 +176,7 @@ class TaskControllerTest {
     @DisplayName("create 메소드 [/tasks::POST]는")
     class Describe_create {
         @Nested
-        @DisplayName("새로운 할 일을 등록요청 한다면")
+        @DisplayName("할 일을 등록하면")
         class Context_with_new_task extends NewTask {
             private final Long TASK_ID = 1L;
             private final String TITLE = "등록된 할 일";
@@ -190,7 +187,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("DB에 등록하고 CREATED(201)와 등록된 할 일을 리턴한다")
+            @DisplayName("CREATED(201)와 등록된 할 일을 리턴한다")
             void it_returns_201_and_registered_task() throws Exception {
                 ResultActions resultActions = mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +212,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
+        @DisplayName("유효하지 않은 ID가 주어지면")
         class Context_with_non_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -237,7 +234,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재한다면")
+        @DisplayName("유효한 ID가 주어지면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -247,7 +244,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("DB를 수정하고 OK(200)와 수정된 할 일을 리턴한다")
+            @DisplayName("할 일을 수정하고 OK(200)와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
                 ResultActions resultActions = subject(withTitle(TITLE));
 
@@ -270,7 +267,7 @@ class TaskControllerTest {
                     .content(objectMapper.writeValueAsString(task)));
         }
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
+        @DisplayName("유효하지 않은 ID가 주어지면")
         class Context_with_non_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -292,7 +289,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재한다면")
+        @DisplayName("유효한 ID가 주어지면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "수정된 할 일";
 
@@ -302,7 +299,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("DB를 수정하고 OK(200)와 수정된 할 일을 리턴한다")
+            @DisplayName("할 일을 수정하고 OK(200)와 수정된 할 일을 리턴한다")
             void it_returns_200_and_updated_task() throws Exception {
                 ResultActions resultActions = subject(withTitle(TITLE));
 
@@ -324,7 +321,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재하지 않는다면")
+        @DisplayName("유효하지 않은 ID가 주어지면")
         class Context_with_non_existing_task_id {
             private final String TITLE = "삭제된 할 일";
 
@@ -346,7 +343,7 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("요청한 할 일 ID가 존재한다면")
+        @DisplayName("유효한 ID가 주어지면")
         class Context_with_existing_task_id extends NewTask {
             private final String TITLE = "삭제된 할 일";
 
@@ -356,7 +353,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("DB에서 삭제하고 NO_CONTENT(204)를 리턴한다")
+            @DisplayName("할 일을 삭제하고 NO_CONTENT(204)를 리턴한다")
             void it_returns_204() throws Exception {
                 ResultActions resultActions = subject();
 
