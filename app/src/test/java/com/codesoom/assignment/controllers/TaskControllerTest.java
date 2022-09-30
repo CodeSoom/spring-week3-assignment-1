@@ -55,11 +55,13 @@ class TaskControllerTest {
         @Nested
         @DisplayName("만약 할 일이 등록되어 있으면")
         class Context_with_tasks {
+            private final int taskSize = 5;
 
             @BeforeEach
             void setUp() {
-                taskController.create(new TaskRequestDto(TITLE));
-                taskController.create(new TaskRequestDto(TITLE));
+                for (int i = 0; i < taskSize; i++) {
+                    taskController.create(new TaskRequestDto(TITLE));
+                }
             }
 
             @Test
@@ -67,7 +69,7 @@ class TaskControllerTest {
             void it_returns_all_tasks() {
                 List<Task> tasks = taskController.list();
 
-                assertThat(tasks).hasSize(2);
+                assertThat(tasks).hasSize(taskSize);
             }
         }
     }
@@ -91,6 +93,7 @@ class TaskControllerTest {
             void it_returns_found_task() {
                 Task task = taskController.detail(id);
 
+                assertThat(task).isNotNull();
                 assertThat(task.getId()).isEqualTo(id);
             }
         }
