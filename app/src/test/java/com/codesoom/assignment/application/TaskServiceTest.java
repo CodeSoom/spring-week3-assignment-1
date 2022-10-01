@@ -199,11 +199,14 @@ class TaskServiceTest {
 
             @Test
             @DisplayName("요청에 맞는 task 객체를 삭제한다")
-            void it_delete_task() {
+            void it_returns_deleted_task() {
                 Long id = testTask.getId();
 
-                taskService.deleteTask(id);
+                assertThat(taskService.getTask(id)).isEqualTo(testTask);
 
+                Task deletedTask = taskService.deleteTask(id);
+
+                assertThat(deletedTask).isEqualTo(testTask);
                 assertThatThrownBy(
                         () -> taskService.getTask(id)
                 ).isExactlyInstanceOf(TaskNotFoundException.class);
