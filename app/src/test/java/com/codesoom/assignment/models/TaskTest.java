@@ -15,12 +15,7 @@ class TaskTest {
         @DisplayName("if an updated task is given")
         @Nested
         class Context_with_update_title {
-            private Task task;
-
-            @BeforeEach
-            void setup() {
-                task = new Task(1L, "title");
-            }
+            private Task task = new Task(1L, "title");
 
             @Test
             @DisplayName("returns an updated Task")
@@ -51,7 +46,6 @@ class TaskTest {
             @DisplayName("returns an id")
             void it_returns_task() {
                 Long getId = task.getId();
-                //then
                 assertThat(id1).isEqualTo(getId);
             }
         }
