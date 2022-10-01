@@ -49,6 +49,11 @@ class TaskServiceTest {
         @Nested
         @DisplayName("task가 없을 때")
         class Context_without_task {
+            @BeforeEach
+            void setUp() {
+                taskService.deleteAll();
+            }
+
             @Test
             @DisplayName("task가 없는 경우 빈 리스트를 반환한다")
             void it_returns_empty() {
@@ -198,7 +203,7 @@ class TaskServiceTest {
             }
 
             @Test
-            @DisplayName("요청에 맞는 task 객체를 삭제한다")
+            @DisplayName("요청에 맞는 task 객체를 삭제하고 삭제된 task를 리턴한다")
             void it_returns_deleted_task() {
                 Long id = testTask.getId();
 
@@ -222,6 +227,52 @@ class TaskServiceTest {
                 assertThatThrownBy(
                         () -> taskService.deleteTask(INVALID_TASK_ID)
                 ).isExactlyInstanceOf(TaskNotFoundException.class);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteAll() 메서드는")
+    class Describe_deleteAll {
+
+        @Nested
+        @DisplayName("여러개의 task가 저장되어있는 경우")
+        class Context_with_tasks {
+            private List<Task> givenTasks;
+
+            @BeforeEach
+            void setUp() {
+                givenTasks = List.of(
+                        new Task(1L, "test1"),
+                        new Task(2L, "test2")
+                );
+
+                givenTasks.forEach(task -> taskService.createTask(task));
+            }
+
+            @Test
+            @DisplayName("삭제된 task의 개수를 리턴한다")
+            void it_returns_deletedCount() {
+                int deletedTaskCount = taskService.deleteAll();
+                assertThat(deletedTaskCount).isEqualTo(givenTasks.size());
+            }
+        }
+
+        @Nested
+        @DisplayName("저장된 task가 없는 경우")
+        class Context_without_task {
+
+            @BeforeEach
+            void setUp() {
+                List<Task> tasks = taskService.getTasks();
+                assertThat(tasks.size()).isEqualTo(0);
+            }
+
+            @Test
+            @DisplayName("삭제된 task의 개수를 리턴한다")
+            void it_returns_deletedCount() {
+                int deletedTaskCount = taskService.deleteAll();
+                assertThat(deletedTaskCount).isEqualTo(0);
             }
         }
     }

@@ -49,4 +49,10 @@ public class TaskService {
         newId += 1;
         return newId;
     }
+
+    public int deleteAll() {
+        int tasksCount = tasks.size();
+        tasks.clear();
+        return tasksCount;
+    }
 }
