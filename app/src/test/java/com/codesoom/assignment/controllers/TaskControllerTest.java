@@ -27,13 +27,13 @@ class TaskControllerTest {
     @Test
     @DisplayName("tasks.size()")
     void getList() {
-        assertThat(controller.list()).hasSize(1);
+        assertThat(controller.getTaskList()).hasSize(1);
     }
 
     @Test
     @DisplayName("특정 task객체의 title가져오기")
     void detailTask() {
-        assertThat(controller.detail(1L).getTitle()).isEqualTo(TEST_TITLE);
+        assertThat(controller.getTaskById(1L).getTitle()).isEqualTo(TEST_TITLE);
     }
 
     @Test
@@ -43,8 +43,8 @@ class TaskControllerTest {
         task.updateTitle("Test");
         controller.create(task);
 
-        assertThat(controller.list()).hasSize(2);
-        assertThat(controller.list().get(0).getId()).isEqualTo(1L);
+        assertThat(controller.getTaskList()).hasSize(2);
+        assertThat(controller.getTaskList().get(0).getId()).isEqualTo(1L);
     }
 
     @Test
@@ -62,9 +62,8 @@ class TaskControllerTest {
     @DisplayName("tasks에서 task삭제")
     void deleteTask() {
         controller.delete(1L);
-        assertThat(controller.list()).hasSize(0);
+        assertThat(controller.getTaskList()).hasSize(0);
     }
 
 }
-
 

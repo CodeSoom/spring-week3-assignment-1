@@ -5,6 +5,7 @@ import com.codesoom.assignment.appllication.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.theInstance;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
 public class TaskControllerMockMVCTest {
@@ -36,6 +37,7 @@ public class TaskControllerMockMVCTest {
     private Task createTask;
     private Task createTask2;
     private final String TEST_TITLE = "TEST_TITLE";
+    private final String UPDATE_TITLE = "UPDATE_TITLE";
 
 
     @BeforeEach
@@ -45,9 +47,10 @@ public class TaskControllerMockMVCTest {
         task.updateTitle(TEST_TITLE);
         tasks.add(task);
 
-        updateTask = new Task(1L, "update");
+        updateTask = new Task(1L, UPDATE_TITLE);
         createTask = new Task(null, TEST_TITLE);
         createTask2 = new Task(1L, TEST_TITLE);
+
         given(taskService.updateTask(1L, updateTask)).willReturn(updateTask);
         given(taskService.getTasks()).willReturn(tasks);
         given(taskService.getTask(1L)).willReturn(task);
