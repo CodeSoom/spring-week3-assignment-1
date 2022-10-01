@@ -63,6 +63,5 @@ class TaskControllerTest {
         controller.delete(1L);
         assertThat(controller.getTaskList()).hasSize(0);
     }
-
 }
 
