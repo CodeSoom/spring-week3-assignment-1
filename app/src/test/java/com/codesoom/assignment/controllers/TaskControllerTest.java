@@ -55,7 +55,6 @@ class TaskControllerTest {
 
         assertThat(controller.patch(1L, source).getTitle()).isEqualTo(UPDATE_TITLE);
         assertThat(controller.put(1L, source).getTitle()).isEqualTo(UPDATE_TITLE);
-
     }
 
     @Test
