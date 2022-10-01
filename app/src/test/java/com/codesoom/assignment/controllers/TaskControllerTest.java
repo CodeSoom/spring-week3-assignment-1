@@ -14,7 +14,7 @@ class TaskControllerTest {
     private final String TEST_TITLE = "TEST_TITLE";
     private final String UPDATE_TITLE = "UPDATE_TITLE";
 
-    @BeforeEachi
+    @BeforeEach
     void setUp() {
         TaskService taskService = new TaskService();
         controller = new TaskController(taskService);
