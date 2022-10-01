@@ -91,7 +91,7 @@ class TaskServiceTest {
         //given
         Task createdTask = taskService.createTask(new Task(1L, "title"));
         //when
-        Task deletedTask = taskService.deleteTask(1L);
+        Task deletedTask = taskService.deleteTask(1L).get();
         //then
         assertThat(createdTask.getId()).isEqualTo(deletedTask.getId());
         assertThat(createdTask.getTitle()).isEqualTo(deletedTask.getTitle());

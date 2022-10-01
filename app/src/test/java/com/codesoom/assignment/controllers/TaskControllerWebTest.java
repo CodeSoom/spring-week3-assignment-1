@@ -10,16 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,30 +35,39 @@ class TaskControllerWebTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private TaskService taskService;
 
 
-    @DisplayName("")
+    @DisplayName("list method")
     @Nested
-    class Describe_ {
+    class Describe_list {
 
-        @DisplayName("")
+        @DisplayName("if there is nothing in the database ")
         @Nested
-        class Context_ {
+        class Context {
 
-            @DisplayName("")
+            @DisplayName("returns an empty list with a 200 status")
             @Test
-            void it_() {
+            void it_returns_empty_list() throws Exception {
+                mockMvc.perform(get("/tasks"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("[]"))
+                        .andDo(print());
+            }
 
+            @DisplayName("returns a list of one task")
+            @Test
+            void it_returns_one_lists() throws Exception {
+                taskService.createTask(new Task(1L, "title"));
+                mockMvc.perform(get("/tasks").accept(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$[0].title",is("title")))
+                        .andExpect(jsonPath("$[0].id", is(1)))
+                        .andDo(print());
             }
         }
     }
 
-    @Test
-    void list() throws Exception {
-        mockMvc.perform(get("/tasks")).andExpect(status().isOk());
-    }
 
     @Test
     void detailWithValidId() throws Exception {
@@ -144,7 +156,7 @@ class TaskControllerWebTest {
     @Test
     void deleteWithValidId() throws Exception {
         //given
-        given(taskService.deleteTask(anyLong())).willReturn(new Task(1L, "title"));
+        given(taskService.deleteTask(any())).willReturn(Optional.ofNullable(new Task(1L, "title")));
         //when
         //then
         mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/1")

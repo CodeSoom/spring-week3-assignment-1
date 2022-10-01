@@ -15,11 +15,8 @@ class TaskTest {
         @DisplayName("if an updated task is given")
         @Nested
         class Context_with_update_title {
-<<<<<<< HEAD
-            private Task task = new Task(1L, "title");
-=======
+
            private final Task task = new Task(1L, "title");
->>>>>>> db72f78c24c5968d9b97c5262a058827dbdbc546
 
             @Test
             @DisplayName("returns an updated Task")

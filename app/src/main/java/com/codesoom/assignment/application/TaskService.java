@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -34,10 +35,10 @@ public class TaskService {
         return task.updateTitle(source.getTitle());
     }
 
-    public Task deleteTask(Long id) {
+    public Optional<Task> deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
-        return task;
+        return Optional.ofNullable(task);
     }
 
     public synchronized Long  generateId() {
