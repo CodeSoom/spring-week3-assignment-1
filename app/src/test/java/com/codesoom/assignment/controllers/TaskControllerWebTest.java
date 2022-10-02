@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -116,6 +117,26 @@ class TaskControllerWebTest {
     void updateWithInvalidId() throws Exception {
         String requestBody = objectMapper.writeValueAsString(updateRequestTask);
         mockMvc.perform(put("/tasks/" + INVALID_TASK_ID)
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void patchWithValidId() throws Exception {
+        String requestBody = objectMapper.writeValueAsString(updateRequestTask);
+        mockMvc.perform(patch("/tasks/" + testTask.getId())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(updateRequestTask.getTitle())));
+    }
+
+    @Test
+    void patchWithInvalidId() throws Exception {
+        String requestBody = objectMapper.writeValueAsString(updateRequestTask);
+        mockMvc.perform(patch("/tasks/" + INVALID_TASK_ID)
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());

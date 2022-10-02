@@ -96,6 +96,29 @@ class TaskControllerTest {
     }
 
     @Test
+    @DisplayName("유효한 task id로 task의 부분수정을 요청한 경우 task의 데이터를 수정 후 반환한다")
+    void patchWithValidId() {
+        // given
+        Long id = testTask.getId();
+        Task task = new Task(null, "patch Task");
+
+        // when
+        Task updateTask = taskController.patch(id, task);
+
+        // then
+        assertThat(updateTask.getTitle()).isEqualTo(task.getTitle());
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 task id로 task의 부분수정을 요청한 경우 TaskNotFoundException 예외를 던진다")
+    void patchWithInvalidId() {
+        Task task = new Task(null, "patch Task");
+        assertThatThrownBy(
+                () -> taskController.patch(INVALID_TASK_ID, task)
+        ).isExactlyInstanceOf(TaskNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("유효한 task id로 task의 삭제를 요청한 경우 task의 데이터를 삭제 후 빈값을 반환한다")
     void deleteTaskWithValidId() {
         // given
