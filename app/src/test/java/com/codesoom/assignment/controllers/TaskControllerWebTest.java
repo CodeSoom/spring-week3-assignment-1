@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -60,11 +62,11 @@ class TaskControllerWebTest {
 
         given(taskService.getTask(1L)).willReturn(testTask);
 
-        given(taskService.createTask(createRequestTask)).willReturn(createResponseTask);
+        given(taskService.createTask(any(Task.class))).willReturn(createResponseTask);
 
-        given(taskService.updateTask(testTask.getId(), updateRequestTask)).willReturn(updateResponseTask);
+        given(taskService.updateTask(eq(testTask.getId()), any(Task.class))).willReturn(updateResponseTask);
 
-        given(taskService.updateTask(INVALID_TASK_ID, updateRequestTask)).willThrow(new TaskNotFoundException(INVALID_TASK_ID));
+        given(taskService.updateTask(eq(INVALID_TASK_ID), any(Task.class))).willThrow(new TaskNotFoundException(INVALID_TASK_ID));
 
         given(taskService.getTask(INVALID_TASK_ID)).willThrow(new TaskNotFoundException(INVALID_TASK_ID));
 
