@@ -40,7 +40,6 @@ class TaskServiceTest {
                 List<Task> findTasks = subject();
 
                 assertThat(findTasks).hasSize(0);
-                assertThat(findTasks).isEqualTo(new ArrayList<>());
             }
         }
 
