@@ -64,7 +64,10 @@ class TaskServiceTest {
                 List<Task> findTasks = subject();
                 final int actualSize = findTasks.size();
 
-                assertThat(findTasks).isEqualTo(givenTasks);
+                assertThat(actualSize).isEqualTo(givenTasks.size());
+                for (int i = 0; i < findTasks.size(); i++) {
+                    assertThat(findTasks.get(i).getTitle()).isEqualTo(givenTasks.get(i).getTitle());
+                }
             }
         }
     }
