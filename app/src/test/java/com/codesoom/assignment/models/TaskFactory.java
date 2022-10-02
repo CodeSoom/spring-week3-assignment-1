@@ -1,6 +1,6 @@
 package com.codesoom.assignment.models;
 
-public class NewTask {
+public class TaskFactory {
     public static Task withIdAndTitle(Long id, String title) {
         Task task = new Task();
         task.setId(id);
