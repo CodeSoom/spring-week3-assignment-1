@@ -2,7 +2,7 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.models.NewTask;
+import com.codesoom.assignment.models.TaskFactory;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +88,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("할 일이 존재한다면")
-        class Context_with_non_empty_db extends NewTask {
+        class Context_with_non_empty_db extends TaskFactory {
             private final String TITLE = "오늘의 할 일";
 
             @BeforeEach
@@ -150,7 +150,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("유효한 ID가 주어지면")
-        class Context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends TaskFactory {
             private final String TITLE = "1번 할 일";
 
             @BeforeEach
@@ -177,7 +177,7 @@ class TaskControllerTest {
     class Describe_create {
         @Nested
         @DisplayName("할 일을 등록하면")
-        class Context_with_new_task extends NewTask {
+        class Context_with_new_task extends TaskFactory {
             private final Long TASK_ID = 1L;
             private final String TITLE = "등록된 할 일";
 
@@ -213,7 +213,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("유효하지 않은 ID가 주어지면")
-        class Context_with_non_existing_task_id extends NewTask {
+        class Context_with_non_existing_task_id extends TaskFactory {
             private final String TITLE = "수정된 할 일";
 
             @BeforeEach
@@ -235,7 +235,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("유효한 ID가 주어지면")
-        class Context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends TaskFactory {
             private final String TITLE = "수정된 할 일";
 
             @BeforeEach
@@ -268,7 +268,7 @@ class TaskControllerTest {
         }
         @Nested
         @DisplayName("유효하지 않은 ID가 주어지면")
-        class Context_with_non_existing_task_id extends NewTask {
+        class Context_with_non_existing_task_id extends TaskFactory {
             private final String TITLE = "수정된 할 일";
 
             @BeforeEach
@@ -290,7 +290,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("유효한 ID가 주어지면")
-        class Context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends TaskFactory {
             private final String TITLE = "수정된 할 일";
 
             @BeforeEach
@@ -344,7 +344,7 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("유효한 ID가 주어지면")
-        class Context_with_existing_task_id extends NewTask {
+        class Context_with_existing_task_id extends TaskFactory {
             private final String TITLE = "삭제된 할 일";
 
             @BeforeEach
