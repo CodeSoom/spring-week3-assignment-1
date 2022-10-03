@@ -24,9 +24,7 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+        Task task = new Task(generateId(), source.getTitle());
 
         tasks.add(task);
 
@@ -50,5 +48,11 @@ public class TaskService {
     private Long generateId() {
         newId += 1;
         return newId;
+    }
+
+    public int deleteAll() {
+        int tasksCount = tasks.size();
+        tasks.clear();
+        return tasksCount;
     }
 }

@@ -5,6 +5,14 @@ public class Task {
 
     private String title;
 
+    public Task() {
+    }
+
+    public Task(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
@@ -20,4 +28,5 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
 }
