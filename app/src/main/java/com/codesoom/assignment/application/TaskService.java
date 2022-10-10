@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -24,30 +25,23 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
-
+        Task task = new Task(generateId(), source.getTitle());
         tasks.add(task);
-
         return task;
     }
 
     public Task updateTask(Long id, Task source) {
         Task task = getTask(id);
-        task.setTitle(source.getTitle());
-
-        return task;
+        return task.updateTitle(source.getTitle());
     }
 
-    public Task deleteTask(Long id) {
+    public Optional<Task> deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
-
-        return task;
+        return Optional.ofNullable(task);
     }
 
-    private Long generateId() {
+    public synchronized Long  generateId() {
         newId += 1;
         return newId;
     }
