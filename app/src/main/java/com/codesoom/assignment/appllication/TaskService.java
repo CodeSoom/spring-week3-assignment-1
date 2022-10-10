@@ -1,4 +1,4 @@
-package com.codesoom.assignment.application;
+package com.codesoom.assignment.appllication;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
@@ -20,14 +20,14 @@ public class TaskService {
         return tasks.stream()
                 .filter(task -> task.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+                .orElseThrow(()-> new TaskNotFoundException(id));
     }
 
     public Task createTask(Task source) {
         Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
 
+        task.setId(generateId());
+        task.updateTitle(source.getTitle());
         tasks.add(task);
 
         return task;
@@ -35,20 +35,18 @@ public class TaskService {
 
     public Task updateTask(Long id, Task source) {
         Task task = getTask(id);
-        task.setTitle(source.getTitle());
-
+        task.updateTitle(source.getTitle());
         return task;
     }
 
     public Task deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
-
         return task;
     }
 
     private Long generateId() {
-        newId += 1;
-        return newId;
+        return newId += 1;
     }
+
 }

@@ -1,6 +1,6 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.appllication.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,19 +11,19 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
+    private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping
-    public List<Task> list() {
+    public List<Task> getTaskList() {
         return taskService.getTasks();
     }
 
     @GetMapping("{id}")
-    public Task detail(@PathVariable Long id) {
+    public Task getTaskById(@PathVariable Long id) {
         return taskService.getTask(id);
     }
 
@@ -33,19 +33,23 @@ public class TaskController {
         return taskService.createTask(task);
     }
 
-    @PutMapping("{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PatchMapping("{id}")
+    public Task patch(@PathVariable Long id, @RequestBody Task source) {
+        return taskService.updateTask(id, source);
+
     }
 
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PutMapping("{id}")
+    public Task put(@PathVariable Long id, @RequestBody Task source) {
+        return taskService.updateTask(id, source);
+
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public Task delete(@PathVariable Long id) {
+       return taskService.deleteTask(id);
+
     }
+
 }
