@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskControllerTest {
 
     private static final String TASK_TITLE = "Task";
+    private static final String TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX = "Task not found: ";
 
     private TaskController controller;
     private TaskService taskService;
@@ -44,7 +45,8 @@ class TaskControllerTest {
             final Long randomId = getRandomId();
 
             assertThatThrownBy(() -> controller.detail(randomId))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + randomId);
         }
 
         @Test
@@ -78,7 +80,8 @@ class TaskControllerTest {
             task.setTitle(TASK_TITLE + "`");
 
             assertThatThrownBy(() -> controller.update(randomId, task))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + randomId);
         }
 
         @Test
@@ -87,7 +90,8 @@ class TaskControllerTest {
             final Long randomId = getRandomId();
 
             assertThatThrownBy(() -> controller.delete(randomId))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + randomId);
         }
 
         Long getRandomId() {
@@ -118,7 +122,8 @@ class TaskControllerTest {
             final Long invalidId = getInvalidId();
 
             assertThatThrownBy(() -> controller.detail(invalidId))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + invalidId);
         }
 
         @Test
@@ -152,7 +157,8 @@ class TaskControllerTest {
             final Long invalidId = getInvalidId();
 
             assertThatThrownBy(() -> controller.update(invalidId, task))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + invalidId);
         }
 
         @Test
@@ -176,7 +182,8 @@ class TaskControllerTest {
             final Long invalidId = getInvalidId();
 
             assertThatThrownBy(() -> controller.delete(invalidId))
-                    .isInstanceOf(TaskNotFoundException.class);
+                    .isInstanceOf(TaskNotFoundException.class)
+                    .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + invalidId);
         }
 
         @Test
