@@ -165,7 +165,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("update 메소드는")
+    @DisplayName("updateTask 메소드는")
     class Describe_Update_Method {
 
         @Nested
@@ -227,7 +227,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("delete 메소드는")
+    @DisplayName("deleteTask 메소드는")
     class Describe_Delete_Method {
 
         @Nested
