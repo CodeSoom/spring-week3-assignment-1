@@ -213,7 +213,11 @@ class TaskServiceTest {
                 final String oldTitle = addedTask.getTitle();
 
                 final Long id = addedTask.getId();
-                final Task src = TaskGenerator.generateTaskWithRandomTitle();
+                Task src = TaskGenerator.generateTaskWithRandomTitle();
+
+                while (addedTask.getTitle().equals(src.getTitle())) {
+                    src = TaskGenerator.generateTaskWithRandomTitle();
+                }
 
                 final String newTitle = taskService.updateTask(id, src).getTitle();
 
