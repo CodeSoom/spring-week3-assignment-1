@@ -21,7 +21,7 @@ public class TaskService {
     }
 
     public Task getTask(Long id) {
-        if (taskDoesNotExist(id)) {
+        if (!taskExists(id)) {
             throw new TaskNotFoundException(id);
         }
 
@@ -37,7 +37,7 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task source) {
-        if (taskDoesNotExist(id)) {
+        if (!taskExists(id)) {
             throw new TaskNotFoundException(id);
         }
 
@@ -48,7 +48,7 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        if (taskDoesNotExist(id)) {
+        if (!taskExists(id)) {
             throw new TaskNotFoundException(id);
         }
 
@@ -60,8 +60,8 @@ public class TaskService {
         return newId;
     }
 
-    private boolean taskDoesNotExist(Long id) {
+    private boolean taskExists(Long id) {
         final Task task = taskMap.get(id);
-        return Objects.isNull(task);
+        return Objects.nonNull(task);
     }
 }
