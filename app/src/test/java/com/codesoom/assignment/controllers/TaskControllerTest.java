@@ -1,12 +1,14 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.exceptions.InvalidTaskTitleException;
 import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
-import com.codesoom.assignment.utils.NumberGenerator;
-import com.codesoom.assignment.utils.RandomTitleGenerator;
+import com.codesoom.assignment.exceptions.NullTaskException;
 import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.utils.NumberGenerator;
+import com.codesoom.assignment.utils.RandomTitleGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,6 +27,7 @@ class TaskControllerTest {
 
     private static final String TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX = "Task not found: ";
     private static final String INVALID_ID_EXCEPTION_MESSAGE_POSTFIX = ": Id는 0 또는 양수만 허용됩니다.";
+    private static final String INVALID_TASK_TITLE_EXCEPTION_MESSAGE_POSTFIX = "은 title로 허용되지 않습니다. null 또는 공백이 아닌 문자열을 입력해주세요.";
 
     private TaskController controller;
     private TaskService taskService;
@@ -202,7 +205,6 @@ class TaskControllerTest {
         }
     }
 
-
     @Nested
     @DisplayName("create 메소드는")
     class Describe_Create_Method {
@@ -225,11 +227,34 @@ class TaskControllerTest {
 
             @ParameterizedTest(name = "title이 {0}이면 InvalidTaskTitleException을 발생시킨다.")
             @NullAndEmptySource
-            void it_throws_a_NullPointerException(String title) {
-                final Task task = new Task(null, title);
+            void it_throws_a_NullPointerException(String nullOrEmptyStringTitle) {
+                final Task task = new Task(null, nullOrEmptyStringTitle);
 
                 assertThatThrownBy(() -> controller.create(task))
-                        .isInstanceOf(InvalidTaskTitleException.class);
+                        .isInstanceOf(InvalidTaskTitleException.class)
+                        .hasMessage(nullOrEmptyStringTitle + INVALID_TASK_TITLE_EXCEPTION_MESSAGE_POSTFIX);
+            }
+        }
+
+        @Nested
+        @DisplayName("title이 공백으로만 이루어진 문자열일 task 객체를 인자로 호출하면")
+        class Context_With_Title_Is_Composed_Of_Only_White_Spaces {
+
+            private String whiteSpaceTitle;
+
+            @BeforeEach
+            void setUp() {
+                whiteSpaceTitle  = "    ";
+            }
+
+            @Test
+            @DisplayName("InvalidTaskTitleException을 발생시킨다.")
+            void it_throws_an_InvalidTaskTitleException() {
+                final Task task = new Task(null, whiteSpaceTitle);
+
+                assertThatThrownBy(() -> controller.create(task))
+                        .isInstanceOf(InvalidTaskTitleException.class)
+                        .hasMessage(whiteSpaceTitle + INVALID_TASK_TITLE_EXCEPTION_MESSAGE_POSTFIX);
             }
         }
 
@@ -280,12 +305,12 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("InvalidTaskIdException을 발생시킨다.")
-            void it_throws_InvalidTaskIdException() {
+            @DisplayName("NegativeIdException을 발생시킨다.")
+            void it_throws_NegativeIdException() {
                 final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
                 assertThatThrownBy(() -> controller.update(temporaryNegativeId, task))
-                        .isInstanceOf(InvalidTaskIdException.class);
+                        .isInstanceOf(NegativeIdException.class);
             }
         }
 
@@ -315,6 +340,28 @@ class TaskControllerTest {
 
                 assertThatThrownBy(() -> controller.update(id, task))
                         .isInstanceOf(InvalidTaskTitleException.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("title이 공백으로만 이루어진 문자열일 task 객체를 인자로 호출하면")
+        class Context_With_Title_Is_Composed_Of_Only_White_Spaces {
+
+            private String whiteSpaceTitle;
+
+            @BeforeEach
+            void setUp() {
+                whiteSpaceTitle  = "    ";
+            }
+
+            @Test
+            @DisplayName("InvalidTaskTitleException을 발생시킨다.")
+            void it_throws_an_InvalidTaskTitleException() {
+                final Task task = new Task(null, whiteSpaceTitle);
+
+                assertThatThrownBy(() -> controller.create(task))
+                        .isInstanceOf(InvalidTaskTitleException.class)
+                        .hasMessage(whiteSpaceTitle + INVALID_TASK_TITLE_EXCEPTION_MESSAGE_POSTFIX);
             }
         }
 
@@ -403,10 +450,10 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("InvalidTaskIdException가 발생한다.")
-            void it_throws_an_InvalidTaskIdException() {
+            @DisplayName("NegativeIdException가 발생한다.")
+            void it_throws_an_NegativeIdException() {
                 assertThatThrownBy(() -> controller.delete(temporaryNegativeId))
-                        .isInstanceOf(InvalidTaskIdException.class);
+                        .isInstanceOf(NegativeIdException.class);
             }
         }
 
