@@ -1,8 +1,9 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.utils.IdValidator;
+import com.codesoom.assignment.utils.TaskValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,7 @@ public class TaskController {
 
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
-        if (id < 0) {
-            throw new NegativeIdException(id);
-        }
+        IdValidator.validate(id);
 
         return taskService.getTask(id);
     }
@@ -35,11 +34,16 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
+        TaskValidator.validate(task);
+
         return taskService.createTask(task);
     }
 
     @PutMapping("{id}")
     public Task update(@PathVariable Long id, @RequestBody Task task) {
+        IdValidator.validate(id);
+        TaskValidator.validate(task);
+
         return taskService.updateTask(id, task);
     }
 
@@ -51,6 +55,7 @@ public class TaskController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        IdValidator.validate(id);
         taskService.deleteTask(id);
     }
 }
