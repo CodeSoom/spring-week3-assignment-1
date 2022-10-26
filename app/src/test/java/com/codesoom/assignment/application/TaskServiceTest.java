@@ -1,17 +1,16 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.RandomTitleGenerator;
+import com.codesoom.assignment.utils.NumberGenerator;
+import com.codesoom.assignment.utils.RandomTitleGenerator;
 import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -38,15 +37,6 @@ class TaskServiceTest {
         for (int i = 0; i < number; i++) {
             addOneTask();
         }
-    }
-
-    private int getRandomNumberBetweenOneAndOneHundred() {
-        return new Random().nextInt(101);
-    }
-
-    private Long getRandomNotNegativeId() {
-        long id = new Random().nextLong();
-        return id < 0 ? -id : id;
     }
 
     private Long getIdHavingMappedTask() {
@@ -85,9 +75,9 @@ class TaskServiceTest {
 
             private int number;
 
-            @BeforeAll
+            @BeforeEach
             void setUp() {
-                number = getRandomNumberBetweenOneAndOneHundred();
+                number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
                 addNumberOfTasks(number);
             }
 
@@ -118,7 +108,7 @@ class TaskServiceTest {
             @DisplayName("임의의 0 또는 양수의 id를 인자로 호출하면")
             class Context_With_Temporary_Not_Negative_Id {
 
-                private final Long temporaryNotNegativeId = getRandomNotNegativeId();
+                private final Long temporaryNotNegativeId = NumberGenerator.getRandomNotNegativeLong();
 
                 @Test
                 @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
@@ -134,9 +124,9 @@ class TaskServiceTest {
         @DisplayName("등록된 task가 있을 때,")
         class Context_When_Tasks_Registered_Exists {
 
-            @BeforeAll
+            @BeforeEach
             void setUp() {
-                int number = getRandomNumberBetweenOneAndOneHundred();
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
                 addNumberOfTasks(number);
             }
 
@@ -210,7 +200,7 @@ class TaskServiceTest {
             @DisplayName("음수가 아닌 id를 인자로 호출하면")
             class Context_With_Not_Negative_Id {
 
-                private final Long temporaryNotNegativeId = getRandomNotNegativeId();
+                private final Long temporaryNotNegativeId = NumberGenerator.getRandomNotNegativeLong();
 
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
@@ -228,9 +218,9 @@ class TaskServiceTest {
         @DisplayName("등록된 task가 있을 때")
         class Context_With_Tasks_Registered_Exists {
 
-            @BeforeAll
+            @BeforeEach
             void setUp() {
-                int number = getRandomNumberBetweenOneAndOneHundred();
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
                 addNumberOfTasks(number);
             }
 
@@ -296,7 +286,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다.")
             void it_throws_a_TaskNotFoundException() {
-                final Long id = getRandomNotNegativeId();
+                final Long id = NumberGenerator.getRandomNotNegativeLong();
 
                 assertThatThrownBy(() -> taskService.deleteTask(id))
                         .isInstanceOf(TaskNotFoundException.class)
@@ -308,9 +298,9 @@ class TaskServiceTest {
         @DisplayName("등록된 task가 있을 때,")
         class Context_When_Tasks_Registered_Exists {
 
-            @BeforeAll
+            @BeforeEach
             void setUp() {
-                final int number = getRandomNumberBetweenOneAndOneHundred();
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
                 addNumberOfTasks(number);
             }
 

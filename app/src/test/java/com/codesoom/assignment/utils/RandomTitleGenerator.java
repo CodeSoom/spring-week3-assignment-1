@@ -1,4 +1,4 @@
-package com.codesoom.assignment;
+package com.codesoom.assignment.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
