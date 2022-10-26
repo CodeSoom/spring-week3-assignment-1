@@ -16,34 +16,30 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskService_클래스 {
-    private TaskService taskService;
     private static final Long TEST_ID = 1L;
     private static final Long TEST_NOT_EXSIT_ID = 100L;
     private static final String TEST_TITLE = "테스트는 재밌군요!";
     private static final String POSTFIX_TITLE = " 그치만 매우 생소하군요!";
+    private TaskService taskService;
+    private Task taskSourceWithSetTitle;
 
+    /**
+     * 각 테스트에서 필요한 fixture 데이터를 생성합니다.
+     *  - 할 일 1개 생성
+     *  - title만 세팅되어 있는 taskSource 변수 선언
+     */
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+        taskSourceWithSetTitle = new Task();
+        taskSourceWithSetTitle.setTitle(TEST_TITLE);
 
-        createBaseTask();
-    }
-
-    /**
-     * 각 테스트를 위한 fixture 데이터 생성
-     */
-    void createBaseTask() {
-        Task source = new Task();
-        source.setTitle(TEST_TITLE);
-        Task task = taskService.createTask(source);
-
-        assertThat(task.getId()).isEqualTo(TEST_ID);
-        assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
+        taskService.createTask(taskSourceWithSetTitle);
     }
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 할_일_목록을_반환할_때 {
+    class getTasks_메서드는 {
         @Test
         @DisplayName("할 일 목록을 반환한다")
         void getTasks() {
@@ -56,11 +52,11 @@ class TaskService_클래스 {
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 할_일을_반환할_때 {
+    class getTask_메서드는 {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하는_id일_경우 {
+        class 찾을_수_있는_id일_경우 {
             @Test
             @DisplayName("해당 id의 할 일을 반환한다")
             void it_returns_task() {
@@ -74,11 +70,11 @@ class TaskService_클래스 {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하지_않는_id일_경우 {
+        class 찾을_수_없는_id일_경우 {
             @Test
-            @DisplayName("TaskNotFoundException을 반환한다")
+            @DisplayName("예외를 던진다")
             void it_returns_taskNotFoundException() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+                assertThatThrownBy(() -> taskService.getTask(TEST_NOT_EXSIT_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -86,83 +82,100 @@ class TaskService_클래스 {
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 할_일을_생성할_때 {
-        @Test
-        @DisplayName("생성한 할 일을 반환한다")
-        void it_return_created_task() {
-            Task source = new Task();
-            source.setTitle(POSTFIX_TITLE);
-            Task task = taskService.createTask(source);
-
-            assertThat(task).isNotNull();
-            assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
-        }
-
-        @Test
-        @DisplayName("생성한 할 일의 id는 직전 값보다 1이 증가한다")
-        void it_returns_created_id() {
-            Task source = taskService.getTask(TEST_ID);
-            Long oldId = source.getId();
-
-            source.setTitle(POSTFIX_TITLE);
-
-            Task task = taskService.createTask(source);
-
-            Long newId = task.getId();
-
-            assertThat(oldId + 1).isEqualTo(newId);
-        }
-
-        @Test
-        @DisplayName("할 일의 목록 크기는 1 증가한다")
-        void it_returns_tasks_size() {
-            int oldSize = taskService.getTasks().size();
-
-            taskService.createTask(new Task());
-
-            int newSize = taskService.getTasks().size();
-
-            assertThat(newSize - oldSize).isEqualTo(1);
-        }
-    }
-
-    @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 할_일을_수정할_때 {
-
-        @Test
-        @DisplayName("수정된 할 일을 반환한다")
-        void it_returns_updated_task() {
-            Task source = taskService.getTask(TEST_ID);
-            Long id = source.getId();
-            source.setTitle(TEST_TITLE + POSTFIX_TITLE);
-
-            Task task = taskService.updateTask(id, source);
-
-            assertThat(task).isNotNull();
-            assertThat(task.getTitle()).isEqualTo(TEST_TITLE + POSTFIX_TITLE);
-        }
-
-        @Test
-        @DisplayName("수정한 할 일의 id값은 수정되지 않는다")
-        void it_returns_id() {
-            Task source = new Task();
-            source.setId(TEST_NOT_EXSIT_ID);
-            source.setTitle(TEST_TITLE + POSTFIX_TITLE);
-
-            Task task = taskService.updateTask(TEST_ID, source);
-
-            assertThat(task.getId()).isEqualTo(TEST_ID);
-        }
-    }
-
-    @Nested
-    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 할_일을_삭제할_때 {
+    class createTask_메서드는 {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하는_id일_경우 {
+        class 할_일을_생성할_경우 {
+            @Test
+            @DisplayName("생성한 할 일을 반환한다")
+            void it_return_created_task() {
+                Task task = taskService.createTask(taskSourceWithSetTitle);
+
+                assertThat(task).isNotNull();
+                assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
+            }
+
+            @Test
+            @DisplayName("할 일이 하나 늘어난다")
+            void it_returns_tasks_size() {
+                int oldSize = taskService.getTasks().size();
+
+                taskService.createTask(taskSourceWithSetTitle);
+
+                int newSize = taskService.getTasks().size();
+
+                assertThat(newSize - oldSize).isEqualTo(1);
+            }
+            
+            @Test
+            @DisplayName("생성한 할 일의 id값은 유니크하다")
+            void it_returns_id_count_one() {
+                Task task = taskService.createTask(taskSourceWithSetTitle);
+                Long newId = task.getId();
+
+                List<Task> tasks = taskService.getTasks();
+
+                long idCount = tasks.stream()
+                        .map(Task::getId)
+                        .filter(id -> id.equals(newId))
+                        .count();
+
+                assertThat(idCount).isEqualTo(1);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class updateTask_메서드는 {
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 찾을_수_있는_id일_경우 {
+            @Test
+            @DisplayName("수정한 할 일을 반환한다")
+            void it_returns_updated_task() {
+                Task source = taskService.getTask(TEST_ID);
+                Long originId = source.getId();
+                source.setTitle(TEST_TITLE + POSTFIX_TITLE);
+
+                Task task = taskService.updateTask(originId, source);
+
+                assertThat(task).isNotNull();
+                assertThat(task.getTitle()).isEqualTo(TEST_TITLE + POSTFIX_TITLE);
+            }
+
+            @Test
+            @DisplayName("할 일의 id값은 수정하지 않는다")
+            void it_returns_id() {
+                taskSourceWithSetTitle.setId(TEST_NOT_EXSIT_ID);
+
+                Task task = taskService.updateTask(TEST_ID, taskSourceWithSetTitle);
+
+                assertThat(task.getId()).isEqualTo(TEST_ID);
+            }
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 찾을_수_없는_id일_경우 {
+            @Test
+            @DisplayName("예외를 던진다")
+            void it_returns_taskNotFoundException() {
+                assertThatThrownBy(() -> taskService.updateTask(TEST_NOT_EXSIT_ID, taskSourceWithSetTitle))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class deleteTask_메서드는 {
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 찾을_수_있는_id일_경우 {
             @Test
             @DisplayName("삭제한 할 일을 반환한다")
             void it_returns_deleted_task() {
@@ -174,7 +187,7 @@ class TaskService_클래스 {
             }
 
             @Test
-            @DisplayName("할 일의 목록 크기는 1 감소한다")
+            @DisplayName("할 일이 하나 줄어든다")
             void it_returns_tasks_size() {
                 int oldSize = taskService.getTasks().size();
 
@@ -188,9 +201,9 @@ class TaskService_클래스 {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하지_않는_id일_경우 {
+        class 찾을_수_없는_id일_경우 {
             @Test
-            @DisplayName("TaskNotFoundException을 반환한다")
+            @DisplayName("예외를 던진다")
             void it_returns_taskNotFoundException() {
                 assertThatThrownBy(() -> taskService.deleteTask(TEST_NOT_EXSIT_ID))
                         .isInstanceOf(TaskNotFoundException.class);
