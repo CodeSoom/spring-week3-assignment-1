@@ -115,18 +115,20 @@ class TaskService_클래스 {
             }
             
             @Test
-            @DisplayName("생성한 할 일의 id는 직전 값보다 1이 증가한다")
-            void it_returns_created_id() {
-                Task source = taskService.getTask(TEST_ID);
-                Long oldId = source.getId();
-
-                source.setTitle(POSTFIX_TITLE);
-
+            @DisplayName("생성한 할 일의 id값은 유니크하다")
+            void it_returns_id_count_one() {
+                Task source = new Task();
+                source.setTitle(TEST_TITLE);
                 Task task = taskService.createTask(source);
 
                 Long newId = task.getId();
 
-                assertThat(oldId + 1).isEqualTo(newId);
+                long idCount = taskService.getTasks().stream()
+                        .map(Task::getId)
+                        .filter(id -> id.equals(newId))
+                        .count();
+
+                assertThat(idCount).isEqualTo(1);
             }
         }
     }
