@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("TaskService 클래스의")
 class TaskServiceTest {
 
-    private static final String TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX = "Task not found: ";
+    private final String TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX = "Task not found: ";
 
     private TaskService taskService;
 
@@ -134,7 +134,12 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private final Long idHavingMappedTask = getIdHavingMappedTask();
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("id에 매핑된 task를 반환한다.")
@@ -149,7 +154,7 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
-                private final Long idNotHavingMappedTask = Long.MAX_VALUE;
+                private final Long idNotHavingMappedTask = getIdNotHavingMappedTask();
 
                 @Test
                 @DisplayName("TaskNotFoundException를 발생시킨다.")
@@ -245,7 +250,12 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private final Long idHavingMappedTask = getIdHavingMappedTask();
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("id에 매핑된 task의 title이 변경된다.")
@@ -323,7 +333,12 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private final Long idHavingMappedTask = getIdHavingMappedTask();
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("id에 매핑된 task 삭제된다..")

@@ -1,6 +1,8 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskGenerator;
+import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
+import com.codesoom.assignment.utils.NumberGenerator;
+import com.codesoom.assignment.utils.RandomTitleGenerator;
 import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
@@ -11,10 +13,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,7 +36,7 @@ class TaskControllerTest {
     }
 
     private void addOneTask() {
-        final Task task = TaskGenerator.generateTaskWithRandomTitle();
+        final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
         controller.create(task);
     }
 
@@ -45,18 +46,32 @@ class TaskControllerTest {
         }
     }
 
+    private Long getIdHavingMappedTask() {
+        final Collection<Task> collection = controller.collection();
+
+        for (Task task : collection) {
+            return task.getId();
+        }
+
+        throw new NoneTaskRegisteredException();
+    }
+
+    private Long getIdNotHavingMappedTask() {
+        return Long.MAX_VALUE;
+    }
+
     @Nested
-    @DisplayName("list 메소드는")
-    class Describe_List_Method {
+    @DisplayName("Collection 메소드는")
+    class Describe_Collection_Method {
 
         @Nested
         @DisplayName("등록된 task가 없을 때")
         class Context_When_None_Tasks_Registered {
 
             @Test
-            @DisplayName("빈 리스트를 리턴한다.")
-            void it_returns_an_empty_list() {
-                assertThat(controller.list()).isEmpty();
+            @DisplayName("빈 컬렉션을 리턴한다.")
+            void it_returns_an_empty_collcetion() {
+                assertThat(controller.collection()).isEmpty();
             }
         }
 
@@ -64,20 +79,26 @@ class TaskControllerTest {
         @DisplayName("등록된 task가 있을 때")
         class Context_When_Tasks_Registered {
 
-            @Test
-            @DisplayName("비어 있지 않은 리스트를 반환한다.")
-            void it_returns_a_not_empty_list() {
-                addOneTask();
-                assertThat(controller.list()).isNotEmpty();
+            private int number;
+
+            @BeforeEach
+            void setUp() {
+                number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
+                addNumberOfTasks(number);
             }
 
-            @ParameterizedTest(name = "{0}개의 task를 등록했으면, 길이가 {0}인 list를 반환한다.")
-            @ValueSource(ints = {1, 14, 48, 342})
-            void it_returns_a_list_with_length_equals_to_tasks_registered(int number) {
-                addNumberOfTasks(number);
+            @Test
+            @DisplayName("비어 있지 않은 컬렉션을 리턴한다.")
+            void it_returns_a_not_empty_collection() {
+                addOneTask();
+                assertThat(controller.collection()).isNotEmpty();
+            }
 
-                final List<Task> taskList = taskService.getTasks();
-                assertThat(taskList.size()).isEqualTo(number);
+            @Test
+            @DisplayName("등록된 task의 개수와 같은 사이즈의 컬렉션을 리턴한다.")
+            void it_returns_a_collection_with_length_equals_to_tasks_registered() {
+                final Collection<Task> taskCollection = controller.collection();
+                assertThat(taskCollection.size()).isEqualTo(number);
             }
         }
     }
@@ -90,14 +111,19 @@ class TaskControllerTest {
         @DisplayName("음수의 id를 인자로 호출하면")
         class Context_With_Temporary_Negative_Id {
 
+            private Long temporaryNegativeId;
+
+            @BeforeEach
+            void setUp() {
+                temporaryNegativeId = NumberGenerator.getRandomNegativeLong();
+            }
+
             @Test
             @DisplayName("InvalidIdException을 발생시킨다.")
             void it_throws_an_InvalidIdException() {
-                final Long tempId = -1L;
-
-                assertThatThrownBy(() -> controller.detail(tempId))
+                assertThatThrownBy(() -> controller.detail(temporaryNegativeId))
                         .isInstanceOf(NegativeIdException.class)
-                        .hasMessage(tempId + INVALID_ID_EXCEPTION_MESSAGE_POSTFIX);
+                        .hasMessage(temporaryNegativeId + INVALID_ID_EXCEPTION_MESSAGE_POSTFIX);
             }
         }
 
@@ -106,16 +132,22 @@ class TaskControllerTest {
         class Context_When_None_Tasks_Registered {
 
             @Nested
-            @DisplayName("임의의 양수 id를 인자로 호출하면")
+            @DisplayName("임의의 0 또는 양수인 id를 인자로 호출하면")
             class Context_With_Temporary_Positive_Id {
+
+                private Long temporaryNotNegativeId;
+
+                @BeforeEach
+                void setUp() {
+                    temporaryNotNegativeId = NumberGenerator.getRandomNotNegativeLong();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException를 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    final Long tempId = -1L;
-                    assertThatThrownBy(() -> controller.detail(tempId))
+                    assertThatThrownBy(() -> controller.detail(temporaryNotNegativeId))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + tempId);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + temporaryNotNegativeId);
                 }
             }
         }
@@ -125,20 +157,26 @@ class TaskControllerTest {
         class Context_With_Tasks_Registered {
 
             @BeforeEach
-            void setUp() {
-                addOneTask();
+            void register() {
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
+                addNumberOfTasks(number);
             }
 
             @Nested
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
+
                 @Test
                 @DisplayName("id에 매핑된 task를 리턴한다.")
                 void it_returns_a_task_mapped_to_id() {
-                    final Long id = controller.list().get(0).getId();
-
-                    assertThat(controller.detail(id).getId()).isEqualTo(id);
+                    assertThat(controller.detail(idHavingMappedTask).getId()).isEqualTo(idHavingMappedTask);
                 }
             }
 
@@ -146,18 +184,24 @@ class TaskControllerTest {
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
+                private Long idNotHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idNotHavingMappedTask = getIdNotHavingMappedTask();
+                }
+
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    final Long id = Long.MAX_VALUE;
-
-                    assertThatThrownBy(() -> controller.detail(id))
+                    assertThatThrownBy(() -> controller.detail(idNotHavingMappedTask))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + idNotHavingMappedTask);
                 }
             }
         }
     }
+
 
     @Nested
     @DisplayName("create 메소드는")
@@ -182,7 +226,7 @@ class TaskControllerTest {
             @ParameterizedTest(name = "title이 {0}이면 InvalidTaskTitleException을 발생시킨다.")
             @NullAndEmptySource
             void it_throws_a_NullPointerException(String title) {
-                final Task task = TaskGenerator.generateTask(title);
+                final Task task = new Task(null, title);
 
                 assertThatThrownBy(() -> controller.create(task))
                         .isInstanceOf(InvalidTaskTitleException.class);
@@ -192,7 +236,7 @@ class TaskControllerTest {
         @Test
         @DisplayName("양수의 id 값이 부여된 새로운 task를 리턴한다.")
         void it_returns_a_task_which_has_allocated_id() {
-            final Task task = TaskGenerator.generateTaskWithRandomTitle();
+            final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
             assertThat(task.getId())
                     .isNull();
 
@@ -210,11 +254,11 @@ class TaskControllerTest {
         @Test
         @DisplayName("등록된 task의 개수를 1만큼 증가시킨다.")
         void it_increments_the_number_tasks_by_one() {
-            final int oldSize = controller.list().size();
+            final int oldSize = controller.collection().size();
 
             addOneTask();
 
-            final int newSize = controller.list().size();
+            final int newSize = controller.collection().size();
 
             assertThat(newSize - oldSize).isEqualTo(1);
         }
@@ -228,12 +272,19 @@ class TaskControllerTest {
         @DisplayName("음수인 값을 id 인자로 호출하면")
         class Context_With_Negative_Id_value {
 
+            private Long temporaryNegativeId;
+
+            @BeforeEach
+            void setUp() {
+                temporaryNegativeId = NumberGenerator.getRandomNegativeLong();
+            }
+
             @Test
             @DisplayName("InvalidTaskIdException을 발생시킨다.")
             void it_throws_InvalidTaskIdException() {
-                final Task task = TaskGenerator.generateTaskWithRandomTitle();
+                final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
-                assertThatThrownBy(() -> controller.update(-1L, task))
+                assertThatThrownBy(() -> controller.update(temporaryNegativeId, task))
                         .isInstanceOf(InvalidTaskIdException.class);
             }
         }
@@ -245,8 +296,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("NullTaskException을 발생시킨다.")
             void it_throws_a_NullTaskException() {
-                addOneTask();
-                final Long id = controller.list().get(0).getId();
+                final Long id = NumberGenerator.getRandomNotNegativeLong();
 
                 assertThatThrownBy(() -> controller.update(id, null))
                         .isInstanceOf(NullTaskException.class);
@@ -259,10 +309,9 @@ class TaskControllerTest {
 
             @ParameterizedTest(name = "title이 {0}일 때, InvalidTaskTitleException을 발생시킨다.")
             @NullAndEmptySource
-            void it_throws_an_InvalidTaskTitleException(String title) {
-                addOneTask();
-                final Long id = controller.list().get(0).getId();
-                final Task task = TaskGenerator.generateTask(title);
+            void it_throws_an_InvalidTaskTitleException(String nullOrEmptyStringTitle) {
+                final Long id = NumberGenerator.getRandomNotNegativeLong();
+                final Task task = new Task(id, nullOrEmptyStringTitle);
 
                 assertThatThrownBy(() -> controller.update(id, task))
                         .isInstanceOf(InvalidTaskTitleException.class);
@@ -276,7 +325,7 @@ class TaskControllerTest {
             @Test
             @DisplayName("TaskNotFoundException을 발생시킨다.")
             void it_throws_a_TaskNotFoundException() {
-                final Task task = TaskGenerator.generateTaskWithRandomTitle();
+                final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
                 assertThatThrownBy(() -> controller.update(1L, task))
                         .isInstanceOf(TaskNotFoundException.class);
             }
@@ -286,16 +335,29 @@ class TaskControllerTest {
         @DisplayName("등록된 task가 있을 때")
         class Context_When_Tasks_Registered_Exists {
 
+            @BeforeEach
+            void setUp() {
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
+                addNumberOfTasks(number);
+            }
+
             @Nested
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
+                private Long idNotHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idNotHavingMappedTask = getIdNotHavingMappedTask();
+                }
+
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    addOneTask();
-                    final Task task = TaskGenerator.generateTaskWithRandomTitle();
-                    assertThatThrownBy(() -> controller.update(Long.MAX_VALUE, task))
+                    final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
+
+                    assertThatThrownBy(() -> controller.update(idNotHavingMappedTask, task))
                             .isInstanceOf(TaskNotFoundException.class);
                 }
             }
@@ -304,14 +366,20 @@ class TaskControllerTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
+
                 @Test
                 @DisplayName("id에 매핑된 task의 title이 변경된다.")
                 void it_changes_title_of_task_mapped_to_id() {
-                    addOneTask();
-                    final Long id = controller.list().get(0).getId();
+                    final String oldTitle = controller.detail(idHavingMappedTask).getTitle();
 
-                    final String oldTitle = controller.detail(id).getTitle();
-                    final String newTitle = controller.update(id, TaskGenerator.generateTaskWithRandomTitle()).getTitle();
+                    final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
+                    final String newTitle = controller.update(idHavingMappedTask, task).getTitle();
 
                     assertThat(newTitle).isNotEqualTo(oldTitle);
                 }
@@ -327,10 +395,17 @@ class TaskControllerTest {
         @DisplayName("음수인 id를 인자로 호출하면")
         class Context_With_Negative_id {
 
+            private Long temporaryNegativeId;
+
+            @BeforeEach
+            void setUp() {
+                temporaryNegativeId = NumberGenerator.getRandomNegativeLong();
+            }
+
             @Test
             @DisplayName("InvalidTaskIdException가 발생한다.")
             void it_throws_an_InvalidTaskIdException() {
-                assertThatThrownBy(() -> controller.delete(-1L))
+                assertThatThrownBy(() -> controller.delete(temporaryNegativeId))
                         .isInstanceOf(InvalidTaskIdException.class);
             }
         }
@@ -342,7 +417,8 @@ class TaskControllerTest {
             @Test
             @DisplayName("TaskNotFoundException를 발생시킨다.")
             void it_throws_a_TaskNotFoundException() {
-                final Long id = 1L;
+                final Long id = NumberGenerator.getRandomNotNegativeLong();
+
                 assertThatThrownBy(() -> controller.delete(id))
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
@@ -350,46 +426,71 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
-        class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
+        @DisplayName("등록된 task가 있을 때")
+        class Context_When_Tasks_Registered_Exists {
 
-            @Test
-            @DisplayName("TaskNotFoundException를 발생시킨다.")
-            void it_throws_a_TaskNotFoundException() {
-                final Long id = Long.MAX_VALUE;
-                assertThatThrownBy(() -> controller.delete(id))
-                        .isInstanceOf(TaskNotFoundException.class)
-                        .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
-            }
-        }
-
-        @Nested
-        @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
-        class Context_With_Id_Tasks_Mapped_To_Which_Exists {
-
-            @Test
-            @DisplayName("id에 매핑된 task는 삭제된다.")
-            void it_deletes_the_task_mapped_to_id() {
-                addOneTask();
-                final Long id = controller.list().get(0).getId();
-                controller.delete(id);
-
-                assertThatThrownBy(() -> controller.detail(id))
-                        .isInstanceOf(TaskNotFoundException.class)
-                        .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
+            @BeforeEach
+            void setUp() {
+                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
+                addNumberOfTasks(number);
             }
 
-            @Test
-            @DisplayName("등록된 task의 개수는 1만큼 줄어든다.")
-            void it_decrements_the_number_of_tasks_registered_by_one() {
-                addOneTask();
-                final int oldSize = controller.list().size();
+            @Nested
+            @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
+            class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
-                final Long id = controller.list().get(0).getId();
-                controller.delete(id);
+                private Long idNotHavingMappedTask;
 
-                final int newSize = controller.list().size();
-                assertThat(newSize - oldSize).isEqualTo(-1);
+                @BeforeEach
+                void setUp() {
+                    idNotHavingMappedTask = getIdNotHavingMappedTask();
+                }
+
+                @Test
+                @DisplayName("TaskNotFoundException를 발생시킨다.")
+                void it_throws_a_TaskNotFoundException() {
+                    final Long id = idNotHavingMappedTask;
+
+                    assertThatThrownBy(() -> controller.delete(id))
+                            .isInstanceOf(TaskNotFoundException.class)
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
+                }
+            }
+
+            @Nested
+            @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
+            class Context_With_Id_Tasks_Mapped_To_Which_Exists {
+
+                private Long idHavingMappedTask;
+
+                @BeforeEach
+                void setUp() {
+                    idHavingMappedTask = getIdHavingMappedTask();
+                }
+
+                @Test
+                @DisplayName("id에 매핑된 task는 삭제된다.")
+                void it_deletes_the_task_mapped_to_id() {
+                    final Long id = idHavingMappedTask;
+
+                    controller.delete(id);
+
+                    assertThatThrownBy(() -> controller.detail(id))
+                            .isInstanceOf(TaskNotFoundException.class)
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
+                }
+
+                @Test
+                @DisplayName("등록된 task의 개수는 1만큼 줄어든다.")
+                void it_decrements_the_number_of_tasks_registered_by_one() {
+                    final int oldSize = controller.collection().size();
+
+                    final Long id = idHavingMappedTask;
+                    controller.delete(id);
+
+                    final int newSize = controller.collection().size();
+                    assertThat(newSize - oldSize).isEqualTo(-1);
+                }
             }
         }
     }
