@@ -16,29 +16,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TaskService_클래스 {
-    private TaskService taskService;
     private static final Long TEST_ID = 1L;
     private static final Long TEST_NOT_EXSIT_ID = 100L;
     private static final String TEST_TITLE = "테스트는 재밌군요!";
     private static final String POSTFIX_TITLE = " 그치만 매우 생소하군요!";
+    private TaskService taskService;
+    private Task taskSourceWithSetTitle;
 
+    /**
+     * 각 테스트에서 필요한 fixture 데이터를 생성합니다.
+     *  - 할 일 1개 생성
+     *  - title만 세팅되어 있는 taskSource 변수 선언
+     */
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
+        taskSourceWithSetTitle = new Task();
+        taskSourceWithSetTitle.setTitle(TEST_TITLE);
 
-        createBaseTask();
-    }
-
-    /**
-     * 각 테스트를 위한 fixture 데이터 생성
-     */
-    void createBaseTask() {
-        Task source = new Task();
-        source.setTitle(TEST_TITLE);
-        Task task = taskService.createTask(source);
-
-        assertThat(task.getId()).isEqualTo(TEST_ID);
-        assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
+        taskService.createTask(taskSourceWithSetTitle);
     }
 
     @Nested
@@ -78,7 +74,7 @@ class TaskService_클래스 {
             @Test
             @DisplayName("예외를 던진다")
             void it_returns_taskNotFoundException() {
-                assertThatThrownBy(() -> taskService.getTask(100L))
+                assertThatThrownBy(() -> taskService.getTask(TEST_NOT_EXSIT_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
@@ -94,12 +90,10 @@ class TaskService_클래스 {
             @Test
             @DisplayName("생성한 할 일을 반환한다")
             void it_return_created_task() {
-                Task source = new Task();
-                source.setTitle(POSTFIX_TITLE);
-                Task task = taskService.createTask(source);
+                Task task = taskService.createTask(taskSourceWithSetTitle);
 
                 assertThat(task).isNotNull();
-                assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
+                assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
             }
 
             @Test
@@ -107,7 +101,7 @@ class TaskService_클래스 {
             void it_returns_tasks_size() {
                 int oldSize = taskService.getTasks().size();
 
-                taskService.createTask(new Task());
+                taskService.createTask(taskSourceWithSetTitle);
 
                 int newSize = taskService.getTasks().size();
 
@@ -117,13 +111,12 @@ class TaskService_클래스 {
             @Test
             @DisplayName("생성한 할 일의 id값은 유니크하다")
             void it_returns_id_count_one() {
-                Task source = new Task();
-                source.setTitle(TEST_TITLE);
-                Task task = taskService.createTask(source);
-
+                Task task = taskService.createTask(taskSourceWithSetTitle);
                 Long newId = task.getId();
 
-                long idCount = taskService.getTasks().stream()
+                List<Task> tasks = taskService.getTasks();
+
+                long idCount = tasks.stream()
                         .map(Task::getId)
                         .filter(id -> id.equals(newId))
                         .count();
@@ -144,10 +137,10 @@ class TaskService_클래스 {
             @DisplayName("수정한 할 일을 반환한다")
             void it_returns_updated_task() {
                 Task source = taskService.getTask(TEST_ID);
-                Long id = source.getId();
+                Long originId = source.getId();
                 source.setTitle(TEST_TITLE + POSTFIX_TITLE);
 
-                Task task = taskService.updateTask(id, source);
+                Task task = taskService.updateTask(originId, source);
 
                 assertThat(task).isNotNull();
                 assertThat(task.getTitle()).isEqualTo(TEST_TITLE + POSTFIX_TITLE);
@@ -156,11 +149,9 @@ class TaskService_클래스 {
             @Test
             @DisplayName("할 일의 id값은 수정하지 않는다")
             void it_returns_id() {
-                Task source = new Task();
-                source.setId(TEST_NOT_EXSIT_ID);
-                source.setTitle(TEST_TITLE + POSTFIX_TITLE);
+                taskSourceWithSetTitle.setId(TEST_NOT_EXSIT_ID);
 
-                Task task = taskService.updateTask(TEST_ID, source);
+                Task task = taskService.updateTask(TEST_ID, taskSourceWithSetTitle);
 
                 assertThat(task.getId()).isEqualTo(TEST_ID);
             }
@@ -172,10 +163,7 @@ class TaskService_클래스 {
             @Test
             @DisplayName("예외를 던진다")
             void it_returns_taskNotFoundException() {
-                Task source = new Task();
-                source.setTitle(TEST_TITLE + POSTFIX_TITLE);
-
-                assertThatThrownBy(() -> taskService.updateTask(TEST_NOT_EXSIT_ID, source))
+                assertThatThrownBy(() -> taskService.updateTask(TEST_NOT_EXSIT_ID, taskSourceWithSetTitle))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
