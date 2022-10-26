@@ -1,29 +1,34 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
+    private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @GetMapping
-    public List<Task> list() {
+    public Collection<Task> collection() {
         return taskService.getTasks();
     }
 
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
+        if (id < 0) {
+            throw new NegativeIdException(id);
+        }
+
         return taskService.getTask(id);
     }
 

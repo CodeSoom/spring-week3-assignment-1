@@ -13,9 +13,7 @@ class TaskTest {
 
     @BeforeEach
     void setUp() {
-        task = new Task();
-        task.setId(FIRST_ID);
-        task.setTitle(TASk_TITLE);
+        task = new Task(FIRST_ID, TASk_TITLE);
     }
 
     @Test
@@ -26,24 +24,6 @@ class TaskTest {
     @Test
     void getTitle() {
         assertThat(task.getTitle()).isEqualTo(TASk_TITLE);
-    }
-
-    @Test
-    void setTitle() {
-        final String newTitle = TASk_TITLE + "`";
-
-        task.setTitle(newTitle);
-
-        assertThat(task.getTitle()).isEqualTo(newTitle);
-    }
-
-    @Test
-    void setId() {
-        final Long newId = FIRST_ID + 1L;
-
-        task.setId(newId);
-
-        assertThat(task.getId()).isEqualTo(newId);
     }
 
 }

@@ -4,51 +4,64 @@ import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class TaskService {
-    private List<Task> tasks = new ArrayList<>();
+
+    private final Map<Long, Task> taskMap = new HashMap<>();
     private Long newId = 0L;
 
-    public List<Task> getTasks() {
-        return tasks;
+    public Collection<Task> getTasks() {
+        return Collections.unmodifiableCollection(taskMap.values());
     }
 
     public Task getTask(Long id) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+        if (taskDoesNotExist(id)) {
+            throw new TaskNotFoundException(id);
+        }
+
+        return taskMap.get(id);
     }
 
     public Task createTask(Task source) {
-        Task task = new Task();
-        task.setId(generateId());
-        task.setTitle(source.getTitle());
+        final Task task = new Task(generateId(), source.getTitle());
 
-        tasks.add(task);
+        taskMap.put(task.getId(), task);
 
         return task;
     }
 
     public Task updateTask(Long id, Task source) {
-        Task task = getTask(id);
-        task.setTitle(source.getTitle());
+        if (taskDoesNotExist(id)) {
+            throw new TaskNotFoundException(id);
+        }
+
+        final Task task = new Task(id, source.getTitle());
+        taskMap.put(task.getId(), task);
 
         return task;
     }
 
-    public Task deleteTask(Long id) {
-        Task task = getTask(id);
-        tasks.remove(task);
+    public void deleteTask(Long id) {
+        if (taskDoesNotExist(id)) {
+            throw new TaskNotFoundException(id);
+        }
 
-        return task;
+        taskMap.remove(id);
     }
 
     private Long generateId() {
         newId += 1;
         return newId;
+    }
+
+    private boolean taskDoesNotExist(Long id) {
+        final Task task = taskMap.get(id);
+        return Objects.isNull(task);
     }
 }
