@@ -64,7 +64,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("Collection 메소드는")
+    @DisplayName("collection() 메소드는")
     class Describe_Collection_Method {
 
         @Nested
@@ -107,7 +107,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("detail 메소드는")
+    @DisplayName("detail() 메소드는")
     class Describe_Detail_Method {
 
         @Nested
@@ -206,7 +206,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("create 메소드는")
+    @DisplayName("create() 메소드는")
     class Describe_Create_Method {
 
         @Nested
@@ -290,7 +290,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("update 메소드는")
+    @DisplayName("update() 메소드는")
     class Describe_Update_Method {
 
         @Nested
@@ -435,7 +435,7 @@ class TaskControllerTest {
     }
 
     @Nested
-    @DisplayName("delete 메소드는")
+    @DisplayName("delete() 메소드는")
     class Describe_Delete_Method {
 
         @Nested

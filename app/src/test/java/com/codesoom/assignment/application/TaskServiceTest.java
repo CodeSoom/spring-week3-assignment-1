@@ -54,7 +54,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTasks 메소드는")
+    @DisplayName("getTasks() 메소드는")
     class Describe_GetTasks_Method {
 
         @Nested
@@ -97,7 +97,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("getTask 메소드는")
+    @DisplayName("getTask() 메소드는")
     class Describe_GetTask_Method {
 
         @Nested
@@ -168,7 +168,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("createTask 메소드는")
+    @DisplayName("createTask() 메소드는")
     class Describe_CreateTask_Method {
 
         @Test
@@ -194,7 +194,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("updateTask 메소드는")
+    @DisplayName("updateTask() 메소드는")
     class Describe_Update_Method {
 
         @Nested
@@ -286,7 +286,7 @@ class TaskServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTask 메소드는")
+    @DisplayName("deleteTask() 메소드는")
     class Describe_Delete_Method {
 
         @Nested
