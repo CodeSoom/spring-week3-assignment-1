@@ -15,7 +15,8 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +31,6 @@ import java.util.TreeMap;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.emptyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -38,7 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 @DisplayName("TaskController 클래스의")
 class TaskControllerMvcTest {
 
@@ -102,17 +103,16 @@ class TaskControllerMvcTest {
         return mockMvc.perform(get(url));
     }
 
-    private ResultActions performPost(String url, Task task) throws Exception {
-        return mockMvc.perform(
-                post(url)
-                        .content(objectMapper.writeValueAsString(task))
+    private ResultActions performPost(String url, Object o) throws Exception {
+        return mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(o))
         );
     }
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class colletion_메소드는 {
+    class collection_메소드는 {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -183,13 +183,13 @@ class TaskControllerMvcTest {
             @BeforeEach
             void setUp() throws Exception {
                 id = NumberGenerator.getRandomNegativeLong();
-                resultActions = performGet(path + id);
                 given(taskService.getTask(id)).willThrow(new NegativeIdException(id));
+                resultActions = performGet(path + id);
             }
 
             @Test
             @DisplayName("400 응답 코드로 응답한다.")
-            void it_reponses_with_status_code_of_400() throws Exception {
+            void it_responses_with_status_code_of_400() throws Exception {
                 resultActions.andExpect(status().isBadRequest());
             }
         }
@@ -204,8 +204,8 @@ class TaskControllerMvcTest {
             @BeforeEach
             void setUp() throws Exception {
                 id = NumberGenerator.getRandomNotNegativeLong();
-                resultActions = performGet(path + id);
                 given(taskService.getTask(id)).willThrow(new TaskNotFoundException(id));
+                resultActions = performGet(path + id);
             }
 
             @Test
@@ -263,10 +263,9 @@ class TaskControllerMvcTest {
                 }
 
                 @Test
-                @DisplayName("404 응답 코드와 빈 response body로 응답한다.")
-                void it_reponses_with_status_code_of_404_and_empty_response_body() throws Exception {
-                    resultActions.andExpect(status().isNotFound())
-                            .andExpect(content().string(emptyString()));
+                @DisplayName("404 응답 코드로 응답한다.")
+                void it_responses_with_status_code_of_404_and_empty_response_body() throws Exception {
+                    resultActions.andExpect(status().isNotFound());
                 }
             }
         }
@@ -276,10 +275,24 @@ class TaskControllerMvcTest {
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class create_메소드는 {
 
+        private Task taskToBeGiven;
+        private Task taskToBeReturned;
+        private ResultActions resultActions;
+
+        @BeforeEach
+        void setUp() throws Exception {
+            taskToBeGiven = new Task(null, RandomTitleGenerator.getRandomTitle());
+            taskToBeReturned = new Task(1L, taskToBeGiven.getTitle());
+            given(taskService.createTask(taskToBeGiven)).willReturn(taskToBeReturned);
+
+            resultActions = performPost(path, taskToBeGiven);
+        }
+
         @Test
         @DisplayName("응답 코드 204와 생성된 task의 json 형식 문자열로 응답한다.")
-        void it_reponses_with_status_code_of_204_and_response_body_of_json_of_task_registered() {
-
+        void it_responses_with_status_code_of_204_and_response_body_of_json_of_task_registered() throws Exception {
+            resultActions.andExpect(status().isCreated())
+                    .andExpect(content().string(containsString(objectMapper.writeValueAsString(taskToBeReturned))));
         }
     }
 }
