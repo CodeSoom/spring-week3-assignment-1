@@ -93,7 +93,6 @@ class TaskControllerTest {
             @Test
             @DisplayName("비어 있지 않은 컬렉션을 리턴한다.")
             void it_returns_a_not_empty_collection() {
-                addOneTask();
                 assertThat(controller.collection()).isNotEmpty();
             }
 
@@ -160,7 +159,7 @@ class TaskControllerTest {
         class Context_With_Tasks_Registered {
 
             @BeforeEach
-            void register() {
+            void setUp() {
                 final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
                 addNumberOfTasks(number);
             }
@@ -179,7 +178,8 @@ class TaskControllerTest {
                 @Test
                 @DisplayName("id에 매핑된 task를 리턴한다.")
                 void it_returns_a_task_mapped_to_id() {
-                    assertThat(controller.detail(idHavingMappedTask).getId()).isEqualTo(idHavingMappedTask);
+                    final Long id = idHavingMappedTask;
+                    assertThat(controller.detail(id).getId()).isEqualTo(id);
                 }
             }
 
@@ -197,9 +197,11 @@ class TaskControllerTest {
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> controller.detail(idNotHavingMappedTask))
+                    final Long id = idNotHavingMappedTask;
+
+                    assertThatThrownBy(() -> controller.detail(id))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + idNotHavingMappedTask);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
         }
@@ -223,11 +225,11 @@ class TaskControllerTest {
 
         @Nested
         @DisplayName("title이 null 또는 빈 문자열인 task 객체를 인자로 호출하면")
-        class Context_With_Task_Title_Is_Null_Or_Empty_String {
+        class Context_With_Task_Title_Null_Or_Empty_String {
 
             @ParameterizedTest(name = "title이 {0}이면 InvalidTaskTitleException을 발생시킨다.")
             @NullAndEmptySource
-            void it_throws_a_NullPointerException(String nullOrEmptyStringTitle) {
+            void it_throws_a_InvalidTaskTitleException(String nullOrEmptyStringTitle) {
                 final Task task = new Task(null, nullOrEmptyStringTitle);
 
                 assertThatThrownBy(() -> controller.create(task))
@@ -262,18 +264,11 @@ class TaskControllerTest {
         @DisplayName("양수의 id 값이 부여된 새로운 task를 리턴한다.")
         void it_returns_a_task_which_has_allocated_id() {
             final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
-            assertThat(task.getId())
-                    .isNull();
 
             final Task addedTask = controller.create(task);
 
-            assertThat(addedTask)
-                    .isNotNull()
-                    .isInstanceOf(Task.class);
-
-            assertThat(addedTask.getId())
-                    .isNotNull()
-                    .isPositive();
+            assertThat(addedTask).isInstanceOf(Task.class);
+            assertThat(addedTask.getId()).isPositive();
         }
 
         @Test

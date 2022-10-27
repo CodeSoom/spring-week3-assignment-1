@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 @Service
 public class TaskService {
 
-    private final Map<Long, Task> taskMap = new HashMap<>();
+    private final Map<Long, Task> taskMap = new TreeMap<>();
     private Long newId = 0L;
 
     public Collection<Task> getTasks() {
