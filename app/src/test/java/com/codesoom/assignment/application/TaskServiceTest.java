@@ -21,7 +21,7 @@ class TaskService_클래스 {
     private static final String TEST_TITLE = "테스트는 재밌군요!";
     private static final String POSTFIX_TITLE = " 그치만 매우 생소하군요!";
     private TaskService taskService;
-    private Task taskSourceWithSetTitle;
+    private Task taskSource;
 
     /**
      * 각 테스트에서 필요한 fixture 데이터를 생성합니다.
@@ -31,10 +31,10 @@ class TaskService_클래스 {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
-        taskSourceWithSetTitle = new Task();
-        taskSourceWithSetTitle.setTitle(TEST_TITLE);
+        taskSource = new Task();
+        taskSource.setTitle(TEST_TITLE);
 
-        taskService.createTask(taskSourceWithSetTitle);
+        taskService.createTask(taskSource);
     }
 
     @Nested
@@ -90,7 +90,7 @@ class TaskService_클래스 {
             @Test
             @DisplayName("생성한 할 일을 반환한다")
             void it_return_created_task() {
-                Task task = taskService.createTask(taskSourceWithSetTitle);
+                Task task = taskService.createTask(taskSource);
 
                 assertThat(task).isNotNull();
                 assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
@@ -101,7 +101,7 @@ class TaskService_클래스 {
             void it_returns_tasks_size() {
                 int oldSize = taskService.getTasks().size();
 
-                taskService.createTask(taskSourceWithSetTitle);
+                taskService.createTask(taskSource);
 
                 int newSize = taskService.getTasks().size();
 
@@ -111,7 +111,7 @@ class TaskService_클래스 {
             @Test
             @DisplayName("생성한 할 일의 id값은 유니크하다")
             void it_returns_id_count_one() {
-                Task task = taskService.createTask(taskSourceWithSetTitle);
+                Task task = taskService.createTask(taskSource);
                 Long newId = task.getId();
 
                 List<Task> tasks = taskService.getTasks();
@@ -149,9 +149,9 @@ class TaskService_클래스 {
             @Test
             @DisplayName("할 일의 id값은 수정하지 않는다")
             void it_returns_id() {
-                taskSourceWithSetTitle.setId(TEST_NOT_EXSIT_ID);
+                taskSource.setId(TEST_NOT_EXSIT_ID);
 
-                Task task = taskService.updateTask(TEST_ID, taskSourceWithSetTitle);
+                Task task = taskService.updateTask(TEST_ID, taskSource);
 
                 assertThat(task.getId()).isEqualTo(TEST_ID);
             }
@@ -163,7 +163,7 @@ class TaskService_클래스 {
             @Test
             @DisplayName("예외를 던진다")
             void it_returns_taskNotFoundException() {
-                assertThatThrownBy(() -> taskService.updateTask(TEST_NOT_EXSIT_ID, taskSourceWithSetTitle))
+                assertThatThrownBy(() -> taskService.updateTask(TEST_NOT_EXSIT_ID, taskSource))
                         .isInstanceOf(TaskNotFoundException.class);
             }
         }
