@@ -8,7 +8,10 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,13 +43,40 @@ class TaskService_클래스 {
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class getTasks_메서드는 {
-        @Test
-        @DisplayName("할 일 목록을 반환한다")
-        void getTasks() {
-            List<Task> tasks = taskService.getTasks();
 
-            // fixture 데이터가 잘 들어오는지 확인
-            assertThat(tasks).hasSize(1);
+        @BeforeEach
+        void setUp() { // fixture 데이터 리셋
+            taskService = new TaskService();
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 할_일이_없을_경우 {
+            @Test
+            @DisplayName("빈 ArrayList를 반환한다")
+            void it_returns_empty_array() {
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks)
+                        .isInstanceOf(ArrayList.class)
+                        .isEmpty();
+            }
+        }
+
+        @Nested
+        @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+        class 할_일이_있을_경우 {
+            @DisplayName("n개의 할 일이 있다면")
+            @ParameterizedTest(name = "{arguments}개의 할 일 목록을 반환한다")
+            @ValueSource(ints = {1, 4, 20, 77, 1027})
+            void it_returns_tasks(int createCount) {
+
+                createTaskUntilCount(createCount);
+
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks).hasSize(createCount);
+            }
         }
     }
 
@@ -208,6 +238,13 @@ class TaskService_클래스 {
                 assertThatThrownBy(() -> taskService.deleteTask(TEST_NOT_EXSIT_ID))
                         .isInstanceOf(TaskNotFoundException.class);
             }
+        }
+    }
+
+
+    private void createTaskUntilCount(int createCount) {
+        for (int i = 0; i < createCount; i++) {
+            taskService.createTask(taskSource);
         }
     }
 }
