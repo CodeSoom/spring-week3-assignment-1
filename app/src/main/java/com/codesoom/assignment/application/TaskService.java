@@ -48,11 +48,13 @@ public class TaskService {
         return task;
     }
 
-    public void deleteTask(Long id) {
+    public Task deleteTask(Long id) {
         final Task originalTask = taskMap.remove(id);
         if (originalTask == null) {
             throw new TaskNotFoundException(id);
         }
+
+        return originalTask;
     }
 
     private Long generateId() {
