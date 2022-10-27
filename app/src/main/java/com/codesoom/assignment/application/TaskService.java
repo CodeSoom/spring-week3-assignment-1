@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 
 @Service
@@ -21,11 +20,12 @@ public class TaskService {
     }
 
     public Task getTask(Long id) {
-        if (!taskExists(id)) {
+        final Task task = taskMap.get(id);
+        if (task == null) {
             throw new TaskNotFoundException(id);
         }
 
-        return taskMap.get(id);
+        return task;
     }
 
     public Task createTask(Task source) {
@@ -37,7 +37,8 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task source) {
-        if (!taskExists(id)) {
+        final Task originalTask = taskMap.get(id);
+        if (originalTask == null) {
             throw new TaskNotFoundException(id);
         }
 
@@ -48,20 +49,14 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        if (!taskExists(id)) {
+        final Task originalTask = taskMap.remove(id);
+        if (originalTask == null) {
             throw new TaskNotFoundException(id);
         }
-
-        taskMap.remove(id);
     }
 
     private Long generateId() {
         newId += 1;
         return newId;
-    }
-
-    private boolean taskExists(Long id) {
-        final Task task = taskMap.get(id);
-        return Objects.nonNull(task);
     }
 }
