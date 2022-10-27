@@ -72,7 +72,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하는_id일_경우 {
+        class 찾을_수_있는_id가_주어지면 {
             @Test
             @DisplayName("200 코드를 반환한다")
             void it_responses_200() throws Exception {
@@ -88,7 +88,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하지_않는_id일_경우 {
+        class 찾을_수_없는_id가_주어지면 {
             @Test
             @DisplayName("404 코드를 반환한다")
             void it_responses_404() throws Exception {
@@ -127,7 +127,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하는_id일_경우 {
+        class 찾을_수_있는_id가_주어지면 {
             @Test
             @DisplayName("200 코드를 반환한다")
             void it_returns_200() throws Exception {
@@ -145,7 +145,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하지_않는_id일_경우 {
+        class 찾을_수_없는_id가_주어지면 {
             @Test
             @DisplayName("404 코드를 반환한다")
             void it_returns_404() throws Exception {
@@ -169,7 +169,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하는_id일_경우 {
+        class 찾을_수_있는_id가_주어지면 {
             @Test
             @DisplayName("204 코드를 반환한다")
             void it_returns_204() throws Exception {
@@ -185,7 +185,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 존재하지_않는_id일_경우 {
+        class 찾을_수_없는_id가_주어지면 {
             @Test
             @DisplayName("404 코드를 반환한다")
             void it_returns_404() throws Exception {
