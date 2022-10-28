@@ -1,6 +1,7 @@
 package com.codesoom.assignment.models;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -22,6 +23,7 @@ class TaskTest {
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    @Disabled("뻔한 동작을 테스트합니다")
     class Getter_메서드는 {
 
         @Nested
@@ -101,8 +103,7 @@ class TaskTest {
                 task1.setTitle(TEST_TITLE);
                 task2.setTitle(TEST_TITLE);
 
-                assertThat(task1.equals(task2))
-                        .isTrue();
+                assertThat(task1).isEqualTo(task2);
             }
         }
 
@@ -118,8 +119,7 @@ class TaskTest {
                 task1.setTitle(TEST_TITLE);
                 task2.setTitle(TEST_TITLE + TEST_TITLE);
 
-                assertThat(task1.equals(task2))
-                        .isFalse();
+                assertThat(task1).isNotEqualTo(task2);
             }
         }
     }
