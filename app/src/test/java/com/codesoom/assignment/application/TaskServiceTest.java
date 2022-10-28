@@ -65,7 +65,6 @@ class TaskServiceTest {
         @DisplayName("등록된 task가 없을 때,")
         class Context_When_None_Tasks_Registered {
 
-
             @Test
             @DisplayName("빈 리스트를 반환한다.")
             void it_returns_an_empty_list() {
