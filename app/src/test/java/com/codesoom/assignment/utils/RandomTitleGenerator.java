@@ -17,4 +17,20 @@ public class RandomTitleGenerator {
 
         return new String(array, StandardCharsets.UTF_8);
     }
+
+    /**
+     * 인자로 주어진 문자열과 다른 랜덤 문자열을 리턴한다.
+     *
+     * @param s 동일하지 않아야 할 문자열
+     * @return s와 다른 랜덤 문자열
+     */
+    public static String getRandomTitleDifferentFrom(String s) {
+        String title;
+
+        do {
+            title = RandomTitleGenerator.getRandomTitle();
+        } while (title.equals(s));
+
+        return title;
+    }
 }
