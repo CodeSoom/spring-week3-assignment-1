@@ -19,8 +19,8 @@ public class NumberGenerator {
      * @return 0 또는 양수의 랜덤한 long 타입 정수
      */
     public static Long getRandomNotNegativeLong() {
-        long id = new Random().nextLong();
-        return id < 0 ? -id : id;
+        long l = new Random().nextLong();
+        return l < 0 ? -l : l;
     }
 
     /**
