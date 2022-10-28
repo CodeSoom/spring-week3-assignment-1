@@ -1,5 +1,6 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.exceptions.TaskAlreadyExistException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,13 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
+        if (isExistTask(source)) {
+            throw new TaskAlreadyExistException();
+        }
+
         Task task = new Task();
         task.setId(generateId());
         task.setTitle(source.getTitle());
-
         tasks.add(task);
 
         return task;
@@ -50,5 +54,13 @@ public class TaskService {
     private Long generateId() {
         newId += 1;
         return newId;
+    }
+
+    private boolean isExistTask(Task source) {
+        return tasks.stream()
+                .map(Task::getTitle)
+                .filter(title -> title.equals(source.getTitle()))
+                .findFirst()
+                .isPresent();
     }
 }
