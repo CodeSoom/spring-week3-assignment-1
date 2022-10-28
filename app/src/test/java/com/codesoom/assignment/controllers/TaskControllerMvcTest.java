@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.LongStream;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,10 +49,10 @@ class TaskControllerMvcTest {
     private static final String path = "/tasks/";
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebApplicationContext wac;
 
     @Autowired
-    private WebApplicationContext wac;
+    private MockMvc mockMvc;
 
     @MockBean
     private TaskService taskService;
@@ -83,7 +82,7 @@ class TaskControllerMvcTest {
                     registeredTaskMap.put(task.getId(), task);
                 });
 
-        given(taskService.getTasks()).willReturn(registeredTaskMap.values());
+        given(taskService.getTasks()).willReturn(Collections.unmodifiableCollection(registeredTaskMap.values()));
     }
 
     private void addRandomNumberOfTask() {
@@ -170,11 +169,8 @@ class TaskControllerMvcTest {
             @Test
             @DisplayName("등록된 task의 직렬화된 문자열을 포함한 response body로 응답한다.")
             void it_responses_with_body_containing_serialized_string_of_tasks_registered() throws Exception {
-                for (Task task : registeredTaskMap.values()) {
-                    final String json = objectMapper.writeValueAsString(task);
-
-                    performGet(path).andExpect(content().string(containsString(json)));
-                }
+                performGet(path)
+                        .andExpect(content().json(objectMapper.writeValueAsString(registeredTaskMap.values())));
             }
         }
     }
@@ -245,10 +241,9 @@ class TaskControllerMvcTest {
                 @DisplayName("200 응답 코드와 해당 task의 json 형식 문자열을 담아 응답한다.")
                 void it_responses_with_status_code_of_200() throws Exception {
                     final Task task = registeredTaskMap.get(id);
-                    final String json = objectMapper.writeValueAsString(task);
 
                     performGet(path + id).andExpect(status().isOk())
-                            .andExpect(content().string(containsString(json)));
+                            .andExpect(content().json(objectMapper.writeValueAsString(task)));
                 }
             }
 
@@ -293,7 +288,7 @@ class TaskControllerMvcTest {
         @DisplayName("응답 코드 201와 생성된 task의 json 형식 문자열로 응답한다.")
         void it_responses_with_status_code_of_204_and_response_body_of_json_of_task_registered() throws Exception {
             performPost(path, taskToBeGiven).andExpect(status().isCreated())
-                    .andExpect(content().string(containsString(objectMapper.writeValueAsString(taskToBeReturned))));
+                    .andExpect(content().json(objectMapper.writeValueAsString(taskToBeReturned)));
         }
     }
 
@@ -384,6 +379,7 @@ class TaskControllerMvcTest {
 
                 private Long id;
                 private Task taskWithNewTitle;
+                private Task taskToBeReturned;
 
                 @BeforeEach
                 void setUp() {
@@ -391,14 +387,16 @@ class TaskControllerMvcTest {
                     final String newTitle = RandomTitleGenerator.getRandomTitle();
                     taskWithNewTitle = new Task(null, newTitle);
 
-                    given(taskService.updateTask(id, taskWithNewTitle)).willReturn(new Task(id, newTitle));
+                    taskToBeReturned = new Task(id, taskWithNewTitle.getTitle());
+                    given(taskService.updateTask(id, taskWithNewTitle)).willReturn(taskToBeReturned);
                 }
 
                 @ParameterizedTest(name = "200 응답 코드와 title이 변경된 task의 Json 형식의 response body로 응답한다.")
                 @EnumSource(names = {"PUT", "PATCH"})
                 void it_responses_with_status_code_200_and_json_of_task_title_of_which_was_changed(RequestMethod requestMethod) throws Exception {
                     performUpdate(path + id, requestMethod, taskWithNewTitle)
-                            .andExpect(status().isOk());
+                            .andExpect(status().isOk())
+                            .andExpect(content().json(objectMapper.writeValueAsString(taskToBeReturned)));
                 }
             }
 
