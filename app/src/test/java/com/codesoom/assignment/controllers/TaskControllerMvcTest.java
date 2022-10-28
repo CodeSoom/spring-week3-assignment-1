@@ -134,18 +134,15 @@ class TaskControllerMvcTest {
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 등록된_task가_없는_경우 {
 
-            private ResultActions resultActions;
-
             @BeforeEach
-            void setUp() throws Exception {
+            void setUp() {
                 given(taskService.getTasks()).willReturn(Collections.emptyList());
-                resultActions = performGet(path);
             }
 
             @Test
             @DisplayName("응답 코드 200이다.")
             void it_responses_with_status_code_200() throws Exception {
-                resultActions.andExpect(status().isOk());
+                performGet(path).andExpect(status().isOk());
             }
 
             @Test
@@ -159,18 +156,15 @@ class TaskControllerMvcTest {
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 등록된_task가_있는_경우 {
 
-            private ResultActions resultActions;
-
             @BeforeEach
-            void setUp() throws Exception {
+            void setUp() {
                 addRandomNumberOfTask();
-                resultActions = performGet(path);
             }
 
             @Test
-            @DisplayName("응답 코드 200이다.")
+            @DisplayName("응답 코드 200으로 응답한다.")
             void it_responses_with_status_code_200() throws Exception {
-                resultActions.andExpect(status().isOk());
+                performGet(path).andExpect(status().isOk());
             }
 
             @Test
@@ -179,7 +173,7 @@ class TaskControllerMvcTest {
                 for (Task task : registeredTaskMap.values()) {
                     final String json = objectMapper.writeValueAsString(task);
 
-                    resultActions.andExpect(content().string(containsString(json)));
+                    performGet(path).andExpect(content().string(containsString(json)));
                 }
             }
         }
@@ -194,45 +188,42 @@ class TaskControllerMvcTest {
         class 음수인_id를_인자로_호출하면 {
 
             private Long id;
-            private ResultActions resultActions;
 
             @BeforeEach
-            void setUp() throws Exception {
+            void setUp() {
                 id = NumberGenerator.getRandomNegativeLong();
-                resultActions = performGet(path + id);
             }
 
             @Test
             @DisplayName("400 응답 코드로 응답한다.")
             void it_responses_with_status_code_of_400() throws Exception {
-                resultActions.andExpect(status().isBadRequest());
+                performGet(path + id).andExpect(status().isBadRequest());
             }
         }
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_없으면 {
+        class 등록된_task가_없을_때 {
 
             private Long id;
-            private ResultActions resultActions;
 
             @BeforeEach
-            void setUp() throws Exception {
+            void setUp() {
                 id = NumberGenerator.getRandomNotNegativeLong();
+
                 given(taskService.getTask(id)).willThrow(new TaskNotFoundException(id));
-                resultActions = performGet(path + id);
             }
 
             @Test
             @DisplayName("응답 코드 404로 응답한다.")
             void it_responses_with_status_code_of_404() throws Exception {
-                resultActions.andExpect(status().isNotFound());
+                performGet(path + id).andExpect(status().isNotFound());
             }
         }
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_있다면 {
+        class 등록된_task가_있을_때 {
 
             @BeforeEach
             void setUp() {
@@ -244,12 +235,10 @@ class TaskControllerMvcTest {
             class 매핑된_task가_있는_id로_호출하면 {
 
                 private Long id;
-                private ResultActions resultActions;
 
                 @BeforeEach
-                void setUp() throws Exception {
+                void setUp() {
                     id = getIdHavingMappedTask();
-                    resultActions = performGet(path + id);
                 }
 
                 @Test
@@ -257,7 +246,8 @@ class TaskControllerMvcTest {
                 void it_responses_with_status_code_of_200() throws Exception {
                     final Task task = registeredTaskMap.get(id);
                     final String json = objectMapper.writeValueAsString(task);
-                    resultActions.andExpect(status().isOk())
+
+                    performGet(path + id).andExpect(status().isOk())
                             .andExpect(content().string(containsString(json)));
                 }
             }
@@ -267,20 +257,18 @@ class TaskControllerMvcTest {
             class 매핑된_task가_없는_id로_호출하면 {
 
                 private Long id;
-                private ResultActions resultActions;
 
                 @BeforeEach
-                void setUp() throws Exception {
+                void setUp() {
                     id = getIdNotHavingMappedTask();
-                    given(taskService.getTask(id)).willThrow(new TaskNotFoundException(id));
 
-                    resultActions = performGet(path + id);
+                    given(taskService.getTask(id)).willThrow(new TaskNotFoundException(id));
                 }
 
                 @Test
                 @DisplayName("404 응답 코드로 응답한다.")
                 void it_responses_with_status_code_of_404_and_empty_response_body() throws Exception {
-                    resultActions.andExpect(status().isNotFound());
+                    performGet(path + id).andExpect(status().isNotFound());
                 }
             }
         }
@@ -292,21 +280,19 @@ class TaskControllerMvcTest {
 
         private Task taskToBeGiven;
         private Task taskToBeReturned;
-        private ResultActions resultActions;
 
         @BeforeEach
-        void setUp() throws Exception {
+        void setUp() {
             taskToBeGiven = new Task(null, RandomTitleGenerator.getRandomTitle());
             taskToBeReturned = new Task(1L, taskToBeGiven.getTitle());
-            given(taskService.createTask(taskToBeGiven)).willReturn(taskToBeReturned);
 
-            resultActions = performPost(path, taskToBeGiven);
+            given(taskService.createTask(taskToBeGiven)).willReturn(taskToBeReturned);
         }
 
         @Test
         @DisplayName("응답 코드 201와 생성된 task의 json 형식 문자열로 응답한다.")
         void it_responses_with_status_code_of_204_and_response_body_of_json_of_task_registered() throws Exception {
-            resultActions.andExpect(status().isCreated())
+            performPost(path, taskToBeGiven).andExpect(status().isCreated())
                     .andExpect(content().string(containsString(objectMapper.writeValueAsString(taskToBeReturned))));
         }
     }
@@ -362,7 +348,7 @@ class TaskControllerMvcTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_없다면 {
+        class 등록된_task가_없을_때 {
 
             private Long id;
             private Task task;
@@ -385,7 +371,7 @@ class TaskControllerMvcTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_있다면 {
+        class 등록된_task가_있을_때 {
 
             @BeforeEach
             void setUp() {
@@ -466,7 +452,7 @@ class TaskControllerMvcTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_없으면 {
+        class 등록된_task가_없을_때 {
 
             private Long id;
 
@@ -485,7 +471,7 @@ class TaskControllerMvcTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 등록된_task가_있다면 {
+        class 등록된_task가_있을_때 {
 
             @BeforeEach
             void setUp() {
