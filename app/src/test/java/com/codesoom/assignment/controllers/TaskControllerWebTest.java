@@ -1,6 +1,6 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.utils.JsonUtil;
