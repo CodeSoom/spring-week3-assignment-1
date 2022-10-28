@@ -29,8 +29,6 @@ class TaskServiceTest {
 
     /**
      * 각 테스트에서 필요한 fixture 데이터를 생성합니다.
-     *  - 할 일 1개 생성
-     *  - title만 세팅되어 있는 taskSource 변수 선언
      */
     @BeforeEach
     void setUp() {
@@ -67,7 +65,7 @@ class TaskServiceTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 할_일이_있을_때 {
-            @DisplayName("할 일이 n개라면")
+            @DisplayName("n개의 할 일 목록을 리턴한다")
             @ParameterizedTest(name = "{arguments}개의 할 일 목록을 리턴한다")
             @ValueSource(ints = {1, 77, 1027})
             void it_returns_tasks(int createCount) {
