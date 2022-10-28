@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스의")
@@ -37,6 +36,11 @@ class TaskServiceTest {
         for (int i = 0; i < number; i++) {
             addOneTask();
         }
+    }
+
+    private void addRandomNumberOfTasks() {
+        final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
+        addNumberOfTasks(number);
     }
 
     private Long getIdHavingMappedTask() {
@@ -108,14 +112,19 @@ class TaskServiceTest {
             @DisplayName("임의의 0 또는 양수의 id를 인자로 호출하면")
             class Context_With_Temporary_Not_Negative_Id {
 
-                private final Long temporaryNotNegativeId = NumberGenerator.getRandomNotNegativeLong();
+                private Long id;
+
+                @BeforeEach
+                void setUp() {
+                    id = NumberGenerator.getRandomNotNegativeLong();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.getTask(temporaryNotNegativeId))
+                    assertThatThrownBy(() -> taskService.getTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + temporaryNotNegativeId);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
         }
@@ -126,27 +135,26 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
-                addNumberOfTasks(number);
+                addRandomNumberOfTasks();
             }
 
             @Nested
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private Long idHavingMappedTask;
+                private Long id;
 
                 @BeforeEach
                 void setUp() {
-                    idHavingMappedTask = getIdHavingMappedTask();
+                    id = getIdHavingMappedTask();
                 }
 
                 @Test
                 @DisplayName("id에 매핑된 task를 반환한다.")
                 void it_returns_a_task_mapped_to_id() {
-                    final Task task = taskService.getTask(idHavingMappedTask);
+                    final Task task = taskService.getTask(id);
 
-                    assertThat(task.getId()).isEqualTo(idHavingMappedTask);
+                    assertThat(task.getId()).isEqualTo(id);
                 }
             }
 
@@ -154,14 +162,19 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
-                private final Long idNotHavingMappedTask = getIdNotHavingMappedTask();
+                private Long id;
+
+                @BeforeEach
+                void setUp() {
+                    id = getIdNotHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException를 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.getTask(idNotHavingMappedTask))
+                    assertThatThrownBy(() -> taskService.getTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + idNotHavingMappedTask);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
         }
@@ -186,6 +199,7 @@ class TaskServiceTest {
         @DisplayName("등록된 task의 개수를 1만큼 증가시킨다.")
         void it_increments_the_number_of_tasks_registered_by_one() {
             final int oldSize = taskService.getTasks().size();
+
             addOneTask();
             final int newSize = taskService.getTasks().size();
 
@@ -205,16 +219,21 @@ class TaskServiceTest {
             @DisplayName("음수가 아닌 id를 인자로 호출하면")
             class Context_With_Not_Negative_Id {
 
-                private final Long temporaryNotNegativeId = NumberGenerator.getRandomNotNegativeLong();
+                private Long id;
+
+                @BeforeEach
+                void setUp() {
+                    id = NumberGenerator.getRandomNotNegativeLong();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
                     final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
-                    assertThatThrownBy(() -> taskService.updateTask(temporaryNotNegativeId, task))
+                    assertThatThrownBy(() -> taskService.updateTask(id, task))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + temporaryNotNegativeId);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
         }
@@ -225,24 +244,28 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
-                addNumberOfTasks(number);
+                addRandomNumberOfTasks();
             }
 
             @Nested
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
-                private final Long idNotHavingMappedTask = getIdNotHavingMappedTask();
+                private Long id;
+
+                @BeforeEach
+                void setUp() {
+                    id = getIdNotHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
                     final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
-                    assertThatThrownBy(() -> taskService.updateTask(idNotHavingMappedTask, task))
+                    assertThatThrownBy(() -> taskService.updateTask(id, task))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + idNotHavingMappedTask);
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
 
@@ -250,38 +273,24 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private Long idHavingMappedTask;
+                private Long id;
 
                 @BeforeEach
                 void setUp() {
-                    idHavingMappedTask = getIdHavingMappedTask();
+                    id = getIdHavingMappedTask();
                 }
 
                 @Test
                 @DisplayName("id에 매핑된 task의 title이 변경된다.")
                 void it_changes_title_of_the_task_mapped_to_id() {
-                    final Long id = idHavingMappedTask;
-
                     final String oldTitle = taskService.getTask(id).getTitle();
 
-                    final Task src = new Task(null, getRandomTitleDifferentFrom(oldTitle));
-
+                    final Task src = new Task(null, RandomTitleGenerator.getRandomTitleDifferentFrom(oldTitle));
                     final String newTitle = taskService.updateTask(id, src).getTitle();
 
                     assertThat(newTitle).isNotEqualTo(oldTitle);
                 }
-
-                private String getRandomTitleDifferentFrom(String s) {
-                    String title;
-
-                    do {
-                        title = RandomTitleGenerator.getRandomTitle();
-                    } while (title.equals(s));
-
-                    return title;
-                }
             }
-
         }
     }
 
@@ -310,22 +319,26 @@ class TaskServiceTest {
 
             @BeforeEach
             void setUp() {
-                final int number = NumberGenerator.getRandomIntegerBetweenOneAndOneHundred();
-                addNumberOfTasks(number);
+                addRandomNumberOfTasks();
             }
 
             @Nested
             @DisplayName("매핑된 task가 없는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Is_None {
 
-                private final Long idNotHavingMappedTask = getIdNotHavingMappedTask();
+                private Long id;
+
+                @BeforeEach
+                void setUp() {
+                    id = getIdNotHavingMappedTask();
+                }
 
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.deleteTask(idNotHavingMappedTask))
+                    assertThatThrownBy(() -> taskService.deleteTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
-                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + idNotHavingMappedTask );
+                            .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
             }
 
@@ -333,20 +346,16 @@ class TaskServiceTest {
             @DisplayName("매핑된 task가 있는 id를 인자로 호출하면")
             class Context_With_Id_Tasks_Mapped_To_Which_Exists {
 
-                private Long idHavingMappedTask;
+                private Long id;
 
                 @BeforeEach
                 void setUp() {
-                    idHavingMappedTask = getIdHavingMappedTask();
+                    id = getIdHavingMappedTask();
                 }
 
                 @Test
                 @DisplayName("id에 매핑된 task 삭제된다..")
                 void it_deletes_the_task_mapped_to_id() {
-                    final Long id = idHavingMappedTask;
-
-                    assertThatNoException().isThrownBy(() -> taskService.getTask(id));
-
                     taskService.deleteTask(id);
 
                     assertThatThrownBy(() -> taskService.getTask(id))
@@ -359,8 +368,7 @@ class TaskServiceTest {
                 void it_decrements_the_number_of_tasks_registered_by_one() {
                     final int oldSize = taskService.getTasks().size();
 
-                    taskService.deleteTask(idHavingMappedTask);
-
+                    taskService.deleteTask(id);
                     final int newSize = taskService.getTasks().size();
 
                     assertThat(oldSize - newSize).isEqualTo(1);
