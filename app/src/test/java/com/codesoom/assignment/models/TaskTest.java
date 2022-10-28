@@ -139,9 +139,9 @@ class TaskTest {
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 멤버에_저장된_값들이_같다면 {
+        class 멤버에_저장된_값들이_서로_같다면 {
             @Test
-            @DisplayName("true를 리턴한다")
+            @DisplayName("같은 해시코드를 리턴한다")
             void it_returns_true() {
                 task1.setId(TEST_ID);
                 task2.setId(TEST_ID);
@@ -149,16 +149,15 @@ class TaskTest {
                 task1.setTitle(TEST_TITLE);
                 task2.setTitle(TEST_TITLE);
 
-                assertThat(task1.hashCode() == task2.hashCode())
-                        .isTrue();
+                assertThat(task1).hasSameHashCodeAs(task2);
             }
         }
 
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-        class 멤버에_저장된_값들이_다르다면 {
+        class 멤버에_저장된_값들이_서로_다르다면 {
             @Test
-            @DisplayName("false를 리턴한다")
+            @DisplayName("다른 해시코드를 리턴한다")
             void it_returns_false() {
                 task1.setId(TEST_ID);
                 task2.setId(TEST_ID + TEST_ID);
@@ -166,8 +165,7 @@ class TaskTest {
                 task1.setTitle(TEST_TITLE);
                 task2.setTitle(TEST_TITLE + TEST_TITLE);
 
-                assertThat(task1.hashCode() == task2.hashCode())
-                        .isFalse();
+                assertThat(task1.hashCode()).isNotSameAs(task2.hashCode());
             }
         }
     }
