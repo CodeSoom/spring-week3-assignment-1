@@ -1,6 +1,7 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.exceptions.TaskAlreadyExistException;
+import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,8 +30,6 @@ class TaskServiceTest {
 
     /**
      * 각 테스트에서 필요한 fixture 데이터를 생성합니다.
-     *  - 할 일 1개 생성
-     *  - title만 세팅되어 있는 taskSource 변수 선언
      */
     @BeforeEach
     void setUp() {
@@ -67,7 +66,7 @@ class TaskServiceTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 할_일이_있을_때 {
-            @DisplayName("할 일이 n개라면")
+            @DisplayName("n개의 할 일 목록을 리턴한다")
             @ParameterizedTest(name = "{arguments}개의 할 일 목록을 리턴한다")
             @ValueSource(ints = {1, 77, 1027})
             void it_returns_tasks(int createCount) {
@@ -118,41 +117,73 @@ class TaskServiceTest {
         @Nested
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 새로운_할_일이_주어지면 {
-            @Test
-            @DisplayName("할 일을 저장하고 리턴한다")
-            void it_return_created_task() {
-                Task task = taskService.createTask(taskSource);
 
-                assertThat(task).isNotNull();
-                assertThat(task.getTitle()).isEqualTo(TEST_TITLE);
+            @Nested
+            @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+            class 중복된_할_일인_경우 {
+                @Test
+                @DisplayName("예외를 던진다")
+                void it_returns_taskAlreadyExistException() {
+                    assertThatThrownBy(() -> taskService.createTask(taskSource))
+                            .isInstanceOf(TaskAlreadyExistException.class);
+                }
+
+                @Test
+                @DisplayName("예외 메시지를 \"이미 등록된 할 일입니다\" 라는 문구로 리턴한다")
+                void it_returns_exception_message() {
+                    assertThatThrownBy(() -> taskService.createTask(taskSource))
+                            .hasMessage("이미 등록된 할 일입니다");
+                }
             }
 
-            @Test
-            @DisplayName("할 일이 하나 늘어난다")
-            void it_returns_tasks_size() {
-                int oldSize = taskService.getTasks().size();
+            @Nested
+            @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+            class 중복된_할_일이_아닌_경우 {
 
-                taskService.createTask(taskSource);
+                private Task createTaskSource;
 
-                int newSize = taskService.getTasks().size();
+                @BeforeEach
+                void setUp() {
+                    createTaskSource = new Task();
+                    createTaskSource.setTitle(POSTFIX_TITLE);
+                }
 
-                assertThat(newSize - oldSize).isEqualTo(1);
-            }
+                @Test
+                @DisplayName("할 일을 저장하고 리턴한다")
+                void it_return_created_task() {
+                    Task task = taskService.createTask(createTaskSource);
 
-            @Test
-            @DisplayName("할 일의 id 값은 유니크한 값으로 저장된다")
-            void it_returns_id_count_one() {
-                Task task = taskService.createTask(taskSource);
-                Long newId = task.getId();
+                    assertThat(task).isNotNull();
+                    assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
+                }
 
-                List<Task> tasks = taskService.getTasks();
+                @Test
+                @DisplayName("할 일이 하나 늘어난다")
+                void it_returns_tasks_size() {
+                    int oldSize = taskService.getTasks().size();
 
-                long idCount = tasks.stream()
-                        .map(Task::getId)
-                        .filter(id -> id.equals(newId))
-                        .count();
+                    taskService.createTask(createTaskSource);
 
-                assertThat(idCount).isEqualTo(1);
+                    int newSize = taskService.getTasks().size();
+
+                    assertThat(newSize - oldSize).isEqualTo(1);
+                }
+
+                @Test
+                @DisplayName("할 일의 id 값은 유니크한 값으로 저장된다")
+                void it_returns_id_count_one() {
+                    Task task = taskService.createTask(createTaskSource);
+                    Long newId = task.getId();
+
+                    List<Task> tasks = taskService.getTasks();
+
+                    long idCount = tasks.stream()
+                            .map(Task::getId)
+                            .filter(id -> id.equals(newId))
+                            .count();
+
+                    assertThat(idCount).isEqualTo(1);
+                }
             }
         }
 
@@ -256,8 +287,11 @@ class TaskServiceTest {
 
 
     private void createTaskUntilCount(int createCount) {
+        Task tempCreateTask = new Task();
+
         for (int i = 0; i < createCount; i++) {
-            taskService.createTask(taskSource);
+            tempCreateTask.setTitle(createCount + " " + i);
+            taskService.createTask(tempCreateTask);
         }
     }
 }
