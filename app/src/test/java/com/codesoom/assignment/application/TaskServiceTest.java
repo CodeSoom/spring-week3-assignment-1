@@ -1,6 +1,6 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.exceptions.TaskAlreadyExistException;
+import com.codesoom.assignment.exceptions.TaskDuplicationException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,7 +126,7 @@ class TaskServiceTest {
                 @DisplayName("예외를 던진다")
                 void it_returns_taskAlreadyExistException() {
                     assertThatThrownBy(() -> taskService.createTask(taskSource))
-                            .isInstanceOf(TaskAlreadyExistException.class);
+                            .isInstanceOf(TaskDuplicationException.class);
                 }
 
                 @Test
