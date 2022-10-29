@@ -16,20 +16,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("TaskService 클래스의")
-class TaskServiceTest {
+class TaskServiceImplTest {
 
     private final String TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX = "Task not found: ";
 
-    private TaskService taskService;
+    private TaskServiceImpl taskServiceImpl;
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
+        taskServiceImpl = new TaskServiceImpl();
     }
 
     private void addOneTask() {
         final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
-        taskService.createTask(task);
+        taskServiceImpl.createTask(task);
     }
 
     private void addNumberOfTasks(int number) {
@@ -44,7 +44,7 @@ class TaskServiceTest {
     }
 
     private Long getIdHavingMappedTask() {
-        final Collection<Task> taskCollection = taskService.getTasks();
+        final Collection<Task> taskCollection = taskServiceImpl.getTasks();
 
         for (Task task : taskCollection) {
             return task.getId();
@@ -68,7 +68,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("빈 리스트를 반환한다.")
             void it_returns_an_empty_list() {
-                assertThat(taskService.getTasks()).isEmpty();
+                assertThat(taskServiceImpl.getTasks()).isEmpty();
             }
         }
 
@@ -87,13 +87,13 @@ class TaskServiceTest {
             @Test
             @DisplayName("비어 있지 않은 리스트를 반환한다.")
             void it_returns_a_not_empty_list() {
-                assertThat(taskService.getTasks()).isNotEmpty();
+                assertThat(taskServiceImpl.getTasks()).isNotEmpty();
             }
 
             @Test
             @DisplayName("등록한 task의 개수와 동일한 사이즈를 가지는 컬렉션을 리턴한다.")
             void it_returns_a_list_with_length_equals_to_tasks_registered() {
-                final Collection<Task> taskCollection = taskService.getTasks();
+                final Collection<Task> taskCollection = taskServiceImpl.getTasks();
                 assertThat(taskCollection.size()).isEqualTo(number);
             }
         }
@@ -121,7 +121,7 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("TaskNotFoundException 예외를 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.getTask(id))
+                    assertThatThrownBy(() -> taskServiceImpl.getTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -151,7 +151,7 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("id에 매핑된 task를 반환한다.")
                 void it_returns_a_task_mapped_to_id() {
-                    final Task task = taskService.getTask(id);
+                    final Task task = taskServiceImpl.getTask(id);
 
                     assertThat(task.getId()).isEqualTo(id);
                 }
@@ -171,7 +171,7 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("TaskNotFoundException를 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.getTask(id))
+                    assertThatThrownBy(() -> taskServiceImpl.getTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -189,7 +189,7 @@ class TaskServiceTest {
             final Task src = new Task(null, RandomTitleGenerator.getRandomTitle());
             assertThat(src.getId()).isNull();
 
-            final Task addedTask = taskService.createTask(src);
+            final Task addedTask = taskServiceImpl.createTask(src);
 
             assertThat(addedTask.getId()).isNotNull();
         }
@@ -197,10 +197,10 @@ class TaskServiceTest {
         @Test
         @DisplayName("등록된 task의 개수를 1만큼 증가시킨다.")
         void it_increments_the_number_of_tasks_registered_by_one() {
-            final int oldSize = taskService.getTasks().size();
+            final int oldSize = taskServiceImpl.getTasks().size();
 
             addOneTask();
-            final int newSize = taskService.getTasks().size();
+            final int newSize = taskServiceImpl.getTasks().size();
 
             assertThat(newSize - oldSize).isEqualTo(1);
         }
@@ -230,7 +230,7 @@ class TaskServiceTest {
                 void it_throws_a_TaskNotFoundException() {
                     final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
-                    assertThatThrownBy(() -> taskService.updateTask(id, task))
+                    assertThatThrownBy(() -> taskServiceImpl.updateTask(id, task))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -262,7 +262,7 @@ class TaskServiceTest {
                 void it_throws_a_TaskNotFoundException() {
                     final Task task = new Task(null, RandomTitleGenerator.getRandomTitle());
 
-                    assertThatThrownBy(() -> taskService.updateTask(id, task))
+                    assertThatThrownBy(() -> taskServiceImpl.updateTask(id, task))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -282,10 +282,10 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("id에 매핑된 task의 title이 변경된다.")
                 void it_changes_title_of_the_task_mapped_to_id() {
-                    final String oldTitle = taskService.getTask(id).getTitle();
+                    final String oldTitle = taskServiceImpl.getTask(id).getTitle();
 
                     final Task src = new Task(null, RandomTitleGenerator.getRandomTitleDifferentFrom(oldTitle));
-                    final String newTitle = taskService.updateTask(id, src).getTitle();
+                    final String newTitle = taskServiceImpl.updateTask(id, src).getTitle();
 
                     assertThat(newTitle).isNotEqualTo(oldTitle);
                 }
@@ -306,7 +306,7 @@ class TaskServiceTest {
             void it_throws_a_TaskNotFoundException() {
                 final Long id = NumberGenerator.getRandomNotNegativeLong();
 
-                assertThatThrownBy(() -> taskService.deleteTask(id))
+                assertThatThrownBy(() -> taskServiceImpl.deleteTask(id))
                         .isInstanceOf(TaskNotFoundException.class)
                         .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
             }
@@ -335,7 +335,7 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("TaskNotFoundException을 발생시킨다.")
                 void it_throws_a_TaskNotFoundException() {
-                    assertThatThrownBy(() -> taskService.deleteTask(id))
+                    assertThatThrownBy(() -> taskServiceImpl.deleteTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -355,9 +355,9 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("id에 매핑된 task 삭제된다..")
                 void it_deletes_the_task_mapped_to_id() {
-                    taskService.deleteTask(id);
+                    taskServiceImpl.deleteTask(id);
 
-                    assertThatThrownBy(() -> taskService.getTask(id))
+                    assertThatThrownBy(() -> taskServiceImpl.getTask(id))
                             .isInstanceOf(TaskNotFoundException.class)
                             .hasMessage(TASK_NOT_FOUND_EXCEPTION_MESSAGE_PREFIX + id);
                 }
@@ -365,10 +365,10 @@ class TaskServiceTest {
                 @Test
                 @DisplayName("등록된 task의 개수가 1만큼 줄어든다.")
                 void it_decrements_the_number_of_tasks_registered_by_one() {
-                    final int oldSize = taskService.getTasks().size();
+                    final int oldSize = taskServiceImpl.getTasks().size();
 
-                    taskService.deleteTask(id);
-                    final int newSize = taskService.getTasks().size();
+                    taskServiceImpl.deleteTask(id);
+                    final int newSize = taskServiceImpl.getTasks().size();
 
                     assertThat(oldSize - newSize).isEqualTo(1);
                 }

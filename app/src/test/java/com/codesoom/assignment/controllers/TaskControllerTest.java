@@ -1,11 +1,12 @@
 package com.codesoom.assignment.controllers;
 
+import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.exceptions.InvalidTaskTitleException;
 import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
 import com.codesoom.assignment.exceptions.NullTaskException;
 import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
-import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.application.TaskServiceImpl;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.utils.NumberGenerator;
 import com.codesoom.assignment.utils.RandomTitleGenerator;
@@ -29,7 +30,7 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
+        taskService = new TaskServiceImpl();
         controller = new TaskController(taskService);
     }
 
