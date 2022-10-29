@@ -1,6 +1,6 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.exceptions.TaskAlreadyExistException;
+import com.codesoom.assignment.exceptions.TaskDuplicationException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,12 +70,13 @@ class TaskServiceTest {
             @ParameterizedTest(name = "{arguments}개의 할 일 목록을 리턴한다")
             @ValueSource(ints = {1, 77, 1027})
             void it_returns_tasks(int createCount) {
-
                 createTaskUntilCount(createCount);
 
                 List<Task> tasks = taskService.getTasks();
 
-                assertThat(tasks).hasSize(createCount);
+                assertThat(tasks)
+                        .withFailMessage("%d개의 할 일을 리턴해야합니다", createCount)
+                        .hasSize(createCount);
             }
         }
     }
@@ -125,7 +126,7 @@ class TaskServiceTest {
                 @DisplayName("예외를 던진다")
                 void it_returns_taskAlreadyExistException() {
                     assertThatThrownBy(() -> taskService.createTask(taskSource))
-                            .isInstanceOf(TaskAlreadyExistException.class);
+                            .isInstanceOf(TaskDuplicationException.class);
                 }
 
                 @Test
