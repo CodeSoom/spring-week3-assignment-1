@@ -1,9 +1,9 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.application.TaskService;
-import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.models.TaskDto;
 import com.codesoom.assignment.utils.IdValidator;
-import com.codesoom.assignment.utils.TaskValidator;
+import com.codesoom.assignment.utils.TaskDtoValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -29,12 +30,17 @@ public class TaskController {
     }
 
     @GetMapping
-    public Collection<Task> collection() {
+    public Collection<TaskDto> collection() {
         return taskService.getTasks();
     }
 
+    @GetMapping("/deadline")
+    public List<TaskDto> collectionByDeadLine() {
+        return taskService.getTasksByDeadLine();
+    }
+
     @GetMapping("{id}")
-    public Task detail(@PathVariable Long id) {
+    public TaskDto detail(@PathVariable Long id) {
         IdValidator.validate(id);
 
         return taskService.getTask(id);
@@ -42,18 +48,18 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task create(@RequestBody Task task) {
-        TaskValidator.validate(task);
+    public TaskDto create(@RequestBody TaskDto dto) {
+        TaskDtoValidator.validate(dto);
 
-        return taskService.createTask(task);
+        return taskService.createTask(dto);
     }
 
     @RequestMapping(value = "/{id}",method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
+    public TaskDto update(@PathVariable Long id, @RequestBody TaskDto dto) {
         IdValidator.validate(id);
-        TaskValidator.validate(task);
+        TaskDtoValidator.validate(dto);
 
-        return taskService.updateTask(id, task);
+        return taskService.updateTitle(id, dto);
     }
 
     @DeleteMapping("{id}")

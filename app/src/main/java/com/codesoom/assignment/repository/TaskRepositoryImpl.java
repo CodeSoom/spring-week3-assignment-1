@@ -6,22 +6,34 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Repository
 public class TaskRepositoryImpl implements TaskRepository {
 
-    private final Map<Long, Task> taskMap = new TreeMap<>();
+    private final Map<Long, Task> tasks = Collections.synchronizedMap(new TreeMap<>());
+    private final Set<String> titles = Collections.synchronizedSet(new HashSet<>());
+    private final Set<Task> tasksByDeadLine = Collections.synchronizedSet(new TreeSet<>(Comparator.comparing(Task::getDeadLine)));
 
     @Override
     public Collection<Task> findAllTasks() {
-        return Collections.unmodifiableCollection(taskMap.values());
+        return Collections.unmodifiableCollection(tasks.values());
+    }
+
+    @Override
+    public List<Task> findAllTasksByDeadLine() {
+        return List.copyOf(tasksByDeadLine);
     }
 
     @Override
     public Task findTaskById(Long id) {
-        final Task task = taskMap.get(id);
+        final Task task = tasks.get(id);
         if (task == null) {
             throw new TaskNotFoundException(id);
         }
@@ -31,25 +43,52 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public Task addTask(Task task) {
-        taskMap.put(task.getId(), task);
+        final String title = task.getTitle();
+        if (titles.contains(title)) {
+            throw new DuplicateTaskException(title);
+        }
+        addToAllStorage(task);
         return task;
     }
 
     @Override
-    public Task updateTask(Long id, Task source) {
-        if (!taskMap.containsKey(id)) {
-            throw new TaskNotFoundException(id);
+    public Task updateTitle(Task src) {
+        if (titles.contains(src.getTitle())) {
+            throw new DuplicateTaskException(src.getTitle());
         }
 
-        return addTask(new Task(id, source.getTitle()));
+        final Task originalTask = tasks.get(src.getId());
+        if (originalTask == null) {
+            throw new TaskNotFoundException(src.getId());
+        }
+
+        final Task changedTask = originalTask.changeTitle(src);
+        removeFromAllStorage(originalTask.getId());
+        addToAllStorage(changedTask);
+
+        return changedTask;
     }
 
     @Override
     public Task deleteTask(Long id) {
-        if (!taskMap.containsKey(id)) {
+        final Task task = tasks.get(id);
+        if (task == null) {
             throw new TaskNotFoundException(id);
         }
 
-        return taskMap.remove(id);
+        removeFromAllStorage(id);
+        return task;
+    }
+
+    private void addToAllStorage(Task task) {
+        tasks.put(task.getId(), task);
+        titles.add(task.getTitle());
+        tasksByDeadLine.add(task);
+    }
+
+    private void removeFromAllStorage(Long id) {
+        final Task removeTask = tasks.remove(id);
+        titles.remove(removeTask.getTitle());
+        tasksByDeadLine.remove(removeTask);
     }
 }

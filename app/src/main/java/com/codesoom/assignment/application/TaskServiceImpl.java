@@ -1,11 +1,15 @@
 package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.models.TaskDto;
 import com.codesoom.assignment.repository.TaskRepository;
 import com.codesoom.assignment.utils.TaskIdGenerator;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -17,24 +21,46 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Collection<Task> getTasks() {
-        return taskRepository.findAllTasks();
+    @Override
+    public Collection<TaskDto> getTasks() {
+        return taskRepository.findAllTasks().stream()
+                .map(this::taskToDto)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public Task getTask(Long id) {
-        return taskRepository.findTaskById(id);
+    @Override
+    public List<TaskDto> getTasksByDeadLine() {
+        return taskRepository.findAllTasksByDeadLine().stream()
+                .map(this::taskToDto)
+                .collect(Collectors.toList());
     }
 
-    public Task createTask(Task source) {
-        return taskRepository.addTask(new Task(idGenerator.generateId(), source.getTitle()));
+    @Override
+    public TaskDto getTask(Long id) {
+        final Task task = taskRepository.findTaskById(id);
+        return taskToDto(task);
     }
 
-    public Task updateTask(Long id, Task source) {
-        return taskRepository.updateTask(id, source);
+    @Override
+    public TaskDto createTask(TaskDto dto) {
+        final Task task = dtoToTask(idGenerator.generateId(), dto);
+        final Task addedTask = taskRepository.addTask(task);
+
+        return taskToDto(addedTask);
     }
 
-    public Task deleteTask(Long id) {
-        return taskRepository.deleteTask(id);
+    @Override
+    public TaskDto updateTitle(Long id, TaskDto dto) {
+        final Task task = dtoToTask(id, dto);
+        final Task updatedTask = taskRepository.updateTitle(task);
+
+        return taskToDto(updatedTask);
+    }
+
+    @Override
+    public TaskDto deleteTask(Long id) {
+        final Task deleteTask = taskRepository.deleteTask(id);
+        return taskToDto(deleteTask);
     }
 
 }
