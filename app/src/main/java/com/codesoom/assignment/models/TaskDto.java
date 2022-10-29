@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class TaskDto {
 
     private Long id;
-    private String title;
+    private final String title;
     @JsonIgnore private LocalDateTime regDate;
     @JsonIgnore private LocalDateTime modDate;
 
@@ -25,17 +25,16 @@ public class TaskDto {
         this.deadLine = deadLine;
     }
 
-    private TaskDto() {
+    private TaskDto(Long id, String title, LocalDateTime regDate, LocalDateTime modDate, LocalDateTime deadLine) {
+        this.id = id;
+        this.title = title;
+        this.regDate = regDate;
+        this.modDate = modDate;
+        this.deadLine = deadLine;
     }
 
     public static TaskDto from(Task task) {
-        final TaskDto dto = new TaskDto();
-        dto.id = task.getId();
-        dto.title = task.getTitle();
-        dto.regDate = task.getRegDate();
-        dto.modDate = task.getModDate();
-        dto.deadLine = task.getDeadLine();
-        return dto;
+        return new TaskDto(task.getId(), task.getTitle(), task.getRegDate(), task.getModDate(), task.getDeadLine());
     }
 
     public Long getId() {
