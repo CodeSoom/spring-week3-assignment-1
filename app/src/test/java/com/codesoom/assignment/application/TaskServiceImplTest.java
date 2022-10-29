@@ -1,5 +1,6 @@
 package com.codesoom.assignment.application;
 
+import com.codesoom.assignment.repository.TaskRepositoryImpl;
 import com.codesoom.assignment.utils.NumberGenerator;
 import com.codesoom.assignment.utils.RandomTitleGenerator;
 import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
@@ -24,7 +25,7 @@ class TaskServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        taskServiceImpl = new TaskServiceImpl();
+        taskServiceImpl = new TaskServiceImpl(new TaskRepositoryImpl());
     }
 
     private void addOneTask() {

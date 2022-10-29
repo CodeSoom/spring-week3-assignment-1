@@ -1,6 +1,5 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.exceptions.InvalidTaskTitleException;
 import com.codesoom.assignment.exceptions.NoneTaskRegisteredException;
 import com.codesoom.assignment.exceptions.NullTaskException;
@@ -8,6 +7,7 @@ import com.codesoom.assignment.exceptions.NegativeIdException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskServiceImpl;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.repository.TaskRepositoryImpl;
 import com.codesoom.assignment.utils.NumberGenerator;
 import com.codesoom.assignment.utils.RandomTitleGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,12 +26,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskControllerTest {
 
     private TaskController controller;
-    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskServiceImpl();
-        controller = new TaskController(taskService);
+        controller = new TaskController(new TaskServiceImpl(new TaskRepositoryImpl()));
     }
 
     private void addOneTask() {
