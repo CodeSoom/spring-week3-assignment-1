@@ -1,64 +1,40 @@
 package com.codesoom.assignment.application;
 
-import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.repository.TaskRepository;
+import com.codesoom.assignment.utils.TaskIdGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    private final Map<Long, Task> taskMap = new TreeMap<>();
-    private Long newId = 0L;
+    private final TaskRepository taskRepository;
+    private final TaskIdGenerator idGenerator = new TaskIdGenerator();
+
+    public TaskServiceImpl(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public Collection<Task> getTasks() {
-        return Collections.unmodifiableCollection(taskMap.values());
+        return taskRepository.findAllTasks();
     }
 
     public Task getTask(Long id) {
-        final Task task = taskMap.get(id);
-        if (task == null) {
-            throw new TaskNotFoundException(id);
-        }
-
-        return task;
+        return taskRepository.findTaskById(id);
     }
 
     public Task createTask(Task source) {
-        final Task task = new Task(generateId(), source.getTitle());
-
-        taskMap.put(task.getId(), task);
-
-        return task;
+        return taskRepository.addTask(new Task(idGenerator.generateId(), source.getTitle()));
     }
 
     public Task updateTask(Long id, Task source) {
-        final Task originalTask = taskMap.get(id);
-        if (originalTask == null) {
-            throw new TaskNotFoundException(id);
-        }
-
-        final Task task = new Task(id, source.getTitle());
-        taskMap.put(task.getId(), task);
-
-        return task;
+        return taskRepository.updateTask(id, source);
     }
 
     public Task deleteTask(Long id) {
-        final Task originalTask = taskMap.remove(id);
-        if (originalTask == null) {
-            throw new TaskNotFoundException(id);
-        }
-
-        return originalTask;
+        return taskRepository.deleteTask(id);
     }
 
-    private Long generateId() {
-        newId += 1;
-        return newId;
-    }
 }
