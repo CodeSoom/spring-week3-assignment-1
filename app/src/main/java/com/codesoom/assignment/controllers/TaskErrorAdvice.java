@@ -1,10 +1,11 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.exceptions.InvalidTaskTitleException;
+import com.codesoom.assignment.exceptions.InvalidTaskDtoTitleException;
 import com.codesoom.assignment.exceptions.NegativeIdException;
-import com.codesoom.assignment.exceptions.NullTaskException;
+import com.codesoom.assignment.exceptions.NullTaskDtoException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.dto.ErrorResponse;
+import com.codesoom.assignment.repository.DuplicateTaskException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,7 +21,8 @@ public class TaskErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {NegativeIdException.class, NullTaskException.class, InvalidTaskTitleException.class})
+    @ExceptionHandler(value = {NegativeIdException.class, NullTaskDtoException.class,
+            InvalidTaskDtoTitleException.class, DuplicateTaskException.class})
     public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
         return new ErrorResponse(e.getMessage());
     }
