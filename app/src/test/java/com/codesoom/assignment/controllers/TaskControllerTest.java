@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("TaskController 유닛 테스트")
@@ -32,31 +32,14 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        taskService = mock(TaskService.class);
+        taskSource = Task.builder()
+                .title(TEST_TITLE)
+                .build();
+
+        taskService = spy(new TaskService());
         taskController = new TaskController(taskService);
 
-        taskSource = new Task();
-        taskSource.setTitle(TEST_TITLE);
-
-        given(taskService.getTask(TEST_ID))
-                .willReturn(taskSource);
-        given(taskService.getTask(TEST_NOT_EXSIT_ID))
-                .willThrow(TaskNotFoundException.class);
-
-        given(taskService.createTask(taskSource))
-                .willReturn(taskSource);
-        given(taskService.createTask(null))
-                .willThrow(NullPointerException.class);
-
-        given(taskService.updateTask(eq(TEST_ID), any(Task.class)))
-                .willReturn(taskSource);
-        given(taskService.updateTask(eq(TEST_NOT_EXSIT_ID), any(Task.class)))
-                .willThrow(TaskNotFoundException.class);
-
-        given(taskService.deleteTask(TEST_ID))
-                .willReturn(taskSource);
-        given(taskService.deleteTask(TEST_NOT_EXSIT_ID))
-                .willThrow(new TaskNotFoundException(100L));
+        taskService.createTask(taskSource);
     }
 
     @Nested
@@ -67,7 +50,7 @@ class TaskControllerTest {
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 할_일이_없을_때 {
             @Test
-            @DisplayName("빈 ArrayList를 리턴한다")
+            @DisplayName("빈 리스트를 리턴한다")
             void it_returns_empty_array() {
                 given(taskController.list())
                         .willReturn(new ArrayList<>());
@@ -83,13 +66,8 @@ class TaskControllerTest {
         @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
         class 할_일이_있을_때 {
             @Test
-            @DisplayName("비어있지 않은 ArrayList를 리턴한다")
+            @DisplayName("비어있지 않은 리스트를 리턴한다")
             void it_returns_tasks() {
-                List<Task> tasks = new ArrayList<>();
-                tasks.add(taskSource);
-                given(taskController.list())
-                        .willReturn(tasks);
-
                 assertThat(taskController.list())
                         .isNotEmpty();
 
@@ -139,10 +117,10 @@ class TaskControllerTest {
             @Test
             @DisplayName("할 일을 저장하고 리턴한다")
             void it_return_created_task() {
-                assertThat(taskController.create(taskSource))
+                assertThat(taskController.create(new Task()))
                         .isNotNull();
 
-                verify(taskService).createTask(taskSource);
+                verify(taskService, times(2)).createTask(any(Task.class));
             }
         }
 
