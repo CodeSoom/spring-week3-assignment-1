@@ -32,8 +32,9 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        taskSource = new Task();
-        taskSource.setTitle(TEST_TITLE);
+        taskSource = Task.builder()
+                .title(TEST_TITLE)
+                .build();
 
         taskService = spy(new TaskService());
         taskController = new TaskController(taskService);

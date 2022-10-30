@@ -4,7 +4,6 @@ import com.codesoom.assignment.exceptions.TaskDuplicationException;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -34,8 +33,9 @@ class TaskServiceTest {
     @BeforeEach
     void setUp() {
         taskService = new TaskService();
-        taskSource = new Task();
-        taskSource.setTitle(TEST_TITLE);
+        taskSource = Task.builder()
+                .title(TEST_TITLE)
+                .build();
 
         taskService.createTask(taskSource);
     }
@@ -145,8 +145,9 @@ class TaskServiceTest {
 
                 @BeforeEach
                 void setUp() {
-                    createTaskSource = new Task();
-                    createTaskSource.setTitle(POSTFIX_TITLE);
+                    createTaskSource = Task.builder()
+                            .title(POSTFIX_TITLE)
+                            .build();
                 }
 
                 @Test
@@ -210,25 +211,14 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 수정하고 리턴한다")
             void it_returns_updated_task() {
-                Task source = taskService.getTask(TEST_ID);
-                Long originId = source.getId();
-                source.setTitle(TEST_TITLE + POSTFIX_TITLE);
+                Task source = Task.builder()
+                        .title(TEST_TITLE + POSTFIX_TITLE)
+                        .build();
 
-                Task task = taskService.updateTask(originId, source);
+                Task task = taskService.updateTask(TEST_ID, source);
 
                 assertThat(task).isNotNull();
                 assertThat(task.getTitle()).isEqualTo(TEST_TITLE + POSTFIX_TITLE);
-            }
-
-            @Test
-            @DisplayName("할 일의 id값은 수정하지 않는다")
-            @Disabled("일어나지 않을 상황을 테스트합니다")
-            void it_returns_id() {
-                taskSource.setId(TEST_NOT_EXSIT_ID);
-
-                Task task = taskService.updateTask(TEST_ID, taskSource);
-
-                assertThat(task.getId()).isEqualTo(TEST_ID);
             }
         }
 
@@ -288,10 +278,11 @@ class TaskServiceTest {
 
 
     private void createTaskUntilCount(int createCount) {
-        Task tempCreateTask = new Task();
-
         for (int i = 0; i < createCount; i++) {
-            tempCreateTask.setTitle(createCount + " " + i);
+            Task tempCreateTask = Task.builder()
+                    .title(createCount + " " + i)
+                    .build();
+
             taskService.createTask(tempCreateTask);
         }
     }

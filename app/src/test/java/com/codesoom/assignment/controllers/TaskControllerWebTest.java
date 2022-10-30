@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.utils.JsonUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +34,6 @@ public class TaskControllerWebTest {
     private static final Long TEST_ID = 1L;
     private static final Long TEST_NOT_EXIST_ID = 100L;
     private static final String TEST_TITLE = "테스트는 재밌군요!";
-    private Task task;
     private Task taskSource;
     private String taskSourceToJson;
     @Autowired
@@ -46,13 +43,16 @@ public class TaskControllerWebTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        taskSource = new Task();
-        taskSource.setTitle(TEST_TITLE);
+        taskSource = Task.builder()
+                .title(TEST_TITLE)
+                .build();
+
         taskSourceToJson = JsonUtil.writeValue(taskSource);
 
-        task = new Task();
-        task.setId(TEST_ID);
-        task.setTitle(TEST_TITLE);
+        Task task = Task.builder()
+                .id(TEST_ID)
+                .title(TEST_TITLE)
+                .build();
 
         given(taskService.getTask(eq(TEST_ID)))
                 .willReturn(task);
