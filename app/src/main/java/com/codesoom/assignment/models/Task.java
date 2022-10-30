@@ -42,6 +42,9 @@ public class Task {
         }
 
         public Builder deadLine(LocalDateTime deadLine) {
+            if (deadLine == null) {
+                return this;
+            }
             this.deadLine = deadLine;
             return this;
         }
