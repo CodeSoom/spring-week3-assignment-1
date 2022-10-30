@@ -3,7 +3,6 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.exceptions.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import com.codesoom.assignment.utils.JsonUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -34,8 +33,7 @@ public class TaskControllerWebTest {
     private static final Long TEST_ID = 1L;
     private static final Long TEST_NOT_EXIST_ID = 100L;
     private static final String TEST_TITLE = "테스트는 재밌군요!";
-    private Task taskSource;
-    private String taskSourceToJson;
+    private String taskSourceToContent;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -43,11 +41,7 @@ public class TaskControllerWebTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        taskSource = Task.builder()
-                .title(TEST_TITLE)
-                .build();
-
-        taskSourceToJson = JsonUtil.writeValue(taskSource);
+        taskSourceToContent = "{\"title\":\"테스트는 재밌군요!\"}";
 
         Task task = Task.builder()
                 .id(TEST_ID)
@@ -59,7 +53,7 @@ public class TaskControllerWebTest {
         given(taskService.getTask(eq(TEST_NOT_EXIST_ID)))
                 .willThrow(new TaskNotFoundException(TEST_NOT_EXIST_ID));
 
-        given(taskService.createTask(taskSource))
+        given(taskService.createTask(any()))
                 .willReturn(task);
 
         given(taskService.updateTask(eq(TEST_ID), any(Task.class)))
@@ -126,7 +120,7 @@ public class TaskControllerWebTest {
             mockMvc.perform(
                             post("/tasks")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(taskSourceToJson)
+                                    .content(taskSourceToContent)
                     )
                     .andExpect(status().isCreated());
         }
@@ -145,7 +139,7 @@ public class TaskControllerWebTest {
                 mockMvc.perform(
                                 put("/tasks/" + TEST_ID)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(taskSourceToJson)
+                                        .content(taskSourceToContent)
                         )
                         .andExpect(status().isOk());
             }
@@ -160,7 +154,7 @@ public class TaskControllerWebTest {
                 mockMvc.perform(
                                 put("/tasks/" + TEST_NOT_EXIST_ID)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .content(JsonUtil.writeValue(taskSource))
+                                        .content(taskSourceToContent)
                         )
                         .andDo(print())
                         .andExpect(status().isNotFound());

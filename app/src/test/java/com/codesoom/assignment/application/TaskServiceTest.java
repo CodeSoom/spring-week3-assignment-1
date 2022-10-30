@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ class TaskServiceTest {
     private static final Long TEST_NOT_EXSIT_ID = 100L;
     private static final String TEST_TITLE = "테스트는 재밌군요!";
     private static final String POSTFIX_TITLE = " 그치만 매우 생소하군요!";
+    private static final String FIVE_HOURS_TITLE = "5시간 후까지 해야되는 작업!!";
+    private static final String ONE_DAY_TITLE = "1일 후까지 해야되는 작업!!";
+    private static final String TWO_WEEKS_TITLE = "2주 후까지 해야되는 작업!!";
     private TaskService taskService;
     private Task taskSource;
 
@@ -77,6 +81,23 @@ class TaskServiceTest {
                 assertThat(tasks)
                         .withFailMessage("%d개의 할 일을 리턴해야합니다", createCount)
                         .hasSize(createCount);
+            }
+
+            @Test
+            @DisplayName("종료 시간이 임박한 순으로 할 일 목록을 리턴한다")
+            void it_returns_tasks() {
+                createTaskWithEndtime();
+
+                List<Task> tasks = taskService.getTasks();
+
+                assertThat(tasks.get(0).getTitle())
+                        .isEqualTo(FIVE_HOURS_TITLE);
+
+                assertThat(tasks.get(1).getTitle())
+                        .isEqualTo(ONE_DAY_TITLE);
+
+                assertThat(tasks.get(2).getTitle())
+                        .isEqualTo(TWO_WEEKS_TITLE);
             }
         }
     }
@@ -140,7 +161,6 @@ class TaskServiceTest {
             @Nested
             @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
             class 중복된_할_일이_아닌_경우 {
-
                 private Task createTaskSource;
 
                 @BeforeEach
@@ -148,15 +168,6 @@ class TaskServiceTest {
                     createTaskSource = Task.builder()
                             .title(POSTFIX_TITLE)
                             .build();
-                }
-
-                @Test
-                @DisplayName("할 일을 저장하고 리턴한다")
-                void it_return_created_task() {
-                    Task task = taskService.createTask(createTaskSource);
-
-                    assertThat(task).isNotNull();
-                    assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
                 }
 
                 @Test
@@ -186,6 +197,41 @@ class TaskServiceTest {
 
                     assertThat(idCount).isEqualTo(1);
                 }
+
+                @Nested
+                @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+                class 종료_시간_설정을_안했다면 {
+                    @Test
+                    @DisplayName("할 일을 저장하고 기본 종료시간을 포함하여 리턴한다")
+                    void it_return_created_task() {
+                        Task task = taskService.createTask(createTaskSource);
+
+                        assertThat(task).isNotNull();
+                        assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
+                        assertThat(task.getEndTime()).isEqualTo(LocalDateTime.MAX);
+                    }
+                }
+
+                @Nested
+                @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+                class 종료_시간_설정을_했다면 {
+                    @Test
+                    @DisplayName("할 일을 저장하고 설정한 종료시간을 포함하여 리턴한다")
+                    void it_return_created_task() {
+                        LocalDateTime endTime = LocalDateTime.now().plusDays(1L);
+
+                        Task createTaskSource = Task.builder()
+                                .title(POSTFIX_TITLE)
+                                .endTime(endTime)
+                                .build();
+
+                        Task task = taskService.createTask(createTaskSource);
+
+                        assertThat(task).isNotNull();
+                        assertThat(task.getTitle()).isEqualTo(POSTFIX_TITLE);
+                        assertThat(task.getEndTime()).isEqualTo(endTime);
+                    }
+                }
             }
         }
 
@@ -211,14 +257,18 @@ class TaskServiceTest {
             @Test
             @DisplayName("할 일을 수정하고 리턴한다")
             void it_returns_updated_task() {
+                LocalDateTime time = LocalDateTime.now();
+
                 Task source = Task.builder()
                         .title(TEST_TITLE + POSTFIX_TITLE)
+                        .endTime(time)
                         .build();
 
                 Task task = taskService.updateTask(TEST_ID, source);
 
                 assertThat(task).isNotNull();
                 assertThat(task.getTitle()).isEqualTo(TEST_TITLE + POSTFIX_TITLE);
+                assertThat(task.getEndTime()).isEqualTo(time);
             }
         }
 
@@ -285,5 +335,26 @@ class TaskServiceTest {
 
             taskService.createTask(tempCreateTask);
         }
+    }
+
+    private void createTaskWithEndtime() {
+        Task endTimeAfter5Hour = Task.builder()
+                .title(FIVE_HOURS_TITLE)
+                .endTime(LocalDateTime.now().plusHours(5L))
+                .build();
+
+        Task endTimeAfter1Day = Task.builder()
+                .title(ONE_DAY_TITLE)
+                .endTime(LocalDateTime.now().plusDays(1L))
+                .build();
+
+        Task endTimeAfter2WeekDay = Task.builder()
+                .title(TWO_WEEKS_TITLE)
+                .endTime(LocalDateTime.now().plusWeeks(2L))
+                .build();
+
+        taskService.createTask(endTimeAfter2WeekDay);
+        taskService.createTask(endTimeAfter1Day);
+        taskService.createTask(endTimeAfter5Hour);
     }
 }

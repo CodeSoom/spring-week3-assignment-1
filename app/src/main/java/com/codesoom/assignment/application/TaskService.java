@@ -14,6 +14,15 @@ public class TaskService {
     private Long newId = 0L;
 
     public List<Task> getTasks() {
+
+        tasks.sort((o1, o2) -> {
+            if (o1.getEndTime().equals(o2.getEndTime())) {
+                return o1.getId().compareTo(o2.getId());
+            }
+
+            return o1.getEndTime().compareTo(o2.getEndTime());
+        });
+
         return tasks;
     }
 
@@ -32,6 +41,7 @@ public class TaskService {
         Task task = Task.builder()
                 .id(generateId())
                 .title(source.getTitle())
+                .endTime(source.getEndTime())
                 .build();
         
         tasks.add(task);
@@ -45,6 +55,7 @@ public class TaskService {
         Task newTask = Task.builder()
                 .id(id)
                 .title(source.getTitle())
+                .endTime(source.getEndTime())
                 .build();
 
         originTask = newTask;
@@ -67,8 +78,6 @@ public class TaskService {
     private boolean isExistTask(Task source) {
         return tasks.stream()
                 .map(Task::getTitle)
-                .filter(title -> title.equals(source.getTitle()))
-                .findFirst()
-                .isPresent();
+                .anyMatch(title -> title.equals(source.getTitle()));
     }
 }
