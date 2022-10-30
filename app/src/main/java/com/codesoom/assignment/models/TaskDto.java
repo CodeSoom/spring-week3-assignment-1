@@ -9,33 +9,28 @@ import java.time.LocalDateTime;
 public class TaskDto {
 
     private Long id;
-    private String title;
+    private final String title;
     @JsonIgnore private LocalDateTime regDate;
     @JsonIgnore private LocalDateTime modDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime deadLine = LocalDateTime.MAX; // 생성자에서 deadLine을 null로 주게 되면 deadLine이 없는 것으로 간주
+    private LocalDateTime deadLine;
 
     public TaskDto(@JsonProperty String title, @JsonProperty LocalDateTime deadLine) {
         this.title = title;
-
-        if (deadLine == null) {
-            return;
-        }
         this.deadLine = deadLine;
     }
 
-    private TaskDto() {
+    private TaskDto(Long id, String title, LocalDateTime regDate, LocalDateTime modDate, LocalDateTime deadLine) {
+        this.id = id;
+        this.title = title;
+        this.regDate = regDate;
+        this.modDate = modDate;
+        this.deadLine = deadLine;
     }
 
     public static TaskDto from(Task task) {
-        final TaskDto dto = new TaskDto();
-        dto.id = task.getId();
-        dto.title = task.getTitle();
-        dto.regDate = task.getRegDate();
-        dto.modDate = task.getModDate();
-        dto.deadLine = task.getDeadLine();
-        return dto;
+        return new TaskDto(task.getId(), task.getTitle(), task.getRegDate(), task.getModDate(), task.getDeadLine());
     }
 
     public Long getId() {
