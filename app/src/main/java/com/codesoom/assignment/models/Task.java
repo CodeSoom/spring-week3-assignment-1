@@ -1,23 +1,27 @@
 package com.codesoom.assignment.models;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@EqualsAndHashCode
 public class Task {
     private Long id;
-
     private String title;
+    private LocalDateTime endTime = LocalDateTime.MAX;
 
-    public Long getId() {
-        return id;
-    }
+    public Task() {}
 
-    public void setId(Long id) {
+    @Builder
+    public Task(Long id, String title, LocalDateTime endTime) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
+
+        if (endTime != null) {
+            this.endTime = endTime;
+        }
     }
 }
