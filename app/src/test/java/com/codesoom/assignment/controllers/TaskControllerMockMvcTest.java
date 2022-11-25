@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
-import com.codesoom.assignment.application.TaskService;
+import com.codesoom.assignment.application.TaskServiceImpl;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -36,15 +35,10 @@ class TaskControllerMockMvcTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TaskService service;
+    private TaskServiceImpl service;
 
     @BeforeEach
     void before() {
-//        given(service.getTask(1L))
-//                .willReturn(Task.builder()
-//                                .id(1L)
-//                                .title("test")
-//                                .build());
         given(service.getTask(1L))
                 .willReturn(new Task(1L, "test"));
 
@@ -75,7 +69,6 @@ class TaskControllerMockMvcTest {
     @Test
     @DisplayName("POST Task 객체 생성 테스트")
     void createTask() throws Exception {
-//        Task task = Task.builder().id(2L).title("test2").build();
         Task task = new Task(2L, "test2");
         String content = new ObjectMapper().writeValueAsString(task);
         log.info("content={}", content);
