@@ -34,7 +34,6 @@ class TaskControllerTest {
     @DisplayName("GET id가 1L인 Task가 존재하는지 테스트")
     void detail() {
         assertThat(taskController.getTask(1L)).isNotNull();
-        assertThat(taskController.getTask(1L).getTitle()).isEqualTo("test");
     }
 
     @Test
