@@ -1,6 +1,5 @@
 package com.codesoom.assignment.models;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,6 @@ public class Task {
     public Task() {
     }
 
-    @Builder
     public Task(Long id, String title) {
         this.id = id;
         this.title = title;
