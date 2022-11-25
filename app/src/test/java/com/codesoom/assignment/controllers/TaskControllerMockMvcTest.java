@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,18 +40,20 @@ class TaskControllerMockMvcTest {
 
     @BeforeEach
     void before() {
+//        given(service.getTask(1L))
+//                .willReturn(Task.builder()
+//                                .id(1L)
+//                                .title("test")
+//                                .build());
         given(service.getTask(1L))
-                .willReturn(Task.builder()
-                                .id(1L)
-                                .title("test")
-                                .build());
+                .willReturn(new Task(1L, "test"));
 
         given(service.getTask(100L))
                 .willThrow(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("Tasks 목록 얻기")
+    @DisplayName("GET Tasks 목록 테스트")
     void getTasks() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
@@ -59,7 +62,7 @@ class TaskControllerMockMvcTest {
     }
 
     @Test
-    @DisplayName("해당 Id에 해당하는 Task 얻기")
+    @DisplayName("GET 해당 Id에 해당하는 Task 얻고 title이 존재하는지 테스트")
     void getTask() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
@@ -70,21 +73,10 @@ class TaskControllerMockMvcTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 Id로 Task를 찾을 때 4xx 에러 날리기")
-    void getTaskWithWrongId() throws Exception {
-        mockMvc.perform(get("/tasks/{id}", 100L))
-                .andExpect(
-                        result -> assertThatThrownBy(() -> service.getTask(100L))
-                                .isInstanceOf(TaskNotFoundException.class)
-                )
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("Task 객체 생성하기")
+    @DisplayName("POST Task 객체 생성 테스트")
     void createTask() throws Exception {
-        Task task = Task.builder().id(2L).title("test2").build();
+//        Task task = Task.builder().id(2L).title("test2").build();
+        Task task = new Task(2L, "test2");
         String content = new ObjectMapper().writeValueAsString(task);
         log.info("content={}", content);
 
@@ -98,7 +90,7 @@ class TaskControllerMockMvcTest {
     }
 
     @Test
-    @DisplayName("title test -> test2 수정하기")
+    @DisplayName("PUT title을 test -> test2 수정 테스트")
     void updateTask() throws Exception {
         //TODO  - content 어떻게 집어넣을지?
         //      - update 후 수정된 title이 test2로 되어있는지 확인하는 방법 찾기
@@ -113,7 +105,19 @@ class TaskControllerMockMvcTest {
     }
 
     @Test
-    @DisplayName("id가 1번인 Task 삭제하기")
+    @DisplayName("PATCH title을 test -> test3 수정 테스트")
+    void patchTask() throws Exception {
+        mockMvc.perform(patch("/tasks/1")
+                        .content("{\"title\":\"test3\"}")
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.title").value("test2"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("DELETE id가 1번인 Task 삭제 후 NO_CONTENT 리턴 테스트")
     void deleteTask() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
