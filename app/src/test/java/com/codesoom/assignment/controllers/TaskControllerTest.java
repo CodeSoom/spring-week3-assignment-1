@@ -39,7 +39,8 @@ class TaskControllerTest {
         newTask.setTitle("new Task");
         Task task = taskController.create(newTask);
 
-        assertThat(task.getId()).isGreaterThan(1L);
+        assertThat(task.getId()).isEqualTo(2L);
+        assertThat(taskController.detail(2L).getTitle()).isEqualTo("new Task");
     }
 
     @Test
