@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskServiceTest {
 
     @Autowired
-    private TaskService taskService;
+    private TaskServiceImpl taskService;
 
     @BeforeEach
     void before() {
@@ -49,9 +49,9 @@ class TaskServiceTest {
     void createTask() {
         Task source = new Task();
         source.setTitle("test2");
-        taskService.createTask(source);
+        Task task = taskService.createTask(source);
 
-        assertThat(taskService.getTask(2L)).isNotNull();
+        assertThat(task.getTitle()).isEqualTo("test2");
     }
 
     @Test
