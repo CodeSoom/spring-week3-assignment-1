@@ -5,6 +5,7 @@ import com.codesoom.assignment.application.TaskServiceImpl;
 import com.codesoom.assignment.models.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +14,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -42,8 +47,7 @@ class TaskControllerMockMvcTest {
         given(service.getTask(1L))
                 .willReturn(new Task(1L, "test"));
 
-        given(service.getTask(100L))
-                .willThrow(TaskNotFoundException.class);
+        doThrow(TaskNotFoundException.class).when(service).getTask(100L);
     }
 
     @Test
@@ -60,10 +64,18 @@ class TaskControllerMockMvcTest {
     void getTask() throws Exception {
         mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").exists())
-                .andDo(print());
+                .andExpect(jsonPath("$.title").exists());
 
         verify(service).getTask(1L);
+    }
+
+    @Test
+    @DisplayName("GET 존재하지 않는 Id로 Task를 찾을 때 TaskNotFoundException을 던지는지 테스트")
+    void getTaskWithInvalidId() throws Exception {
+        mockMvc.perform(get("/tasks/100"))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertThat(result.getResolvedException())
+                                        .isInstanceOf(TaskNotFoundException.class));
     }
 
     @Test
@@ -71,30 +83,24 @@ class TaskControllerMockMvcTest {
     void createTask() throws Exception {
         Task task = new Task(2L, "test2");
         String content = new ObjectMapper().writeValueAsString(task);
-        log.info("content={}", content);
 
         //perform() 안에 조건 집어넣기
         mockMvc.perform(post("/tasks")
                         .content(content)
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andExpect(status().isCreated());
     }
 
     @Test
     @DisplayName("PUT title을 test -> test2 수정 테스트")
     void updateTask() throws Exception {
-        //TODO  - content 어떻게 집어넣을지?
-        //      - update 후 수정된 title이 test2로 되어있는지 확인하는 방법 찾기
-
         mockMvc.perform(put("/tasks/1")
-                .content("{\"title\":\"test2\"}")
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON))
+                        .content("{\"title\":\"test2\"}")
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.title").value("test2"))
-                .andDo(print());
+                .andReturn();
     }
 
     @Test
@@ -104,9 +110,7 @@ class TaskControllerMockMvcTest {
                         .content("{\"title\":\"test3\"}")
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
-                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.title").value("test2"))
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @Test
