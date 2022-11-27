@@ -1,6 +1,7 @@
 package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.TaskNotFoundException;
+import com.codesoom.assignment.TitleNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,6 +119,20 @@ class TaskControllerTest {
                 Task task = taskController.updateTask(source.getId(), source);
 
                 assertThat(task.getTitle()).isEqualTo("잠 자기");
+            }
+        }
+
+        @Nested
+        @DisplayName("빈 title을 request할 때")
+        class Context_with_empty_title {
+            @Test
+            @DisplayName("TitleNotFoundException을 던진다")
+            void it_throw_TitleNotFoundException() {
+                Task source = new Task();
+                source.setTitle("");
+
+                assertThatThrownBy(() -> taskController.updateTask(source.getId(), source))
+                        .isInstanceOf(TitleNotFoundException.class);
             }
         }
     }

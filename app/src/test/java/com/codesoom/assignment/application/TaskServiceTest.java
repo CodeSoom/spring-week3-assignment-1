@@ -2,28 +2,25 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
 class TaskServiceTest {
 
-    @Autowired
     private TaskServiceImpl taskService;
 
-    @AfterEach
-    void after() {
-        List<Task> taskList = taskService.getTasks();
-        taskList.clear();
+    @BeforeEach
+    void before() {
+        taskService = new TaskServiceImpl();
+
+        Task task = new Task();
+        task.setTitle("test");
+        taskService.createTask(task);
     }
 
     @Nested
@@ -35,10 +32,6 @@ class TaskServiceTest {
             @Test
             @DisplayName("List의 모든 Task들을 리턴한다")
             void it_return_tasks() {
-                Task task = new Task();
-                task.setTitle("test");
-                taskService.createTask(task);
-
                 assertThat(taskService.getTasks()).isNotEmpty();
             }
         }
@@ -46,6 +39,11 @@ class TaskServiceTest {
         @Nested
         @DisplayName("Task가 존재하지 않는다면")
         class Context_with_NoTask {
+            @BeforeEach
+            void setUp() {
+                taskService.deleteTask(1L);
+            }
+
             @Test
             @DisplayName("빈 배열을 리턴한다")
             void it_return_empty_list() {
@@ -63,12 +61,8 @@ class TaskServiceTest {
             @Test
             @DisplayName("해당하는 Task를 리턴한다")
             void it_return_task() {
-                Task source = new Task();
-                source.setTitle("test");
-                Long taskId = taskService.createTask(source).getId();
-
-                assertThat(taskService.getTask(taskId)).isNotNull();
-                assertThat(taskService.getTasks().contains(taskService.getTask(taskId)))
+                assertThat(taskService.getTask(1L)).isNotNull();
+                assertThat(taskService.getTasks().contains(taskService.getTask(1L)))
                         .isTrue();
             }
         }
@@ -88,38 +82,36 @@ class TaskServiceTest {
    @Nested
    @DisplayName("createTask 메소드는")
    class Describe_createTask {
-        @Nested
-        @DisplayName("task 객체가 정상적으로 넘어올 경우")
-        class Context_with_task {
-            @Test
-            @DisplayName("task를 생성하고 list에 추가한다")
-            void it_return_task() {
-                Task source = new Task();
-                source.setTitle("task");
-                Task task = taskService.createTask(source);
+        @Test
+        @DisplayName("넘어온 title로 Task 객체를 생성한다")
+        void it_return_task() {
+            Task source = new Task();
+            source.setTitle("task");
+            Task task = taskService.createTask(source);
 
-                assertThat(task.getTitle()).isEqualTo("task");
-            }
+            assertThat(task.getTitle()).isEqualTo("task");
         }
    }
 
     @Nested
     @DisplayName("updateTask 메소드는")
     class Describe_updateTask {
+        private Task getTaskWithNewTitle() {
+            Task task = new Task();
+            task.setTitle("update title");
+            return task;
+        }
+
         @Nested
         @DisplayName("id와 title이 넘어올 경우")
         class Context_with_id_title {
             @Test
             @DisplayName("Id에 해당하는 Task의 title을 수정하고 리턴한다")
             void it_return_updated_task() {
-                Task source = new Task();
-                source.setTitle("test");
-                Long taskId = taskService.createTask(source).getId();
+                Task task = getTaskWithNewTitle();
 
-                Task task = new Task();
-                task.setTitle("update title");
-
-                assertThat(taskService.updateTask(taskId, task).getTitle()).isNotEqualTo("test");
+                assertThat(taskService.updateTask(1L, task).getTitle())
+                        .isNotEqualTo("test");
             }
         }
 
@@ -129,8 +121,7 @@ class TaskServiceTest {
             @Test
             @DisplayName("TaskNotFoundException을 던진다")
             void it_throw_TaskNotFoundException() {
-                Task task = new Task();
-                task.setTitle("update title");
+                Task task = getTaskWithNewTitle();
 
                 assertThatThrownBy(() -> taskService.updateTask(100L, task))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -147,13 +138,10 @@ class TaskServiceTest {
             @Test
             @DisplayName("Task를 List에서 삭제한다")
             void it_remove_task() {
-                Task source = new Task();
-                source.setTitle("test");
-                Task task = taskService.createTask(source);
+                Task deletedTask = taskService.getTask(1L);
+                taskService.deleteTask(1L);
 
-                taskService.deleteTask(task.getId());
-
-                assertThat(taskService.getTasks()).doesNotContain(task);
+                assertThat(taskService.getTasks()).doesNotContain(deletedTask);
             }
         }
 
