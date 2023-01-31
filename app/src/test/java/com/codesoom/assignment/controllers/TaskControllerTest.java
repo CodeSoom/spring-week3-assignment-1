@@ -5,8 +5,11 @@ import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+//TODO 컨트롤러 유닛테스트 작성하기.
 class TaskControllerTest {
     private TaskService taskService;
     private TaskController taskController;
@@ -35,10 +38,11 @@ class TaskControllerTest {
         task.setTitle(secondTitle);
         taskController.create(task);
 
-        assertThat(taskController.list()).isNotEmpty();
-        assertThat(taskController.list()).hasSize(2);
-        assertThat(taskController.list().get(0).getId()).isEqualTo(2L);
-        assertThat(taskController.list().get(0).getTitle()).isEqualTo(secondTitle);
+        List<Task> taskList = taskController.list();
+
+        assertThat(taskList).hasSize(2);
+        assertThat(taskList.get(0).getId()).isEqualTo(2L);
+        assertThat(taskList.get(0).getTitle()).isEqualTo(secondTitle);
     }
 
     @Test

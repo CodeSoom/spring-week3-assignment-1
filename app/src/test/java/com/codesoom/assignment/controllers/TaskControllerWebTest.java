@@ -23,7 +23,7 @@ public class TaskControllerWebTest {
     private static final String TASK_TITLE = "Test1";
     private String taskContent = "{\"title\":\"Test2\"}";
 
-    private Task task = new Task;
+    private Task task = new Task();
     @Autowired
     MockMvc mockMvc;
 

@@ -3,6 +3,8 @@ package com.codesoom.assignment.application;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +29,19 @@ class TaskServiceTest {
     @Test
     void getList() {
         assertThat(taskService.getTasks()).hasSize(1);
-        assertThat(taskService.getTask(1L)).isEqualTo(TASK_TITLE);
     }
 
+    @Test
+    void getFoundDetail() {
+        assertThat(taskService.getTask(1L).getTitle()).isEqualTo(TASK_TITLE);
+    }
+
+    @Test
+    void getNotFoundDetail() {
+        assertThatThrownBy(() -> taskService.getTask(404L)).isInstanceOf(TaskNotFoundException.class);
+    }
+
+    @DisplayName("새로운 Task를 생성한다.")
     @Test
     void createTask() {
         int oldSize = taskService.getTasks().size();
@@ -44,15 +56,45 @@ class TaskServiceTest {
         assertThat(newSize - oldSize).isEqualTo(1);
     }
 
-    @Test
-    void updateTaks() {
-        String updateTitle = "Test2";
-        Task source = new Task();
-        source.setTitle(updateTitle);
 
-        Task task = taskService.updateTask(1L, source);
+    @Nested
+    @DisplayName("updateTask 메소드는")
+    class Describe_updateTast {
+        private String updateTitle = "Test2";
+        private Task source;
 
-        assertThat(task.getTitle()).isEqualTo(updateTitle);
+        @BeforeEach
+        void setUp() {
+            source = new Task();
+            source.setTitle(updateTitle);
+        }
+
+        @Nested
+        @DisplayName("만약 등록되어 있는 Id와 새로운 제목이 주어진다면")
+        class updateValidTask {
+
+            @Test
+            @DisplayName("등록 된 Id를 새로운 제목으로 업데이트 한다")
+            void updateTask() {
+
+                Task task = taskService.updateTask(1L, source);
+
+                assertThat(task.getTitle()).isEqualTo(updateTitle);
+            }
+        }
+
+        @Nested
+        @DisplayName("만약 등록되어 있지 않은 Id와 새로운 제목이 주어진다면")
+        class updateInvalidTask {
+
+            @Test
+            @DisplayName("찾을 수 없다는 예외를 던진다")
+            void updateNotFoundTask() {
+                assertThatThrownBy(() -> taskService.updateTask(404L, source))
+                        .isInstanceOf(TaskNotFoundException.class);
+            }
+        }
+
     }
 
     @Test
