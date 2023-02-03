@@ -24,6 +24,7 @@ public class TaskControllerWebTest {
     private String taskContent = "{\"title\":\"Test2\"}";
 
     private Task task = new Task();
+
     @Autowired
     MockMvc mockMvc;
 

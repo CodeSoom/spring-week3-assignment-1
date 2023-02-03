@@ -9,7 +9,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//TODO 컨트롤러 유닛테스트 작성하기.
 class TaskControllerTest {
     private TaskService taskService;
     private TaskController taskController;
@@ -28,7 +27,7 @@ class TaskControllerTest {
 
     @Test
     void list() {
-        assertThat(taskController.list()).isEmpty();
+        assertThat(taskController.list()).isNotEmpty();
     }
 
     @Test
