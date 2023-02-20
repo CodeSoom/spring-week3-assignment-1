@@ -11,7 +11,8 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
+
+    private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
@@ -24,12 +25,14 @@ public class TaskController {
 
     @GetMapping("{id}")
     public Task detail(@PathVariable Long id) {
+        System.out.println("id = " + id);
         return taskService.getTask(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
+        System.out.println("task = " + task);
         return taskService.createTask(task);
     }
 
@@ -38,6 +41,7 @@ public class TaskController {
             @PathVariable Long id,
             @RequestBody Task task
     ) {
+        System.out.println("id = " + id);
         return taskService.updateTask(id, task);
     }
 

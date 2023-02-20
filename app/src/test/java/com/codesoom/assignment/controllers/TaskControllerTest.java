@@ -2,7 +2,6 @@ package com.codesoom.assignment.controllers;
 
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.service.TaskService;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +21,7 @@ class TaskControllerTest {
     }
 
     @Test
-    public void list() throws Exception {
+    public void list() {
         //given
         TaskService service = new TaskService();
         TaskController controller = new TaskController(service);

@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class TaskServiceTest {
@@ -20,7 +19,7 @@ class TaskServiceTest {
     static final String TASK_TITLE = "test";
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         taskService = new TaskService();
 
         Task task = new Task();
@@ -61,23 +60,59 @@ class TaskServiceTest {
         }
     }
 
+    @DisplayName("Task 수정")
     @Nested
-    class CreateTaskProcess{
+    class UpdateTaskProcess {
 
+        @DisplayName("updateTask 테스트")
         @Test
-        public void createTask() throws Exception{
+        public void updateTask() {
             //given
-            Task task = new Task();
-            task.setTitle("일");
+            Task source = new Task();
+            source.setTitle("New Title");
+            taskService.updateTask(1L, source);
             //when
-            taskService.createTask(task);
-
-            int size = taskService.getTasks().size();
+            Task task = taskService.getTask(1L);
+            System.out.println("UpdateTaskName:{} " + task.getTitle());
             //Then
-            assertThat(size).isEqualTo(2);
-            assertThat(size).isNotNull();
+            assertThat(task.getTitle()).isNotEqualTo(TASK_TITLE);
         }
 
+    }
+
+    @DisplayName("Task 생성")
+    @Nested
+    class CreateTaskProcess {
+        @DisplayName("일 생성 테스트")
+        @Test
+        public void createTask() {
+            int oldSize = taskService.getTasks().size();
+
+            Task task = new Task();
+            task.setTitle(TASK_TITLE);
+
+            taskService.createTask(task);
+
+            int newSize = taskService.getTasks().size();
+//            assertThat(taskService.getTasks()).hasSize(2);
+            assertThat(newSize - oldSize).isEqualTo(1);
+        }
+    }
+
+    @DisplayName("Task 삭제")
+    @Nested
+    class DeleteTask {
+        @DisplayName("Task 삭제 테스트")
+        @Test
+        public void deleteTask() {
+            //given
+            int oldSize = taskService.getTasks().size();
+            //when
+            taskService.deleteTask(1L);
+            int newSize = taskService.getTasks().size();
+            //Then
+            assertThat(oldSize - newSize).isEqualTo(1);
+        }
 
     }
 
