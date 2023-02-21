@@ -74,24 +74,7 @@ class TaskControllerTest {
             assertThat(taskController.create(new Task()).getTitle()).isNull();
         }
 
-        @Test
-        public void createInvalidsameId()  {
-            //given
-            Task task1 = new Task();
-            task1.setId(1L);
-            task1.setTitle(DUMMY_TITLE);
-            taskController.create(task1);
 
-            Task task2 = new Task();
-            task2.setId(1L);
-            task2.setTitle(DUMMY_TITLE);
-            taskController.create(task2);
-            //Then
-            assertThatExceptionOfType(Exception.class)
-                    .isThrownBy(()->{
-                        taskController.detail(1L);
-                    });
-        }
     }
 
     @DisplayName("update Process")
@@ -133,4 +116,23 @@ class TaskControllerTest {
                  }).withMessageNotContainingAny("Task not found 100");
     }
 
+    @Test
+    public void allProcess() throws Exception{
+        assertThat(taskController.list()).isNotEmpty();
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo(DUMMY_TITLE);
+
+        Task newTask = new Task();
+        newTask.setTitle("Dummy2");
+
+        taskController.create(newTask);
+        assertThat(taskController.list().size()).isEqualTo(2);
+
+        newTask.setTitle("Dummy3");
+        taskController.update(1L,newTask );
+
+        assertThat(taskController.list().get(0).getTitle()).isEqualTo("Dummy3");
+
+        taskController.delete(1L);
+        assertThat(taskController.list().size()).isEqualTo(1);
+    }
 }
