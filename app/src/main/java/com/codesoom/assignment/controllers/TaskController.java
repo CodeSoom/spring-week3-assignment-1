@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.service.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,18 +12,23 @@ import java.util.List;
 @CrossOrigin
 public class TaskController {
 
+//    private final TaskService taskService = new TaskService();
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService){
         this.taskService = taskService;
     }
 
+
+
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Task> list() {
         return taskService.getTasks();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Task detail(@PathVariable Long id) {
         System.out.println("id = " + id);
         return taskService.getTask(id);

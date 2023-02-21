@@ -12,11 +12,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TaskControllerTest {
     private TaskController taskController;
 
-    
-//    @Before(value = "createNewTask")
+    private TaskService taskService;
+
     @BeforeEach
     public void init(){
-        TaskService taskService = new TaskService();
         taskController = new TaskController(taskService);
     }
 
@@ -24,7 +23,7 @@ class TaskControllerTest {
     public void list() {
         //given
         TaskService service = new TaskService();
-        TaskController controller = new TaskController(service);
+        TaskController controller = new TaskController(taskService);
         //when
 
         //Then
