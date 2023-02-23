@@ -40,7 +40,7 @@ class TaskControllerTest {
             assertThat(controller.list()).isNotEmpty();
         }
 
-        @DisplayName("detail 검색")
+        @DisplayName("/tasks Process는 할일을 아이디로 조회해서 할일을 반환합니다.")
         @Test
         public void PathListValid(){
             //when

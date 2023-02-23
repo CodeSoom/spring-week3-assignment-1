@@ -8,15 +8,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 class TaskServiceTest {
 
     private TaskService taskService;
 
-    static final String TASK_TITLE = "test";
+    static final String TASK_TITLE = "New Task";
+    static final String TASK_OLD_TITLE = "Old Task";
 
     @BeforeEach
     void init() {
@@ -30,15 +32,13 @@ class TaskServiceTest {
     @DisplayName("Task 조회 테스트")
     @Nested
     class getTaskProcess {
-        @DisplayName("getTasks -> 전체 리스트 조회")
         @Test
-        public void getTasksValid() throws Exception {
+        public void getTasksValid() {
             assertThat(taskService.getTasks()).isNotEmpty();
         }
 
-        @DisplayName("getTask-> 단일 리스트 조회")
         @Test
-        public void getTaskValid() throws Exception {
+        public void getTaskValid() {
             //given
             Task task = new Task();
             task.setTitle("일1");
@@ -49,7 +49,6 @@ class TaskServiceTest {
             assertThat(makeService.getTitle()).isEqualTo("일1");
         }
 
-        @DisplayName("getTask-> 단일 리스트 조회 (오류)")
         @Test
         public void getTaskInvalid() {
 
@@ -64,7 +63,6 @@ class TaskServiceTest {
     @Nested
     class UpdateTaskProcess {
 
-        @DisplayName("updateTask 테스트")
         @Test
         public void updateTask() {
             //given
@@ -83,7 +81,6 @@ class TaskServiceTest {
     @DisplayName("Task 생성")
     @Nested
     class CreateTaskProcess {
-        @DisplayName("일 생성 테스트")
         @Test
         public void createTask() {
             int oldSize = taskService.getTasks().size();
@@ -94,9 +91,34 @@ class TaskServiceTest {
             taskService.createTask(task);
 
             int newSize = taskService.getTasks().size();
-//            assertThat(taskService.getTasks()).hasSize(2);
             assertThat(newSize - oldSize).isEqualTo(1);
         }
+    }
+
+    @DisplayName("Task 수정")
+    @Nested
+    class UpdateTask {
+
+        @Test
+        public void updateValid() throws Exception {
+            //given
+            Task task = new Task();
+            task.setTitle(TASK_OLD_TITLE);
+            //when
+            taskService.updateTask(1L, task);
+            //Then
+            assertThat(task.getTitle()).isEqualTo(TASK_OLD_TITLE);
+        }
+
+        @Test
+        public void updateInValid() throws Exception {
+            Task task = new Task();
+            task.setTitle(TASK_OLD_TITLE);
+            assertThatExceptionOfType(TaskNotFoundException.class)
+                    .isThrownBy(() -> taskService.updateTask(100L, task))
+                    .withMessageNotContainingAny("Task not found 100");
+        }
+
     }
 
     @DisplayName("Task 삭제")
@@ -112,6 +134,17 @@ class TaskServiceTest {
             int newSize = taskService.getTasks().size();
             //Then
             assertThat(oldSize - newSize).isEqualTo(1);
+        }
+
+        @Test
+        public void deleteInValid() throws Exception {
+            //given
+            List<Task> list = taskService.getTasks();
+            //when
+            assertThatExceptionOfType(TaskNotFoundException.class)
+                    .isThrownBy(() -> {
+                        taskService.deleteTask(100L);
+                    }).withMessageNotContainingAny("Task not found 100");
         }
 
     }
