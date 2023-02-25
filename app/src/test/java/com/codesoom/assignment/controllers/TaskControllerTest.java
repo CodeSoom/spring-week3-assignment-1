@@ -94,15 +94,16 @@ class TaskControllerTest {
         }
     }
 
-    @DisplayName("Delete Task Process")
+    @DisplayName("Delete")
     @Nested
     class DeleteTaskController{
 
-        @DisplayName("Delete Task 확인")
+        @DisplayName("할 일을 삭제합니다.")
         @Test
         public void deleteController(){
             //when
             taskController.delete(1L);
+            
             //Then
             assertThat(taskController.list()).isEmpty();
         }
