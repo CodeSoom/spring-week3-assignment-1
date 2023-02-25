@@ -147,6 +147,16 @@ class TaskServiceTest {
                     }).withMessageNotContainingAny("Task not found 100");
         }
 
+        @Test
+        public void deleteTasksWithNotExsitedId() throws Exception{
+            //given
+            assertThatThrownBy(()->taskService.deleteTask(100L))
+                    .isInstanceOf(TaskNotFoundException.class);
+            //when
+
+            //Then
+        }
+
     }
 
 

@@ -16,11 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,44 +38,42 @@ class TaskWebControllerTest {
     @MockBean
     private TaskService taskService;
 
-
     @BeforeEach
-    void setup(){
-        ArrayList<Task> tasks = new ArrayList<>();
+    void setup() {
+        List<Task> tasks = new ArrayList<>();
 
         Task task = new Task();
         task.setTitle("Test Task");
+        tasks.add(task);
 
+        given(taskService.getTasks()).willReturn(tasks);
+
+        given(taskService.getTask(1L)).willReturn(task);
+
+        given(taskService.getTask(100L))
+                .willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.updateTask(eq(100L), any(Task.class)))
+                .willThrow(new TaskNotFoundException(100L));
+
+        given(taskService.deleteTask(1L)).willReturn(task);
+
+        given(taskService.deleteTask(100L)).willThrow(new TaskNotFoundException(100L));
     }
+
 
     @DisplayName("/tasks에 대한 테스트")
     @Nested
     class list {
+
         @Test
         void list() throws Exception {
-            //given
-            ArrayList<Task> tasks = new ArrayList<>();
-            Task task = new Task();
-            task.setTitle("Test task");
-            tasks.add(task);
-            given(taskService.getTasks()).willReturn(tasks);
-
             mockMvc.perform(get("/tasks"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString("Test task")));
-        }
+                    .andExpect(content().string(containsString("[{\"id\":null,\"title\":\"Test Task\"}]")));
 
-        @Test
-        public void contextEmpty() throws Exception {
-            //given
-            ArrayList<Task> tasks = new ArrayList<>();
-            given(taskService.getTasks()).willReturn(tasks);
-            //when
-            mockMvc.perform(get("/tasks"))
-                    .andExpect(content().string("[]"))
-                    .andExpect(status().isOk());
+            verify(taskService).getTasks();
         }
-
     }
 
     @DisplayName("/tasks/N에 대한 테스트")
@@ -96,16 +95,12 @@ class TaskWebControllerTest {
 
         @Test
         public void detailWithValidId() throws Exception {
-            Task task = new Task();
-            given(taskService.getTask(1L)).willReturn(task);
-
             mockMvc.perform(get("/tasks/1"))
                     .andExpect(status().isOk());
         }
 
         @Test
         public void detailWithInvalidId() throws Exception {
-            given(taskService.getTask(100L)).willThrow(new TaskNotFoundException(100L));
             mockMvc.perform(get("/tasks/100"))
                     .andExpect(status().isNotFound());
         }
@@ -125,45 +120,65 @@ class TaskWebControllerTest {
             verify(taskService).createTask(any(Task.class));
         }
 
+
     }
+
+    @Test
+    public void verifyNoMoreInteractions() throws Exception {
+        //given
+        mockMvc.perform(get("/tasks/1"))
+                .andExpect(status().isOk());
+        //when
+        verify(taskService, never()).deleteTask(anyLong());//taskService
+        //Then
+    }
+
 
     @DisplayName("update")
     @Nested
     class updateProcess {
+
         @Test
-        public void updateTask() throws Exception{
+        public void updateTask() throws Exception {
             //given
             mockMvc.perform(patch("/tasks/1")
-                    .contentType(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"title\": \"Rename Task\"}"))
                     .andExpect(status().isOk());
             //when
-            verify(taskService).updateTask(eq(1L),any(Task.class));
+            verify(taskService).updateTask(eq(1L), any(Task.class));
             //Then
         }
 
         @Test
-        public void updateTaskInValid() throws Exception{
+        public void updateTaskInValid() throws Exception {
             //given
-            mockMvc.perform(patch("/tasks/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .contentType("{\"title\": \"Rename Task\"}"))
-                    .andExpect(status().isNoContent());
+            mockMvc.perform(patch("/tasks/100")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"title\": \"Rename Task\"}"))
+                    .andExpect(status().isNotFound());
             //when
-
+            verify(taskService).updateTask(eq(100L), any(Task.class));
             //Then
         }
     }
 
     @Test
     public void deleteValid() throws Exception {
-        //given
-        Task task = new Task();
-
-        given(taskService.deleteTask(1L)).willReturn(task);
-        //when
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
+
+        verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    public void deleteInValid() throws Exception{
+        //given
+        mockMvc.perform(delete("/tasks/100"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("{\"message\":\"Task not found\"}")));
+
+        verify(taskService).deleteTask(100L);
     }
 
 }
