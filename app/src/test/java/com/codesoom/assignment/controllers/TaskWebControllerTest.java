@@ -4,6 +4,7 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.exception.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
 import com.codesoom.assignment.service.TaskService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,6 +36,16 @@ class TaskWebControllerTest {
 
     @MockBean
     private TaskService taskService;
+
+
+    @BeforeEach
+    void setup(){
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        Task task = new Task();
+        task.setTitle("Test Task");
+
+    }
 
     @DisplayName("/tasks에 대한 테스트")
     @Nested
@@ -94,12 +109,50 @@ class TaskWebControllerTest {
             mockMvc.perform(get("/tasks/100"))
                     .andExpect(status().isNotFound());
         }
+
+    }
+
+    @DisplayName("POST /tasks ->")
+    @Nested
+    class CreateTask {
+        @Test
+        public void createTask() throws Exception {
+            //given
+            mockMvc.perform(post("/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{}")
+            ).andExpect(status().isCreated());
+            verify(taskService).createTask(any(Task.class));
+        }
+
     }
 
     @DisplayName("update")
     @Nested
     class updateProcess {
+        @Test
+        public void updateTask() throws Exception{
+            //given
+            mockMvc.perform(patch("/tasks/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"title\": \"Rename Task\"}"))
+                    .andExpect(status().isOk());
+            //when
+            verify(taskService).updateTask(eq(1L),any(Task.class));
+            //Then
+        }
 
+        @Test
+        public void updateTaskInValid() throws Exception{
+            //given
+            mockMvc.perform(patch("/tasks/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType("{\"title\": \"Rename Task\"}"))
+                    .andExpect(status().isNoContent());
+            //when
+
+            //Then
+        }
     }
 
     @Test

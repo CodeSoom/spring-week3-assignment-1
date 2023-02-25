@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @SpringBootTest
 class TaskControllerTest {
     private TaskController taskController;
-
     private TaskService taskService = new TaskService();
+
     private static final String DUMMY_TITLE = "dummy_1";
 
     @BeforeEach
