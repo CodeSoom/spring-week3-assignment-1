@@ -9,13 +9,13 @@ class {
   }
 
   async loadTasks() {
-    const { data } = await axios.get('http://localhost:8080/tasks');
+    const { data } = await axios.get('http://localhost:8888/tasks');
     this.state.tasks = data;
   }
 
   async addTask() {
     const title = this.getEl('title').value;
-    await axios.post('http://localhost:8080/tasks', {
+    await axios.post('http://localhost:8888/tasks', {
       title,
     });
     await this.loadTasks();
@@ -37,14 +37,14 @@ class {
 
   async updateTask(id) {
     const title = this.getEl(`title-${id}`).value;
-    await axios.patch(`http://localhost:8080/tasks/${id}`, {
+    await axios.patch(`http://localhost:8888/tasks/${id}`, {
       title,
     });
     await this.loadTasks();
   }
 
   async deleteTask(id) {
-    await axios.delete(`http://localhost:8080/tasks/${id}`);
+    await axios.delete(`http://localhost:8888/tasks/${id}`);
     await this.loadTasks();
   }
 }

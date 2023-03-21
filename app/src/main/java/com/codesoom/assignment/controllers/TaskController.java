@@ -1,7 +1,7 @@
 package com.codesoom.assignment.controllers;
 
-import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
+import com.codesoom.assignment.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,37 +11,45 @@ import java.util.List;
 @RequestMapping("/tasks")
 @CrossOrigin
 public class TaskController {
-    private TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+//    private final TaskService taskService = new TaskService();
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService){
         this.taskService = taskService;
     }
 
+
+
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Task> list() {
         return taskService.getTasks();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Task detail(@PathVariable Long id) {
+        System.out.println("id = " + id);
         return taskService.getTask(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody Task task) {
+        System.out.println("task = " + task);
         return taskService.createTask(task);
     }
 
-    @PutMapping("{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
+    @RequestMapping(value = "{id}",method = {RequestMethod.PATCH,RequestMethod.PUT})
+    public Task update(
+            @PathVariable Long id,
+            @RequestBody Task task
+    ) {
+        System.out.println("id = " + id);
         return taskService.updateTask(id, task);
     }
 
-    @PatchMapping("{id}")
-    public Task patch(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
-    }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
