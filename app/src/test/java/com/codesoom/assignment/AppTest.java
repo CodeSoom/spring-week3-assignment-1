@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.*;
 
 
+@DisplayName("App 클래스 테스트")
 @SpringBootTest
 class AppTest {
 

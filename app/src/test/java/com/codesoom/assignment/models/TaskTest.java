@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("Task 테스트")
 class TaskTest {
     public static final String TITLE = "TITLE";
     public static final Long UPDATE_ID = 1L;

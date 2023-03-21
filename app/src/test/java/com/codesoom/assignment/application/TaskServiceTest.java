@@ -10,7 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("TaskService CRUD 테스트")
+@DisplayName("TaskService 테스트")
 class TaskServiceTest {
     public static final String TITLE = "NEW_TITLE";
     public static final String UPDATE_TITLE = "NEW_TITLE";
@@ -23,20 +23,20 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("생성하지 않은 리스트를 조회하면 사이즈는 0이다")
+    @DisplayName("빈 리스트를 조회하면 사이즈는 0이다")
     public void fetchList() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(0);
     }
 
     @Test
-    @DisplayName("빈 리스트를 상세조회할 경우 에러 반환")
+    @DisplayName("빈 리스트를 상세 조회하는 경우 에러 반환")
     public void getThrowError(){
         assertThatThrownBy(() -> taskService.getTask(1L));
     }
 
     @Test
-    @DisplayName("생성 로직 테스트 생성하면 사이즈가 1증가한다.")
+    @DisplayName(" 객체 생서 요청을 하면 사이즈가 1증가한다.")
     public void create() {
         assertThat(taskService.getTasks()).hasSize(0);
 
