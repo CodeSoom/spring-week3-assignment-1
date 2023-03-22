@@ -36,7 +36,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName(" 객체 생서 요청을 하면 사이즈가 1증가한다.")
+    @DisplayName(" 할일 생성 요청을 하면 사이즈가 1증가한다.")
     public void create() {
         assertThat(taskService.getTasks()).hasSize(0);
 
