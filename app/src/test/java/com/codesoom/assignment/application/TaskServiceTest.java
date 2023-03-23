@@ -60,6 +60,12 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않은 할 일을 수정하면 에러를 반환한다. ")
+    public void updateWithInvalidTask() {
+        assertThatThrownBy(() -> taskService.updateTask(1L, new Task()));
+    }
+
+    @Test
     @DisplayName("특정 할일이  존재할 경우 해당  할일을 삭제하면 리스트의 사이즈는 줄어든다.")
     public void delete() {
         Task testTask = createTestTask();
