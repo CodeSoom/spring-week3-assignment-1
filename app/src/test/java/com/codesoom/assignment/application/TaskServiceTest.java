@@ -40,8 +40,8 @@ class TaskServiceTest {
     public void create() {
         assertThat(taskService.getTasks()).hasSize(0);
 
-        Task task = createTestTask();
-        taskService.createTask(task);
+        Task createdTask = createTestTask();
+        taskService.createTask(createdTask);
 
         assertThat(taskService.getTasks()).hasSize(1);
     }
@@ -50,13 +50,13 @@ class TaskServiceTest {
     @DisplayName("특정 할 일이 수정되면 해당 할 일의 제목은 수정된다.")
     public void update() {
         Task task = createTestTask();
-        Task createTask = taskService.createTask(task);
+        Task createdTask = taskService.createTask(task);
 
         Task source = new Task();
         source.setTitle(UPDATE_TITLE);
-        taskService.updateTask(createTask.getId(), source);
+        Task updatedTask = taskService.updateTask(createdTask.getId(), source);
 
-        assertThat(task.getTitle()).isEqualTo(UPDATE_TITLE);
+        assertThat(updatedTask.getTitle()).isEqualTo(UPDATE_TITLE);
     }
 
     @Test
@@ -69,8 +69,8 @@ class TaskServiceTest {
     @DisplayName("특정 할 일이  존재하는 경우 해당  할 일을 삭제하면 리스트의 사이즈는 줄어든다.")
     public void delete() {
         Task testTask = createTestTask();
-        Task task = taskService.createTask(testTask);
-        taskService.deleteTask(task.getId());
+        Task createdTask = taskService.createTask(testTask);
+        taskService.deleteTask(createdTask.getId());
         assertThat(taskService.getTasks()).hasSize(0);
     }
 
