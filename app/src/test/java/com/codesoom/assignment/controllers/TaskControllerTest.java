@@ -28,14 +28,14 @@ class TaskControllerTest {
     private TaskService taskService;
 
     @Test
-    @DisplayName("할 일 리스트 조회를 성공하면 200을 반환한다.")
+    @DisplayName("할 일 리스트 조회를 성공하면 200을 응답한다.")
     public void getList_success() throws Exception {
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("유효한 할일에 대하여 상세 조회를 성공하면  201을 반환한다.")
+    @DisplayName("유효한 할 일에 대하여 상세 조회를 성공하면  201을 응답한다.")
     public void detailWithValidId() throws Exception {
         Task task = new Task();
         given(taskService.getTask(any())).willReturn(task);
@@ -47,14 +47,14 @@ class TaskControllerTest {
 
 
     @Test
-    @DisplayName("유효하지 않은 할일에 대하여 상세 조회를 요청하면  404 에러를 반환한다.")
+    @DisplayName("유효하지 않은 할 일에 대하여 상세 조회를 요청하면  404 에러를 응답한다.")
     public void detailWithInvalidId() throws Exception {
         mockMvc.perform(get("/tasks/10"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("정상적으로 할 일이 만들어지면 201 상태 코드를 반환한다. ")
+    @DisplayName("정상적으로 할 일이 만들어지면 201 상태 코드를 응답한다. ")
     public void createTask() throws Exception {
         Task task = new Task();
         task.setTitle("Hello");
@@ -67,7 +67,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("할 일이 정상적으로 변경되면 200상태코드를 반환하고 해당 할 일을 반환한다.")
+    @DisplayName("할 일이 정상적으로 변경되면 200상태코드를 반환하고 해당 할 일을 응답한다.")
     public void update() throws Exception {
         Task task = new Task();
         task.setId(1L);
@@ -82,7 +82,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않은 할 일에 대하여 변경하면 404 에러를 반환한다. ")
+    @DisplayName("존재하지 않은 할 일에 대하여 변경하면 404 에러코드로 응답한다. ")
     public void updateWithNotFoundException() throws Exception {
         given(taskService.updateTask(anyLong(), any())).willThrow(TaskNotFoundException.class);
 
@@ -92,7 +92,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("정상적으로 할 일을 삭제했을 경우 204코드를 반환한다. ")
+    @DisplayName("정상적으로 할 일을 삭제했을 경우 204코드를 응답한다. ")
     public void deleteTask() throws Exception {
         Task task = new Task();
         task.setId(1L);
@@ -104,7 +104,7 @@ class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않은 할 일을 삭제처리하면 404 에러를 반환한다. ")
+    @DisplayName("존재하지 않은 할 일을 삭제처리하면 404 에러를 응답한다. ")
     public void test() throws Exception {
         given(taskService.deleteTask(anyLong())).willThrow(TaskNotFoundException.class);
 

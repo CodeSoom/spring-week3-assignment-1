@@ -23,14 +23,14 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("할 일이 비어있는 경우 getTasks 는 0을 반환한다.")
+    @DisplayName("할 일이 비어있는 경우 getTasks 는 0을 응답한다.")
     public void fetchList() {
         List<Task> tasks = taskService.getTasks();
         assertThat(tasks).hasSize(0);
     }
 
     @Test
-    @DisplayName("존재하지 않는 특정 할 일을  상세 조회하는 경우 에러를 반환한다.")
+    @DisplayName("존재하지 않는 특정 할 일을  상세 조회하는 경우 에러를 응답한다.")
     public void getThrowError() {
         assertThatThrownBy(() -> taskService.getTask(1L));
     }
@@ -60,7 +60,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않은 할 일을 수정하면 에러를 반환한다. ")
+    @DisplayName("존재하지 않은 할 일을 수정하면 에러를 응답한다. ")
     public void updateWithInvalidTask() {
         assertThatThrownBy(() -> taskService.updateTask(1L, new Task()));
     }
@@ -75,7 +75,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않은 할 일을 삭제 하면 에러를 반환한다.")
+    @DisplayName("존재하지 않은 할 일을 삭제 하면 에러를 응답한다.")
     public void deleteWithEmptyList() {
         assertThatThrownBy(() -> taskService.deleteTask(9999L));
     }
