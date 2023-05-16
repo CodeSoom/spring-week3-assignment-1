@@ -31,8 +31,7 @@ class TaskControllerMockTest {
 
 	ObjectMapper objectMapper;
 
-	private final long VALID_ID = 1L;
-	private final long INVALID_ID = 99L;
+	private final String TASK_TITLE = "NEW Task";
 
 	@BeforeEach
 	void setUp() {
@@ -48,7 +47,7 @@ class TaskControllerMockTest {
 
 	@Test
 	public void detail() throws Exception {
-		mockMvc.perform(get("/tasks/" + VALID_ID))
+		mockMvc.perform(get("/tasks/1"))
 				.andExpect(status().isNotFound());
 	}
 
@@ -56,32 +55,20 @@ class TaskControllerMockTest {
 	@Test
 	public void createTask() throws Exception {
 		Task task = new Task();
-		task.setTitle("NEW Task");
+		task.setTitle(TASK_TITLE);
 
 		mockMvc.perform(post("/tasks")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(task)))
 				.andExpect(status().isCreated())
-				.andExpect(content().string(containsString("NEW Task")))
-				.andDo(print());
-	}
-
-	@Test
-	public void putTask() throws Exception {
-		Task task = new Task();
-		task.setTitle("_UPDATE");
-
-		mockMvc.perform(put("/tasks/" + VALID_ID)
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(task)))
-				.andExpect(status().isOk())
+				.andExpect(content().string(containsString(TASK_TITLE)))
 				.andDo(print());
 	}
 
 	@Test
 	public void scenarioTest() throws Exception {
 		Task task = new Task();
-		task.setTitle("NEW Task");
+		task.setTitle(TASK_TITLE);
 
 		mockMvc.perform(get("/tasks/1"))
 				.andExpect(status().isNotFound());
@@ -90,11 +77,11 @@ class TaskControllerMockTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(task)))
 				.andExpect(status().isCreated())
-				.andExpect(content().string(containsString("NEW Task")));
+				.andExpect(content().string(containsString(TASK_TITLE)));
 
 		mockMvc.perform(get("/tasks/1"))
 				.andExpect(status().isOk())
-				.andExpect(content().string(containsString("NEW Task")));
+				.andExpect(content().string(containsString(TASK_TITLE)));
 
 		Task update = new Task();
 		update.setTitle("_UPDATE");
