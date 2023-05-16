@@ -36,7 +36,6 @@ public class TaskService {
     public Task updateTask(Long id, Task source) {
         Task task = getTask(id);
         task.setTitle(source.getTitle());
-
         return task;
     }
 
