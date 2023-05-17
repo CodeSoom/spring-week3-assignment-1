@@ -57,6 +57,10 @@ dependencies {
     // Spring Developer Tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
+
+
     // Spring Boot Test
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
