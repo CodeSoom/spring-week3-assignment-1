@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +31,7 @@ class TaskControllerMockTest {
 	ObjectMapper objectMapper;
 
 	private final String TASK_TITLE = "NEW Task";
+	private final String TASK_UPDATE_TITLE = "UPDATED Task";
 
 	@BeforeEach
 	void setUp() {
@@ -42,62 +42,73 @@ class TaskControllerMockTest {
 	public void list() throws Exception {
 		mockMvc.perform(get("/tasks"))
 				.andExpect(status().isOk())
-				.andDo(print());
+				.andExpect(content().string("[]"));
+
 	}
 
 	@Test
 	public void detail() throws Exception {
-		mockMvc.perform(get("/tasks/1"))
-				.andExpect(status().isNotFound());
+		assertTaskNotFound(99L);
 	}
 
 
 	@Test
 	public void createTask() throws Exception {
-		Task task = new Task();
-		task.setTitle(TASK_TITLE);
+		Task task = Task.title("JUnit5 Test Tak");
 
-		mockMvc.perform(post("/tasks")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(task)))
-				.andExpect(status().isCreated())
-				.andExpect(content().string(containsString(TASK_TITLE)))
-				.andDo(print());
+		assertTaskCreated(task);
 	}
 
 	@Test
 	public void scenarioTest() throws Exception {
-		Task task = new Task();
-		task.setTitle(TASK_TITLE);
+		final long BASIC_TASK_ID = 1L;
+		Task newTask = Task.title(TASK_TITLE);
+		Task updateTask = Task.title(TASK_UPDATE_TITLE);
 
-		mockMvc.perform(get("/tasks/1"))
-				.andExpect(status().isNotFound());
+		assertTaskNotFound(BASIC_TASK_ID);
 
+		assertTaskCreated(newTask);
+
+		assertTaskDetailContent(BASIC_TASK_ID, TASK_TITLE);
+
+		assertTaskUpdate(BASIC_TASK_ID, updateTask);
+
+		assertTaskDelete(BASIC_TASK_ID);
+
+		assertTaskNotFound(BASIC_TASK_ID);
+
+	}
+
+	private void assertTaskCreated(Task task) throws Exception {
 		mockMvc.perform(post("/tasks")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(task)))
 				.andExpect(status().isCreated())
-				.andExpect(content().string(containsString(TASK_TITLE)));
+				.andExpect(content().string(containsString(task.getTitle())));
+	}
 
-		mockMvc.perform(get("/tasks/1"))
-				.andExpect(status().isOk())
-				.andExpect(content().string(containsString(TASK_TITLE)));
-
-		Task update = new Task();
-		update.setTitle("_UPDATE");
-
-		mockMvc.perform(put("/tasks/1")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(update)))
-				.andExpect(status().isOk())
-				.andExpect(content().string(containsString("_UPDATE")));
-
-		mockMvc.perform(delete("/tasks/1"))
-				.andExpect(status().isNoContent());
-
-		mockMvc.perform(get("/tasks/1"))
+	private void assertTaskNotFound(long id) throws Exception {
+		mockMvc.perform(get("/tasks/" + id))
 				.andExpect(status().isNotFound());
+	}
 
+	private void assertTaskDetailContent(long id, String title) throws Exception {
+		mockMvc.perform(get("/tasks/" + id))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString(title)));
+	}
+
+	private void assertTaskUpdate(long id, Task task) throws Exception {
+		mockMvc.perform(put("/tasks/" + id)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(task)))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString(task.getTitle())));
+	}
+
+	private void assertTaskDelete(long id) throws Exception {
+		mockMvc.perform(delete("/tasks/" + id))
+				.andExpect(status().isNoContent());
 	}
 
 }

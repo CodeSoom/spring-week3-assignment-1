@@ -87,7 +87,6 @@ class TaskControllerWebMvcTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(task)))
 				.andExpect(status().isCreated())
-//				.andExpect(content().string(containsString("NEW Task")))
 				.andDo(print());
 	}
 

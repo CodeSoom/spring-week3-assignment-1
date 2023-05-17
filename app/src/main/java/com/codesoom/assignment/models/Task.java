@@ -20,4 +20,15 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public Task() {
+    }
+
+    public Task(String title) {
+        this.title = title;
+    }
+
+    public static Task title(String title) {
+        return new Task(title);
+    }
 }
