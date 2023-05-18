@@ -2,23 +2,92 @@ package com.codesoom.assignment.application;
 
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.models.Task;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+/**
+ * Describe - Context - It 패턴
+ */
 class TaskServiceTest {
 
 	TaskService taskService;
+	private final long SET_ID = 1L;
 
 	@BeforeEach
 	void setUp() {
 		taskService = new TaskService();
 
-		Task task = Task.title("NEW TASK");
-		taskService.createTask(task);
+		createTaskWithId(SET_ID);
+	}
+
+	@Nested
+	@DisplayName("getTask 메서드")
+	class Describe_getTask {
+//		long id = 10L;
+
+		@Nested
+		@DisplayName("task가 존재한다면")
+		class Context_when_task_exists {
+			@Test
+			@DisplayName("task를 반환한다.")
+			void it_returns_task() {
+				assertThat(getTask(SET_ID)).isNotNull();
+			}
+		}
+
+		@Nested
+		@DisplayName("task가 존재하지 않는다면")
+		class Context_when_tasks_not_exist {
+
+			@BeforeEach
+			void setUpCondition() {
+				deleteTask(SET_ID);
+			}
+
+			@Test
+			@DisplayName("TaskNotFoundException가 발생한다.")
+			void it_returns_exeption() {
+				assertThatThrownBy(() -> getTask(SET_ID)).isInstanceOf(TaskNotFoundException.class);
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("deleteTask 메서드")
+	class Describe_deleteTask {
+		@Nested
+		@DisplayName("task가 존재한다면")
+		class Context_when_task_exists {
+
+			@Test
+			@DisplayName("task가 삭제된다.")
+			void it_deleted() throws Exception {
+				deleteTask(SET_ID);
+
+				assertThatThrownBy(() -> getTask(SET_ID)).isInstanceOf(TaskNotFoundException.class);
+			}
+		}
+
+		@Nested
+		@DisplayName("task가 존재하지 않는다면")
+		class Context_when_task_not_exists {
+
+			@BeforeEach
+			void setUpCondition() {
+				deleteTask(SET_ID);
+			}
+
+			@Test
+			@DisplayName("TaskNotFoundException가 발생한다.")
+			void it_returns() {
+				assertThatThrownBy(() -> deleteTask(SET_ID)).isInstanceOf(TaskNotFoundException.class);
+			}
+		}
 	}
 
 	@Test
@@ -26,19 +95,6 @@ class TaskServiceTest {
 		assertThat(taskService.getTasks()).hasSize(1);
 	}
 
-	@Test
-	void getTaskWithValidId() {
-		long id = 1L;
-
-		assertThat(taskService.getTask(id)).isNotNull();
-	}
-
-	@Test
-	void getTaskWithInvalidId() {
-		long id = 99L;
-
-		assertThatThrownBy(() -> taskService.getTask(id)).isInstanceOf(TaskNotFoundException.class);
-	}
 
 	@Test
 	void createTask() {
@@ -64,13 +120,18 @@ class TaskServiceTest {
 		assertThat(task.getTitle()).isEqualTo(updateTitle);
 	}
 
-	@Test
-	void deleteTask() {
-		long id = 1L;
+	private void createTaskWithId(long id) {
+		Task task = Task.title("NEW TASK");
+		task.setId(id);
 
-		taskService.deleteTask(id);
-
-		assertThatThrownBy(() -> taskService.getTask(id)).isInstanceOf(TaskNotFoundException.class);
+		taskService.addTask(task);
 	}
 
+	private void deleteTask(long id) {
+		taskService.deleteTask(id);
+	}
+
+	private Task getTask(long id) {
+		return taskService.getTask(id);
+	}
 }

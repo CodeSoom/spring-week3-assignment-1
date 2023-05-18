@@ -28,8 +28,11 @@ public class TaskService {
         task.setId(generateId());
         task.setTitle(source.getTitle());
 
-        tasks.add(task);
+        return addTask(task);
+    }
 
+    public Task addTask(Task task) {
+        tasks.add(task);
         return task;
     }
 
@@ -39,11 +42,9 @@ public class TaskService {
         return task;
     }
 
-    public Task deleteTask(Long id) {
+    public void deleteTask(Long id) {
         Task task = getTask(id);
         tasks.remove(task);
-
-        return task;
     }
 
     private Long generateId() {
