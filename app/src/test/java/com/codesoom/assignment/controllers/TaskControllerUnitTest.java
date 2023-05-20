@@ -3,17 +3,24 @@ package com.codesoom.assignment.controllers;
 import com.codesoom.assignment.TaskNotFoundException;
 import com.codesoom.assignment.application.TaskService;
 import com.codesoom.assignment.models.Task;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+/**
+ * verify() : taskService 를 mock으로 만들어서 verify()를 통해 해덩 서비스의 특정 메서드의 실행여부를 확인할 수 있다.
+ * spy : spy 객체는 실제 객체와 같다. 해당 객체의 행동을 그대로 사용 가능하다.
+ * mock : mock은 가짜 객체로, 인스턴스 타입만 따라 간다고 보면 된다. 실제 행동을 하는게 아니기 때문에, 행동에 의한 기대 결과를 지정해주어야 한다. - given()
+ */
 class TaskControllerUnitTest {
 
 	private TaskController taskController;
+
+	private TaskService taskService;
 
 	private static final String TEST_TITLE = "TEST1";
 	private static final String UPDATE_POSTFIX = "_!!!";
@@ -21,7 +28,8 @@ class TaskControllerUnitTest {
 
 	@BeforeEach
 	public void setUp() {
-		taskController = new TaskController(new TaskService());
+		taskService = spy(new TaskService());	// proxy 객체를 만듬.
+		taskController = new TaskController(taskService);
 
 		Task task = new Task();
 		task.setTitle(TEST_TITLE);
@@ -31,12 +39,16 @@ class TaskControllerUnitTest {
 	@Test
 	public void getList() {
 		assertThat(taskController.list()).hasSize(1);
+
+		verify(taskService).getTasks();
 	}
 
 	@Test
 	public void getTaskWithInvalidId() {
 		Long id = 99L;
 		assertThatThrownBy(() -> taskController.detail(id)).isInstanceOf(TaskNotFoundException.class);
+
+		verify(taskService).getTask(any());
 	}
 
 	@Test
@@ -51,6 +63,8 @@ class TaskControllerUnitTest {
 		int after = taskController.list().size();
 
 		assertThat(after - before).isEqualTo(1);
+
+		verify(taskService, times(2)).createTask(any(Task.class));	// times() 해당 메서드의 실행 횟수 지정.
 	}
 
 	@Test
@@ -60,6 +74,8 @@ class TaskControllerUnitTest {
 		task.setTitle(TEST_TITLE + UPDATE_POSTFIX);
 
 		assertThatThrownBy(() -> taskController.update(id, task)).isInstanceOf(TaskNotFoundException.class);
+
+		verify(taskService).updateTask(any(Long.class), any(Task.class));
 	}
 
 	@Test
@@ -71,6 +87,9 @@ class TaskControllerUnitTest {
 		Task update = taskController.update(id, task);
 
 		assertThat(update.getTitle()).isEqualTo(TEST_TITLE + UPDATE_POSTFIX);
+
+		verify(taskService).updateTask(eq(id), any(Task.class));
+
 	}
 
 	@Test
