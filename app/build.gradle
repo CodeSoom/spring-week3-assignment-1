@@ -36,6 +36,7 @@ dependencies {
 
     // AssertJ
     testImplementation 'org.assertj:assertj-core:3.18.1'
+    testImplementation 'junit:junit:4.13.1'
 
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
