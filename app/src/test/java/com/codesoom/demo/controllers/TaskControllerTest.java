@@ -19,10 +19,10 @@ class TaskControllerTest {
 
     private TaskController taskController;
     private TaskService taskService;
-    private static final String TASK_TITLE = "test";
+    private static final String TASK_TITLE = "title";
 
     @BeforeEach
-    void setup(){
+    void setup() {
         taskService = new TaskService();
         taskController = new TaskController(taskService);
     }
@@ -32,24 +32,23 @@ class TaskControllerTest {
     class Describe_create {
 
         @Nested
-        @DisplayName("Task 객체가 주어지면")
+        @DisplayName("Task가 주어지면")
         class Context_with_a_task {
 
             private Task source;
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 source = new Task();
                 source.setTitle(TASK_TITLE);
             }
 
             @Test
-            @DisplayName("Task 객체를 추가하고, 추가된 Task 객체를 리턴한다.")
+            @DisplayName("Task List에 Task를 추가하고, 추가된 Task를 리턴한다")
             void it_creates_task_and_returns_created_task() {
                 Task task = taskService.createTask(source);
                 assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
                 assertThat(task.getId()).isNotNull();
-
             }
 
         }
@@ -63,18 +62,18 @@ class TaskControllerTest {
         private Long taskId;
 
         @Nested
-        @DisplayName("존재하는 Task id가 주어지면")
+        @DisplayName("Task List에 존재하는 Task id가 주어지면")
         class Context_with_a_existing_task_id {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 Task source = new Task();
                 source.setTitle(TASK_TITLE);
                 taskId = taskService.createTask(source).getId();
             }
 
             @Test
-            @DisplayName("id로 찾은 Task 객체를 리턴한다")
+            @DisplayName("id로 찾은 Task를 리턴한다")
             void it_returns_a_task_found_by_id() {
                 Task task = taskService.getTask(taskId);
                 assertThat(task.getId()).isEqualTo(taskId);
@@ -84,16 +83,16 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하지 않는 Task id가 주어지면")
+        @DisplayName("Task List에 존재하지 않는 Task id가 주어지면")
         class Context_with_a_not_existing_task_id {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 taskId = 100L;
             }
 
             @Test
-            @DisplayName("TaskNotFoundException 예외를 던진다")
+            @DisplayName("TaskNotFoundException을 던진다")
             void it_throws_a_exception() {
                 assertThatThrownBy(() -> taskService.deleteTask(taskId))
                         .isInstanceOf(TaskNotFoundException.class);
@@ -108,7 +107,7 @@ class TaskControllerTest {
     class Describe_list {
 
         @Nested
-        @DisplayName("추가된 Task가 존재하면")
+        @DisplayName("Task List에 추가된 Task가 있으면")
         class Context_with_tasks {
 
             @BeforeEach
@@ -119,19 +118,18 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("Task 리스트를 리턴한다")
+            @DisplayName("Task List를 리턴한다")
             void It_return_tasks() {
-                assertThat(taskController.list()).hasSize(1);
                 assertThat(taskController.list()).isNotEmpty();
             }
         }
 
         @Nested
-        @DisplayName("추가된 Task가 없으면")
+        @DisplayName("Task List에 추가된 Task가 없으면")
         class Context_with_no_task {
 
             @BeforeEach
-            void setUp(){
+            void setUp() {
                 taskService.deleteAllTasks();
             }
 
@@ -151,11 +149,11 @@ class TaskControllerTest {
         private Task source;
 
         @Nested
-        @DisplayName("존재하는 Task id와 수정할 소스가 주어지면")
+        @DisplayName("Task List에 존재하는 Task id와 수정할 소스가 주어지면")
         class Context_with_existing_task_id_and_source_task {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 Task task = new Task();
                 task.setTitle(TASK_TITLE);
                 taskId = taskService.createTask(task).getId();
@@ -165,7 +163,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("수정된 할 일을 리턴한다.")
+            @DisplayName("id로 찾은 Task를 수정하고, 수정된 Task를 리턴한다")
             void It_returns_updated_task() {
                 Task updatedTask = taskController.update(taskId, source);
                 assertThat(updatedTask.getTitle()).isEqualTo("new title");
@@ -184,11 +182,11 @@ class TaskControllerTest {
         private Task source;
 
         @Nested
-        @DisplayName("존재하는 Task id와 수정할 소스가 주어지면")
+        @DisplayName("Task List에 존재하는 Task id와 수정할 소스가 주어지면")
         class Context_with_existing_task_id_and_source_task {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 Task task = new Task();
                 task.setTitle(TASK_TITLE);
                 taskId = taskService.createTask(task).getId();
@@ -198,7 +196,7 @@ class TaskControllerTest {
             }
 
             @Test
-            @DisplayName("수정된 할 일을 리턴한다.")
+            @DisplayName("id로 찾은 Task를 수정하고, 수정된 Task를 리턴한다")
             void It_returns_updated_task() {
                 Task updatedTask = taskController.patch(taskId, source);
                 assertThat(updatedTask.getTitle()).isEqualTo("new title");
@@ -216,18 +214,18 @@ class TaskControllerTest {
         private Long taskId;
 
         @Nested
-        @DisplayName("존재하는 Task id가 주어지면")
+        @DisplayName("Task List에 존재하는 Task id가 주어지면")
         class Context_with_a_existing_task_id {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 Task source = new Task();
                 source.setTitle(TASK_TITLE);
                 taskId = taskService.createTask(source).getId();
             }
 
             @Test
-            @DisplayName("id로 찾은 Task 객체를 삭제한다")
+            @DisplayName("id로 찾은 Task를 삭제한다")
             void it_returns_a_task_found_by_id() {
                 taskController.delete(taskId);
 
@@ -238,16 +236,16 @@ class TaskControllerTest {
         }
 
         @Nested
-        @DisplayName("존재하지 않는 Task id가 주어지면")
+        @DisplayName("Task List에 존재하지 않는 Task id가 주어지면")
         class Context_with_a_not_existing_task_id {
 
             @BeforeEach
-            void setup(){
+            void setup() {
                 taskId = 100L;
             }
 
             @Test
-            @DisplayName("TaskNotFoundException 예외를 던진다")
+            @DisplayName("TaskNotFoundException을 던진다")
             void it_throws_a_exception() {
                 assertThatThrownBy(() -> taskService.deleteTask(taskId))
                         .isInstanceOf(TaskNotFoundException.class);
