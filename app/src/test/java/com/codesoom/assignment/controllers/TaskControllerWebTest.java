@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -26,8 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+//@SpringBootTest
+//@AutoConfigureMockMvc
+@WebMvcTest(TaskController.class)
 public class TaskControllerWebTest {
 
     @Autowired
@@ -54,7 +56,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("GET list 요청은")
+    @DisplayName("GET /tasks")
     class Describe_get_list_request {
 
         @Nested
@@ -97,7 +99,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("GET detail 요청은")
+    @DisplayName("GET /tasks/{id}")
     class Describe_get_detail_request {
 
         @Nested
@@ -140,7 +142,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("POST 요청은")
+    @DisplayName("POST /tasks")
     class Describe_post_request {
 
         @Nested
@@ -168,7 +170,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("PUT 요청은")
+    @DisplayName("PUT /tasks/{id}")
     class Describe_put_request {
 
         private Task source;
@@ -224,7 +226,7 @@ public class TaskControllerWebTest {
     }
 
     @Nested
-    @DisplayName("DELETE 요청은")
+    @DisplayName("DELETE /tasks/{id}")
     class Describe_delete_request {
 
         @Nested
