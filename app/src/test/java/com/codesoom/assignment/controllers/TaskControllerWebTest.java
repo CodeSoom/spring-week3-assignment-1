@@ -60,7 +60,7 @@ public class TaskControllerWebTest {
     class Describe_get_list_request {
 
         @Nested
-        @DisplayName("Task List에 추가된 Task가 있으면")
+        @DisplayName("Task가 있으면")
         class Context_with_tasks {
 
             @BeforeEach
@@ -79,7 +79,7 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("Task List에 추가된 Task가 없으면")
+        @DisplayName("Task가 없으면")
         class Context_with_no_task {
 
             @BeforeEach
@@ -87,7 +87,7 @@ public class TaskControllerWebTest {
                 given(taskService.getTasks()).willReturn(tasks);
             }
 
-            //@Test
+            @Test
             @DisplayName("상태코드 200을 응답하고, 비어있는 Task List를 리턴한다")
             void It_returns_200_and_tasks() throws Exception {
                 mockMvc.perform(get("/tasks"))
@@ -103,7 +103,7 @@ public class TaskControllerWebTest {
     class Describe_get_detail_request {
 
         @Nested
-        @DisplayName("Task List에 존재하는 Task Id가 주어지면")
+        @DisplayName("Task를 찾을 수 있으면")
         class Context_with_valid_task_id {
 
             @BeforeEach
@@ -123,7 +123,7 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("Task List에 존재하지 않는 Task Id가 주어지면")
+        @DisplayName("Task를 찾을 수 없으면")
         class Context_with_invalid_task_id {
 
             @BeforeEach
@@ -176,7 +176,7 @@ public class TaskControllerWebTest {
         private Task source;
 
         @Nested
-        @DisplayName("Task List에 존재하는 Task Id가 주어진면")
+        @DisplayName("Task를 찾을 수 있으면")
         class Context_with_valid_task_id {
 
             @BeforeEach
@@ -200,7 +200,7 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("Task List에 존재하지 않는 Task Id가 주어진면")
+        @DisplayName("Task를 찾을 수 없으면")
         class Context_with_invalid_task_id {
 
             @BeforeEach
@@ -230,7 +230,7 @@ public class TaskControllerWebTest {
     class Describe_delete_request {
 
         @Nested
-        @DisplayName("Task List에 존재하는 Task Id가 주어진면")
+        @DisplayName("Task를 찾을 수 있으면")
         class Context_with_valid_task_id {
 
             @Test
@@ -249,7 +249,7 @@ public class TaskControllerWebTest {
         }
 
         @Nested
-        @DisplayName("Task List에 존재하지 않는 Task Id가 주어진면")
+        @DisplayName("Task를 찾을 수 없으면")
         class Context_with_invalid_task_id {
 
             @BeforeEach
