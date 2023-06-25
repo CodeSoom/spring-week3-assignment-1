@@ -146,7 +146,7 @@ public class TaskControllerWebTest {
     class Describe_post_request {
 
         @Nested
-        @DisplayName("Task가 주어지면")
+        @DisplayName("새로운 Task를 추가하면")
         class Context_with_task {
 
             @BeforeEach
