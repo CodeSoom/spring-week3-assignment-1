@@ -52,8 +52,7 @@ public class TaskService {
         return newId;
     }
 
-
-   public void deleteAllTasks(){
+    public void deleteAllTasks() {
         tasks.clear();
-   }
+    }
 }
