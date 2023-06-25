@@ -147,7 +147,7 @@ public class TaskControllerWebTest {
 
         @Nested
         @DisplayName("새로운 Task를 추가하면")
-        class Context_with_task {
+        class Context_when_add_task {
 
             @BeforeEach
             void setup() {
