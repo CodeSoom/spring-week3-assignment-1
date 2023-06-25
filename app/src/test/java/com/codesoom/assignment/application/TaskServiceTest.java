@@ -41,13 +41,13 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTaskWithValidId() {
+    void getTaskWithExistingId() {
         Task task = taskService.getTask(1L);
         assertThat(task.getTitle()).isEqualTo(TASK_TITLE);
     }
 
     @Test
-    void getTaskWithInvalidId() {
+    void getTaskWithNotExistingId() {
         assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 
