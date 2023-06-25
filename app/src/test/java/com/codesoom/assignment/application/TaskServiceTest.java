@@ -35,7 +35,9 @@ class TaskServiceTest {
     @Test
     void getTasks() {
         assertThat(taskService.getTasks()).hasSize(1);
-        assertThat(taskService.getTasks()).isNotNull();
+
+        //Task가 없을 경우 null이 아닌 빈 배열 또는 빈 리스트를 반환하기 때문에 isNotNull() 검증은 적절하지 않음
+        //assertThat(taskService.getTasks()).isNotNull();
     }
 
     @Test
