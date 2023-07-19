@@ -25,82 +25,118 @@ class TaskControllerTest {
         return task;
     }
 
-    private void createTasks() {
-        for (int i = 1; i <= 10; i++) {
-            Task task = new Task();
-            task.setTitle("task" + i);
-            taskController.create(task);
-        }
-    }
-
     @Test
-    @DisplayName("할일 생성 성공 테스트.")
+    @DisplayName("최초 할일 생성 후 할일 리스트에 값이 늘어난지 테스트")
     void createTaskSuccessTest() {
+        // given
         Task task = createTask();
-        taskController.create(task);
-        Assertions.assertThat(taskController.list()).hasSize(1);
+        int beforeSize = taskController.list().size();
+        // when
+        Task insertTask = taskController.create(task);
+
+        // then
+        Assertions.assertThat(
+                beforeSize).isEqualTo(taskController.list().size() - 1);
+
     }
 
     @Test
-    @DisplayName("최초 할일 리스트가 비어있는지 테스트.")
+    @DisplayName("최초 호출시 할일 리스트가 비어있는지 테스트.")
     void isFirstTasksIsEmpty() {
         Assertions.assertThat(taskController.list()).isEmpty();
     }
 
     @Test
-    @DisplayName("할일 리스트가 정상적으로 나오는 지 테스트한다.")
+    @DisplayName("할일 복수 있는 경우 해당 개수에 맞게 나오는지 테스트.")
     void listSuccessTest() {
-        createTasks();
-        Assertions.assertThat(taskController.list()).hasSize(10);
+        // given
+        Task task1 = createTask();
+        Task task2 = createTask();
+
+        // when
+        taskController.create(task1);
+        taskController.create(task2);
+
+        // then
+        Assertions.assertThat(taskController.list()).hasSize(2);
     }
 
 
     @Test
-    @DisplayName("할일 상세 조회 성공 테스트")
+    @DisplayName("할일을 1개를 등록 후 해당 할일 상세 조회 테스트")
     void getTaskSuccess() {
-        createTasks();
-        Assertions.assertThat(taskController.detail(4L).getTitle()).isEqualTo("task4");
+        // given
+        Task task1 = createTask();
+
+        // when
+        taskController.create(task1);
+
+        // then
+        Assertions.assertThat(taskController.detail(1L).getTitle()).isEqualTo("task1");
+
     }
 
     @Test
-    @DisplayName("할일 상세 조회 실패 테스트")
+    @DisplayName("존재하지 않지 않는 할일 조회시 TaskNotFound 예외 발생 테스트")
     void getTaskFail() {
-        createTasks();
         Assertions.assertThatThrownBy(() -> taskController.detail(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("할일 수정 성공 테스트")
+    @DisplayName("할일 수정 후 해당 할일 값이 수정되었는지 테스트")
     void updateTaskTest() {
+        // given
         Task task = taskController.create(createTask());
         Task updateTask = new Task();
         updateTask.setTitle("updated");
+
+        // when
         taskController.update(task.getId(), updateTask);
+
+        // then
         Assertions.assertThat(taskController.detail(task.getId()).getTitle()).isEqualTo("updated");
     }
 
     @Test
-    @DisplayName("할일 수정 실패 테스트")
+    @DisplayName("존재하지 않는 할일을 수정할 경우 TaskNotFound 예외 발생 테스트")
     void updatedFailTest() {
+        // given
         Task task = taskController.create(createTask());
         Task updateTask = new Task();
         updateTask.setTitle("updated");
         taskController.update(task.getId(), updateTask);
+        // when then
         Assertions.assertThatThrownBy(() -> taskController.update(100L, updateTask))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
-    @DisplayName("할일 삭제 성공 테스트")
+    @DisplayName("1개 할일을 삭제 후 해당 리스트의 삭제후 리스트가 비어있는지 테스트")
     void deleteTaskSuccess() {
-        taskController.create(createTask());
-        taskController.delete(1L);
+        // given
+        Task task = taskController.create(createTask());
+        // when
+        taskController.delete(task.getId());
+        // then
         Assertions.assertThat(taskController.list()).isEmpty();
     }
 
     @Test
-    @DisplayName("할일 삭제 실패 테스트")
+    @DisplayName("2개 할일을 삭제 후 해당 리스트의 삭제후 리스트크기가 감소했는 지 테스트")
+    void deleteTasksSuccess() {
+        // given
+        taskController.create(createTask());
+        Task task = taskController.create(createTask());
+        int beforeSize = taskController.list().size();
+        // when
+        taskController.delete(task.getId());
+        // then
+        Assertions.assertThat(taskController.list().size()).isEqualTo(beforeSize - 1);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 할일을 삭제할 경우 TaskNotFound 예외 발생 테스트")
     void deleteTaskFail() {
         Assertions.assertThatThrownBy(() -> taskController.delete(1L)).isInstanceOf(TaskNotFoundException.class);
     }
