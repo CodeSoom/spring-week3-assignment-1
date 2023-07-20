@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
+import static org.assertj.core.api.Assertions.*;
+
 
 class TaskControllerTest {
     private TaskController taskController;
@@ -35,7 +37,7 @@ class TaskControllerTest {
         Task insertTask = taskController.create(task);
 
         // then
-        Assertions.assertThat(
+        assertThat(
                 beforeSize).isEqualTo(taskController.list().size() - 1);
 
     }
@@ -43,7 +45,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("최초 호출시 할일 리스트가 비어있는지 테스트.")
     void isFirstTasksIsEmpty() {
-        Assertions.assertThat(taskController.list()).isEmpty();
+        assertThat(taskController.list()).isEmpty();
     }
 
     @Test
@@ -58,7 +60,7 @@ class TaskControllerTest {
         taskController.create(task2);
 
         // then
-        Assertions.assertThat(taskController.list()).hasSize(2);
+        assertThat(taskController.list()).hasSize(2);
     }
 
 
@@ -72,14 +74,14 @@ class TaskControllerTest {
         taskController.create(task1);
 
         // then
-        Assertions.assertThat(taskController.detail(1L).getTitle()).isEqualTo("task1");
+        assertThat(taskController.detail(1L).getTitle()).isEqualTo("task1");
 
     }
 
     @Test
     @DisplayName("존재하지 않지 않는 할일 조회시 TaskNotFound 예외 발생 테스트")
     void getTaskFail() {
-        Assertions.assertThatThrownBy(() -> taskController.detail(100L))
+        assertThatThrownBy(() -> taskController.detail(100L))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
@@ -95,7 +97,7 @@ class TaskControllerTest {
         taskController.update(task.getId(), updateTask);
 
         // then
-        Assertions.assertThat(taskController.detail(task.getId()).getTitle()).isEqualTo("updated");
+        assertThat(taskController.detail(task.getId()).getTitle()).isEqualTo("updated");
     }
 
     @Test
@@ -107,7 +109,7 @@ class TaskControllerTest {
         updateTask.setTitle("updated");
         taskController.update(task.getId(), updateTask);
         // when then
-        Assertions.assertThatThrownBy(() -> taskController.update(100L, updateTask))
+        assertThatThrownBy(() -> taskController.update(100L, updateTask))
                 .isInstanceOf(TaskNotFoundException.class);
     }
 
@@ -119,7 +121,7 @@ class TaskControllerTest {
         // when
         taskController.delete(task.getId());
         // then
-        Assertions.assertThat(taskController.list()).isEmpty();
+        assertThat(taskController.list()).isEmpty();
     }
 
     @Test
@@ -132,12 +134,12 @@ class TaskControllerTest {
         // when
         taskController.delete(task.getId());
         // then
-        Assertions.assertThat(taskController.list().size()).isEqualTo(beforeSize - 1);
+        assertThat(taskController.list().size()).isEqualTo(beforeSize - 1);
     }
 
     @Test
     @DisplayName("존재하지 않는 할일을 삭제할 경우 TaskNotFound 예외 발생 테스트")
     void deleteTaskFail() {
-        Assertions.assertThatThrownBy(() -> taskController.delete(1L)).isInstanceOf(TaskNotFoundException.class);
+        assertThatThrownBy(() -> taskController.delete(1L)).isInstanceOf(TaskNotFoundException.class);
     }
 }

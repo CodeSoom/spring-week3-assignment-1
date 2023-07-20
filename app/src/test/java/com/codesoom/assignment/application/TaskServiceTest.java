@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -23,9 +24,9 @@ class TaskServiceTest {
         taskService = new TaskService();
     }
     @Test
-    @DisplayName("최초 할일 리스트 요청시 빈 리스트 반환 테스트")
+    @DisplayName("getTasks는 할 일이 비어있으면 빈 리스트를 반환한다.")
     void getFirstTasksIsEmpty() {
-        Assertions.assertThat(taskService.getTasks()).hasSize(0);
+        assertThat(taskService.getTasks()).hasSize(0);
     }
 
     @Test
@@ -39,11 +40,11 @@ class TaskServiceTest {
         taskService.createTask(task2);
 
         // when & then
-        Assertions.assertThat(taskService.getTasks()).hasSize(2);
+        assertThat(taskService.getTasks()).hasSize(2);
     }
 
     @Test
-    @DisplayName("할일이 존재하는 경우 상세 조회 테스트 ")
+    @DisplayName("getTasks는 해당하는 할일이 존재하는 경우 상세 할일 내용을 반환한다")
     void getTaskSuccess() {
         // given
         Task task = new Task();
@@ -51,14 +52,14 @@ class TaskServiceTest {
         taskService.createTask(task);
 
         // when & then
-        Assertions.assertThat(taskService.getTask(1L).getTitle()).isEqualTo("task0");
+        assertThat(taskService.getTask(1L).getTitle()).isEqualTo("task0");
     }
 
     @Test
-    @DisplayName("할일 상세 조회시 할일이 없는 경우 테스트")
+    @DisplayName("getTasks는 할일 상세 조회시 할일이 없는 경우 TaskNotFound 예외를 반환한다")
     void getTaskFail() {
         // when & then
-        Assertions.assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
+        assertThatThrownBy(() -> taskService.getTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
@@ -72,7 +73,7 @@ class TaskServiceTest {
         Task createdTask = taskService.createTask(task);
 
         // then
-        Assertions.assertThat(createdTask.getTitle()).isEqualTo("task0");
+        assertThat(createdTask.getTitle()).isEqualTo("task0");
     }
 
     @Test
@@ -90,7 +91,7 @@ class TaskServiceTest {
         Task updatedTask = taskService.updateTask(1L, updateTask);
 
         // then
-        Assertions.assertThat(updatedTask.getTitle()).isEqualTo("task1");
+        assertThat(updatedTask.getTitle()).isEqualTo("task1");
     }
     @Test
     @DisplayName("존재하지 않는 할일을 업데이트 할 경우 예외를 반환하는 테스트")
@@ -104,7 +105,7 @@ class TaskServiceTest {
         updateTask.setTitle("task1");
 
         // when & then
-        Assertions.assertThatThrownBy(() -> taskService.updateTask(100L, updateTask)).isInstanceOf(TaskNotFoundException.class);
+        assertThatThrownBy(() -> taskService.updateTask(100L, updateTask)).isInstanceOf(TaskNotFoundException.class);
     }
 
     @Test
@@ -115,11 +116,15 @@ class TaskServiceTest {
         task.setTitle("task0");
         taskService.createTask(task);
 
+        int oldSize = taskService.getTasks().size();
+
         // when
         taskService.deleteTask(1L);
 
+        int newSize = taskService.getTasks().size();
+
         // then
-        Assertions.assertThat(taskService.getTasks()).hasSize(0);
+        assertThat(newSize - oldSize).isEqualTo(-1);
     }
 
     @Test
@@ -131,7 +136,7 @@ class TaskServiceTest {
         taskService.createTask(task);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> taskService.deleteTask(100L)).isInstanceOf(TaskNotFoundException.class);
+        assertThatThrownBy(() -> taskService.deleteTask(100L)).isInstanceOf(TaskNotFoundException.class);
     }
 
 }
