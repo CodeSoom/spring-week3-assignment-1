@@ -34,7 +34,7 @@ class TaskControllerTest {
         Task task = createTask();
         int beforeSize = taskController.list().size();
         // when
-        Task insertTask = taskController.create(task);
+        taskController.create(task);
 
         // then
         assertThat(
